@@ -1,0 +1,1090 @@
+<template>
+  <div class="order-detail-container">
+    <!-- 左侧桌台信息区域 -->
+    <div class="left-panel">
+      <div class="table-info">
+        <h2 class="table-number">{{ tableInfo.tableNumber }}</h2>
+        <p class="table-desc">{{ tableInfo.desc }}</p>
+      </div>
+      <div class="table-actions">
+        <el-button @click="handleMerge" style="width: 200px; height: 40px;background-color: #EAF7F8;">        
+            <template #icon>
+                <img 
+                src="/src/assets/Frame-5.png"  
+                alt="并台" 
+                style="width: 15px; height: 15px;" 
+                >
+                <label style="font-style: normal;font-size: 15px;margin-left: 10px;color: #13899C ;">并台</label>
+            </template>
+        </el-button>
+        <el-button  @click="handleChangeTable" style="width: 200px; height: 40px;background-color: #FFE6E7;margin-left: 0px;">
+             <template #icon>
+                <img 
+                src="/src/assets/Frame-6.png"  
+                alt="并台" 
+                style="width: 15px; height: 15px;" 
+                >
+                <label style="font-style: normal;font-size: 15px;margin-left: 10px;color: #FF6768 ;">换桌</label>
+            </template>
+        </el-button>
+      </div>
+      <div class="amount-info">
+        <p class="total-amount">¥{{ tableInfo.totalAmount }}</p>
+        <p class="sub-title">应收金额</p>
+        <p>实收金额: ¥{{ tableInfo.receivedAmount }}</p>
+        <p style="text-align: left;">抹零金额: ¥{{ tableInfo.zeroAmount.toFixed(2) }}</p>
+      </div>
+      <el-button type="success" class="pay-btn" @click="handlePay" style="background-color: #22A2B6;width: 300px;height: 40px;">收款</el-button>
+    </div>
+    <!-- 右侧订单详情区域 -->
+    <div class="right-panel">
+      <div class="order-header">
+        <div>
+        <p>订单编号: {{ orderInfo.orderNumber }}</p>
+        <p style="color: #999; font-size: 13px;">创建时间: {{ orderInfo.createTime }}</p>
+        </div>
+        <div class="order-actions">
+          <el-button  @click="handleRefund">退款</el-button>
+          <el-button type="success"  @click="handleRedo" style="background-color: #22A2B6;">重做</el-button>
+        </div>
+      </div>
+      <el-table
+        :data="orderInfo.items"
+        border
+        style="width: 100%"
+         @selection-change="handleSelectionChange"
+        class="order-table"
+      >
+        <!-- 复选框列-->
+        <el-table-column type="selection" width="55" align="center" />
+        <el-table-column label="序号" width="60" align="center">
+          <template #default="scope">
+            {{ scope.$index + 1 }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="name" label="品项名称">
+            <template #default="scope">
+                <span v-html="scope.row.name"></span>
+            </template>
+        </el-table-column>
+        <el-table-column prop="price" width="100" label="品项单价" align="center" />
+        <el-table-column prop="quantity" width="100" label="品项数量" align="center" />
+        <el-table-column prop="unit" width="100" label="品项单位" align="center" />
+        <el-table-column prop="amount" width="100" label="品项金额" align="center" />
+        <el-table-column prop="action" width="100" label="操作" align="center">
+          <template #default="scope">
+            <el-button
+              type="text"
+              @click="handleItemRefund(scope.row)"
+              v-if="scope.row.action === '退款'"
+            >
+              {{ scope.row.action }}
+            </el-button>
+            <span v-else>{{ scope.row.action }}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="order-footer">
+        <p style="margin-left: auto;padding-bottom: 20px;">点餐总金额: ¥{{ orderInfo.totalOrderAmount }}<span style="color: #666; font-size: 14px; margin-left: 10px;">
+    (不可优惠金额 ¥{{ orderInfo.nonDiscountAmount }})
+  </span></p>
+        <div class="footer-actions">
+             <p style="background-color: #F5F9FB;padding: 10px;">消费项目: ¥{{ orderInfo.consumeAmount }}
+                <el-button type="info"  @click="handleItemDetail" style="background-color: #22A2B6;margin-left: 80px;">消费项目明细</el-button>
+            </p>
+          <p style="background-color: #F5F9FB;padding: 10px;">消费金额: ¥{{ orderInfo.consumeAmount }}</p>
+          <el-button 
+            circle
+            @click="handlePrint"
+            style="border: 1px solid #000 !important;width: 70px;height: 70px;"
+            >
+            <!-- 自定义图片图标 -->
+            <template #icon>
+                <div class="icon-container">
+                <img 
+                src="/src/assets/Frame-7.png"  
+                alt="打印" 
+                style="width: 40px; height: 40px;" 
+                >
+                <label style="font-style: normal;">打印</label>
+                </div>
+            </template>
+            </el-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    <!-- 支付弹窗 -->
+    <el-dialog
+      title="支付"
+      v-model="payDialogVisible"
+      width="720px"
+      :before-close="handlePayDialogClose"
+      class="pay-dialog"
+    >
+      <div class="pay-content">
+        <!-- 左侧金额操作区 -->
+        <div class="pay-left">
+          <div class="pay-info">
+            <p class="pay-title">
+              待支付金额
+              <span class="amount">¥ {{ toPayAmount.toFixed(2) }}</span>
+            </p>
+            <p>本次支付：¥ {{ toPayAmount.toFixed(2) }} (抹分：¥ 0.00)</p>
+          </div>
+
+          <!-- 金额输入框与操作按钮 -->
+          <div class="amount-control">
+            <el-input
+              v-model="inputAmount"
+              placeholder="输入金额"
+              type="text"
+              class="amount-input"
+              @input="handleAmountInput"
+            />
+            <div class="operation-btns">
+               <!-- 抹零方式选择--循环出按钮 -->
+               <div class="pay-Erase-list">
+                  <div 
+                    class="pay-Erase-item" 
+                    v-for="(item, index) in payErase" 
+                    :key="index"
+                    :class="{ active: selectEraseZero === item.value }"
+                    @click="selectEraseZero = item.value"
+                  >
+                    {{ item.label }}
+                  </div>
+                </div>
+            </div>
+          </div>
+
+          <!-- 数字键盘 -->
+          <div class="number-keypad">
+            <div class="keypad-row">
+              <div 
+                class="keypad-btn" 
+                v-for="num in [7,8,9,'&times;']" 
+                :key="num"
+                @click="handleKeypadClick(num)"
+                :class="{ 'delete-btn': num === '&times;' }"
+              >
+                <span v-if="num !== '&times;'">{{ num }}</span>
+                <template v-else>
+                  <img 
+                    src="/src/assets/Rectangle 5894.png" 
+                    alt="删除" 
+                    class="delete-icon"
+                  >
+                </template>
+              </div>
+            </div>
+            <div class="keypad-row">
+              <div 
+                class="keypad-btn" 
+                v-for="num in [4,5,6]" 
+                :key="num"
+                @click="handleKeypadClick(num)"
+              >{{ num }}</div>
+            </div>
+            <div class="keypad-row">
+              <div 
+                class="keypad-btn" 
+                v-for="num in [1,2,3]" 
+                :key="num"
+                @click="handleKeypadClick(num)"
+              >{{ num }}</div>
+            </div>
+            <div class="keypad-row">
+              <div 
+                class="keypad-btn zero-btn" 
+                @click="handleKeypadClick(0)"
+              >0</div>
+              <div 
+                class="keypad-btn" 
+                @click="handleKeypadClick('00')"
+              >00</div>
+              <div 
+                class="keypad-btn" 
+                @click="handleKeypadClick('.')"
+              >.</div>
+              <div 
+                class="keypad-btn" 
+                @click="handleClear"
+              >清空</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右侧支付方式选择区 -->
+        <div class="pay-right">
+          <div class="pay-type-list">
+            <div 
+              class="pay-type-item" 
+              v-for="(item, index) in payTypes" 
+              :key="index"
+              :class="{ active: selectedPayType === item.value }"
+              @click="selectedPayType = item.value"
+            >
+              {{ item.label }}
+            </div>
+          </div>
+        </div>
+      </div>
+          <el-button 
+            type="primary" 
+            class="cancel-btn"
+            @click="payDialogVisible = false"
+          >取消</el-button>
+         <el-button 
+            type="primary" 
+            class="confirm-btn"
+            @click="handlePayConfirm"
+          >确认</el-button>
+    </el-dialog>
+
+
+    <!-- 并台弹窗 -->
+    <el-dialog
+      title="并台"
+      v-model="mergeDialogVisible"
+      width="650px"
+      :before-close="handleMergeDialogClose"
+    >
+      <div class="merge-table-list">
+        <div 
+          class="merge-table-item" 
+          v-for="(item, index) in tableList" 
+          :key="index"
+          :class="{ 'active': selectedMergeTables.includes(item.value) }"
+          @click="toggleMergeTable(item.value)"
+        >
+          <div class="merge-label" style="margin-left: 5px;color: #000;">[并入]</div>
+          <div style="color: #000;">{{ item.label }}</div>
+        </div>
+      </div>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button  type="primary"  class="cancel-btn" @click="mergeDialogVisible = false">取消</el-button>
+          <el-button  class="confirm-btn" type="primary" style="margin-right: 200px;"  @click="confirmMerge">确认</el-button>
+        </span>
+      </template>
+    </el-dialog>
+
+
+      <!-- 换桌弹窗 -->
+    <el-dialog
+      title="换桌"
+      v-model="changeTableDialogVisible"
+      width="650px"
+      :before-close="handleChangeTableDialogClose"
+    >
+      <div class="change-table-container">
+        <!-- 当前桌台信息 -->
+        <div class="current-table-info">
+          <p class="info-label">当前桌台：</p>
+          <div class="current-table-item">
+            {{ currentTable.label }}
+          </div>
+        </div>
+        
+        <!-- 目标桌台列表 -->
+        <p class="target-table-label">选择目标桌台：</p>
+        <div class="target-table-list">
+          <div 
+            class="target-table-item" 
+            v-for="(item, index) in availableTables" 
+            :key="index"
+            :class="{ 
+              'active': selectedTargetTable === item.value,
+              'disabled': item.disabled 
+            }"
+            @click="selectTargetTable(item.value)"
+          >
+            <div class="table-status">
+              <span v-if="item.disabled" class="status-dot occupied"></span>
+              <span v-else class="status-dot available"></span>
+            </div>
+            <div class="table-content">
+              <div class="change-label">换至</div>
+              <div class="table-number">{{ item.label }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button  type="primary"  class="cancel-btn" @click="changeTableDialogVisible = false">取消</el-button>
+          <el-button 
+            type="primary" 
+            @click="confirmChangeTable"
+            :disabled="!selectedTargetTable"
+            class="confirm-btn"style="margin-right: 200px;"
+          >
+            确认换桌
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
+</template>
+
+<script lang="ts" setup>
+import { ElButton, ElTable, ElTableColumn ,ElDialog } from 'element-plus';
+import { ref } from 'vue';
+
+// 定义数据结构类型
+interface TableInfo {
+  tableNumber: string;
+  desc: string;
+  totalAmount: number;
+  receivedAmount: number;
+  zeroAmount: number;
+}
+
+interface OrderItem {
+  index: number;
+  name: string;
+  price: number;
+  quantity: number;
+  unit: string;
+  amount: number;
+  action: string;
+}
+
+interface OrderInfo {
+  orderNumber: string;
+  createTime: string;
+  items: OrderItem[];
+  totalOrderAmount: number;
+  nonDiscountAmount: number;
+  consumeAmount: number;
+}
+// 控制支付弹窗显示隐藏
+const payDialogVisible = ref(false); 
+// 选中的支付方式，默认选微信
+const selectedPayType = ref('wechat'); 
+const selectEraseZero = ref('score'); // 是否抹零
+const inputAmount = ref('￥');
+// 支付方式列表
+const payTypes = ref([
+  { label: '微信', value: 'wechat' },
+  { label: '支付宝', value: 'alipay' },
+  { label: '现金', value: 'cash' },
+  { label: '储蓄卡', value: 'debitCard' },
+  { label: '信用卡', value: 'creditCard' },
+  { label: '付款码', value: 'paymentCode' },
+  { label: '三方付', value: 'thirdPay' },
+  { label: '其他', value: 'other' },
+]);
+const payErase=ref([
+  { label: '不抹零', value: 'noZero' },
+  { label: '抹分', value: 'score' },
+  { label: '抹角', value: 'angle' },
+])
+// 模拟数据
+const tableInfo=ref< TableInfo>({
+  tableNumber: 'A02',
+  desc: '(四人桌; 一楼大厅)',
+  totalAmount: 284,
+  receivedAmount: 230,
+  zeroAmount: 0.00,
+});
+
+const orderInfo=ref<OrderInfo>( {
+  orderNumber: '00000001',
+  createTime: '2025-03-20 18:19:20',
+  items: [
+    {
+      index: 1,
+      name: '小鸡炖蘑菇 (麻辣、不加葱) *1',
+      price: 35,
+      quantity: 1,
+      unit: '份',
+      amount: 35,
+      action: '退款',
+    },
+    {
+      index: 2,
+      name: '红烧排骨 (少油) *1',
+      price: 58,
+      quantity: 1,
+      unit: '份',
+      amount: 58,
+      action: '退款',
+    },
+    {
+      index: 3,
+      name: '情侣套餐A套餐 *1<br/>-鲜猪脑花 (微辣、不加葱) *2<br/>-米饭 *2<br/>-可乐 (去冰) *2',
+      price: 49,
+      quantity: 1,
+      unit: '份',
+      amount: 49,
+      action: '退款',
+    },
+    {
+      index: 4,
+      name: '糖醋里脊 (少油) *1',
+      price: 36,
+      quantity: 1,
+      unit: '份',
+      amount: 36,
+      action: '退款',
+    },
+    {
+      index: 5,
+      name: '辣椒炒肉 (少盐) *1',
+      price: 42,
+      quantity: 1,
+      unit: '份',
+      amount: 42,
+      action: '退款',
+    },
+    {
+      index: 6,
+      name: '情侣套餐B套餐 *1<br/>-香辣蟹 (微辣) *1<br/>-蒜蓉油麦菜 *1<br/>-米饭 *2',
+      price: 62,
+      quantity: 1,
+      unit: '份',
+      amount: 62,
+      action: '退款',
+    },
+    {
+      index: 7,
+      name: '清蒸鲈鱼 (味淡) *1',
+      price: 40,
+      quantity: 1,
+      unit: '份',
+      amount: 40,
+      action: '退款',
+    },
+  ],
+  totalOrderAmount: 376,
+  nonDiscountAmount: 30,
+  consumeAmount: 230,
+});
+
+
+// 控制并台弹窗显示隐藏
+const mergeDialogVisible = ref(false); 
+// 模拟桌台数据，可根据实际接口返回调整
+const tableList = ref([
+  { label: 'A05桌', value: 'A05' },
+  { label: 'A07桌', value: 'A07' },
+  { label: 'A08桌', value: 'A08' },
+  { label: 'A011桌', value: 'A011' },
+  { label: 'A13桌', value: 'A13' },
+  { label: 'A15桌', value: 'A15' },
+  { label: 'A05桌', value: 'A05' },
+  { label: 'A07桌', value: 'A07' },
+  { label: 'A08桌', value: 'A08' },
+  { label: 'A011桌', value: 'A011' },
+  { label: 'A13桌', value: 'A13' },
+  { label: 'A15桌', value: 'A15' },
+]);
+// 选中的并台桌台
+const selectedMergeTables = ref<string[]>([]); 
+
+// 换桌弹窗相关变量
+const changeTableDialogVisible = ref(false);
+// 当前桌台信息
+const currentTable = ref({
+  label: 'A02桌',
+  value: 'A02'
+});
+// 可选目标桌台列表（模拟数据）
+const availableTables = ref([
+  { label: 'A01桌', value: 'A01', disabled: false },
+  { label: 'A02桌', value: 'A02', disabled: true },
+  { label: 'A03桌', value: 'A03', disabled: true }, // 已占用
+  { label: 'A05桌', value: 'A05', disabled: false },
+  { label: 'A06桌', value: 'A06', disabled: false },
+  { label: 'A07桌', value: 'A07', disabled: true }, // 已占用
+  { label: 'A08桌', value: 'A08', disabled: false },
+  { label: 'A09桌', value: 'A09', disabled: false },
+  { label: 'A10桌', value: 'A10', disabled: false },
+  { label: 'A11桌', value: 'A11', disabled: false },
+  { label: 'A12桌', value: 'A12', disabled: true }, // 已占用
+  { label: 'A13桌', value: 'A13', disabled: false },
+  { label: 'A15桌', value: 'A15', disabled: false },
+]);
+// 选中的目标桌台
+const selectedTargetTable = ref('');
+
+
+// 待支付金额（从 tableInfo 取，也可根据实际逻辑调整）
+const toPayAmount = ref(tableInfo.value.totalAmount); 
+// 事件处理函数，可根据实际需求对接接口或逻辑
+const handleMerge = () => {
+  mergeDialogVisible.value = true; // 打开并台弹窗
+  console.log('点击拼台');
+  // 这里可写拼台相关逻辑，如调用接口等
+};
+
+const handleChangeTable = () => {
+  changeTableDialogVisible.value = true;
+  console.log('点击换桌');
+  // 换桌逻辑
+};
+
+const handlePay = () => {
+  payDialogVisible.value = true; // 打开支付弹窗
+  console.log('点击收款');
+  // 收款逻辑
+};
+
+const handleRefund = () => {
+  console.log('点击订单退款');
+  // 订单退款逻辑
+};
+
+const handleRedo = () => {
+  console.log('点击重做');
+  // 重做逻辑
+};
+
+const handleItemRefund = (row: OrderItem) => {
+  console.log('点击品项退款', row);
+  // 品项退款逻辑
+};
+
+const handleItemDetail = () => {
+  console.log('点击消费项目明细');
+  // 查看明细逻辑
+};
+
+const handlePrint = () => {
+  console.log('点击打印');
+  // 打印逻辑，可结合打印库如 print-js 等实现
+};
+
+const handleSelectionChange = (val:any) => {
+  console.log('选中的行数据：', val);
+  // 这里可根据需求编写选中行的处理逻辑，比如收集选中项进行批量操作等
+};
+
+// 数字键盘点击事件
+const handleKeypadClick = (val: string | number) => {
+  console.log('点击键盘按钮:', inputAmount.value);
+  if (val === '×') {
+    if(inputAmount.value !== '￥') {
+      inputAmount.value = inputAmount.value.slice(0, -1);
+    } else {
+      inputAmount.value = '￥'; // 如果只剩下￥，则清空
+    }
+  } else {
+    inputAmount.value += val;
+  }
+  // 实时更新待支付金额（如果需要手动输入金额）
+  toPayAmount.value = Number(inputAmount.value) || tableInfo.value.totalAmount;
+};
+
+// 金额输入框事件（防止非数字输入）
+const handleAmountInput = (val: string) => {
+  inputAmount.value = val.replace(/[^\d.]/g, '');
+};
+
+// 清空按钮事件
+const handleClear = () => { 
+  inputAmount.value = '￥';
+  toPayAmount.value = tableInfo.value.totalAmount;
+};
+
+// 关闭弹窗事件
+const handlePayDialogClose = () => {
+  payDialogVisible.value = false;
+  // 重置状态
+  inputAmount.value = '￥';
+  toPayAmount.value = tableInfo.value.totalAmount;
+  selectedPayType.value = 'wechat';
+};
+
+// 确认支付事件
+const handlePayConfirm = () => {
+  console.log('选中支付方式：', selectedPayType.value);
+  console.log('支付金额：', toPayAmount.value);
+  // 这里可对接实际支付接口
+  payDialogVisible.value = false;
+};
+
+
+// 切换桌台选中状态
+const toggleMergeTable = (tableValue: string) => {
+  if (selectedMergeTables.value.includes(tableValue)) {
+    selectedMergeTables.value = selectedMergeTables.value.filter(val => val !== tableValue);
+  } else {
+    selectedMergeTables.value.push(tableValue);
+  }
+};
+
+// 关闭并台弹窗时重置状态
+const handleMergeDialogClose = () => {
+  selectedMergeTables.value = [];
+  mergeDialogVisible.value = false;
+};
+
+// 确认并台逻辑（可根据实际需求调用接口等）
+const confirmMerge = () => {
+  console.log('选中的并台桌台：', selectedMergeTables.value);
+  // 这里可编写调用接口合并桌台的逻辑，比如：
+  // api.mergeTables(selectedMergeTables.value).then(() => {
+  //   // 合并成功后的处理，如刷新桌台列表等
+  // }).catch(() => {
+  //   // 失败处理
+  // });
+  mergeDialogVisible.value = false;
+};
+
+
+// 换桌弹窗方法
+const selectTargetTable = (tableValue: string) => {
+  // 跳过已禁用的桌台
+  const table = availableTables.value.find(item => item.value === tableValue);
+  if (table && !table.disabled) {
+    selectedTargetTable.value = tableValue;
+  }
+};
+
+const handleChangeTableDialogClose = () => {
+  selectedTargetTable.value = '';
+  changeTableDialogVisible.value = false;
+};
+
+const confirmChangeTable = () => {
+  if (!selectedTargetTable.value) return;
+  
+  const targetTable = availableTables.value.find(
+    item => item.value === selectedTargetTable.value
+  );
+  
+  console.log(`换桌操作：从${currentTable.value.label}换到${targetTable?.label}`);
+  // 实际项目中调用换桌接口
+  // api.changeTable(currentTable.value, selectedTargetTable.value).then(() => {
+  //   // 换桌成功处理
+  // });
+  
+  handleChangeTableDialogClose();
+};
+
+
+
+</script>
+
+<style scoped>
+.order-detail-container {
+  display: flex;
+  padding: 20px;
+  gap: 20px;
+  background-color: #fff;
+  /* min-height: calc(100vh - 64px); 可根据布局调整 */
+  height: 100%;
+}
+
+.left-panel {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-right: 1px solid #ebeef5;
+  padding-right: 20px;
+}
+
+.table-info {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.table-number {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.table-desc {
+  color: #999;
+}
+
+.table-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 30px;
+  margin-top: 10px;
+}
+
+.amount-info {
+  text-align: center;
+  margin-bottom: 20px;
+  margin-top: 200px;
+}
+
+.total-amount {
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.sub-title {
+  color: #999;
+  margin-bottom: 5px;
+}
+
+.pay-btn {
+  width: 180px;
+  margin-top: 50px;
+}
+
+.right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.order-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.order-table {
+  margin-bottom: 20px;
+  --el-table-bg-color: #F5FBFB; /* 表格整体背景色 */
+  --el-table-header-bg-color: #f0f2f5; /* 表头背景色 */
+}
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+}
+
+.footer-actions {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-left: auto;
+  margin-right: 20px;
+}
+
+/* 适配表格内容换行 */
+.el-table .cell {
+  white-space: pre-line;
+}
+.icon-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+
+
+/* 支付弹窗整体样式 */
+.pay-dialog {
+  --el-dialog-padding: 0;
+}
+.pay-content {
+  display: flex;
+  width: 100%;
+  height: 450px;
+}
+
+/* 左侧金额操作区 */
+.pay-left {
+  width: 50%;
+  background-color: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.pay-info {
+  margin-bottom: -90px;
+}
+.pay-title {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+.amount {
+  color: #ff9900;
+  font-size: 20px;
+}
+.amount-control {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+.amount-input {
+  width: 95%;
+  margin-top: 100px;
+  margin-bottom: 10px;
+  height: 40px;
+}
+:deep(.amount-input .el-input__inner) {
+  text-align: center; /* 文字水平居中 */
+  color: #ff6700; /* 文字颜色，可自定义 */
+  font-size: 30px; /* 可选：调整字体大小 */
+}
+.operation-btns {
+  display: flex;
+  gap: 10px;
+}
+
+/* 数字键盘样式 */
+.number-keypad {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 50px;
+}
+.keypad-row {
+  display: flex;
+  gap: 5px;
+}
+.keypad-btn {
+  width: 69px;
+  height: 60px;
+  background-color: #f8f9fa;
+  border: 1px solid #ebeef5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.keypad-btn:hover {
+  background-color: #f1f2f4;
+}
+.delete-icon {
+  width: 20px;
+  height: 20px;
+}
+.zero-btn {
+  /* flex-grow: 1; */
+  /* width: 5px; 确保0键宽度更大 */
+}
+:deep(.delete-btn) {
+  /* height: 60px; 这里设置你想要的高度，比如60px，可根据需求调整 */
+   grid-row: span 2; 
+}
+/* 取消按钮 */
+.cancel-btn {
+  align-self: flex-start;
+  width: 20%;
+  background-color: #fff;
+  border-color: #6b5d5d;
+  color: #000;
+  margin-left: 25%;
+  height: 40px;
+  /* margin-top: -100px; */
+}
+
+/* 右侧支付方式选择区 */
+.pay-right {
+  width: 50%;
+  height: 430px;
+  background-color: #f8f9fa;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.pay-type-title {
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: #333;
+}
+.pay-type-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pay-Erase-list{
+  display: flex;
+  gap:10px
+}
+.pay-type-item {
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ebeef5;
+  cursor: pointer;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.pay-Erase-item{
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ebeef5;
+  cursor: pointer;
+  border-radius: 4px;
+  text-align: center;
+  line-height: 10px;
+  width: 90px;
+  height: 30px;
+}
+.pay-type-item.active {
+  background-color: #22a2b6;
+  color: #fff;
+  border-color: #22a2b6;
+}
+.pay-Erase-item.active {
+  background-color: #F98D40;
+  color: #fff;
+  border-color: #F98D40;
+}
+
+/* 确认按钮 */
+.confirm-btn {
+  align-self: flex-start;
+  width: 20%;
+  background-color: #22a2b6;
+  border-color: #22a2b6;
+    height: 40px;
+}
+.confirm-btn:hover {
+  background-color: #1c8a9b;
+  border-color: #1c8a9b;
+}
+
+/* 并台弹窗 */
+.merge-table-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.merge-table-item {
+  padding: 10px 15px;
+  border: 1px solid #ebeef5;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 90px;
+}
+.merge-table-item.active {
+  background-color: #FFEEEE;
+  color: #fff;
+  border-color: #F04216;
+}
+.dialog-footer {
+  text-align: right;
+}
+
+
+
+
+
+/* 换桌弹窗样式 */
+.change-table-container {
+  padding: 10px 0;
+}
+
+.current-table-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px dashed #eee;
+}
+
+.info-label {
+  font-size: 14px;
+  color: #666;
+  margin-right: 10px;
+  white-space: nowrap;
+}
+
+.current-table-item {
+  padding: 8px 15px;
+  background-color: #f5f7fa;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.target-table-label {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.target-table-list {
+  display: flex;
+   flex-wrap: wrap;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.target-table-item {
+  padding: 15px 10px;
+  border: 1px solid #ebeef5;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.target-table-item.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  background-color: #f5f5f5;
+}
+
+.target-table-item.active {
+  background-color: #FF6768;
+  border-color: #FF6768;
+}
+
+.table-status {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-dot.available {
+  background-color: #52c41a; /* 可用桌台-绿色 */
+}
+
+.status-dot.occupied {
+  background-color: #faad14; /* 已占用-黄色 */
+}
+
+.table-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.change-label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.target-table-item.active .change-label,
+.target-table-item.active .table-number {
+  color: #fff;
+}
+
+.table-number {
+  font-size: 16px;
+  font-weight: 500;
+}
+</style>
