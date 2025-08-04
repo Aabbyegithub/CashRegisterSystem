@@ -1,9 +1,7 @@
 <template>
   <div class="queue-list-container">
     <!-- 页面标题和操作区 -->
-    <div class="page-header">
-      <h2 class="page-title">排队管理</h2>
-      
+    <div class="page-header">      
       <div class="header-controls">
         <!-- 筛选器 -->
         <div class="filter-bar">
@@ -613,7 +611,7 @@ onMounted(() => {
 .queue-list-container {
   padding: 20px;
   background-color: #F5F7FA;
-  min-height: 100vh;
+  min-height: 100%;
 }
 
 .page-header {

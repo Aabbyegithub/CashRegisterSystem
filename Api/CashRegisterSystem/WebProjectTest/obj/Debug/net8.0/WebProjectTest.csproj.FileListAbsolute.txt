@@ -276,7 +276,6 @@ D:\LQProject\WaiBaoPro\CashRegisterSystemPro\Api\CashRegisterSystem\WebProjectTe
 D:\LQProject\WaiBaoPro\CashRegisterSystemPro\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\WebProjectTest.AssemblyInfoInputs.cache
 D:\LQProject\WaiBaoPro\CashRegisterSystemPro\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\WebProjectTest.AssemblyInfo.cs
 D:\LQProject\WaiBaoPro\CashRegisterSystemPro\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\WebProjectTest.csproj.CoreCompileInputs.cache
-D:\LQProject\WaiBaoPro\CashRegisterSystemPro\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\WebProjectTest.MvcApplicationPartsAssemblyInfo.cs
 D:\LQProject\WaiBaoPro\CashRegisterSystemPro\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\WebProjectTest.MvcApplicationPartsAssemblyInfo.cache
 D:\LQProject\WaiBaoPro\CashRegisterSystemPro\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\rjimswa.dswa.cache.json
 D:\LQProject\WaiBaoPro\CashRegisterSystemPro\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
@@ -294,3 +293,4 @@ D:\LQProject\WaiBaoPro\CashRegisterSystemPro\Api\CashRegisterSystem\WebProjectTe
 D:\LQProject\WaiBaoPro\CashRegisterSystemPro\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\WebProjectTest.pdb
 D:\LQProject\WaiBaoPro\CashRegisterSystemPro\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\WebProjectTest.genruntimeconfig.cache
 D:\LQProject\WaiBaoPro\CashRegisterSystemPro\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\ref\WebProjectTest.dll
+D:\LQProject\WaiBaoPro\CashRegisterSystemPro\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\WebProjectTest.MvcApplicationPartsAssemblyInfo.cs

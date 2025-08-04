@@ -35,7 +35,7 @@ namespace WebServiceClass.QuartzTask
             using(var scope = _serviceScopeFactory.CreateScope())
             {
                 var _dal = scope.ServiceProvider.GetRequiredService<ISqlHelper>();
-                var TimerTask = await _dal.Db.Queryable<Lq_TimerTask>()
+                var TimerTask = await _dal.Db.Queryable<sys_timertask>()
                     .Where(a =>DateTime.Now >= a.BeginTime && DateTime.Now < a.EndTime)
                     .Where(a => a.isDelete == 1 && a.IsStart == 1)
                     .ToListAsync();

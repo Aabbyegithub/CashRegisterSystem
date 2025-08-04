@@ -28,22 +28,22 @@ namespace WebProjectTest.Controllers.AutherUser
         /// <param name="Page"></param>
         /// <param name="Size"></param>
         /// <returns></returns>
-        [HttpGet]
-        [OperationLogFilter("系统监控>日志管理", "系统日志分页查询", ActionType.Search)]
-        public async Task<ApiPageResponse<lq_operationlog>> GetOperationlogAsync(string? User,ActionType? actionType,string? ActionModel, string? StartTime,string? EndTime, int Page = 1, int Size = 10)
-        {
-            RefAsync<int> Count = 0;
-            var Date = await dal.Db.Queryable<lq_operationlog>().Where(a => a.OrgId == OrgId)
-                .LeftJoin<lq_user>((a,b)=>a.UserId == b.Id)
-                .WhereIF(!string.IsNullOrWhiteSpace(User),(a,b)=>b.User.Contains(User))
-                .WhereIF(!string.IsNullOrWhiteSpace(ActionModel),(a,b)=>a.ModuleName.Contains(ActionModel))
-                .WhereIF(actionType.HasValue,(a,b)=>a.ActionType == actionType)
-                .WhereIF(!string.IsNullOrEmpty(StartTime)&& !string.IsNullOrEmpty(EndTime),
-                (a,b)=>a.ActionTime >=StartTime.ObjToDate() && a.ActionTime < EndTime.ObjToDate().AddDays(1)).OrderByDescending(a=>a.ActionTime)
-                .Select((a, b) => new lq_operationlog { AddUser = b.User }, true).ToPageListAsync(Page,Size,Count);
-            Date.ForEach(item => { item.ActionTypeName = item.ActionType.GetDescription(); });
-            return PageSuccess(Date, Count);
-        }
+        //[HttpGet]
+        //[OperationLogFilter("系统监控>日志管理", "系统日志分页查询", ActionType.Search)]
+        //public async Task<ApiPageResponse<lq_operationlog>> GetOperationlogAsync(string? User,ActionType? actionType,string? ActionModel, string? StartTime,string? EndTime, int Page = 1, int Size = 10)
+        //{
+        //    RefAsync<int> Count = 0;
+        //    var Date = await dal.Db.Queryable<lq_operationlog>().Where(a => a.OrgId == OrgId)
+        //        .LeftJoin<lq_user>((a,b)=>a.UserId == b.Id)
+        //        .WhereIF(!string.IsNullOrWhiteSpace(User),(a,b)=>b.User.Contains(User))
+        //        .WhereIF(!string.IsNullOrWhiteSpace(ActionModel),(a,b)=>a.ModuleName.Contains(ActionModel))
+        //        .WhereIF(actionType.HasValue,(a,b)=>a.ActionType == actionType)
+        //        .WhereIF(!string.IsNullOrEmpty(StartTime)&& !string.IsNullOrEmpty(EndTime),
+        //        (a,b)=>a.ActionTime >=StartTime.ObjToDate() && a.ActionTime < EndTime.ObjToDate().AddDays(1)).OrderByDescending(a=>a.ActionTime)
+        //        .Select((a, b) => new lq_operationlog { AddUser = b.User }, true).ToPageListAsync(Page,Size,Count);
+        //    Date.ForEach(item => { item.ActionTypeName = item.ActionType.GetDescription(); });
+        //    return PageSuccess(Date, Count);
+        //}
         /// <summary>
         /// 操作日志保存
         /// </summary>

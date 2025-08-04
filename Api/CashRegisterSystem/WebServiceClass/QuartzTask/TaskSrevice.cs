@@ -32,7 +32,7 @@ namespace WebServiceClass.QuartzTask
         /// <returns></returns>
         public async Task<string> StartAsync(CancellationToken cancellationToken)
         {
-            var TimerTask = await _dal.Db.Queryable<Lq_TimerTask>()
+            var TimerTask = await _dal.Db.Queryable<sys_timertask>()
             .Where(a => DateTime.Now >= a.BeginTime && DateTime.Now < a.EndTime)
             .Where(a => a.isDelete == 1 && a.IsStart == 1)
             .ToListAsync();

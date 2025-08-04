@@ -10,7 +10,7 @@ namespace MyNamespace
     ///<summary>
     ///系统操作日志
     ///</summary>
-    [SugarTable("lq_operationlog")]
+    [SugarTable("sys_operationlog")]
     public partial class lq_operationlog:CommonModelFixts
     {
            public lq_operationlog(){

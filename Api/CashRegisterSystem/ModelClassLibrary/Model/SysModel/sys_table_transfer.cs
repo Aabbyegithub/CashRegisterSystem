@@ -6,57 +6,64 @@ using SqlSugar;
 namespace MyNamespace
 {
     ///<summary>
-    ///服务类
+    ///桌台转桌记录表
     ///</summary>
-    [SugarTable("lq_serveorg")]
-    public partial class lq_serveorg
+    [SugarTable("sys_table_transfer")]
+    public partial class sys_table_transfer
     {
-           public lq_serveorg(){
+           public sys_table_transfer(){
 
 
            }
            /// <summary>
-           /// Desc:
+           /// Desc:记录ID（主键）
            /// Default:
            /// Nullable:False
            /// </summary>           
            [SugarColumn(IsPrimaryKey=true,IsIdentity=true)]
-           public long Id {get;set;}
+           public long transfer_id {get;set;}
 
            /// <summary>
-           /// Desc:服务名称
+           /// Desc:关联订单ID
+           /// Default:
+           /// Nullable:False
+           /// </summary>           
+           public long order_id {get;set;}
+
+           /// <summary>
+           /// Desc:原桌台ID
+           /// Default:
+           /// Nullable:False
+           /// </summary>           
+           public long old_table_id {get;set;}
+
+           /// <summary>
+           /// Desc:新桌台ID
+           /// Default:
+           /// Nullable:False
+           /// </summary>           
+           public long new_table_id {get;set;}
+
+           /// <summary>
+           /// Desc:转桌时间
+           /// Default:
+           /// Nullable:False
+           /// </summary>           
+           public DateTime transfer_time {get;set;}
+
+           /// <summary>
+           /// Desc:操作员工ID
+           /// Default:
+           /// Nullable:False
+           /// </summary>           
+           public long operator_id {get;set;}
+
+           /// <summary>
+           /// Desc:转桌原因
            /// Default:
            /// Nullable:True
            /// </summary>           
-           public string? ServeName {get;set;}
-
-           /// <summary>
-           /// Desc:创建时间
-           /// Default:
-           /// Nullable:False
-           /// </summary>           
-           public DateTime AddTime {get;set;}
-
-           /// <summary>
-           /// Desc:创建人
-           /// Default:
-           /// Nullable:False
-           /// </summary>           
-           public long AddUserId {get;set;}
-
-           /// <summary>
-           /// Desc:更新人
-           /// Default:
-           /// Nullable:False
-           /// </summary>           
-           public int UpUserId {get;set;}
-
-           /// <summary>
-           /// Desc:更新时间
-           /// Default:
-           /// Nullable:False
-           /// </summary>           
-           public DateTime UpTime {get;set;}
+           public string? remark {get;set;}
 
     }
 }

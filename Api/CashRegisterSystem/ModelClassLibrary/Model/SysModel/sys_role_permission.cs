@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using ModelClassLibrary.Model;
 using SqlSugar;
 
 namespace MyNamespace
 {
     ///<summary>
-    ///人员菜单权限
+    ///角色权限关联表
     ///</summary>
-    [SugarTable("lq_sysuser_menu")]
-    public partial class lq_sysuser_menu:CommonModelFixts
+    [SugarTable("sys_role_permission")]
+    public partial class sys_role_permission
     {
-           public lq_sysuser_menu(){
+           public sys_role_permission(){
 
 
            }
            /// <summary>
-           /// Desc:
+           /// Desc:关联ID（主键）
            /// Default:
            /// Nullable:False
            /// </summary>           
@@ -25,18 +24,18 @@ namespace MyNamespace
            public long id {get;set;}
 
            /// <summary>
-           /// Desc:角色id
+           /// Desc:角色ID
            /// Default:
            /// Nullable:False
            /// </summary>           
-           public int Roleid {get;set;}
+           public long role_id {get;set;}
 
            /// <summary>
-           /// Desc:菜单id
+           /// Desc:权限ID
            /// Default:
            /// Nullable:False
            /// </summary>           
-           public int menuid {get;set;}
+           public long permission_id {get;set;}
 
     }
 }

@@ -7,9 +7,9 @@ namespace MyNamespace
     ///<summary>
     ///定时任务管理表
     ///</summary>
-    public partial class Lq_TimerTask
+    public partial class sys_timertask
     {
-        public Lq_TimerTask()
+        public sys_timertask()
         {
 
 
