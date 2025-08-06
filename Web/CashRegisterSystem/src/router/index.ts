@@ -33,10 +33,30 @@ const routes = [
             name: 'TransferTable',
             component: () => import('../views/Menu/BackendHome/TableManagement/TableOperation.vue') 
           },
-                   { 
+          { 
             path: 'QueueList', 
             name: 'QueueList',
             component: () => import('../views/Menu/BackendHome/RestaurantQueue/RestaurantQueueList.vue') 
+          },
+          {
+            path: 'MemberList',
+            name: 'MemberList',
+            component: () => import('../views/Menu/BackendHome/MembershipManagement/MemberManagement.vue')
+          },
+          { 
+            path: 'StaffManagement', 
+            name: 'StaffManagement',
+            component: () => import('../views/Menu/BackendHome/System/StaffManagement.vue') 
+          },
+          { 
+            path: 'RolePermission', 
+            name: 'RolePermission',
+            component: () => import('../views/Menu/BackendHome/System/RolePermissionManagement.vue') 
+          },
+          { 
+            path: 'StoreSetting', 
+            name: 'StoreSetting',
+            component: () => import('../views/Menu/BackendHome/System/StoreManagement.vue') 
           },
         ]
        },

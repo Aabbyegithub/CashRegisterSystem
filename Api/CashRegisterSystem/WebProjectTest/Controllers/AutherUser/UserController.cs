@@ -61,7 +61,7 @@
 //                        ActionType = ActionType.Landing,
 //                        ModuleName = "系统登陆",
 //                        OrgId = User.OrgId,
-//                        AddUserId =(int) User.Id,
+//                        AddUserId = (int)User.Id,
 //                        UpUserId = (int)User.Id,
 //                        UserId = (int)User.Id,
 //                        Description = "人员登陆",
@@ -73,13 +73,13 @@
 //                        UserName = User.User,
 //                        OrgId = User.OrgId,
 //                        OrgName = org.ServeName,
-//                        PassWord =User.PassWord,
+//                        PassWord = User.PassWord,
 //                        Salt = User.Salt,
 //                        RoleId = User.RoleId
 //                    };
 //                    string token = _token.GenerateToken(User.UserName);
 //                    await redisCacheService.SetStringAsync(token, JsonConvert.SerializeObject(context));
-//                    return new ApiResponse<UserResult>(200, true, "登陆成功", new UserResult(){ UserId =(int) User.Id,OrgId =(long)User.OrgId,UserName=User.User,Token = token,IsFirst = User.IsFirst });
+//                    return new ApiResponse<UserResult>(200, true, "登陆成功", new UserResult() { UserId = (int)User.Id, OrgId = (long)User.OrgId, UserName = User.User, Token = token, IsFirst = User.IsFirst });
 //                }
 
 //            }
@@ -119,7 +119,7 @@
 //                }
 
 //            }
- 
+
 //        }
 //        /// <summary>
 //        /// 获取用户数据
@@ -132,7 +132,7 @@
 //        public async Task<ApiPageResponse<lq_user>> GetUserAsync(int page = 0, int size = 10)
 //        {
 //            RefAsync<int> count = 0;
-//            var Data = await dal.Db.Queryable<lq_user>().Where(a => a.OrgId == OrgId ).ToPageListAsync(page, size, count);
+//            var Data = await dal.Db.Queryable<lq_user>().Where(a => a.OrgId == OrgId).ToPageListAsync(page, size, count);
 //            return new ApiPageResponse<lq_user>(200, true, "Success", Data, count);
 //        }
 
@@ -150,7 +150,7 @@
 //            {
 //                return Fail<string>("账号密码已存在！");
 //            }
-//            User.PassWord = hashpassword;User.Salt = salt;User.IsDelete = 1;
+//            User.PassWord = hashpassword; User.Salt = salt; User.IsDelete = 1;
 //            var id = await dal.Db.Insertable<lq_user>(User).ExecuteCommandAsync();
 //            if (id == 0)
 //                return Error<string>("账号密码保存失败！");
@@ -169,7 +169,7 @@
 //            var date = await dal.Db.Queryable<lq_user>().FirstAsync(a => a.OrgId == OrgId && a.UserName == UserName && a.IsDelete == 1);
 //            if (date != null)
 //            {
-//                if (!PasswordHelper.VerifyPassword(User.OldPassword,date.PassWord,date.Salt))
+//                if (!PasswordHelper.VerifyPassword(User.OldPassword, date.PassWord, date.Salt))
 //                {
 //                    return Fail<string>("账号或密码错误！");
 //                }
@@ -182,7 +182,7 @@
 //                    return Success("", "密码修改成功！");
 //            }
 //            else
-//                return Fail<string>( "账号或密码错误！");
+//                return Fail<string>("账号或密码错误！");
 
 //        }
 
@@ -215,7 +215,7 @@
 //        [HttpGet]
 //        public async Task<ApiResponse<lq_user>> GetUserMsgAsync()
 //        {
-//            return Success<lq_user>(await dal.Db.Queryable<lq_user>().Where(a=>a.Id == UserId).Select(a =>new lq_user(){User = a.User,UserName = a.UserName,Phone = a.Phone,Email = a.Email }).FirstAsync());
+//            return Success<lq_user>(await dal.Db.Queryable<lq_user>().Where(a => a.Id == UserId).Select(a => new lq_user() { User = a.User, UserName = a.UserName, Phone = a.Phone, Email = a.Email }).FirstAsync());
 //        }
 //    }
 //}

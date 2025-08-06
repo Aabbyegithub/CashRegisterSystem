@@ -23,3 +23,16 @@ D:\LQProject\WaiBaoPro\CashRegisterSystemPro\Api\CashRegisterSystem\ModelClassLi
 D:\LQProject\WaiBaoPro\CashRegisterSystemPro\Api\CashRegisterSystem\ModelClassLibrary\obj\Debug\net8.0\refint\ModelClassLibrary.dll
 D:\LQProject\WaiBaoPro\CashRegisterSystemPro\Api\CashRegisterSystem\ModelClassLibrary\obj\Debug\net8.0\ModelClassLibrary.pdb
 D:\LQProject\WaiBaoPro\CashRegisterSystemPro\Api\CashRegisterSystem\ModelClassLibrary\obj\Debug\net8.0\ref\ModelClassLibrary.dll
+D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\ModelClassLibrary\bin\Debug\net8.0\ModelClassLibrary.deps.json
+D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\ModelClassLibrary\bin\Debug\net8.0\ModelClassLibrary.dll
+D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\ModelClassLibrary\bin\Debug\net8.0\ModelClassLibrary.pdb
+D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\ModelClassLibrary\obj\Debug\net8.0\ModelClassLibrary.csproj.AssemblyReference.cache
+D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\ModelClassLibrary\obj\Debug\net8.0\ModelClassLibrary.GeneratedMSBuildEditorConfig.editorconfig
+D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\ModelClassLibrary\obj\Debug\net8.0\ModelClassLibrary.AssemblyInfoInputs.cache
+D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\ModelClassLibrary\obj\Debug\net8.0\ModelClassLibrary.AssemblyInfo.cs
+D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\ModelClassLibrary\obj\Debug\net8.0\ModelClassLibrary.csproj.CoreCompileInputs.cache
+D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\ModelClassLibrary\obj\Debug\net8.0\ModelClassLibrary.sourcelink.json
+D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\ModelClassLibrary\obj\Debug\net8.0\ModelClassLibrary.dll
+D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\ModelClassLibrary\obj\Debug\net8.0\refint\ModelClassLibrary.dll
+D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\ModelClassLibrary\obj\Debug\net8.0\ModelClassLibrary.pdb
+D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\ModelClassLibrary\obj\Debug\net8.0\ref\ModelClassLibrary.dll
