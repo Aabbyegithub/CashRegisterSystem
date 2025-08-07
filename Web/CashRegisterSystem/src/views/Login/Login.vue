@@ -30,10 +30,21 @@
         :model="form" 
         :rules="rules" 
         ref="formRef" 
-        label-position="top"
+        label-position="left"
+        label-width="65px"
       >
         <!-- 账号登录表单 -->
         <template v-if="loginTab === 'account'">
+          <el-form-item label="门店" prop="storeId">
+            <el-select v-model="form.storeId" placeholder="请选择门店">
+              <el-option
+                v-for="store in storeList"
+                :key="store.store_id"
+                :label="store.store_name"
+                :value="store.store_id"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item label="账号" prop="username">
             <el-input 
               v-model="form.username" 
@@ -57,6 +68,16 @@
 
         <!-- 短信登录表单 -->
         <template v-else>
+          <el-form-item label="门店" prop="storeId">
+            <el-select v-model="form.storeId" placeholder="请选择门店">
+              <el-option
+                v-for="store in storeList"
+                :key="store.store_id"
+                :label="store.store_name"
+                :value="store.store_id"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item label="手机号" prop="phone">
             <el-input 
               v-model="form.phone" 
@@ -100,7 +121,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElForm, ElFormItem, ElInput, ElButton, ElCheckbox } from 'element-plus'
 import { useRouter } from 'vue-router'
 // 假设 api 模块，需根据实际调整
@@ -113,6 +134,7 @@ const loading = ref(false)
 const loginTab = ref<'account' | 'sms'>('account') 
 
 const form = reactive({
+  storeId: null,
   username: '',
   password: '',
   phone: '',
@@ -121,6 +143,9 @@ const form = reactive({
 })
 
 const rules = {
+  storeId: [
+    { required: true, message: '请选择门店', trigger: 'blur' }
+  ],
   username: [
     { required: true, message: '请输入账号', trigger: 'blur' }
   ],
@@ -161,6 +186,21 @@ const sendSms = () => {
   // 实际需调用短信发送接口：
   // await sendSmsApi(form.phone)
 }
+
+const storeList = ref<any[]>([]);
+
+function fetchStoreList() {
+  // 模拟接口获取门店列表
+  storeList.value = [
+    { store_id: 1, store_name: '旗舰店' },
+    { store_id: 2, store_name: '分店一' },
+    { store_id: 3, store_name: '分店二' }
+  ];
+}
+
+onMounted(() => {
+  fetchStoreList();
+});
 
 const submit = async () => {
   try {
@@ -220,7 +260,7 @@ const submit = async () => {
 
 /* 登录卡片 */
 .login-card {
-  width: 350px;
+  width: 400px;
   padding: 30px;
   background: #fff;
   border-radius: 8px;
