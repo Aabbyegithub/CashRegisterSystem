@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 using WebIServices.IBase;
 using static WebProjectTest.Common.Message;
 
-namespace WebIServices.IServices.UserIServices
+namespace WebIServices.IServices.SystemIServices
 {
-    public interface IUserServices: IBaseService
+    public interface IUserServices : IBaseService
     {
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace WebIServices.IServices.UserIServices
         /// <param name="RoleId"></param>
         /// <param name="OrgId"></param>
         /// <returns></returns>
-        Task<List<sys_staff>>GetUserPageAsync(int page , int size, RefAsync<int> count,int? RoleId,int OrgId);
+        Task<List<sys_staff>> GetUserPageAsync(int page, int size, RefAsync<int> count, int? RoleId, int OrgId);
 
         /// <summary>
         /// 创建一个用户

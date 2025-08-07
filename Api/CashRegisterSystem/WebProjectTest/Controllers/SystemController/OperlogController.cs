@@ -10,12 +10,12 @@ using WebServiceClass.Helper;
 using static ModelClassLibrary.Model.CommonEnmFixts;
 using static WebProjectTest.Common.Message;
 
-namespace WebProjectTest.Controllers.AutherUser
+namespace WebProjectTest.Controllers.SystemController
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize]
-    public class OperlogController (IRedisCacheService redisCacheService,ISqlHelper dal): AutherController(redisCacheService)
+    public class OperlogController(IRedisCacheService redisCacheService, ISqlHelper dal) : AutherController(redisCacheService)
     {
         /// <summary>
         /// 获取操作日志
@@ -30,17 +30,17 @@ namespace WebProjectTest.Controllers.AutherUser
         /// <returns></returns>
         //[HttpGet]
         //[OperationLogFilter("系统监控>日志管理", "系统日志分页查询", ActionType.Search)]
-        //public async Task<ApiPageResponse<lq_operationlog>> GetOperationlogAsync(string? User,ActionType? actionType,string? ActionModel, string? StartTime,string? EndTime, int Page = 1, int Size = 10)
+        //public async Task<ApiPageResponse<lq_operationlog>> GetOperationlogAsync(string? User, ActionType? actionType, string? ActionModel, string? StartTime, string? EndTime, int Page = 1, int Size = 10)
         //{
         //    RefAsync<int> Count = 0;
         //    var Date = await dal.Db.Queryable<lq_operationlog>().Where(a => a.OrgId == OrgId)
-        //        .LeftJoin<lq_user>((a,b)=>a.UserId == b.Id)
-        //        .WhereIF(!string.IsNullOrWhiteSpace(User),(a,b)=>b.User.Contains(User))
-        //        .WhereIF(!string.IsNullOrWhiteSpace(ActionModel),(a,b)=>a.ModuleName.Contains(ActionModel))
-        //        .WhereIF(actionType.HasValue,(a,b)=>a.ActionType == actionType)
-        //        .WhereIF(!string.IsNullOrEmpty(StartTime)&& !string.IsNullOrEmpty(EndTime),
-        //        (a,b)=>a.ActionTime >=StartTime.ObjToDate() && a.ActionTime < EndTime.ObjToDate().AddDays(1)).OrderByDescending(a=>a.ActionTime)
-        //        .Select((a, b) => new lq_operationlog { AddUser = b.User }, true).ToPageListAsync(Page,Size,Count);
+        //        .LeftJoin<sys_staff>((a, b) => a.UserId == b.Id)
+        //        .WhereIF(!string.IsNullOrWhiteSpace(User), (a, b) => b.User.Contains(User))
+        //        .WhereIF(!string.IsNullOrWhiteSpace(ActionModel), (a, b) => a.ModuleName.Contains(ActionModel))
+        //        .WhereIF(actionType.HasValue, (a, b) => a.ActionType == actionType)
+        //        .WhereIF(!string.IsNullOrEmpty(StartTime) && !string.IsNullOrEmpty(EndTime),
+        //        (a, b) => a.ActionTime >= StartTime.ObjToDate() && a.ActionTime < EndTime.ObjToDate().AddDays(1)).OrderByDescending(a => a.ActionTime)
+        //        .Select((a, b) => new lq_operationlog { AddUser = b.User }, true).ToPageListAsync(Page, Size, Count);
         //    Date.ForEach(item => { item.ActionTypeName = item.ActionType.GetDescription(); });
         //    return PageSuccess(Date, Count);
         //}
@@ -50,13 +50,20 @@ namespace WebProjectTest.Controllers.AutherUser
         /// <param name="operationlog"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task SaveOperationlogAsync([FromBody]lq_operationlog operationlog)
+        public async Task SaveOperationlogAsync([FromBody] lq_operationlog operationlog)
         {
-            await dal.Db.Insertable(new lq_operationlog { 
+            await dal.Db.Insertable(new lq_operationlog
+            {
                 ActionType = operationlog.ActionType,
                 ModuleName = operationlog.ModuleName,
                 Description = operationlog.Description,
-                UserId =UserId,ActionTime = DateTime.Now,AddUserId = UserId,AddTime = DateTime.Now,UpTime = DateTime.Now,UpUserId = UserId,OrgId = (int)OrgId
+                UserId = UserId,
+                ActionTime = DateTime.Now,
+                AddUserId = UserId,
+                AddTime = DateTime.Now,
+                UpTime = DateTime.Now,
+                UpUserId = UserId,
+                OrgId = OrgId
             }).ExecuteCommandAsync();
         }
     }

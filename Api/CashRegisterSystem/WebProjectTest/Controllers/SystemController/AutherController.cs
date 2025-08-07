@@ -8,7 +8,7 @@ using System.Security.Claims;
 using WebIServices.IBase;
 using WebIServices.IServices.AutherServices;
 
-namespace WebProjectTest.Controllers.AutherUser
+namespace WebProjectTest.Controllers.SystemController
 {
     /// <summary>
     /// 获取服务器和人员信息
@@ -62,7 +62,7 @@ namespace WebProjectTest.Controllers.AutherUser
         /// <summary>
         /// 用户id
         /// </summary>
-        protected int UserId =>(int) UserContext?.UserId;
+        protected int UserId => (int)UserContext?.UserId;
         /// <summary>
         /// 用户名
         /// </summary>
@@ -70,11 +70,11 @@ namespace WebProjectTest.Controllers.AutherUser
         /// <summary>
         /// 姓名
         /// </summary>
-        protected  string Name => UserContext?.Name;
+        protected string Name => UserContext?.Name;
         /// <summary>
         /// 组织
         /// </summary>
-        protected int OrgId =>(int) UserContext?.OrgId;
+        protected int OrgId => (int)UserContext?.OrgId;
         /// <summary>
         /// 组织名称
         /// </summary>

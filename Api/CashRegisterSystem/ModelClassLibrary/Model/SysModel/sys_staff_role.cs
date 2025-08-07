@@ -38,7 +38,7 @@ namespace MyNamespace
            public long role_id {get;set;}
 
         [Navigate(NavigateType.OneToOne, nameof(role_id), nameof(role_id))]//一对一 SchoolId是StudentA类里面的
-        public sys_role role { get; set; } = new();
+         public sys_role role { get; set; } = new();
 
     }
 }

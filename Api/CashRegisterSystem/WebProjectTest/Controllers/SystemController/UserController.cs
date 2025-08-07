@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using SqlSugar;
 using System.Security.Cryptography;
 using WebIServices.IBase;
-using WebIServices.IServices.UserIServices;
+using WebIServices.IServices.SystemIServices;
 using WebIServices.ITask;
 using WebProjectTest.Common.Filter;
 using WebServiceClass.Base;
@@ -16,7 +16,7 @@ using static WebProjectTest.Common.Message;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace WebProjectTest.Controllers.AutherUser
+namespace WebProjectTest.Controllers.SystemController
 {
     /// <summary>
     /// 验证登陆
@@ -47,10 +47,10 @@ namespace WebProjectTest.Controllers.AutherUser
             }
             try
             {
-                var res =await _UserService.UserLoginAsync(UserName,PassWord,orgid);
+                var res = await _UserService.UserLoginAsync(UserName, PassWord, orgid);
                 if (res != null)
                 {
-                    return Success<UserResult>(res);
+                    return Success(res);
                 }
                 return Fail<UserResult>("账号或密码错误！");
             }
@@ -110,10 +110,10 @@ namespace WebProjectTest.Controllers.AutherUser
             RefAsync<int> count = 0;
             try
             {
-                var res = await _UserService.GetUserPageAsync(page, size,count,RoleId,(int)OrgId);
+                var res = await _UserService.GetUserPageAsync(page, size, count, RoleId, OrgId);
                 if (res != null)
                 {
-                    return PageSuccess(res,count);
+                    return PageSuccess(res, count);
                 }
                 return PageFail<List<sys_staff>>("获取数据失败");
             }
@@ -136,6 +136,11 @@ namespace WebProjectTest.Controllers.AutherUser
             return await _UserService.AddUserAsync(User);
         }
 
+        /// <summary>
+        /// 修改员工信息
+        /// </summary>
+        /// <param name="User"></param>
+        /// <returns></returns>
         [HttpPost]
         [OperationLogFilter("系统设置>员工管理", "修改员工信息", ActionType.Search)]
         public async Task<ApiResponse<string>> UpUserAsync([FromBody] sys_staff User)
@@ -146,7 +151,7 @@ namespace WebProjectTest.Controllers.AutherUser
         /// <summary>
         /// 注销账号
         /// </summary>
-        [HttpDelete]
+        [HttpPost]
         [OperationLogFilter("系统设置>员工管理", "删除员工账号", ActionType.Delete)]
         public async Task<ApiResponse<string>> DeleteAsync(List<int> Ids)
         {

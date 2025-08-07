@@ -58,6 +58,11 @@ const routes = [
             name: 'StoreSetting',
             component: () => import('../views/Menu/BackendHome/System/StoreManagement.vue') 
           },
+          { 
+            path: 'DataBackup', 
+            name: 'DataBackup',
+            component: () => import('../views/Menu/BackendHome/System/DataBackupManagement.vue') 
+          },
         ]
        },
     ]

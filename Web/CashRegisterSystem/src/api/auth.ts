@@ -11,3 +11,12 @@ export function loginApi(username: string, password: string) {
     }, 1000)
   })
 }
+// 查询备份列表
+// get('/backup/list').then(res => {
+//   // 处理数据
+// })
+
+// // 新增备份
+// post('/backup/create', { name: 'xxx' }).then(res => {
+//   // 处理数据
+// })

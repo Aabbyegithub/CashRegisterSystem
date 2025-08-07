@@ -144,6 +144,13 @@
             <param name="User"></param>
             <returns></returns>
         </member>
+        <member name="M:WebProjectTest.Controllers.AutherUser.UserController.UpUserAsync(MyNamespace.sys_staff)">
+            <summary>
+            修改员工信息
+            </summary>
+            <param name="User"></param>
+            <returns></returns>
+        </member>
         <member name="M:WebProjectTest.Controllers.AutherUser.UserController.DeleteAsync(System.Collections.Generic.List{System.Int32})">
             <summary>
             注销账号
