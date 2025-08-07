@@ -43,6 +43,7 @@ namespace MyNamespace
            /// Nullable:False
            /// </summary>           
            public string password {get;set;} = null!;
+           public string Salt { get;set;} = null!;
 
            /// <summary>
            /// Desc:姓名
@@ -71,6 +72,7 @@ namespace MyNamespace
            /// Nullable:False
            /// </summary>           
            public byte status {get;set;}
+        public byte IsDelete { get; set; } = 0;
 
            /// <summary>
            /// Desc:最后登录时间
@@ -78,6 +80,10 @@ namespace MyNamespace
            /// Nullable:True
            /// </summary>           
            public DateTime? last_login_time {get;set;}
+
+
+        [Navigate(NavigateType.OneToOne, nameof(staff_id), nameof(staff_id))]//一对一 SchoolId是StudentA类里面的
+        public sys_staff_role staff_role { get; set; } = new();
 
     }
 }

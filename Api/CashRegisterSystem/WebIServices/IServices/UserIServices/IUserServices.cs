@@ -1,0 +1,58 @@
+﻿using ModelClassLibrary.Model.AutherModel.AutherDto;
+using MyNamespace;
+using SqlSugar;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using WebIServices.IBase;
+using static WebProjectTest.Common.Message;
+
+namespace WebIServices.IServices.UserIServices
+{
+    public interface IUserServices: IBaseService
+    {
+
+        /// <summary>
+        /// 用户登录
+        /// </summary>
+        /// <param name="UserName"></param>
+        /// <param name="PassWord"></param>
+        /// <param name="orgid"></param>
+        /// <returns></returns>
+        Task<UserResult> UserLoginAsync(string UserName, string PassWord, int? orgid);
+
+        /// <summary>
+        /// 查询用户分页
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="size"></param>
+        /// <param name="count"></param>
+        /// <param name="RoleId"></param>
+        /// <param name="OrgId"></param>
+        /// <returns></returns>
+        Task<List<sys_staff>>GetUserPageAsync(int page , int size, RefAsync<int> count,int? RoleId,int OrgId);
+
+        /// <summary>
+        /// 创建一个用户
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        Task<ApiResponse<string>> AddUserAsync(sys_staff user);
+
+        /// <summary>
+        /// 删除用户
+        /// </summary>
+        /// <param name="Ids"></param>
+        /// <returns></returns>
+        Task<ApiResponse<string>> DeleteUserAsync(List<int> Ids);
+
+        /// <summary>
+        /// 更新用户信息
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        Task<ApiResponse<string>> UpUserAsync(sys_staff user);
+    }
+}

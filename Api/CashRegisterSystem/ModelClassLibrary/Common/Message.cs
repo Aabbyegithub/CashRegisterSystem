@@ -36,19 +36,19 @@
             }
         }
 
-        public static ApiPageResponse<T> PageSuccess<T>(List<T> response, int count, string message = "Success", bool State = true)
+        public static ApiPageResponse<T> PageSuccess<T>( T response, int count, string message = "Success", bool State = true)
         {
             return new ApiPageResponse<T>(200, State, message, response,count);
         }
 
         public static ApiPageResponse<T> PageError<T>(string message, bool State = false, int Start = 500)
         {
-            return new ApiPageResponse<T>(Start, State, message, default(List<T>),null);
+            return new ApiPageResponse<T>(Start, State, message, default(T),null);
         }
 
         public static ApiPageResponse<T> PageFail<T>(string message, bool State = false, int Start = 422)
         {
-            return new ApiPageResponse<T>(Start, State, message, default(List<T>),null);
+            return new ApiPageResponse<T>(Start, State, message, default(T),null);
         }
 
         public class ApiPageResponse<T>
@@ -56,10 +56,10 @@
             public int Start { get; set; } // 状态码
             public bool success { get; set; } // 状态
             public string Message { get; set; } // 消息
-            public List<T> Response { get; set; } // 数据
+            public T Response { get; set; } // 数据
             public int? Count {  get; set; } //总数
 
-            public ApiPageResponse(int start, bool state, string message, List<T> response, int? count)
+            public ApiPageResponse(int start, bool state, string message, T response, int? count)
             {
                 Start = start;
                 success = state;

@@ -36,11 +36,6 @@
             操作日志过滤器
             </summary>
         </member>
-        <member name="T:WebProjectTest.Common.Message">
-            <summary>
-            封装接口返回样式
-            </summary>
-        </member>
         <member name="M:WebProjectTest.Common.ServiceCollection.RegisterAllImplementationsOfInterface(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
             <summary>
             批量注册Service服务
@@ -69,6 +64,11 @@
         <member name="P:WebProjectTest.Controllers.AutherUser.AutherController.UserName">
             <summary>
             用户名
+            </summary>
+        </member>
+        <member name="P:WebProjectTest.Controllers.AutherUser.AutherController.Name">
+            <summary>
+            姓名
             </summary>
         </member>
         <member name="P:WebProjectTest.Controllers.AutherUser.AutherController.OrgId">
@@ -102,6 +102,52 @@
             </summary>
             <param name="operationlog"></param>
             <returns></returns>
+        </member>
+        <member name="T:WebProjectTest.Controllers.AutherUser.UserController">
+            <summary>
+            验证登陆
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.AutherUser.UserController.#ctor(WebIServices.IBase.IRedisCacheService,WebIServices.IBase.ISqlHelper,WebServiceClass.Base.TokenService)">
+            <summary>
+            验证登陆
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.AutherUser.UserController.LoginAsync(System.String,System.String,System.Nullable{System.Int32})">
+            <summary>
+            验证登陆
+            </summary>
+            <param name="UserName"></param>
+            <param name="PassWord"></param>
+            <param name="orgid"></param>
+            <returns></returns>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:WebProjectTest.Controllers.AutherUser.UserController.logoutAsync">
+            <summary>
+            退出系统，删除redis相关数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.AutherUser.UserController.GetUserAsync(System.Int32,System.Int32)">
+            <summary>
+            获取用户数据
+            </summary>
+            <param name="page"></param>
+            <param name="size"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.AutherUser.UserController.AddUserAsync(MyNamespace.sys_staff)">
+            <summary>
+            添加新用户
+            </summary>
+            <param name="User"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.AutherUser.UserController.DeleteAsync(System.Collections.Generic.List{System.Int32})">
+            <summary>
+            注销账号
+            </summary>
         </member>
         <member name="M:WebProjectTest.Controllers.DBFirst.DBFirstController.GenerateEntitiesList(System.Collections.Generic.List{System.String})">
             <summary>

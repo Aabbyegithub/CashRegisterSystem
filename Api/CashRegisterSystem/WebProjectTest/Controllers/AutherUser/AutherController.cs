@@ -68,6 +68,10 @@ namespace WebProjectTest.Controllers.AutherUser
         /// </summary>
         protected string UserName => UserContext?.UserName;
         /// <summary>
+        /// 姓名
+        /// </summary>
+        protected  string Name => UserContext?.Name;
+        /// <summary>
         /// 组织
         /// </summary>
         protected int OrgId =>(int) UserContext?.OrgId;

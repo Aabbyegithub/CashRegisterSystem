@@ -10,6 +10,7 @@ namespace ModelClassLibrary.Model.AutherModel.AutherDto
     {
         public long UserId { get; set; }
         public string UserName { get; set; }
+        public string Name { get; set; }
         public long OrgId { get; set; }
         public string OrgName { get; set; }
         public string PassWord { get; set; }

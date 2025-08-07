@@ -11,71 +11,54 @@
           "User"
         ],
         "summary": "注销账号",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
                   "type": "integer",
                   "format": "int32"
                 }
-              },
-              "application/json": {
-                "schema": {
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
                   "type": "integer",
                   "format": "int32"
                 }
-              },
-              "text/json": {
-                "schema": {
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
                   "type": "integer",
                   "format": "int32"
                 }
               }
             }
           }
-        }
-      }
-    },
-    "/api/User/ManageDelete/{id}": {
-      "delete": {
-        "tags": [
-          "User"
-        ],
-        "summary": "管理员删除",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
+        },
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "integer",
-                  "format": "int32"
+                  "$ref": "#/components/schemas/StringApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "integer",
-                  "format": "int32"
+                  "$ref": "#/components/schemas/StringApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "integer",
-                  "format": "int32"
+                  "$ref": "#/components/schemas/StringApiResponse"
                 }
               }
             }
@@ -187,110 +170,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/lq_userApiPageResponse"
+                  "$ref": "#/components/schemas/sys_staffListApiPageResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/lq_userApiPageResponse"
+                  "$ref": "#/components/schemas/sys_staffListApiPageResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/lq_userApiPageResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/User/GetUserMsg": {
-      "get": {
-        "tags": [
-          "User"
-        ],
-        "summary": "获取用户数据",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/lq_userApiResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/lq_userApiResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/lq_userApiResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/User/GetMsgCount": {
-      "get": {
-        "tags": [
-          "User"
-        ],
-        "summary": "获取系统消息",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/User/GetMsg": {
-      "get": {
-        "tags": [
-          "User"
-        ],
-        "summary": "读取系统未读信息",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/lq_sys_msgListApiResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/lq_sys_msgListApiResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/lq_sys_msgListApiResponse"
+                  "$ref": "#/components/schemas/sys_staffListApiPageResponse"
                 }
               }
             }
@@ -309,17 +199,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/lq_user"
+                "$ref": "#/components/schemas/sys_staff"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/lq_user"
+                "$ref": "#/components/schemas/sys_staff"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/lq_user"
+                "$ref": "#/components/schemas/sys_staff"
               }
             }
           }
@@ -348,78 +238,26 @@
         }
       }
     },
-    "/api/User/Update": {
+    "/api/User/UpUser": {
       "post": {
         "tags": [
           "User"
         ],
-        "summary": "修改密码",
         "requestBody": {
-          "description": "",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserParam"
+                "$ref": "#/components/schemas/sys_staff"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserParam"
+                "$ref": "#/components/schemas/sys_staff"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/UserParam"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/User/UpdateUserMsge": {
-      "post": {
-        "tags": [
-          "User"
-        ],
-        "summary": "更新用户信息",
-        "requestBody": {
-          "description": "",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserMsg"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserMsg"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserMsg"
+                "$ref": "#/components/schemas/sys_staff"
               }
             }
           }
@@ -472,46 +310,6 @@
         },
         "additionalProperties": false
       },
-      "UserMsg": {
-        "type": "object",
-        "properties": {
-          "user": {
-            "type": "string",
-            "nullable": true
-          },
-          "userName": {
-            "type": "string",
-            "nullable": true
-          },
-          "email": {
-            "type": "string",
-            "nullable": true
-          },
-          "phone": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "UserParam": {
-        "type": "object",
-        "properties": {
-          "userName": {
-            "type": "string",
-            "nullable": true
-          },
-          "oldPassword": {
-            "type": "string",
-            "nullable": true
-          },
-          "newPassword": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "UserResult": {
         "type": "object",
         "properties": {
@@ -557,155 +355,48 @@
         },
         "additionalProperties": false
       },
-      "lq_sys_msg": {
+      "sys_role": {
         "type": "object",
         "properties": {
-          "orgId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "addUserId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "addTime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "upUserId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "upTime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "isTrue": {
-            "type": "string",
-            "nullable": true
-          },
-          "addUser": {
-            "type": "string",
-            "nullable": true
-          },
-          "upUser": {
-            "type": "string",
-            "nullable": true
-          },
-          "addTimeString": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "upTimeString": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "id": {
+          "role_id": {
             "type": "integer",
             "format": "int64"
           },
-          "msg": {
+          "role_name": {
             "type": "string",
             "nullable": true
           },
-          "subject": {
+          "description": {
             "type": "string",
-            "nullable": true
-          },
-          "isRead": {
-            "type": "boolean"
-          }
-        },
-        "additionalProperties": false
-      },
-      "lq_sys_msgListApiResponse": {
-        "type": "object",
-        "properties": {
-          "start": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "success": {
-            "type": "boolean"
-          },
-          "message": {
-            "type": "string",
-            "nullable": true
-          },
-          "response": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/lq_sys_msg"
-            },
             "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "lq_user": {
+      "sys_staff": {
         "type": "object",
         "properties": {
-          "orgId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "addUserId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "addTime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "upUserId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "upTime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "isTrue": {
-            "type": "string",
-            "nullable": true
-          },
-          "addUser": {
-            "type": "string",
-            "nullable": true
-          },
-          "upUser": {
-            "type": "string",
-            "nullable": true
-          },
-          "addTimeString": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "upTimeString": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "id": {
+          "staff_id": {
             "type": "integer",
             "format": "int64"
           },
-          "user": {
+          "store_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "username": {
             "type": "string",
             "nullable": true
           },
-          "userName": {
+          "password": {
             "type": "string",
             "nullable": true
           },
-          "passWord": {
+          "salt": {
             "type": "string",
             "nullable": true
           },
-          "email": {
+          "name": {
             "type": "string",
             "nullable": true
           },
@@ -713,26 +404,30 @@
             "type": "string",
             "nullable": true
           },
-          "isFirst": {
-            "type": "boolean"
+          "position": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
           },
           "isDelete": {
             "type": "integer",
             "format": "int32"
           },
-          "salt": {
+          "last_login_time": {
             "type": "string",
+            "format": "date-time",
             "nullable": true
           },
-          "roleId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
+          "staff_role": {
+            "$ref": "#/components/schemas/sys_staff_role"
           }
         },
         "additionalProperties": false
       },
-      "lq_userApiPageResponse": {
+      "sys_staffListApiPageResponse": {
         "type": "object",
         "properties": {
           "start": {
@@ -749,7 +444,7 @@
           "response": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/lq_user"
+              "$ref": "#/components/schemas/sys_staff"
             },
             "nullable": true
           },
@@ -761,22 +456,23 @@
         },
         "additionalProperties": false
       },
-      "lq_userApiResponse": {
+      "sys_staff_role": {
         "type": "object",
         "properties": {
-          "start": {
+          "id": {
             "type": "integer",
-            "format": "int32"
+            "format": "int64"
           },
-          "success": {
-            "type": "boolean"
+          "staff_id": {
+            "type": "integer",
+            "format": "int64"
           },
-          "message": {
-            "type": "string",
-            "nullable": true
+          "role_id": {
+            "type": "integer",
+            "format": "int64"
           },
-          "response": {
-            "$ref": "#/components/schemas/lq_user"
+          "role": {
+            "$ref": "#/components/schemas/sys_role"
           }
         },
         "additionalProperties": false
