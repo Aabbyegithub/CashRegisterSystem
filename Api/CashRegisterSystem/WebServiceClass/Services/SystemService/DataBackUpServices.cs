@@ -16,5 +16,20 @@ namespace WebServiceClass.Services.SystemService
         {
             _dal = dal ?? throw new ArgumentNullException(nameof(dal));
         }
+
+        public Task<bool> AddBackUpAsync(string backupName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> GetBackUpInfoAsync(string backupId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<string>> GetBackUpListAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

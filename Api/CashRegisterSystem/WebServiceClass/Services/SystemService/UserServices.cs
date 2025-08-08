@@ -1,4 +1,5 @@
 ﻿using ModelClassLibrary.Model.AutherModel.AutherDto;
+using ModelClassLibrary.Model.Dto.SystemDto;
 using MyNamespace;
 using Newtonsoft.Json;
 using SqlSugar;
@@ -140,6 +141,28 @@ namespace WebServiceClass.Services.UserService
                 return Error<string>("账号密码保存失败！");
             else
                 return Success<string>(id.ToString(), "账号创建成功！");
+        }
+
+        public async Task<List<UserPermission>> GetUserPermissionsAsync(int RoleId)
+        {
+            var menu =await _dal.Db.Queryable<sys_role_permission>().Includes(a=>a.permission)
+                .Where(a=> a.role_id == RoleId)
+                .Select(a=>a.permission).ToListAsync();
+            return menu.Where(a=>a.parent_id == 0).Select(a=>new UserPermission
+            {
+                groupKey = a.permission_key,
+                groupTitle = a.permission_name,
+                icon = a.permission_icon,
+                children = menu.Where(b => b.parent_id == a.permission_id).Select(b => new UserPermissionItem
+                {
+                    key = b.permission_key,
+                    name = b.permission_router,
+                    title = b.permission_name,
+                    icon = b.permission_icon
+                }).ToList()
+            }).ToList();
+
+
         }
     }
 }

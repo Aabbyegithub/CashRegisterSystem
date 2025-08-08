@@ -37,6 +37,21 @@ namespace MyNamespace
            /// </summary>           
            public string permission_key {get;set;} = null!;
 
+
+        /// <summary>
+        /// Desc:权限路由
+        /// Default:
+        /// Nullable:False
+        /// </summary>  
+        public string permission_router { get;set;}
+
+        /// <summary>
+        /// Desc:图标
+        /// Default:
+        /// Nullable:False
+        /// </summary>  
+        public string permission_icon { get;set;} 
+
            /// <summary>
            /// Desc:父权限ID（用于层级）
            /// Default:0

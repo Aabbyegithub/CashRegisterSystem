@@ -51,111 +51,6 @@
             </summary>
             <param name="provider"></param>
         </member>
-        <member name="T:WebProjectTest.Controllers.AutherUser.AutherController">
-            <summary>
-            获取服务器和人员信息
-            </summary>
-        </member>
-        <member name="P:WebProjectTest.Controllers.AutherUser.AutherController.UserId">
-            <summary>
-            用户id
-            </summary>
-        </member>
-        <member name="P:WebProjectTest.Controllers.AutherUser.AutherController.UserName">
-            <summary>
-            用户名
-            </summary>
-        </member>
-        <member name="P:WebProjectTest.Controllers.AutherUser.AutherController.Name">
-            <summary>
-            姓名
-            </summary>
-        </member>
-        <member name="P:WebProjectTest.Controllers.AutherUser.AutherController.OrgId">
-            <summary>
-            组织
-            </summary>
-        </member>
-        <member name="P:WebProjectTest.Controllers.AutherUser.AutherController.OrgName">
-            <summary>
-            组织名称
-            </summary>
-        </member>
-        <member name="P:WebProjectTest.Controllers.AutherUser.AutherController.PassWord">
-            <summary>
-            哈希密码
-            </summary>
-        </member>
-        <member name="P:WebProjectTest.Controllers.AutherUser.AutherController.Salt">
-            <summary>
-            盐值
-            </summary>
-        </member>
-        <member name="P:WebProjectTest.Controllers.AutherUser.AutherController.RoleId">
-            <summary>
-            角色
-            </summary>
-        </member>
-        <member name="M:WebProjectTest.Controllers.AutherUser.OperlogController.SaveOperationlogAsync(MyNamespace.lq_operationlog)">
-            <summary>
-            操作日志保存
-            </summary>
-            <param name="operationlog"></param>
-            <returns></returns>
-        </member>
-        <member name="T:WebProjectTest.Controllers.AutherUser.UserController">
-            <summary>
-            验证登陆
-            </summary>
-        </member>
-        <member name="M:WebProjectTest.Controllers.AutherUser.UserController.#ctor(WebIServices.IBase.IRedisCacheService,WebIServices.IBase.ISqlHelper,WebServiceClass.Base.TokenService)">
-            <summary>
-            验证登陆
-            </summary>
-        </member>
-        <member name="M:WebProjectTest.Controllers.AutherUser.UserController.LoginAsync(System.String,System.String,System.Nullable{System.Int32})">
-            <summary>
-            验证登陆
-            </summary>
-            <param name="UserName"></param>
-            <param name="PassWord"></param>
-            <param name="orgid"></param>
-            <returns></returns>
-            <exception cref="T:System.Exception"></exception>
-        </member>
-        <member name="M:WebProjectTest.Controllers.AutherUser.UserController.logoutAsync">
-            <summary>
-            退出系统，删除redis相关数据
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WebProjectTest.Controllers.AutherUser.UserController.GetUserAsync(System.Int32,System.Int32)">
-            <summary>
-            获取用户数据
-            </summary>
-            <param name="page"></param>
-            <param name="size"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebProjectTest.Controllers.AutherUser.UserController.AddUserAsync(MyNamespace.sys_staff)">
-            <summary>
-            添加新用户
-            </summary>
-            <param name="User"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebProjectTest.Controllers.AutherUser.UserController.UpUserAsync(MyNamespace.sys_staff)">
-            <summary>
-            修改员工信息
-            </summary>
-            <param name="User"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebProjectTest.Controllers.AutherUser.UserController.DeleteAsync(System.Collections.Generic.List{System.Int32})">
-            <summary>
-            注销账号
-            </summary>
-        </member>
         <member name="M:WebProjectTest.Controllers.DBFirst.DBFirstController.GenerateEntitiesList(System.Collections.Generic.List{System.String})">
             <summary>
             批量生成实体类文件
@@ -169,6 +64,205 @@
             </summary>
             <param name="tableNames"></param>
             <returns></returns>
+        </member>
+        <member name="T:WebProjectTest.Controllers.SystemController.AutherController">
+            <summary>
+            获取服务器和人员信息
+            </summary>
+        </member>
+        <member name="P:WebProjectTest.Controllers.SystemController.AutherController.UserId">
+            <summary>
+            用户id
+            </summary>
+        </member>
+        <member name="P:WebProjectTest.Controllers.SystemController.AutherController.UserName">
+            <summary>
+            用户名
+            </summary>
+        </member>
+        <member name="P:WebProjectTest.Controllers.SystemController.AutherController.Name">
+            <summary>
+            姓名
+            </summary>
+        </member>
+        <member name="P:WebProjectTest.Controllers.SystemController.AutherController.OrgId">
+            <summary>
+            组织
+            </summary>
+        </member>
+        <member name="P:WebProjectTest.Controllers.SystemController.AutherController.OrgName">
+            <summary>
+            组织名称
+            </summary>
+        </member>
+        <member name="P:WebProjectTest.Controllers.SystemController.AutherController.PassWord">
+            <summary>
+            哈希密码
+            </summary>
+        </member>
+        <member name="P:WebProjectTest.Controllers.SystemController.AutherController.Salt">
+            <summary>
+            盐值
+            </summary>
+        </member>
+        <member name="P:WebProjectTest.Controllers.SystemController.AutherController.RoleId">
+            <summary>
+            角色
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.OperlogController.SaveOperationlogAsync(MyNamespace.lq_operationlog)">
+            <summary>
+            操作日志保存
+            </summary>
+            <param name="operationlog"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.RoleController.GetRoleListAsync(System.String,System.Int32,System.Int32)">
+            <summary>
+            获取角色列表
+            </summary>
+            <param name="page"></param>
+            <param name="size"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.RoleController.AddRoleAsync(MyNamespace.sys_role)">
+            <summary>
+            添加新角色
+            </summary>
+            <param name="User"></param>
+            <returns></returns> 
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.RoleController.UpdateRoleAsync(MyNamespace.sys_role)">
+            <summary>
+            修改角色
+            </summary>
+            <param name="User"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.RoleController.DeleteRoleAsync(System.Int32)">
+            <summary>
+            删除角色
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.RoleController.GetUserPermissionsAsync">
+            <summary>
+            获取菜单列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.RoleController.UpdateRolePermissionsAsync(System.Int32,System.Collections.Generic.List{System.Int32})">
+            <summary>
+            修改角色权限
+            </summary>
+            <param name="roleId"></param>
+            <param name="permissionIds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.StoreController.GetStoreListAsync(System.String,System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            获取门店列表
+            </summary>
+            <param name="StoreName"></param>
+            <param name="phone"></param>
+            <param name="address"></param>
+            <param name="page"></param>
+            <param name="size"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.StoreController.GetAllStoreListAsync">
+            <summary>
+            获取所有门店列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.StoreController.AddStoreAsync(MyNamespace.sys_store)">
+            <summary>
+            新增门店
+            </summary>
+            <param name="sys_Store"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.StoreController.DeleteStoreAsync(System.Collections.Generic.List{System.Int32})">
+            <summary>
+            删除门店'
+            </summary>
+            <param name="storeIds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.StoreController.UpdateStoreAsync(MyNamespace.sys_store)">
+            <summary>
+            修改门店信息
+            </summary>
+            <param name="sys_Store"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.StoreController.UpdateStoreStatusAsync(System.Int32,System.Byte)">
+            <summary>
+            修改门店状态
+            </summary>
+            <param name="storeId"></param>
+            <param name="status"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WebProjectTest.Controllers.SystemController.UserController">
+            <summary>
+            验证登陆
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.UserController.#ctor(WebIServices.IBase.IRedisCacheService,WebIServices.IBase.ISqlHelper,WebServiceClass.Base.TokenService)">
+            <summary>
+            验证登陆
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.UserController.LoginAsync(System.String,System.String,System.Nullable{System.Int32})">
+            <summary>
+            验证登陆
+            </summary>
+            <param name="UserName"></param>
+            <param name="PassWord"></param>
+            <param name="orgid"></param>
+            <returns></returns>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.UserController.logoutAsync">
+            <summary>
+            退出系统，删除redis相关数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.UserController.GetUserAsync(System.Int32,System.Int32)">
+            <summary>
+            获取用户数据
+            </summary>
+            <param name="page"></param>
+            <param name="size"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.UserController.GetUserMenuAsync(System.Int32)">
+            <summary>
+            获取员工权限
+            </summary>
+            <param name="RoleId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.UserController.AddUserAsync(MyNamespace.sys_staff)">
+            <summary>
+            添加新用户
+            </summary>
+            <param name="User"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.UserController.UpUserAsync(MyNamespace.sys_staff)">
+            <summary>
+            修改员工信息
+            </summary>
+            <param name="User"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.UserController.DeleteAsync(System.Collections.Generic.List{System.Int32})">
+            <summary>
+            注销账号
+            </summary>
         </member>
         <member name="M:WebProjectTest.Controllers.TaskController.TaskController.StartTaskAsync">
             <summary>

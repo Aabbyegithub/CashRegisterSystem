@@ -7,7 +7,6 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using WebIServices.IBase;
-using WebProjectTest.Controllers.AutherUser;
 using WebServiceClass.Helper;
 
 namespace WebProjectTest.Common

@@ -125,7 +125,8 @@ import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElForm, ElFormItem, ElInput, ElButton, ElCheckbox } from 'element-plus'
 import { useRouter } from 'vue-router'
 // 假设 api 模块，需根据实际调整
-import { loginApi } from '../../api/auth' 
+import { getStoreList } from '../../api/login' 
+import type { ApiResponse } from '../../common/ApiResponse'
 
 const router = useRouter()
 const formRef = ref<InstanceType<typeof ElForm>>()
@@ -189,13 +190,20 @@ const sendSms = () => {
 
 const storeList = ref<any[]>([]);
 
-function fetchStoreList() {
-  // 模拟接口获取门店列表
-  storeList.value = [
-    { store_id: 1, store_name: '旗舰店' },
-    { store_id: 2, store_name: '分店一' },
-    { store_id: 3, store_name: '分店二' }
-  ];
+async function fetchStoreList() {
+  await getStoreList().then((res:ApiResponse) => {
+    if (res && res.response) {
+      storeList.value = res.response.map((item: any) => ({
+        store_id: item.storeId,
+        store_name: item.storeName
+      }))
+    } else {
+      ElMessage.error('获取门店列表失败')
+    }
+  }).catch(err => {
+    console.error('获取门店列表失败:', err)
+    ElMessage.error('获取门店列表失败')
+  });
 }
 
 onMounted(() => {

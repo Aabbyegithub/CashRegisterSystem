@@ -5,67 +5,6 @@
     "version": "User"
   },
   "paths": {
-    "/api/User/Delete": {
-      "delete": {
-        "tags": [
-          "User"
-        ],
-        "summary": "注销账号",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              }
-            },
-            "text/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/User/Login": {
       "get": {
         "tags": [
@@ -188,6 +127,47 @@
         }
       }
     },
+    "/api/User/GetUserMenu": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "获取员工权限",
+        "parameters": [
+          {
+            "name": "RoleId",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPermissionListApiPageResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPermissionListApiPageResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPermissionListApiPageResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/User/AddUser": {
       "post": {
         "tags": [
@@ -243,7 +223,9 @@
         "tags": [
           "User"
         ],
+        "summary": "修改员工信息",
         "requestBody": {
+          "description": "",
           "content": {
             "application/json": {
               "schema": {
@@ -258,6 +240,67 @@
             "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/sys_staff"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/User/Delete": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "注销账号",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int32"
+                }
               }
             }
           }
@@ -305,6 +348,90 @@
           },
           "response": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserPermission": {
+        "type": "object",
+        "properties": {
+          "permissionId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "groupKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "groupTitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "icon": {
+            "type": "string",
+            "nullable": true
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserPermissionItem"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserPermissionItem": {
+        "type": "object",
+        "properties": {
+          "permissionId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "key": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "icon": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserPermissionListApiPageResponse": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "response": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserPermission"
+            },
+            "nullable": true
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           }
         },

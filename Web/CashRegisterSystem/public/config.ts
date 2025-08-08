@@ -5,7 +5,7 @@ const ENV = import.meta.env.MODE || 'development'
 const API_BASE_URL =
   ENV === 'production'
     ? 'https://api.yourdomain.com'
-    : '/api'
+    : 'https://localhost:7092'
 
 const APP_CONFIG = {
   env: ENV,
@@ -14,4 +14,4 @@ const APP_CONFIG = {
   version: '1.0.0',
 }
 
-export default APP_CONFIG
+export default APP_CONFIG 

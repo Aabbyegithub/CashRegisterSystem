@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ModelClassLibrary.Model.AutherModel.AutherDto;
+using ModelClassLibrary.Model.Dto.SystemDto;
 using MyNamespace;
 using Newtonsoft.Json;
 using SqlSugar;
@@ -125,12 +126,37 @@ namespace WebProjectTest.Controllers.SystemController
         }
 
         /// <summary>
+        /// 获取员工权限
+        /// </summary>
+        /// <param name="RoleId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ApiPageResponse<List<UserPermission>>> GetUserMenuAsync(int RoleId)
+        {
+            RefAsync<int> count = 0;
+            try
+            {
+                var res = await _UserService.GetUserPermissionsAsync(RoleId);
+                if (res != null)
+                {
+                    return PageSuccess(res, count);
+                }
+                return PageFail<List<UserPermission>>("获取数据失败");
+            }
+            catch (Exception)
+            {
+
+                return PageError<List<UserPermission>>("服务器错误");
+            }
+        }
+
+        /// <summary>
         /// 添加新用户
         /// </summary>
         /// <param name="User"></param>
         /// <returns></returns>
         [HttpPost]
-        [OperationLogFilter("系统设置>员工管理", "用户分页查询", ActionType.Search)]
+        [OperationLogFilter("系统设置>员工管理", "用户分页查询", ActionType.Add)]
         public async Task<ApiResponse<string>> AddUserAsync([FromBody] sys_staff User)
         {
             return await _UserService.AddUserAsync(User);
@@ -142,7 +168,7 @@ namespace WebProjectTest.Controllers.SystemController
         /// <param name="User"></param>
         /// <returns></returns>
         [HttpPost]
-        [OperationLogFilter("系统设置>员工管理", "修改员工信息", ActionType.Search)]
+        [OperationLogFilter("系统设置>员工管理", "修改员工信息", ActionType.Edit)]
         public async Task<ApiResponse<string>> UpUserAsync([FromBody] sys_staff User)
         {
             return await _UserService.UpUserAsync(User);

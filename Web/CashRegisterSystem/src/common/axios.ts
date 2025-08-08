@@ -1,6 +1,13 @@
-import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
+import axios, { type AxiosRequestConfig } from 'axios'
 import { ElMessage } from 'element-plus'
 import API_BASE_URL from '../../public/config'
+
+interface ApiResponse {
+  start: number
+  response?: any
+  message: string
+  success: boolean
+}
 
 // 创建 axios 实例
 const service = axios.create({
@@ -30,11 +37,13 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response: AxiosResponse) => {
     // 统一处理后端返回格式
-    if (response.data && response.data.code !== 0) {
-      ElMessage.error(response.data.message || '请求失败')
-      return Promise.reject(response.data)
+    if (response.data && response.data.start == 200) {
+       return response.data 
     }
-    return response.data
+    else if(response.data && response.data.start == 201){
+      ElMessage.error(response.data.message || '请求错误')
+      return Promise.reject(new Error(response.data.message || '请求错误'))} 
+    return response.data 
   },
   error => {
     // 网络或服务器错误统一提示

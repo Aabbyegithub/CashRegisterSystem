@@ -1,4 +1,5 @@
 ﻿using ModelClassLibrary.Model.AutherModel.AutherDto;
+using ModelClassLibrary.Model.Dto.SystemDto;
 using MyNamespace;
 using SqlSugar;
 using System;
@@ -54,5 +55,10 @@ namespace WebIServices.IServices.SystemIServices
         /// <param name="user"></param>
         /// <returns></returns>
         Task<ApiResponse<string>> UpUserAsync(sys_staff user);
+
+        /// <summary>
+        /// 获取员工权限
+        /// <summary>
+        Task<List<UserPermission>> GetUserPermissionsAsync(int userId);
     }
 }

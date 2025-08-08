@@ -5,7 +5,7 @@
     "version": "Role"
   },
   "paths": {
-    "/api/Role/DeleteRole/{Id}": {
+    "/api/Role/DeleteRole/{roleId}": {
       "delete": {
         "tags": [
           "Role"
@@ -13,9 +13,8 @@
         "summary": "删除角色",
         "parameters": [
           {
-            "name": "Id",
+            "name": "roleId",
             "in": "path",
-            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -29,17 +28,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
+                  "$ref": "#/components/schemas/BooleanApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
+                  "$ref": "#/components/schemas/BooleanApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
+                  "$ref": "#/components/schemas/BooleanApiResponse"
                 }
               }
             }
@@ -47,49 +46,38 @@
         }
       }
     },
-    "/api/Role/GetRoleData": {
+    "/api/Role/GetRoleList": {
       "get": {
         "tags": [
           "Role"
         ],
-        "summary": "角色查询",
+        "summary": "获取角色列表",
         "parameters": [
           {
             "name": "RoleName",
             "in": "query",
-            "description": "",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "Page",
+            "name": "page",
             "in": "query",
             "description": "",
             "schema": {
               "type": "integer",
               "format": "int32",
-              "default": 1
+              "default": 0
             }
           },
           {
-            "name": "Size",
+            "name": "size",
             "in": "query",
             "description": "",
             "schema": {
               "type": "integer",
               "format": "int32",
-              "default": 20
-            }
-          },
-          {
-            "name": "IsDelete",
-            "in": "query",
-            "description": "",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 1
+              "default": 10
             }
           }
         ],
@@ -99,17 +87,47 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/lq_sys_roleApiPageResponse"
+                  "$ref": "#/components/schemas/sys_roleListApiPageResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/lq_sys_roleApiPageResponse"
+                  "$ref": "#/components/schemas/sys_roleListApiPageResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/lq_sys_roleApiPageResponse"
+                  "$ref": "#/components/schemas/sys_roleListApiPageResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Role/GetUserPermissions": {
+      "get": {
+        "tags": [
+          "Role"
+        ],
+        "summary": "获取菜单列表",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPermissionListApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPermissionListApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPermissionListApiResponse"
                 }
               }
             }
@@ -118,46 +136,47 @@
       }
     },
     "/api/Role/AddRole": {
-      "get": {
+      "post": {
         "tags": [
           "Role"
         ],
-        "summary": "添加角色",
-        "parameters": [
-          {
-            "name": "RoleName",
-            "in": "query",
-            "description": "角色名称",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "RoleDepicted",
-            "in": "query",
-            "description": "角色描述",
-            "schema": {
-              "type": "string"
+        "summary": "添加新角色",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/sys_role"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/sys_role"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/sys_role"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
+                  "$ref": "#/components/schemas/BooleanApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
+                  "$ref": "#/components/schemas/BooleanApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
+                  "$ref": "#/components/schemas/BooleanApiResponse"
                 }
               }
             }
@@ -165,56 +184,121 @@
         }
       }
     },
-    "/api/Role/EditRole": {
-      "get": {
+    "/api/Role/UpdateRole": {
+      "post": {
         "tags": [
           "Role"
         ],
-        "summary": "编辑角色",
-        "parameters": [
-          {
-            "name": "Id",
-            "in": "query",
-            "description": "",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "RoleName",
-            "in": "query",
-            "description": "",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "RoleDepicted",
-            "in": "query",
-            "description": "",
-            "schema": {
-              "type": "string"
+        "summary": "修改角色",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/sys_role"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/sys_role"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/sys_role"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
+                  "$ref": "#/components/schemas/BooleanApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
+                  "$ref": "#/components/schemas/BooleanApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
+                  "$ref": "#/components/schemas/BooleanApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Role/UpdateRolePermissions": {
+      "post": {
+        "tags": [
+          "Role"
+        ],
+        "summary": "修改角色权限",
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanApiResponse"
                 }
               }
             }
@@ -225,7 +309,7 @@
   },
   "components": {
     "schemas": {
-      "StringApiResponse": {
+      "BooleanApiResponse": {
         "type": "object",
         "properties": {
           "start": {
@@ -240,81 +324,67 @@
             "nullable": true
           },
           "response": {
-            "type": "string",
-            "nullable": true
+            "type": "boolean"
           }
         },
         "additionalProperties": false
       },
-      "lq_sys_role": {
+      "UserPermission": {
         "type": "object",
         "properties": {
-          "orgId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "addUserId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "addTime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "upUserId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "upTime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "isTrue": {
-            "type": "string",
-            "nullable": true
-          },
-          "addUser": {
-            "type": "string",
-            "nullable": true
-          },
-          "upUser": {
-            "type": "string",
-            "nullable": true
-          },
-          "addTimeString": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "upTimeString": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "id": {
+          "permissionId": {
             "type": "integer",
             "format": "int64"
           },
-          "roleCode": {
+          "groupKey": {
             "type": "string",
             "nullable": true
           },
-          "roleName": {
+          "groupTitle": {
             "type": "string",
             "nullable": true
           },
-          "roleDepicted": {
+          "icon": {
             "type": "string",
             "nullable": true
           },
-          "isDelete": {
-            "type": "integer",
-            "format": "int32"
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserPermissionItem"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "lq_sys_roleApiPageResponse": {
+      "UserPermissionItem": {
+        "type": "object",
+        "properties": {
+          "permissionId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "key": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "icon": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserPermissionListApiResponse": {
         "type": "object",
         "properties": {
           "start": {
@@ -331,7 +401,49 @@
           "response": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/lq_sys_role"
+              "$ref": "#/components/schemas/UserPermission"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "sys_role": {
+        "type": "object",
+        "properties": {
+          "role_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "role_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "sys_roleListApiPageResponse": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "response": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/sys_role"
             },
             "nullable": true
           },

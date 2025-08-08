@@ -32,7 +32,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "WebProjectTest.Controllers.AutherUser.OperlogController",
+    "ContainingType": "WebProjectTest.Controllers.SystemController.OperlogController",
     "Method": "SaveOperationlogAsync",
     "RelativePath": "api/Operlog/SaveOperationlog",
     "HttpMethod": "POST",
@@ -49,6 +49,346 @@
       {
         "Type": "System.Void",
         "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.SystemController.RoleController",
+    "Method": "AddRoleAsync",
+    "RelativePath": "api/Role/AddRole",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sys_Role",
+        "Type": "MyNamespace.sys_role",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.SystemController.RoleController",
+    "Method": "DeleteRoleAsync",
+    "RelativePath": "api/Role/DeleteRole/{roleId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "roleId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.SystemController.RoleController",
+    "Method": "GetRoleListAsync",
+    "RelativePath": "api/Role/GetRoleList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "RoleName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "size",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiPageResponse\u00601[[System.Collections.Generic.List\u00601[[MyNamespace.sys_role, ModelClassLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.SystemController.RoleController",
+    "Method": "GetUserPermissionsAsync",
+    "RelativePath": "api/Role/GetUserPermissions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Collections.Generic.List\u00601[[ModelClassLibrary.Model.Dto.SystemDto.UserPermission, ModelClassLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.SystemController.RoleController",
+    "Method": "UpdateRoleAsync",
+    "RelativePath": "api/Role/UpdateRole",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sys_Role",
+        "Type": "MyNamespace.sys_role",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.SystemController.RoleController",
+    "Method": "UpdateRolePermissionsAsync",
+    "RelativePath": "api/Role/UpdateRolePermissions",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "roleId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "permissionIds",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.SystemController.StoreController",
+    "Method": "AddStoreAsync",
+    "RelativePath": "api/Store/AddStore",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sys_Store",
+        "Type": "MyNamespace.sys_store",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.SystemController.StoreController",
+    "Method": "DeleteStoreAsync",
+    "RelativePath": "api/Store/DeleteStore",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "storeIds",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.SystemController.StoreController",
+    "Method": "GetAllStoreListAsync",
+    "RelativePath": "api/Store/GetAllStoreList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Collections.Generic.List\u00601[[MyNamespace.sys_store, ModelClassLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.SystemController.StoreController",
+    "Method": "GetStoreListAsync",
+    "RelativePath": "api/Store/GetStoreList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "StoreName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "phone",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "address",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "size",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiPageResponse\u00601[[System.Collections.Generic.List\u00601[[MyNamespace.sys_store, ModelClassLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.SystemController.StoreController",
+    "Method": "UpdateStoreAsync",
+    "RelativePath": "api/Store/UpdateStore",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sys_Store",
+        "Type": "MyNamespace.sys_store",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.SystemController.StoreController",
+    "Method": "UpdateStoreStatusAsync",
+    "RelativePath": "api/Store/UpdateStoreStatus",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "storeId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "status",
+        "Type": "System.Byte",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
         "StatusCode": 200
       }
     ]
@@ -208,7 +548,7 @@
     ]
   },
   {
-    "ContainingType": "WebProjectTest.Controllers.AutherUser.UserController",
+    "ContainingType": "WebProjectTest.Controllers.SystemController.UserController",
     "Method": "AddUserAsync",
     "RelativePath": "api/User/AddUser",
     "HttpMethod": "POST",
@@ -234,10 +574,10 @@
     ]
   },
   {
-    "ContainingType": "WebProjectTest.Controllers.AutherUser.UserController",
+    "ContainingType": "WebProjectTest.Controllers.SystemController.UserController",
     "Method": "DeleteAsync",
     "RelativePath": "api/User/Delete",
-    "HttpMethod": "DELETE",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -260,7 +600,7 @@
     ]
   },
   {
-    "ContainingType": "WebProjectTest.Controllers.AutherUser.UserController",
+    "ContainingType": "WebProjectTest.Controllers.SystemController.UserController",
     "Method": "GetUserAsync",
     "RelativePath": "api/User/GetUser",
     "HttpMethod": "GET",
@@ -291,7 +631,33 @@
     ]
   },
   {
-    "ContainingType": "WebProjectTest.Controllers.AutherUser.UserController",
+    "ContainingType": "WebProjectTest.Controllers.SystemController.UserController",
+    "Method": "GetUserMenuAsync",
+    "RelativePath": "api/User/GetUserMenu",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "RoleId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiPageResponse\u00601[[System.Collections.Generic.List\u00601[[ModelClassLibrary.Model.Dto.SystemDto.UserPermission, ModelClassLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.SystemController.UserController",
     "Method": "LoginAsync",
     "RelativePath": "api/User/Login",
     "HttpMethod": "GET",
@@ -327,7 +693,7 @@
     ]
   },
   {
-    "ContainingType": "WebProjectTest.Controllers.AutherUser.UserController",
+    "ContainingType": "WebProjectTest.Controllers.SystemController.UserController",
     "Method": "logoutAsync",
     "RelativePath": "api/User/logout",
     "HttpMethod": "GET",
@@ -343,7 +709,7 @@
     ]
   },
   {
-    "ContainingType": "WebProjectTest.Controllers.AutherUser.UserController",
+    "ContainingType": "WebProjectTest.Controllers.SystemController.UserController",
     "Method": "UpUserAsync",
     "RelativePath": "api/User/UpUser",
     "HttpMethod": "POST",
