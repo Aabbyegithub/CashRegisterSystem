@@ -11,7 +11,7 @@
  Target Server Version : 80042
  File Encoding         : 65001
 
- Date: 05/08/2025 00:04:07
+ Date: 11/08/2025 07:27:15
 */
 
 SET NAMES utf8mb4;
@@ -47,6 +47,10 @@ CREATE TABLE `sys_bill`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '账单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of sys_bill
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_coupon
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_coupon`;
@@ -70,6 +74,10 @@ CREATE TABLE `sys_coupon`  (
   INDEX `idx_coupon_valid`(`valid_start`, `valid_end`) USING BTREE,
   CONSTRAINT `fk_coupon_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_coupon
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_dish
@@ -99,6 +107,10 @@ CREATE TABLE `sys_dish`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜品信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of sys_dish
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_dish_category
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_dish_category`;
@@ -112,6 +124,10 @@ CREATE TABLE `sys_dish_category`  (
   INDEX `idx_category_store`(`store_id`) USING BTREE,
   CONSTRAINT `fk_category_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜品分类表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_dish_category
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_dish_formula
@@ -134,6 +150,10 @@ CREATE TABLE `sys_dish_formula`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜品配方表（原材料消耗规则）' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of sys_dish_formula
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_dish_spec
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_dish_spec`;
@@ -148,6 +168,10 @@ CREATE TABLE `sys_dish_spec`  (
   INDEX `idx_spec_dish`(`dish_id`) USING BTREE,
   CONSTRAINT `fk_spec_dish` FOREIGN KEY (`dish_id`) REFERENCES `sys_dish` (`dish_id`) ON DELETE CASCADE ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜品规格表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_dish_spec
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_inventory
@@ -179,6 +203,10 @@ CREATE TABLE `sys_inventory`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of sys_inventory
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_inventory_loss
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_inventory_loss`;
@@ -201,6 +229,10 @@ CREATE TABLE `sys_inventory_loss`  (
   CONSTRAINT `fk_loss_material` FOREIGN KEY (`material_id`) REFERENCES `sys_raw_material` (`material_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_loss_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存损耗表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_inventory_loss
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_kitchen_order
@@ -236,6 +268,10 @@ CREATE TABLE `sys_kitchen_order`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '厨房订单表（KDS系统同步）' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of sys_kitchen_order
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_member
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_member`;
@@ -260,6 +296,10 @@ CREATE TABLE `sys_member`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '会员表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of sys_member
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_member_balance
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_member_balance`;
@@ -281,6 +321,10 @@ CREATE TABLE `sys_member_balance`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '会员储值记录表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of sys_member_balance
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_operationlog
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_operationlog`;
@@ -299,7 +343,11 @@ CREATE TABLE `sys_operationlog`  (
   `UpTime` datetime NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`Id`) USING BTREE,
   INDEX `index`(`UserId`, `ActionType`, `ModuleName`, `OrgId`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 554 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统操作日志' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统操作日志' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of sys_operationlog
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_order
@@ -343,6 +391,10 @@ CREATE TABLE `sys_order`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单主表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of sys_order
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_order_item
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_order_item`;
@@ -370,6 +422,10 @@ CREATE TABLE `sys_order_item`  (
   CONSTRAINT `fk_item_meal` FOREIGN KEY (`meal_id`) REFERENCES `sys_set_meal` (`meal_id`) ON DELETE SET NULL ON UPDATE RESTRICT,
   CONSTRAINT `fk_item_order` FOREIGN KEY (`order_id`) REFERENCES `sys_order` (`order_id`) ON DELETE CASCADE ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单明细表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_order_item
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_payment
@@ -402,18 +458,78 @@ CREATE TABLE `sys_payment`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付记录表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of sys_payment
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_permission
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_permission`;
 CREATE TABLE `sys_permission`  (
   `permission_id` bigint NOT NULL AUTO_INCREMENT COMMENT '权限ID（主键）',
   `permission_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '权限名称（如\"订单管理\"）',
+  `permission_router` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '权限路由',
   `permission_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '权限标识（如\"order:manage\"）',
   `parent_id` bigint NOT NULL DEFAULT 0 COMMENT '父权限ID（用于层级）',
+  `permission_icon` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '图标',
   PRIMARY KEY (`permission_id`) USING BTREE,
   UNIQUE INDEX `uk_permission_key`(`permission_key`) USING BTREE,
   INDEX `idx_permission_parent`(`parent_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_permission
+-- ----------------------------
+INSERT INTO `sys_permission` VALUES (1, '数据概览', NULL, 'dashboard', 0, '/src/assets/数据概览.png');
+INSERT INTO `sys_permission` VALUES (2, '桌台管理', NULL, 'tableManagement', 0, '/src/assets/桌台.png');
+INSERT INTO `sys_permission` VALUES (3, '排队叫号', NULL, 'queueManagement', 0, '/src/assets/排队叫号.png');
+INSERT INTO `sys_permission` VALUES (4, '菜品管理', NULL, 'dishManagement', 0, '/src/assets/菜品管理.png');
+INSERT INTO `sys_permission` VALUES (5, '订单管理', NULL, 'orderManagement', 0, '/src/assets/订单管理.png');
+INSERT INTO `sys_permission` VALUES (6, '厨房管理', NULL, 'kitchenManagement', 0, '/src/assets/厨房管理.png');
+INSERT INTO `sys_permission` VALUES (7, '库存管理', NULL, 'inventoryManagement', 0, '/src/assets/库存管理.png');
+INSERT INTO `sys_permission` VALUES (8, '会员管理', NULL, 'memberManagement', 0, '/src/assets/会员管理.png');
+INSERT INTO `sys_permission` VALUES (9, '促销管理', NULL, 'promotionManagement', 0, '/src/assets/促销管理.png');
+INSERT INTO `sys_permission` VALUES (10, '支付管理', NULL, 'paymentManagement', 0, '/src/assets/支付管理.png');
+INSERT INTO `sys_permission` VALUES (11, '数据分析', NULL, 'statisticsAnalysis', 0, '/src/assets/数据分析.png');
+INSERT INTO `sys_permission` VALUES (12, '系统设置', NULL, 'systemSetting', 0, '/src/assets/系统设置.png');
+INSERT INTO `sys_permission` VALUES (13, '核心指标看板', 'DashboardIndex', 'dashboard-index', 1, '/src/assets/首页.png');
+INSERT INTO `sys_permission` VALUES (14, '桌台列表', 'TableList', 'table-list', 2, '/src/assets/桌台.png');
+INSERT INTO `sys_permission` VALUES (15, '桌台布局可视化', 'TableLayout', 'table-layout', 2, '/src/assets/桌台布局.png');
+INSERT INTO `sys_permission` VALUES (16, '转桌/并桌操作', 'TransferTable', 'transfer-table', 2, '/src/assets/桌台.png');
+INSERT INTO `sys_permission` VALUES (18, '排队列表', 'QueueList', 'queue-list', 3, '/src/assets/排队列表.png');
+INSERT INTO `sys_permission` VALUES (19, '排队规则设置', 'QueueSetting', 'queue-setting', 3, '/src/assets/排队设置.png');
+INSERT INTO `sys_permission` VALUES (20, '菜品列表', 'DishList', 'dish-list', 4, '/src/assets/菜品列表.png');
+INSERT INTO `sys_permission` VALUES (21, '菜品分类', 'DishCategory', 'dish-category', 4, '/src/assets/菜品分类.png');
+INSERT INTO `sys_permission` VALUES (22, '菜品规格配置', 'DishSpec', 'dish-spec', 4, '/src/assets/菜品规格.png');
+INSERT INTO `sys_permission` VALUES (23, '套餐管理', 'SetMeal', 'set-meal', 4, '/src/assets/套餐管理.png');
+INSERT INTO `sys_permission` VALUES (24, '订单列表', 'OrderList', 'order-list', 5, '/src/assets/订单列表.png');
+INSERT INTO `sys_permission` VALUES (25, '新建订单', 'CreateOrder', 'create-order', 5, '/src/assets/新建订单.png');
+INSERT INTO `sys_permission` VALUES (26, '订单详情', 'OrderDetail', 'order-detail', 5, '/src/assets/订单详情.png');
+INSERT INTO `sys_permission` VALUES (27, '账单分拆', 'SplitBill', 'split-bill', 5, '/src/assets/账单分拆.png');
+INSERT INTO `sys_permission` VALUES (28, '厨房看板', 'KitchenBoard', 'kitchen-board', 6, '/src/assets/厨房看板.png');
+INSERT INTO `sys_permission` VALUES (29, '出餐记录表', 'OutMealRecord', 'out-meal-record', 6, '/src/assets/出餐记录.png');
+INSERT INTO `sys_permission` VALUES (30, '原材料列表', 'MaterialList', 'material-list', 7, '/src/assets/原材料列表.png');
+INSERT INTO `sys_permission` VALUES (31, '损耗记录', 'LossRecord', 'loss-record', 7, '/src/assets/损耗记录.png');
+INSERT INTO `sys_permission` VALUES (32, '采购单管理', 'PurchaseOrder', 'purchase-order', 7, '/src/assets/采购单.png');
+INSERT INTO `sys_permission` VALUES (33, '库存预警', 'StockWarning', 'stock-warning', 7, '/src/assets/库存预警.png');
+INSERT INTO `sys_permission` VALUES (34, '会员列表', 'MemberList', 'member-list', 8, '/src/assets/会员列表.png');
+INSERT INTO `sys_permission` VALUES (35, '储值记录', 'RechargeRecord', 'recharge-record', 8, '/src/assets/储值记录.png');
+INSERT INTO `sys_permission` VALUES (36, '会员权益配置', 'MemberRights', 'member-rights', 8, '/src/assets/会员权益.png');
+INSERT INTO `sys_permission` VALUES (37, '积分商城', 'PointsMall', 'points-mall', 8, '/src/assets/积分商城.png');
+INSERT INTO `sys_permission` VALUES (38, '促销活动列表', 'PromotionList', 'promotion-list', 9, '/src/assets/促销列表.png');
+INSERT INTO `sys_permission` VALUES (39, '创建促销活动', 'CreatePromotion', 'create-promotion', 9, '/src/assets/创建促销.png');
+INSERT INTO `sys_permission` VALUES (40, '优惠券管理', 'CouponManagement', 'coupon-management', 9, '/src/assets/优惠卷管理.png');
+INSERT INTO `sys_permission` VALUES (41, '支付记录', 'PaymentRecord', 'payment-record', 10, '/src/assets/支付记录.png');
+INSERT INTO `sys_permission` VALUES (42, '发票管理', 'InvoiceManagement', 'invoice-management', 10, '/src/assets/发票管理.png');
+INSERT INTO `sys_permission` VALUES (43, '收款账户设置', 'AccountSetting', 'account-setting', 10, '/src/assets/账户设置.png');
+INSERT INTO `sys_permission` VALUES (44, '销售分析', 'SalesAnalysis', 'sales-analysis', 11, '/src/assets/销售分析.png');
+INSERT INTO `sys_permission` VALUES (45, '成本分析', 'CostAnalysis', 'cost-analysis', 11, '/src/assets/成本分析.png');
+INSERT INTO `sys_permission` VALUES (46, '客流分析', 'CustomerAnalysis', 'customer-analysis', 11, '/src/assets/客流分析.png');
+INSERT INTO `sys_permission` VALUES (47, '门店对比', 'StoreComparison', 'store-comparison', 11, '/src/assets/门店对比.png');
+INSERT INTO `sys_permission` VALUES (48, '员工管理', 'StaffManagement', 'staff-management', 12, '/src/assets/员工管理.png');
+INSERT INTO `sys_permission` VALUES (49, '角色权限', 'RolePermission', 'role-permission', 12, '/src/assets/角色权限.png');
+INSERT INTO `sys_permission` VALUES (50, '门店设置', 'StoreSetting', 'store-setting', 12, '/src/assets/门店设置.png');
+INSERT INTO `sys_permission` VALUES (51, '数据备份', 'DataBackup', 'data-backup', 12, '/src/assets/数据备份.png');
 
 -- ----------------------------
 -- Table structure for sys_promotion
@@ -436,6 +552,10 @@ CREATE TABLE `sys_promotion`  (
   INDEX `idx_promotion_status`(`status`) USING BTREE,
   CONSTRAINT `fk_promotion_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_promotion
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_purchase_order
@@ -463,6 +583,10 @@ CREATE TABLE `sys_purchase_order`  (
   CONSTRAINT `fk_po_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_po_supplier` FOREIGN KEY (`supplier_id`) REFERENCES `sys_supplier` (`supplier_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '采购单表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_purchase_order
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_queue
@@ -493,6 +617,10 @@ CREATE TABLE `sys_queue`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '排队叫号表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of sys_queue
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_raw_material
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_raw_material`;
@@ -513,6 +641,10 @@ CREATE TABLE `sys_raw_material`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '原材料表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of sys_raw_material
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_restaurant_table
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_restaurant_table`;
@@ -531,7 +663,11 @@ CREATE TABLE `sys_restaurant_table`  (
   INDEX `idx_table_status`(`status`) USING BTREE,
   INDEX `idx_table_no`(`table_no`) USING BTREE,
   CONSTRAINT `fk_table_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '桌台信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '桌台信息表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_restaurant_table
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -544,6 +680,10 @@ CREATE TABLE `sys_role`  (
   PRIMARY KEY (`role_id`) USING BTREE,
   UNIQUE INDEX `uk_role_name`(`role_name`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_role
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_role_permission
@@ -559,6 +699,10 @@ CREATE TABLE `sys_role_permission`  (
   CONSTRAINT `fk_role_permission_permission` FOREIGN KEY (`permission_id`) REFERENCES `sys_permission` (`permission_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_role_permission_role` FOREIGN KEY (`role_id`) REFERENCES `sys_role` (`role_id`) ON DELETE CASCADE ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色权限关联表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_role_permission
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_set_meal
@@ -585,6 +729,10 @@ CREATE TABLE `sys_set_meal`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '套餐信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of sys_set_meal
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_set_meal_item
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_set_meal_item`;
@@ -604,6 +752,10 @@ CREATE TABLE `sys_set_meal_item`  (
   CONSTRAINT `fk_meal_item_meal` FOREIGN KEY (`meal_id`) REFERENCES `sys_set_meal` (`meal_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `fk_meal_item_spec` FOREIGN KEY (`spec_id`) REFERENCES `sys_dish_spec` (`spec_id`) ON DELETE SET NULL ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '套餐包含菜品表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_set_meal_item
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_staff
@@ -628,6 +780,10 @@ CREATE TABLE `sys_staff`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '员工表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of sys_staff
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_staff_role
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_staff_role`;
@@ -641,6 +797,10 @@ CREATE TABLE `sys_staff_role`  (
   CONSTRAINT `fk_staff_role_role` FOREIGN KEY (`role_id`) REFERENCES `sys_role` (`role_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_staff_role_staff` FOREIGN KEY (`staff_id`) REFERENCES `sys_staff` (`staff_id`) ON DELETE CASCADE ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '员工角色关联表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_staff_role
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_store
@@ -659,7 +819,12 @@ CREATE TABLE `sys_store`  (
   PRIMARY KEY (`store_id`) USING BTREE,
   INDEX `idx_store_status`(`status`) USING BTREE,
   INDEX `idx_store_name`(`store_name`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '门店信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '门店信息表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_store
+-- ----------------------------
+INSERT INTO `sys_store` VALUES (1, '旗舰店', '111', '111', '111', 20, 1, '2025-08-10 19:35:00', '2025-08-10 19:35:45');
 
 -- ----------------------------
 -- Table structure for sys_supplier
@@ -676,6 +841,10 @@ CREATE TABLE `sys_supplier`  (
   INDEX `idx_supplier_name`(`supplier_name`) USING BTREE,
   INDEX `idx_supplier_status`(`status`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '供应商表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_supplier
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_table_transfer
@@ -696,7 +865,11 @@ CREATE TABLE `sys_table_transfer`  (
   INDEX `fk_transfer_new_table`(`new_table_id`) USING BTREE,
   CONSTRAINT `fk_transfer_new_table` FOREIGN KEY (`new_table_id`) REFERENCES `sys_restaurant_table` (`table_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_transfer_old_table` FOREIGN KEY (`old_table_id`) REFERENCES `sys_restaurant_table` (`table_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '桌台转桌记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '桌台转桌记录表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_table_transfer
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_timertask
@@ -716,6 +889,10 @@ CREATE TABLE `sys_timertask`  (
   `Corn` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '设置运行时段',
   `StartNumber` bigint NULL DEFAULT NULL COMMENT '运行次数',
   PRIMARY KEY (`Id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '定时器管理' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '定时器管理' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of sys_timertask
+-- ----------------------------
 
 SET FOREIGN_KEY_CHECKS = 1;
