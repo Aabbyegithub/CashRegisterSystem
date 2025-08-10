@@ -11,17 +11,18 @@ namespace MyNamespace
     [SugarTable("sys_store")]
     public partial class sys_store
     {
-           public sys_store(){
+        public sys_store()
+        {
 
 
-           }
-           /// <summary>
-           /// Desc:门店ID（主键）
-           /// Default:
-           /// Nullable:False
-           /// </summary>           
-           [SugarColumn(IsPrimaryKey=true,IsIdentity=true)]
-           public long store_id {get;set;}
+        }
+        /// <summary>
+        /// Desc:门店ID（主键）
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        [SugarColumn(IsPrimaryKey=true,IsIdentity=true)]
+           public long? store_id {get;set;}
 
            /// <summary>
            /// Desc:门店名称
@@ -65,19 +66,19 @@ namespace MyNamespace
            /// </summary>           
            public byte status {get;set;}
 
-           /// <summary>
-           /// Desc:创建时间
-           /// Default:CURRENT_TIMESTAMP
-           /// Nullable:False
-           /// </summary>           
-           public DateTime created_at {get;set;}
+        /// <summary>
+        /// Desc:创建时间
+        /// Default:CURRENT_TIMESTAMP
+        /// Nullable:False
+        /// </summary>           
+        public DateTime created_at { get; set; } = DateTime.Now;
 
            /// <summary>
            /// Desc:更新时间
            /// Default:CURRENT_TIMESTAMP
            /// Nullable:False
            /// </summary>           
-           public DateTime updated_at {get;set;}
+           public DateTime updated_at {get;set;} = DateTime.Now;
 
     }
 }

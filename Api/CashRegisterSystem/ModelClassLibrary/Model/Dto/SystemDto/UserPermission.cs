@@ -15,6 +15,9 @@ namespace ModelClassLibrary.Model.Dto.SystemDto
         public string groupKey { get; set; }
         public string groupTitle { get; set; }
         public string icon { get; set; }
+        public string parent_id { get; set; }
+        public bool isselect { get; set; }
+
         public List<UserPermissionItem> children { get; set; }
     }
 
@@ -25,5 +28,7 @@ namespace ModelClassLibrary.Model.Dto.SystemDto
         public string name { get; set; }
         public string title { get; set; }
         public string icon { get; set; }
+        public string parent_id { get; set; }
+        public bool isselect { get; set; }
     }
 }

@@ -44,6 +44,6 @@ namespace WebIServices.IServices.SystemIServices
         /// 获取菜单列表
         /// </summary>
         /// <returns></returns>
-        Task<List<UserPermission>> GetUserPermissionsAsync();
+        Task<List<UserPermission>> GetUserPermissionsAsync(int role_id);
     }
 }

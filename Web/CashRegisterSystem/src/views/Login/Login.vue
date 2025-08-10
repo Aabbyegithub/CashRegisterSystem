@@ -125,8 +125,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElForm, ElFormItem, ElInput, ElButton, ElCheckbox } from 'element-plus'
 import { useRouter } from 'vue-router'
 // 假设 api 模块，需根据实际调整
-import { getStoreList } from '../../api/login' 
-import type { ApiResponse } from '../../common/ApiResponse'
+import { getStoreList, loginApi } from '../../api/login' 
 
 const router = useRouter()
 const formRef = ref<InstanceType<typeof ElForm>>()
@@ -135,7 +134,7 @@ const loading = ref(false)
 const loginTab = ref<'account' | 'sms'>('account') 
 
 const form = reactive({
-  storeId: null,
+  storeId: '',
   username: '',
   password: '',
   phone: '',
@@ -191,11 +190,11 @@ const sendSms = () => {
 const storeList = ref<any[]>([]);
 
 async function fetchStoreList() {
-  await getStoreList().then((res:ApiResponse) => {
+  await getStoreList().then((res:any)=> {
     if (res && res.response) {
       storeList.value = res.response.map((item: any) => ({
-        store_id: item.storeId,
-        store_name: item.storeName
+        store_id: item.store_id,
+        store_name: item.store_name
       }))
     } else {
       ElMessage.error('获取门店列表失败')
@@ -218,13 +217,13 @@ const submit = async () => {
     let res: any
     if (loginTab.value === 'account') {
       // 账号密码登录逻辑
-      res = await loginApi(form.username, form.password)
+      res = await loginApi(form.username, form.password,form.storeId)
     } else {
       // 短信登录逻辑，需调整 api 调用
       // res = await smsLoginApi(form.phone, form.smsCode)
     }
-
-    localStorage.setItem('token', res.token)
+    console.log(res);
+    localStorage.setItem('token', res.response.token)
     ElMessage.success('登录成功')
     router.push('/Layout') // 登录成功后跳转到订单管理页面
   } catch (err: any) {

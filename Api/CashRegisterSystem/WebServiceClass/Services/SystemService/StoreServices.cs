@@ -61,6 +61,7 @@ namespace WebServiceClass.Services.SystemService
                     .WhereIF(!string.IsNullOrEmpty(StoreName), a => a.store_name.Contains(StoreName))
                     .WhereIF(!string.IsNullOrEmpty(phone), a => a.phone.Contains(phone))
                     .WhereIF(!string.IsNullOrEmpty(address), a => a.address.Contains(address))
+                    .Where(a=>!a.store_name.Contains("管理员"))
                     .ToPageListAsync(page, size,count);
                 return PageSuccess(res,count,"商店列表获取成功");
             }

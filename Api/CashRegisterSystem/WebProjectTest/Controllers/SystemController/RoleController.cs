@@ -16,9 +16,8 @@ namespace WebProjectTest.Controllers.SystemController
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize]
-    public class RoleController(IRedisCacheService redisCacheService) : AutherController(redisCacheService)
+    public class RoleController(IRedisCacheService redisCacheService, IRoleServices _RoleServices) : AutherController(redisCacheService)
     {
-        private readonly IRoleServices _RoleServices;
 
         /// <summary>
         /// 获取角色列表
@@ -112,16 +111,16 @@ namespace WebProjectTest.Controllers.SystemController
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ApiResponse<List<UserPermission>>> GetUserPermissionsAsync()
+        public async Task<ApiResponse<List<UserPermission>>> GetUserPermissionsAsync(int role_id)
         {
             try
             {
-               var res = await _RoleServices.GetUserPermissionsAsync();
+               var res = await _RoleServices.GetUserPermissionsAsync(role_id);
                 return Success(res);
             }
             catch (Exception)
             {
-                return Error<List<UserPermission>>("删除失败");
+                return Error<List<UserPermission>>("获取失败");
             }
         }
 

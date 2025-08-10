@@ -1,6 +1,6 @@
 import axios from '../common/axios'
-export function loginApi(username: string, password: string) {
-    return axios.post('/api/login', { username, password })
+export function loginApi(UserName: string, PassWord: string,orgid:string) {
+    return axios.get('/api/User/Login', {params: { UserName, PassWord,orgid } })
 }
 
 //获取门店列表

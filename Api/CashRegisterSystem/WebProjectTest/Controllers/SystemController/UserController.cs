@@ -25,10 +25,9 @@ namespace WebProjectTest.Controllers.SystemController
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize]
-    public class UserController(IRedisCacheService redisCacheService, ISqlHelper dal, TokenService token) : AutherController(redisCacheService)
+    public class UserController(IRedisCacheService redisCacheService, ISqlHelper dal, TokenService token,IUserServices _UserService) : AutherController(redisCacheService)
     {
         private readonly TokenService _token = token;
-        private readonly IUserServices _UserService;
 
         /// <summary>
         /// 验证登陆
@@ -156,7 +155,8 @@ namespace WebProjectTest.Controllers.SystemController
         /// <param name="User"></param>
         /// <returns></returns>
         [HttpPost]
-        [OperationLogFilter("系统设置>员工管理", "用户分页查询", ActionType.Add)]
+        [AllowAnonymous]
+        [OperationLogFilter("系统设置>员工管理", "添加新员工", ActionType.Add)]
         public async Task<ApiResponse<string>> AddUserAsync([FromBody] sys_staff User)
         {
             return await _UserService.AddUserAsync(User);

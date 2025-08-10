@@ -1,13 +1,7 @@
-import axios, { type AxiosRequestConfig } from 'axios'
+import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
 import { ElMessage } from 'element-plus'
 import API_BASE_URL from '../../public/config'
-
-interface ApiResponse {
-  start: number
-  response?: any
-  message: string
-  success: boolean
-}
+import router from '../router/index'
 
 // 创建 axios 实例
 const service = axios.create({
@@ -38,18 +32,24 @@ service.interceptors.response.use(
   (response: AxiosResponse) => {
     // 统一处理后端返回格式
     if (response.data && response.data.start == 200) {
-       return response.data 
+       return response.data
+    }else{
+       ElMessage.error(response.data.message || '请求错误')
+      return Promise.reject(new Error(response.data.message || '请求错误'))
     }
-    else if(response.data && response.data.start == 201){
-      ElMessage.error(response.data.message || '请求错误')
-      return Promise.reject(new Error(response.data.message || '请求错误'))} 
-    return response.data 
   },
   error => {
+    console.log(error)
+   if(error.response?.status === 401){
+       ElMessage.error(error.response?.data?.message || '登陆已过期，请重新登录')
+       localStorage.removeItem('token'); 
+        router.replace('/login');
+      return Promise.reject(error.response?.data?.message || '请求错误')
+    }else{
     // 网络或服务器错误统一提示
-    ElMessage.error(error.response?.data?.message || '网络错误')
+    ElMessage.error(error.response?.data?.message || '服务器错误')
     return Promise.reject(error)
-  }
+  }}
 )
 
 // 通用 GET 方法

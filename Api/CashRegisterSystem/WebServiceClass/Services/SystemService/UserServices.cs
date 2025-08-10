@@ -100,18 +100,27 @@ namespace WebServiceClass.Services.UserService
 
         public async Task<ApiResponse<string>> AddUserAsync(sys_staff User)
         {
-            var (hashpassword, salt) = PasswordHelper.HashPassword(User.password);
-            var istrue = await _dal.Db.Queryable<sys_staff>().FirstAsync(a => a.username == User.username && a.store_id == User.store_id && a.IsDelete == 0);
-            if (istrue != null)
+            try
             {
-                return Fail<string>("账号已存在！");
+                var (hashpassword, salt) = PasswordHelper.HashPassword(User.password);
+                var istrue = await _dal.Db.Queryable<sys_staff>().FirstAsync(a => a.username == User.username && a.store_id == User.store_id && a.IsDelete == 0);
+                if (istrue != null)
+                {
+                    return Fail<string>("账号已存在！");
+                }
+                User.password = hashpassword; User.Salt = salt; User.IsDelete = 1;
+                var id = await _dal.Db.Insertable(User).ExecuteCommandAsync();
+                if (id == 0)
+                    return Error<string>("账号密码保存失败！");
+                else
+                    return Success<string>(id.ToString(), "账号创建成功！");
             }
-            User.password = hashpassword; User.Salt = salt; User.IsDelete = 1;
-            var id = await _dal.Db.Insertable(User).ExecuteCommandAsync();
-            if (id == 0)
-                return Error<string>("账号密码保存失败！");
-            else
-                return Success<string>(id.ToString(), "账号创建成功！");
+            catch (Exception)
+            {
+
+                 return Error<string>("账号密码保存失败！");
+            }
+
         }
 
         public async Task<ApiResponse<string>> DeleteUserAsync(List<int> Ids)
@@ -129,18 +138,27 @@ namespace WebServiceClass.Services.UserService
 
         public async Task<ApiResponse<string>> UpUserAsync(sys_staff User)
         {
-            var (hashpassword, salt) = PasswordHelper.HashPassword(User.password);
-            var istrue = await _dal.Db.Queryable<sys_staff>().FirstAsync(a => a.username == User.username && a.store_id == User.store_id && a.IsDelete == 0);
-            if (istrue == null)
+            try
             {
-                return Fail<string>("账号不存在！");
+                var (hashpassword, salt) = PasswordHelper.HashPassword(User.password);
+                var istrue = await _dal.Db.Queryable<sys_staff>().FirstAsync(a => a.username == User.username && a.store_id == User.store_id && a.IsDelete == 0);
+                if (istrue == null)
+                {
+                    return Fail<string>("账号不存在！");
+                }
+                User.password = hashpassword; User.Salt = salt; User.IsDelete = 1;
+                var id = await _dal.Db.Updateable(User).ExecuteCommandAsync();
+                if (id == 0)
+                    return Error<string>("账号密码保存失败！");
+                else
+                    return Success<string>(id.ToString(), "账号创建成功！");
             }
-            User.password = hashpassword; User.Salt = salt; User.IsDelete = 1;
-            var id = await _dal.Db.Updateable(User).ExecuteCommandAsync();
-            if (id == 0)
-                return Error<string>("账号密码保存失败！");
-            else
-                return Success<string>(id.ToString(), "账号创建成功！");
+            catch (Exception)
+            {
+
+                 return Error<string>("账号密码保存失败！");
+            }
+
         }
 
         public async Task<List<UserPermission>> GetUserPermissionsAsync(int RoleId)

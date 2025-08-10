@@ -57,7 +57,11 @@ namespace MyNamespace
            /// Default:0
            /// Nullable:False
            /// </summary>           
-           public long parent_id {get;set;}
+       public long parent_id {get;set;}
+
+          [SugarColumn(IsIgnore = true)]
+          public bool isSelect{get;set;}
+
 
     }
 }

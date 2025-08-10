@@ -38,23 +38,29 @@ namespace WebServiceClass.Services.SystemService
                 .ToPageListAsync(page,size,count);
         }
 
-        public async Task<List<UserPermission>> GetUserPermissionsAsync()
+        public async Task<List<UserPermission>> GetUserPermissionsAsync(int role_id)
         {
-            var menu = await _dal.Db.Queryable<sys_role_permission>().Includes(a => a.permission)
-                        .Select(a => a.permission).ToListAsync();
+            var menu = await _dal.Db.Queryable<sys_role_permission>()
+                .Where(a=>a.role_id == role_id)
+                .RightJoin<sys_permission>((a,b)=>a.permission_id == b.permission_id).Select((a,b)=>new sys_permission() {permission_id = b.permission_id, isSelect = string.IsNullOrEmpty(a.id.ToString()) ? false:true},true)
+                 .ToListAsync();
             return menu.Where(a => a.parent_id == 0).Select(a => new UserPermission
             {
                 permissionId = a.permission_id,
                 groupKey = a.permission_key,
                 groupTitle = a.permission_name,
                 icon = a.permission_icon,
+                parent_id = a.parent_id.ToString(),
+                isselect =a.isSelect, 
                 children = menu.Where(b => b.parent_id == a.permission_id).Select(b => new UserPermissionItem
                 {
                     permissionId = b.permission_id,
                     key = b.permission_key,
                     name = b.permission_router,
                     title = b.permission_name,
-                    icon = b.permission_icon
+                    icon = b.permission_icon,
+                    parent_id = b.parent_id.ToString(),
+                     isselect =a.isSelect, 
                 }).ToList()
             }).ToList();
         }

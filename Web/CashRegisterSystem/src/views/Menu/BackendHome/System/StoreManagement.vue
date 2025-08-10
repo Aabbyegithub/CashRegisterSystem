@@ -3,7 +3,9 @@
     <div class="page-header">
       <div class="operation-bar">
         <div class="filter-group">
-          <input v-model="searchKeyword" placeholder="搜索门店名称/地址/电话" class="search-input" @keyup.enter="fetchStoreList" />
+          <input v-model="searchStoreName" placeholder="搜索门店名称" class="search-input" @keyup.enter="fetchStoreList" />
+          <input v-model="searchaddress" placeholder="搜索门店地址" class="search-input" @keyup.enter="fetchStoreList" />
+          <input v-model="searchphone" placeholder="搜索门店电话" class="search-input" @keyup.enter="fetchStoreList" />
           <button class="search-btn" @click="fetchStoreList">搜索</button>
         </div>
         <div class="action-buttons">
@@ -15,7 +17,7 @@
     <div class="store-table-view">
       <div class="table-list">
         <el-table
-          :data="pagedStoreList"
+          :data="storeList"
           border
           style="width: 100%"
           :header-cell-style="{ background: '#f8f9fa', color: '#606266' }"
@@ -46,7 +48,7 @@
       <div class="pagination-bar">
         <el-pagination
           layout="prev, pager, next, ->, sizes, jumper"
-          :total="storeList.length"
+          :total="total"
           :page-size="pageSize"
           :current-page="pageIndex"
           :prev-text="'<'"
@@ -94,92 +96,81 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
+import { addStoreApi, deleteStoreApi, editStoreApi, getStoreList, updateStoreStatusApi } from '../../../../api/storeapi';
+import dayjs from 'dayjs';
 
 const storeList = ref<any[]>([]);
-const searchKeyword = ref('');
+const searchStoreName = ref('')
+const searchphone = ref('');
+const searchaddress= ref('');
 const pageIndex = ref(1);
 const pageSize = ref(10);
+const total = ref(10);
 const showEditModal = ref(false);
 const editForm = reactive<any>({});
 const selectedRows = ref<any[]>([]);
 
-const pagedStoreList = computed(() => {
-  let filtered = storeList.value.filter((store: any) => {
-    const keyword = searchKeyword.value.trim();
-    return (
-      (!keyword || store.store_name.includes(keyword) || store.address.includes(keyword) || store.phone.includes(keyword))
-    );
-  });
-  const start = (pageIndex.value - 1) * pageSize.value;
-  return filtered.slice(start, start + pageSize.value);
-});
-
-function fetchStoreList() {
-  // TODO: 这里调用API获取门店列表，示例用假数据
-  storeList.value = [
-    {
-      store_id: 1,
-      store_name: '旗舰店',
-      address: '北京市朝阳区XX路1号',
-      phone: '13800000001',
-      business_hours: '10:00-22:00',
-      total_tables: 20,
-      status: 1,
-      created_at: '2024-08-01 10:00:00'
-    },
-    {
-      store_id: 2,
-      store_name: '分店一',
-      address: '北京市海淀区YY路2号',
-      phone: '13800000002',
-      business_hours: '09:00-21:00',
-      total_tables: 15,
-      status: 0,
-      created_at: '2024-08-02 09:00:00'
+async function fetchStoreList() {
+  await getStoreList(searchStoreName.value,searchphone.value,searchaddress.value,pageIndex.value,pageSize.value).then((res: any) => {
+    if (res && res.response) {
+      storeList.value = res.response.map((item: any) => ({
+        store_id: item.store_id,
+        store_name: item.store_name,
+        address: item.address,
+        phone: item.phone,
+        business_hours: item.business_hours,
+        total_tables: item.total_tables,
+        status: item.status,
+        created_at:dayjs(item.created_at).format('YYYY-MM-DD HH:mm:ss')
+      }));
+      total.value = res.count || 0;
+    } else {
+      ElMessage.error('获取门店列表失败');
     }
-  ];
+  }).catch(() => {
+     ElMessage.error('获取门店列表失败');
+  });
 }
 
-function handleSave() {
+async function handleSave() {
   // TODO: 保存门店信息（新增或编辑）
   if (editForm.store_id) {
     // 编辑
     const idx = storeList.value.findIndex(item => item.store_id === editForm.store_id);
     if (idx > -1) {
-      storeList.value[idx] = { ...editForm };
+      await editStoreApi(editForm.store_id,editForm.store_name, editForm.phone, editForm.address,editForm.business_hours,editForm.total_tables,editForm.status)
       ElMessage.success('编辑成功');
     }
   } else {
     // 新增
-    editForm.store_id = Date.now();
-    editForm.created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    storeList.value.push({ ...editForm });
+    await addStoreApi(editForm.store_name, editForm.phone, editForm.address,editForm.business_hours,editForm.total_tables,editForm.status)
     ElMessage.success('新增成功');
   }
   fetchStoreList();
   closeEditModal();
 }
 
-function handleDelete(store: any) {
+async function handleDelete(store: any) {
   // TODO: 删除门店
-  storeList.value = storeList.value.filter(item => item.store_id !== store.store_id);
+  await deleteStoreApi([store.store_id]);
   ElMessage.success('删除成功');
   fetchStoreList();
 }
 
-function handleBatchDelete() {
+async function handleBatchDelete() {
   // TODO: 批量删除
   const ids = selectedRows.value.map(item => item.store_id);
-  storeList.value = storeList.value.filter(item => !ids.includes(item.store_id));
+  await deleteStoreApi(ids);
   ElMessage.success('批量删除成功');
   selectedRows.value = [];
   fetchStoreList();
 }
 
-function toggleStatus(store: any) {
+async function toggleStatus(store: any) {
   // TODO: 切换门店状态
-  store.status = store.status === 1 ? 0 : 1;
+  await updateStoreStatusApi(store.store_id, store.status === 1 ? 0 : 1);
   ElMessage.success('状态已切换');
+  fetchStoreList();
 }
 
 function openEditModal(store?: any) {

@@ -2,7 +2,7 @@
   <div class="table-management-container">
     <!-- 筛选区域 -->
     <div class="filter-bar">
-      <el-button type="primary" style="background-color: #22A2B6;" @click="showRoleDialog = true">新增角色</el-button>
+      <el-button type="primary" style="background-color: #22A2B6;" @click="addRole">新增角色</el-button>
       <el-button @click="refreshRoles">刷新</el-button>
       <el-input v-model="searchRole" placeholder="搜索角色名称" clearable class="filter-item" @input="filterRoles" />
     </div>
@@ -10,7 +10,7 @@
     <!-- 角色列表区域 -->
     <div class="table-list">
       <el-table
-        :data="filteredRoles"
+        :data="roles"
         border
         style="width: 100%"
         :header-cell-style="{ background: '#f8f9fa', color: '#606266' }"
@@ -52,20 +52,20 @@
     </div>
 
     <!-- 分页区域 -->
-    <div class="pagination-bar">
-      <el-pagination
-        layout="prev, pager, next, ->, sizes, jumper"
-        :total="filteredRoles.length"
-        :page-size="pageSize"
-        :current-page="page"
-        :prev-text="'<'"
-        :next-text="'>'"
-        :page-sizes="[10, 20, 30, 40, 50]"
-        :display-page-count="5"
-        @size-change="handleSizeChange"
-        @current-change="handlePageChange"
-      />
-    </div>
+      <div class="pagination-bar">
+        <el-pagination
+          layout="prev, pager, next, ->, sizes, jumper"
+          :total="total"
+          :page-size="pageSize"
+          :current-page="page"
+          :prev-text="'<'"
+          :next-text="'>'"
+          :page-sizes="[10, 20, 30, 40, 50]"
+          :display-page-count="5"
+          @size-change="handleSizeChange"
+          @current-change="handlePageChange"
+        />
+      </div>
 
     <!-- 角色新增/编辑弹窗 -->
     <el-dialog v-model="showRoleDialog" :title="roleForm.role_id ? '编辑角色' : '新增角色'" width="500">
@@ -103,19 +103,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
+import { addRolePermissionApi, deleteRolePermissionApi, editRolePermissionApi, getAllPermissions, getRolePermissionList, saveRolePermissions } from '../../../../api/RolePermission'
+import { ElMessage } from 'element-plus'
 // 角色列表
 const roles = ref([
   { role_id: 1, role_name: '店长', description: '管理全店' },
   { role_id: 2, role_name: '收银员', description: '负责收银' },
 ])
 const searchRole = ref('')
-const filteredRoles = computed(() => {
-  if (!searchRole.value) return roles.value
-  return roles.value.filter(r => r.role_name.includes(searchRole.value))
-})
 const page = ref(1)
 const pageSize = ref(10)
+const total = ref(10)
 
 // 角色表单
 const showRoleDialog = ref(false)
@@ -124,15 +123,48 @@ function editRole(row: any) {
   Object.assign(roleForm, row)
   showRoleDialog.value = true
 }
-function saveRole() {
+function addRole() {
+  Object.assign(roleForm, { role_id: null, role_name: '', description: '' })
+  showRoleDialog.value = true
+}
+
+onMounted(() => {
+  refreshRoles()
+});
+async function saveRole() {
   // TODO: 调用保存API
+   if (roleForm.role_id) {
+    // 编辑
+    const idx = roles.value.findIndex(item => item.role_id === roleForm.role_id);
+    if (idx > -1) {
+      await editRolePermissionApi(roleForm.role_id, roleForm.role_name, roleForm.description)
+      ElMessage.success('编辑成功');
+    }
+  } else {
+    // 新增
+    await addRolePermissionApi(roleForm.role_name, roleForm.description)
+    ElMessage.success('新增成功');
+  }
+  
+  refreshRoles()
   showRoleDialog.value = false
 }
-function deleteRole(row: any) {
+async function deleteRole(row: any) {
   // TODO: 调用删除API
+  await deleteRolePermissionApi(row.role_id)
+  refreshRoles()
 }
-function refreshRoles() {
-  // TODO: 调用获取角色API
+async function refreshRoles() {
+  await getRolePermissionList(searchRole.value, page.value, pageSize.value).then((res: any) => {
+    if (res && res.response) {
+      roles.value = res.response.map((item: any) => ({
+        role_id: item.role_id,
+        role_name: item.role_name,
+        description: item.description
+      }));
+      total.value = res.response.total
+    }
+  })
 }
 function filterRoles() {
   page.value = 1
@@ -180,17 +212,55 @@ const permissionTree = ref([
   }
 ])
 const checkedPermissionIds = ref<number[]>([])
+const permissionTreeRef = ref<any>(null);
 const showPermissionDialog = ref(false)
 const currentRole = ref<any>(null)
 const treeProps = { label: 'permission_name', children: 'children' }
-function assignPermissions(row: any) {
+async function assignPermissions(row: any) {
   currentRole.value = row
   // TODO: 获取当前角色已分配权限
   checkedPermissionIds.value = []
   showPermissionDialog.value = true
+  await getAllPermissions(currentRole.value.role_id).then((res: any) => {
+    if (res && res.response) {
+      permissionTree.value = res.response.map((item: any) => ({
+        permission_id: item.permissionId,
+        permission_name: item.groupTitle,
+        permission_key: item.groupKey,
+        parent_id: item.parent_id,
+        isselect :item.isselect, 
+        children: item.children.map((item1: any) =>({
+          permission_id: item1.permissionId,
+          permission_name: item1.title,
+          permission_key: item1.key,
+          parent_id: item1.parent_id,
+          isselect :item1.isselect, 
+        })) || []
+      }));
+      checkedPermissionIds.value =getCheckedPermissionIds(permissionTree.value)
+    }
+  });
 }
-function savePermissions() {
+
+function getCheckedPermissionIds(tree:any[]) {
+  let result: any[] = [];
+  tree.forEach(item => {
+    // 如果当前项被选中，添加其 permission_id
+    if (item.isselect) {
+      result.push(item.permission_id);
+    }
+    // 递归处理子项（如果有 children）
+    if (item.children && item.children.length > 0) {
+      result = result.concat(getCheckedPermissionIds(item.children));
+    }
+  });
+  return result;
+}
+async function savePermissions() {
   // TODO: 保存权限分配API
+   const checkedIds = permissionTreeRef.value.getCheckedKeys(false, false);
+  await saveRolePermissions(currentRole.value.role_id,checkedIds)
+  ElMessage.success('权限分配成功')
   showPermissionDialog.value = false
 }
 function handleSizeChange(val: number) {
@@ -218,8 +288,12 @@ function handlePageChange(val: number) {
   margin-top: 16px;
 }
 .pagination-bar {
-  margin-top: 16px;
-  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 12px 16px 0 0;
+  font-size: 14px;
 }
 .cancel-btn {
   margin-right: 10px;

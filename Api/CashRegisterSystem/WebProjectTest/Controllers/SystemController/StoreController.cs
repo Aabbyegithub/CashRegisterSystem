@@ -100,7 +100,7 @@ namespace WebProjectTest.Controllers.SystemController
         /// <param name="storeId"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpGet]
         [OperationLogFilter("系统设置>门店设置", "修改门店状态", ActionType.Edit)]
         public async Task<ApiResponse<bool>> UpdateStoreStatusAsync(int storeId, byte status)
         {

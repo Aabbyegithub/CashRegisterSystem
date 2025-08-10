@@ -144,7 +144,7 @@
             删除角色
             </summary>
         </member>
-        <member name="M:WebProjectTest.Controllers.SystemController.RoleController.GetUserPermissionsAsync">
+        <member name="M:WebProjectTest.Controllers.SystemController.RoleController.GetUserPermissionsAsync(System.Int32)">
             <summary>
             获取菜单列表
             </summary>
@@ -209,7 +209,7 @@
             验证登陆
             </summary>
         </member>
-        <member name="M:WebProjectTest.Controllers.SystemController.UserController.#ctor(WebIServices.IBase.IRedisCacheService,WebIServices.IBase.ISqlHelper,WebServiceClass.Base.TokenService)">
+        <member name="M:WebProjectTest.Controllers.SystemController.UserController.#ctor(WebIServices.IBase.IRedisCacheService,WebIServices.IBase.ISqlHelper,WebServiceClass.Base.TokenService,WebIServices.IServices.SystemIServices.IUserServices)">
             <summary>
             验证登陆
             </summary>
