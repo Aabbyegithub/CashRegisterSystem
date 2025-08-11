@@ -4,25 +4,27 @@
       <div class="operation-bar">
         <div class="filter-group">
           <label class="filter-label">门店:</label>
-          <select v-model="selectedStore" class="store-select" @change="fetchStaffList">
-            <option value="">全部门店</option>
-            <option v-for="store in storeList" :key="store.id" :value="store.id">{{ store.name }}</option>
-          </select>
-          <input v-model="searchKeyword" placeholder="搜索姓名/账号/手机号" class="search-input" @keyup.enter="fetchStaffList" />
-          <button class="search-btn" @click="fetchStaffList">搜索</button>
+          <el-select v-model="selectedStore" class="store-select" @change="fetchStaffList">
+            <el-option value="">全部门店</el-option>
+            <el-option v-for="store in storeList" :key="store.id" :value="store.name">{{ store.name }}</el-option>
+          </el-select>
+          <el-input v-model="searchname" placeholder="搜索姓名" class="search-input" @keyup.enter="fetchStaffList" />
+          <el-input v-model="searchusername" placeholder="搜索账号" class="search-input" @keyup.enter="fetchStaffList" />
+          <el-input v-model="searchphone" placeholder="搜索手机号" class="search-input" @keyup.enter="fetchStaffList" />
+          <el-button class="search-btn" @click="fetchStaffList">搜索</el-button>
         </div>
         <div class="action-buttons">
-          <button class="primary-btn" @click="openEditModal()">新增员工</button>
-          <button class="danger-btn" :disabled="!selectedRows.length" @click="handleBatchDelete">批量删除</button>
+          <el-button class="primary-btn" @click="openEditModal()">新增员工</el-button>
+          <el-button class="danger-btn" :disabled="!selectedRows.length" @click="handleBatchDelete">批量删除</el-button>
         </div>
       </div>
     </div>
     <div class="staff-table-view">
       <div class="table-list">
         <el-table
-          :data="pagedStaffList"
+          :data="staffList"
           border
-          style="width: 100%"
+          style="width: 100%;height: 65vh;"
           :header-cell-style="{ background: '#f8f9fa', color: '#606266' }"
         >
           <el-table-column type="selection" width="55" />
@@ -49,7 +51,7 @@
       <div class="pagination-bar">
         <el-pagination
           layout="prev, pager, next, ->, sizes, jumper"
-          :total="staffList.length"
+          :total="total"
           :page-size="pageSize"
           :current-page="pageIndex"
           :prev-text="'<'"
@@ -72,6 +74,11 @@
         </el-form-item>
         <el-form-item label="手机号">
           <el-input v-model="editForm.phone" placeholder="请输入手机号" />
+        </el-form-item>
+        <el-form-item label="门店">
+          <el-select v-model="editForm.store_id" placeholder="请选择门店">
+            <el-option v-for="store in storeList" :key="store.id" :value="store.id" :label="store.name">{{ store.name }}</el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="职位">
           <el-select v-model="editForm.position" placeholder="请选择职位">
@@ -101,7 +108,9 @@
 
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted } from 'vue';
-import { ElSelect, ElInput, ElButton, ElTable, ElTableColumn, ElPagination, ElTag, ElDialog, ElForm, ElFormItem } from 'element-plus';
+import { ElSelect, ElInput, ElButton, ElTable, ElTableColumn, ElPagination, ElTag, ElDialog, ElForm, ElFormItem, ElMessage } from 'element-plus';
+import { getStoreList } from '../../../../api/login';
+import { addStaffApi, deleteStaffApi, editStaffApi, getStaffList } from '../../../../api/staffmang';
 
 const storeList = ref([
   { id: 0, name: '总部' },
@@ -109,43 +118,51 @@ const storeList = ref([
   { id: 2, name: '分店一' }
 ]);
 const selectedStore = ref('');
-const searchKeyword = ref('');
+const searchname = ref('');
+const searchusername = ref('');
+const searchphone = ref('');
 const staffList = ref<any[]>([]);
 const pageIndex = ref(1);
 const pageSize = ref(10);
 const showEditModal = ref(false);
 const editForm = reactive<any>({});
+const total = ref(10)
 
 // 新增缺失的参数和接口方法
 const selectAll = ref(false);
 const selectedRows = ref<any[]>([]);
 
-const pagedStaffList = computed(() => {
-  let filtered = staffList.value.filter((staff: { 
-    store_id: string;
-    name: string;
-    username: string;
-    phone?: string;
-  }) => {
-    const keyword = searchKeyword.value.trim();
-    return (
-      (!selectedStore.value || staff.store_id == selectedStore.value) &&
-      (!keyword || staff.name.indexOf(keyword) > -1 || staff.username.indexOf(keyword) > -1 || (staff.phone && staff.phone.indexOf(keyword) > -1))
-    );
-  });
-  const start = (pageIndex.value - 1) * pageSize.value;
-  return filtered.slice(start, start + pageSize.value);
-});
-
-function fetchStaffList() {
+async function fetchStaffList() {
   // TODO: 这里预留API调用，获取员工列表
+  await getStaffList(searchname.value,searchusername.value,searchphone.value,pageIndex.value,pageSize.value)
+  .then((res:any)=>{
+    if (res && res.response) {
+      staffList.value = res.response;
+      total.value = res.count || 0;
+    }
+  })
 }
-function handleSave() {
+async function handleSave() {
   // TODO: 这里预留API调用，保存员工信息
+  if (editForm.staff_id) {
+    // 编辑
+    const idx = staffList.value.findIndex(item => item.staff_id === editForm.staff_id);
+    if (idx > -1) {
+      await editStaffApi(editForm.staff_id,editForm.name,editForm.username,editForm.password,editForm.phone,editForm.position,editForm.store_id,editForm.status)
+      ElMessage.success('编辑成功');
+    }
+  } else {
+    // 新增
+    await addStaffApi(editForm.name,editForm.username,editForm.password,editForm.phone,editForm.position,editForm.store_id,editForm.status)
+    ElMessage.success('新增成功');
+  }
+  fetchStaffList()
   closeEditModal();
 }
-function handleDelete(staff:any) {
+async function handleDelete(staff:any) {
   // TODO: 这里预留API调用，删除员工
+    await deleteStaffApi([staff.staff_id])
+     fetchStaffList()
 }
 function toggleStatus(staff:any) {
   // TODO: 这里预留API调用，切换员工状态
@@ -160,7 +177,7 @@ Object.keys(staff).forEach(key => {
     editForm.password = '';
   } else {
 editForm.staff_id = '';
-editForm.store_id = selectedStore.value;
+editForm.store_id ='';
 editForm.username = '';
 editForm.password = '';
 editForm.name = '';
@@ -172,11 +189,6 @@ editForm.status = 1;
 function closeEditModal() {
   showEditModal.value = false;
   Object.keys(editForm).forEach(k => editForm[k] = '');
-}
-function handleReset() {
-  selectedStore.value = '';
-  searchKeyword.value = '';
-  fetchStaffList();
 }
 function handleSizeChange(val: number) {
   pageSize.value = val;
@@ -190,20 +202,35 @@ function toggleSelectAll() {
   // TODO: 全选/取消全选逻辑
 }
 
-function handleBatchDelete() {
+async function handleBatchDelete() {
   // TODO: 批量删除逻辑
+  const ids = selectedRows.value.map(item => item.staff_id);
+  await deleteStaffApi(ids)
+   fetchStaffList()
 }
 
 onMounted(() => {
   fetchStaffList();
+  fetchStoreList();
 });
+async function fetchStoreList() {
+  await getStoreList().then((res:any)=> {
+    if (res && res.response) {
+      var storedata = res.response.filter((item: any) => item.store_name !== '管理员');
+      storeList.value = storedata.map((item: any) => ({
+        id: item.store_id,
+        name: item.store_name
+      }));
+    }
+  });
+}
 </script>
 
 <style scoped>
 .staff-management-container {
-  padding: 20px;
-  background-color: #F5F7FA;
-  min-height: 100%;
+  padding: 10px;
+  /* background-color: #F5F7FA;
+  min-height: 100%; */
 }
 .filter-bar {
   display: flex;
@@ -253,16 +280,17 @@ onMounted(() => {
 }
 .filter-label {
   font-size: 14px;
+  width: 180px;
   color: #4E5969;
 }
 .store-select, .search-input {
-  padding: 4px 10px;
+  /* padding: 4px 10px;
   border-radius: 4px;
   border: 1px solid #DCDFE6;
-  font-size: 14px;
+  font-size: 14px; */
 }
 .search-btn {
-  background-color: #165DFF;
+  background-color: #22a2b6;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -275,7 +303,7 @@ onMounted(() => {
   gap: 10px;
 }
 .primary-btn {
-  background-color: #165DFF;
+  background-color: #22a2b6 !important;
   color: #fff;
   border: none;
   border-radius: 4px;

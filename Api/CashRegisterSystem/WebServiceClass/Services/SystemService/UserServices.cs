@@ -88,12 +88,15 @@ namespace WebServiceClass.Services.UserService
             }
         }
 
-        public async Task<List<sys_staff>> GetUserPageAsync(int page, int size, RefAsync<int> count,int? RoleId, int OrgId)
+        public async Task<List<sys_staff>> GetUserPageAsync(string? name, string? username, string? phone, int page, int size, RefAsync<int> count, int? RoleId, int OrgId)
         {
             //超级管理员（总店长）可以查看所有员工
             var Data = await _dal.Db.Queryable<sys_staff>()
                 .Includes(a=>a.staff_role).Includes(a=>a.staff_role.role)
                 .WhereIF(RoleId.HasValue && RoleId.Value != 1,a=>a.store_id == OrgId)
+                .WhereIF(!string.IsNullOrEmpty(name), a => a.name.Contains(name))
+                .WhereIF(!string.IsNullOrEmpty(username), a => a.username.Contains(username))
+                .WhereIF(!string.IsNullOrEmpty(phone), a => a.phone.Contains(phone))
                 .ToPageListAsync(page, size, count);
             return Data;
         }
@@ -141,7 +144,7 @@ namespace WebServiceClass.Services.UserService
             try
             {
                 var (hashpassword, salt) = PasswordHelper.HashPassword(User.password);
-                var istrue = await _dal.Db.Queryable<sys_staff>().FirstAsync(a => a.username == User.username && a.store_id == User.store_id && a.IsDelete == 0);
+                var istrue = await _dal.Db.Queryable<sys_staff>().FirstAsync(a => a.username == User.username && a.store_id == User.store_id);
                 if (istrue == null)
                 {
                     return Fail<string>("账号不存在！");
@@ -165,7 +168,15 @@ namespace WebServiceClass.Services.UserService
         {
             var menu =await _dal.Db.Queryable<sys_role_permission>().Includes(a=>a.permission)
                 .Where(a=> a.role_id == RoleId)
-                .Select(a=>a.permission).ToListAsync();
+                .Select(a=>new sys_permission()
+                {
+                    permission_id = a.permission.permission_id,
+                    permission_key = a.permission.permission_key,
+                    permission_name = a.permission.permission_name,
+                    permission_icon = a.permission.permission_icon,
+                    permission_router = a.permission.permission_router,
+                    parent_id = a.permission.parent_id
+                }).ToListAsync();
             return menu.Where(a=>a.parent_id == 0).Select(a=>new UserPermission
             {
                 groupKey = a.permission_key,

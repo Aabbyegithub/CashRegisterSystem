@@ -12,7 +12,7 @@
       <el-table
         :data="roles"
         border
-        style="width: 100%"
+        style="width: 100%;height: 70vh;"
         :header-cell-style="{ background: '#f8f9fa', color: '#606266' }"
       >
         <el-table-column
@@ -103,9 +103,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, nextTick } from 'vue'
 import { addRolePermissionApi, deleteRolePermissionApi, editRolePermissionApi, getAllPermissions, getRolePermissionList, saveRolePermissions } from '../../../../api/RolePermission'
 import { ElMessage } from 'element-plus'
+import { tr } from 'element-plus/es/locales.mjs'
 // 角色列表
 const roles = ref([
   { role_id: 1, role_name: '店长', description: '管理全店' },
@@ -152,6 +153,7 @@ async function saveRole() {
 async function deleteRole(row: any) {
   // TODO: 调用删除API
   await deleteRolePermissionApi(row.role_id)
+  ElMessage.success('删除成功');
   refreshRoles()
 }
 async function refreshRoles() {
@@ -162,7 +164,7 @@ async function refreshRoles() {
         role_name: item.role_name,
         description: item.description
       }));
-      total.value = res.response.total
+      total.value = res.count || 0;
     }
   })
 }
@@ -258,8 +260,16 @@ function getCheckedPermissionIds(tree:any[]) {
 }
 async function savePermissions() {
   // TODO: 保存权限分配API
-   const checkedIds = permissionTreeRef.value.getCheckedKeys(false, false);
-  await saveRolePermissions(currentRole.value.role_id,checkedIds)
+  await nextTick();
+  // 获取全选节点
+  const checkedIds = permissionTreeRef.value.getCheckedKeys(false, false); 
+  // 获取半选节点（父节点通常在半选列表中）
+  const halfCheckedIds = permissionTreeRef.value.getHalfCheckedKeys(false); 
+  // 合并结果（去重）
+  const allIds = [...new Set([...checkedIds, ...halfCheckedIds])]; 
+  //  const checkedIds = permissionTreeRef.value.getCheckedKeys(false, false);
+  console.log('保存权限分配', checkedIds);
+  await saveRolePermissions(currentRole.value.role_id,allIds)
   ElMessage.success('权限分配成功')
   showPermissionDialog.value = false
 }
@@ -274,7 +284,8 @@ function handlePageChange(val: number) {
 
 <style scoped>
 .table-management-container {
-  padding: 24px;
+  padding: 10px;
+  height: 84vh;
 }
 .filter-bar {
   display: flex;

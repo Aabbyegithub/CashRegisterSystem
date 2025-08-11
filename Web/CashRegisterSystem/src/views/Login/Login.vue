@@ -218,6 +218,9 @@ const submit = async () => {
     if (loginTab.value === 'account') {
       // 账号密码登录逻辑
       res = await loginApi(form.username, form.password,form.storeId)
+      // if (!res || !res.response || !res.response.token) {
+      //   throw new Error('登录失败，请检查账号或密码')
+      // }
     } else {
       // 短信登录逻辑，需调整 api 调用
       // res = await smsLoginApi(form.phone, form.smsCode)

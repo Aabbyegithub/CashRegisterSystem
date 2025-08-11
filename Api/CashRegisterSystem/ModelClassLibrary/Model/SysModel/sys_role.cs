@@ -28,7 +28,7 @@ namespace MyNamespace
            /// Default:
            /// Nullable:False
            /// </summary>           
-           public string role_name {get;set;} = null!;
+           public string? role_name {get;set;} = null!;
 
            /// <summary>
            /// Desc:角色描述

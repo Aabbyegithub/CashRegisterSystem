@@ -14,7 +14,7 @@ export function editRolePermissionApi(role_id:string,role_name:string,descriptio
 }
 //删除角色权限
 export function deleteRolePermissionApi( roleIds:number ) {
-    return axios.delete(`/api/Role/DeleteRole?roleId=${roleIds}` )
+    return axios.delete(`/api/Role/DeleteRole/${roleIds}` )
 }
 //获取所有权限
 export function getAllPermissions(role_id:string) {

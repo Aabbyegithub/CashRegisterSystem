@@ -68,6 +68,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElButton, ElDropdown, ElDropdownMenu, ElDropdownItem } from 'element-plus';
+import { logoutApi } from '../../../api/login';
 
 const router = useRouter();
 const currentRoute = ref("Orderhome");
@@ -83,11 +84,12 @@ const handleNavClick = (routeName: string) => {
 };
 
 // 处理下拉框命令（退出系统逻辑）
-const handleCommand = (command: string) => {
+const handleCommand = async (command: string) => {
   if (command === 'logout') {
     // 这里可补充实际退出逻辑，比如清除token、跳转到登录页等
     // 示例：跳转到登录页，假设登录页路由是 /login
     router.push('/login'); 
+    await logoutApi();
     // 如果有token等，可在此清除：localStorage.removeItem('token'); 
   }
 };

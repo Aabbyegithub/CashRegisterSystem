@@ -3,14 +3,14 @@
     <div class="page-header">
       <div class="operation-bar">
         <div class="filter-group">
-          <input v-model="searchStoreName" placeholder="搜索门店名称" class="search-input" @keyup.enter="fetchStoreList" />
-          <input v-model="searchaddress" placeholder="搜索门店地址" class="search-input" @keyup.enter="fetchStoreList" />
-          <input v-model="searchphone" placeholder="搜索门店电话" class="search-input" @keyup.enter="fetchStoreList" />
-          <button class="search-btn" @click="fetchStoreList">搜索</button>
+          <el-input v-model="searchStoreName" placeholder="搜索门店名称" class="search-input" @keyup.enter="fetchStoreList" />
+          <el-input v-model="searchaddress" placeholder="搜索门店地址" class="search-input" @keyup.enter="fetchStoreList" />
+          <el-input v-model="searchphone" placeholder="搜索门店电话" class="search-input" @keyup.enter="fetchStoreList" />
+          <el-button class="search-btn" @click="fetchStoreList">搜索</el-button>
         </div>
         <div class="action-buttons">
-          <button class="primary-btn" @click="openEditModal()">新增门店</button>
-          <button class="danger-btn" :disabled="!selectedRows.length" @click="handleBatchDelete">批量删除</button>
+          <el-button class="primary-btn" @click="openEditModal()">新增门店</el-button>
+          <el-button class="danger-btn" :disabled="!selectedRows.length" @click="handleBatchDelete">批量删除</el-button>
         </div>
       </div>
     </div>
@@ -19,7 +19,7 @@
         <el-table
           :data="storeList"
           border
-          style="width: 100%"
+          style="width: 100%;height: 68vh;"
           :header-cell-style="{ background: '#f8f9fa', color: '#606266' }"
           @selection-change="handleSelectionChange"
         >
@@ -216,9 +216,9 @@ onMounted(() => {
 <style scoped>
 /* 可复用员工管理的样式，或根据实际需求调整 */
 .store-management-container {
-  padding: 20px;
-  background-color: #F5F7FA;
-  min-height: 100%;
+  padding: 10px;
+  /* background-color: #F5F7FA; */
+  /* min-height: 100%; */
 }
 .page-header {
   margin-bottom: 24px;
@@ -236,13 +236,13 @@ onMounted(() => {
   gap: 12px;
 }
 .search-input {
-  padding: 4px 10px;
+  /* padding: 4px 10px;
   border-radius: 4px;
   border: 1px solid #DCDFE6;
-  font-size: 14px;
+  font-size: 14px; */
 }
 .search-btn {
-  background-color: #165DFF;
+  background-color: #22a2b6;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -255,7 +255,7 @@ onMounted(() => {
   gap: 10px;
 }
 .primary-btn {
-  background-color: #165DFF;
+  background-color: #22a2b6;
   color: #fff;
   border: none;
   border-radius: 4px;

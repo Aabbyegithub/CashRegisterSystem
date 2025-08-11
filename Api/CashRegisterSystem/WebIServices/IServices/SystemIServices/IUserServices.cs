@@ -33,7 +33,7 @@ namespace WebIServices.IServices.SystemIServices
         /// <param name="RoleId"></param>
         /// <param name="OrgId"></param>
         /// <returns></returns>
-        Task<List<sys_staff>> GetUserPageAsync(int page, int size, RefAsync<int> count, int? RoleId, int OrgId);
+        Task<List<sys_staff>> GetUserPageAsync(string? name, string? username, string? phone, int page, int size, RefAsync<int> count, int? RoleId, int OrgId);
 
         /// <summary>
         /// 创建一个用户

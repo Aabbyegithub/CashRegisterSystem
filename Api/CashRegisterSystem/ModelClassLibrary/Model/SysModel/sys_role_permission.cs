@@ -37,8 +37,8 @@ namespace MyNamespace
            /// </summary>           
            public long permission_id {get;set;}
 
-        [Navigate(NavigateType.OneToOne, nameof(permission_id))]//一对一 
-        public sys_permission permission { get; set; }
+        [Navigate(NavigateType.OneToOne,nameof(permission_id), nameof(sys_permission.permission_id))]//一对一 
+        public sys_permission? permission { get; set; }
 
 
     }

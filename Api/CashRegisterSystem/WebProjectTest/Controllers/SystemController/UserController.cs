@@ -75,6 +75,9 @@ namespace WebProjectTest.Controllers.SystemController
             {
                 // 提取 token
                 var token = authorizationHeader.Substring("Bearer ".Length).Trim();
+                var user = await dal.Db.Queryable<sys_staff>().FirstAsync(a=>a.staff_id == UserId);
+                user.last_login_time = DateTime.Now;
+                await dal.Db.Updateable(user).ExecuteCommandAsync();
                 try
                 {
                     await redisCacheService.RemoveAsync(token);
@@ -105,12 +108,12 @@ namespace WebProjectTest.Controllers.SystemController
         /// <returns></returns>
         [HttpGet]
         [OperationLogFilter("系统设置>员工管理", "用户分页查询", ActionType.Search)]
-        public async Task<ApiPageResponse<List<sys_staff>>> GetUserAsync(int page = 0, int size = 10)
+        public async Task<ApiPageResponse<List<sys_staff>>> GetUserAsync(string? name,string? username,string? phone, int page = 0, int size = 10)
         {
             RefAsync<int> count = 0;
             try
             {
-                var res = await _UserService.GetUserPageAsync(page, size, count, RoleId, OrgId);
+                var res = await _UserService.GetUserPageAsync(name,username,phone, page, size, count, RoleId, OrgId);
                 if (res != null)
                 {
                     return PageSuccess(res, count);
@@ -130,22 +133,22 @@ namespace WebProjectTest.Controllers.SystemController
         /// <param name="RoleId"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ApiPageResponse<List<UserPermission>>> GetUserMenuAsync(int RoleId)
+        public async Task<ApiPageResponse<List<UserPermission>>> GetUserMenuAsync()
         {
             RefAsync<int> count = 0;
             try
             {
-                var res = await _UserService.GetUserPermissionsAsync(RoleId);
+                var res = await _UserService.GetUserPermissionsAsync((int)RoleId);
                 if (res != null)
                 {
                     return PageSuccess(res, count);
                 }
                 return PageFail<List<UserPermission>>("获取数据失败");
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
-                return PageError<List<UserPermission>>("服务器错误");
+                return PageError<List<UserPermission>>($"服务器错误{e.Message}");
             }
         }
 

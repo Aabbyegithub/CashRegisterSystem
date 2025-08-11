@@ -83,6 +83,27 @@
         "summary": "获取用户数据",
         "parameters": [
           {
+            "name": "name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "username",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "phone",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "page",
             "in": "query",
             "description": "",
@@ -133,17 +154,6 @@
           "User"
         ],
         "summary": "获取员工权限",
-        "parameters": [
-          {
-            "name": "RoleId",
-            "in": "query",
-            "description": "",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -372,6 +382,13 @@
             "type": "string",
             "nullable": true
           },
+          "parent_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "isselect": {
+            "type": "boolean"
+          },
           "children": {
             "type": "array",
             "items": {
@@ -404,6 +421,13 @@
           "icon": {
             "type": "string",
             "nullable": true
+          },
+          "parent_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "isselect": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
