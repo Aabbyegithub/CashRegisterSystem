@@ -67,7 +67,7 @@ namespace WebProjectTest.Controllers.SystemController
         /// <returns></returns>
         [HttpGet]
         [OperationLogFilter("账号登出", $"人员退出系统", ActionType.Exit)]
-        public async Task logoutAsync()
+        public async Task<ApiResponse<string>> logoutAsync()
         {
             var authorizationHeader = Request.Headers["Authorization"].ToString();
 
@@ -81,6 +81,7 @@ namespace WebProjectTest.Controllers.SystemController
                 try
                 {
                     await redisCacheService.RemoveAsync(token);
+                   
                 }
                 catch (Exception)
                 {
@@ -98,6 +99,7 @@ namespace WebProjectTest.Controllers.SystemController
                 }
 
             }
+             return Success("退出成功");
 
         }
         /// <summary>

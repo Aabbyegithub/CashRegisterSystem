@@ -176,7 +176,7 @@ namespace WebServiceClass.Services.UserService
                     permission_icon = a.permission.permission_icon,
                     permission_router = a.permission.permission_router,
                     parent_id = a.permission.parent_id
-                }).ToListAsync();
+                }).OrderBy(a=>a.permission_id).ToListAsync();
             return menu.Where(a=>a.parent_id == 0).Select(a=>new UserPermission
             {
                 groupKey = a.permission_key,

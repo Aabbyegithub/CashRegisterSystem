@@ -181,9 +181,10 @@ const handleDelete = (order: Order) => { console.log('删除订单', order); };
 .order-list {
   display: flex;
   flex-wrap: wrap;
- column-gap: 20px; /* 水平间距保持20px */
+  column-gap: 20px; /* 水平间距保持20px */
   row-gap: 15px;
-  height: calc(100% - 100px); /* 减去顶部导航栏的高度 */
+  height: 77vh; /* 减去顶部导航栏的高度 */
+  overflow-y: auto;
 }
 .order-card {
   width: 230px;
@@ -227,9 +228,12 @@ const handleDelete = (order: Order) => { console.log('删除订单', order); };
   margin-top: 10px;
 }
 .pagination-bar {
-  margin-bottom: 10px;
-  text-align: right;
-  padding: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 12px 16px 0 0;
+  font-size: 14px;
 }
 /* .el-pagination {
   display: flex;

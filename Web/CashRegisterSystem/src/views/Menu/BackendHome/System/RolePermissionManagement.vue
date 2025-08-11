@@ -106,7 +106,6 @@
 import { ref, reactive, onMounted, nextTick } from 'vue'
 import { addRolePermissionApi, deleteRolePermissionApi, editRolePermissionApi, getAllPermissions, getRolePermissionList, saveRolePermissions } from '../../../../api/RolePermission'
 import { ElMessage } from 'element-plus'
-import { tr } from 'element-plus/es/locales.mjs'
 // 角色列表
 const roles = ref([
   { role_id: 1, role_name: '店长', description: '管理全店' },

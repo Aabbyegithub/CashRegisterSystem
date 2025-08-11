@@ -1,23 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebProjectTest\\WebProjectTest.csproj": {}
+    "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebProjectTest\\WebProjectTest.csproj": {}
   },
   "projects": {
-    "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\ModelClassLibrary.csproj": {
+    "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\ModelClassLibrary.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\ModelClassLibrary.csproj",
+        "projectUniqueName": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\ModelClassLibrary.csproj",
         "projectName": "ModelClassLibrary",
-        "projectPath": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\ModelClassLibrary.csproj",
-        "packagesPath": "C:\\Users\\Aabby\\.nuget\\packages\\",
-        "outputPath": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\obj\\",
+        "projectPath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\ModelClassLibrary.csproj",
+        "packagesPath": "C:\\Users\\luqiang\\.nuget\\packages\\",
+        "outputPath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "D:\\安装\\DevexPress\\Components\\Offline Packages",
+          "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Aabby\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\luqiang\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 24.2.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -27,7 +30,9 @@
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "D:\\安装\\DevexPress\\Components\\System\\Components\\Packages": {},
+          "http://api.nuget.org/v3/index.json": {},
+          "https://www.nuget.org/api/v2/": {}
         },
         "frameworks": {
           "net8.0": {
@@ -44,8 +49,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.300"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -76,24 +80,27 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebIServices\\WebIServices.csproj": {
+    "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebIServices\\WebIServices.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebIServices\\WebIServices.csproj",
+        "projectUniqueName": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebIServices\\WebIServices.csproj",
         "projectName": "WebIServices",
-        "projectPath": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebIServices\\WebIServices.csproj",
-        "packagesPath": "C:\\Users\\Aabby\\.nuget\\packages\\",
-        "outputPath": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebIServices\\obj\\",
+        "projectPath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebIServices\\WebIServices.csproj",
+        "packagesPath": "C:\\Users\\luqiang\\.nuget\\packages\\",
+        "outputPath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebIServices\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "D:\\安装\\DevexPress\\Components\\Offline Packages",
+          "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Aabby\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\luqiang\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 24.2.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -103,14 +110,16 @@
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "D:\\安装\\DevexPress\\Components\\System\\Components\\Packages": {},
+          "http://api.nuget.org/v3/index.json": {},
+          "https://www.nuget.org/api/v2/": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\ModelClassLibrary.csproj": {
-                "projectPath": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\ModelClassLibrary.csproj"
+              "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\ModelClassLibrary.csproj": {
+                "projectPath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\ModelClassLibrary.csproj"
               }
             }
           }
@@ -124,8 +133,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.300"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -146,24 +154,27 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebProjectTest\\WebProjectTest.csproj": {
+    "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebProjectTest\\WebProjectTest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebProjectTest\\WebProjectTest.csproj",
+        "projectUniqueName": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebProjectTest\\WebProjectTest.csproj",
         "projectName": "WebProjectTest",
-        "projectPath": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebProjectTest\\WebProjectTest.csproj",
-        "packagesPath": "C:\\Users\\Aabby\\.nuget\\packages\\",
-        "outputPath": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebProjectTest\\obj\\",
+        "projectPath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebProjectTest\\WebProjectTest.csproj",
+        "packagesPath": "C:\\Users\\luqiang\\.nuget\\packages\\",
+        "outputPath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebProjectTest\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "D:\\安装\\DevexPress\\Components\\Offline Packages",
+          "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Aabby\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\luqiang\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 24.2.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -173,23 +184,25 @@
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "D:\\安装\\DevexPress\\Components\\System\\Components\\Packages": {},
+          "http://api.nuget.org/v3/index.json": {},
+          "https://www.nuget.org/api/v2/": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\ModelClassLibrary.csproj": {
-                "projectPath": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\ModelClassLibrary.csproj"
+              "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\ModelClassLibrary.csproj": {
+                "projectPath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\ModelClassLibrary.csproj"
               },
-              "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebIServices\\WebIServices.csproj": {
-                "projectPath": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebIServices\\WebIServices.csproj"
+              "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebIServices\\WebIServices.csproj": {
+                "projectPath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebIServices\\WebIServices.csproj"
               },
-              "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebServiceClass\\WebServiceClass.csproj": {
-                "projectPath": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebServiceClass\\WebServiceClass.csproj"
+              "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebServiceClass\\WebServiceClass.csproj": {
+                "projectPath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebServiceClass\\WebServiceClass.csproj"
               },
-              "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebTaskClass\\WebTaskClass.csproj": {
-                "projectPath": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebTaskClass\\WebTaskClass.csproj"
+              "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebTaskClass\\WebTaskClass.csproj": {
+                "projectPath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebTaskClass\\WebTaskClass.csproj"
               }
             }
           }
@@ -203,8 +216,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.300"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -274,24 +286,27 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebServiceClass\\WebServiceClass.csproj": {
+    "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebServiceClass\\WebServiceClass.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebServiceClass\\WebServiceClass.csproj",
+        "projectUniqueName": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebServiceClass\\WebServiceClass.csproj",
         "projectName": "WebServiceClass",
-        "projectPath": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebServiceClass\\WebServiceClass.csproj",
-        "packagesPath": "C:\\Users\\Aabby\\.nuget\\packages\\",
-        "outputPath": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebServiceClass\\obj\\",
+        "projectPath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebServiceClass\\WebServiceClass.csproj",
+        "packagesPath": "C:\\Users\\luqiang\\.nuget\\packages\\",
+        "outputPath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebServiceClass\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "D:\\安装\\DevexPress\\Components\\Offline Packages",
+          "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Aabby\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\luqiang\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 24.2.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -301,17 +316,19 @@
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "D:\\安装\\DevexPress\\Components\\System\\Components\\Packages": {},
+          "http://api.nuget.org/v3/index.json": {},
+          "https://www.nuget.org/api/v2/": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebIServices\\WebIServices.csproj": {
-                "projectPath": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebIServices\\WebIServices.csproj"
+              "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebIServices\\WebIServices.csproj": {
+                "projectPath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebIServices\\WebIServices.csproj"
               },
-              "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebTaskClass\\WebTaskClass.csproj": {
-                "projectPath": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebTaskClass\\WebTaskClass.csproj"
+              "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebTaskClass\\WebTaskClass.csproj": {
+                "projectPath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebTaskClass\\WebTaskClass.csproj"
               }
             }
           }
@@ -325,8 +342,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.300"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -381,24 +397,27 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebTaskClass\\WebTaskClass.csproj": {
+    "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebTaskClass\\WebTaskClass.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebTaskClass\\WebTaskClass.csproj",
+        "projectUniqueName": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebTaskClass\\WebTaskClass.csproj",
         "projectName": "WebTaskClass",
-        "projectPath": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebTaskClass\\WebTaskClass.csproj",
-        "packagesPath": "C:\\Users\\Aabby\\.nuget\\packages\\",
-        "outputPath": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebTaskClass\\obj\\",
+        "projectPath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebTaskClass\\WebTaskClass.csproj",
+        "packagesPath": "C:\\Users\\luqiang\\.nuget\\packages\\",
+        "outputPath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebTaskClass\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "D:\\安装\\DevexPress\\Components\\Offline Packages",
+          "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Aabby\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\luqiang\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 24.2.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -408,14 +427,16 @@
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "D:\\安装\\DevexPress\\Components\\System\\Components\\Packages": {},
+          "http://api.nuget.org/v3/index.json": {},
+          "https://www.nuget.org/api/v2/": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebIServices\\WebIServices.csproj": {
-                "projectPath": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebIServices\\WebIServices.csproj"
+              "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebIServices\\WebIServices.csproj": {
+                "projectPath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebIServices\\WebIServices.csproj"
               }
             }
           }
@@ -429,8 +450,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.300"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -461,7 +481,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

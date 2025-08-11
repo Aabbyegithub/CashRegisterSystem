@@ -10,7 +10,7 @@ export function getStoreList() {
 
 //退出系统
 export function logoutApi() {
-    return axios.post('/api/User/logout')
+    return axios.get('/api/User/logout')
 }
 //获取菜单
 export function getMenuList() {

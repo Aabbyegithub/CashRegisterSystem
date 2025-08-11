@@ -121,8 +121,12 @@ function viewDetail(row: any) {
   margin-top: 16px;
 }
 .pagination-bar {
-  margin-top: 16px;
-  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 12px 16px 0 0;
+  font-size: 14px;
 }
 .cancel-btn {
   margin-right: 10px;

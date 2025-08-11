@@ -59,6 +59,7 @@
               placeholder="请输入密码" 
               prefix-icon="el-icon-lock"
               :show-password="true"
+              @keyup.enter="submit"
             />
           </el-form-item>
           <el-form-item>
@@ -91,6 +92,7 @@
               placeholder="请输入验证码" 
               style="width:100%"
               prefix-icon="el-icon-message"
+               @keyup.enter="submit"
             >
               <template #append>
                 <el-button 
