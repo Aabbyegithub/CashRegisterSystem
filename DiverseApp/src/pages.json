@@ -3,13 +3,15 @@
 		{
 			"path": "pages/order/index",
 			"style": {
-				"navigationBarTitleText": "订单"
+				"navigationBarTitleText": "订单",
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/menu/index",
 			"style": {
-				"navigationBarTitleText": "点餐"
+				"navigationBarTitleText": "点餐",
+				"navigationStyle": "custom"
 			}
 		},
 		{
@@ -61,5 +63,11 @@
 			"selectedIconPath": "static/Frame(7).png",
 			"text": "我的"
 		}]
+	},
+	"easycom": {
+		"autoscan": true,
+		"custom": {
+			"^u-(.*)": "uview-plus/components/u-$1/u-$1.vue"
+		}
 	}
 }

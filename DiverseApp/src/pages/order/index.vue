@@ -1,13 +1,31 @@
 <template>
   <view class="order-container">
+    <CustomHeader
+      :title="'订单管理'"
+      :searchValue="searchValue"
+      :searchPlaceholder="'桌号'"
+      @update:searchValue="val => searchValue = val"
+      @search="handleSearch"
+    />
     <!-- 订单列表 -->
     <view class="order-list">
       <view v-for="order in orders" :key="order.id" class="order-item">
         <view class="order-header">
           <text class="table-number">桌号{{ order.tableNumber }}</text>
-          <text :class="['status', order.status === '待支付' ? 'pending' : 'completed']">
-            {{ order.status }}
-          </text>
+          <view class="status">
+            <image
+              v-if="order.status === '待支付'"
+              src="/src/static/列表图标.png"
+              class="status-icon"
+              mode="aspectFit"
+            />
+            <image
+              v-else
+              src="/src/static/列表图标(1).png"
+              class="status-icon"
+              mode="aspectFit"
+            />
+          </view>
         </view>
 
         <view class="order-info">
@@ -30,46 +48,41 @@
         </view>
 
         <view class="order-actions">
-          <nut-button
+          <u-button
             v-if="order.status === '待支付'"
             type="default"
-            size="small"
+            size="mini"
             @click="urgeOrder(order.id)"
-          >
-            催单
-          </nut-button>
-          <nut-button
+            custom-style="margin:5rpx;border:none;box-shadow:none;background-color:transparent;width:30px;font-size: 28rpx;"
+          >催单</u-button>
+          <u-button
             v-if="order.status === '待支付'"
             type="default"
-            size="small"
+            size="mini"
             @click="addDish(order.id)"
-          >
-            加菜
-          </nut-button>
-          <nut-button
+            custom-style="margin:5rpx;border:none;box-shadow:none;background-color:transparent;width:30px;font-size: 28rpx;"
+          >加菜</u-button>
+          <u-button
             v-if="order.status === '待支付'"
-            type="primary"
-            size="small"
+            type="default"
+            size="mini"
             @click="checkout(order.id)"
-          >
-            结账
-          </nut-button>
-          <nut-button
+            custom-style="margin:5rpx;border:none;box-shadow:none;background-color:transparent;width:30px;font-size: 28rpx;"
+          >结账</u-button>
+          <u-button
             v-if="order.status === '已结清'"
             type="default"
-            size="small"
+            size="mini"
             @click="viewDetails(order.id)"
-          >
-            详情
-          </nut-button>
-          <nut-button
+            custom-style="margin:5rpx;border:none;box-shadow:none;background-color:transparent;width:30px;font-size: 28rpx;"
+          >详情</u-button>
+          <u-button
             v-if="order.status === '已结清'"
-            type="danger"
-            size="small"
+            type="default"
+            size="mini"
             @click="deleteOrder(order.id)"
-          >
-            删除
-          </nut-button>
+            custom-style="margin:5rpx;border:none;box-shadow:none;background-color:transparent;width:30px;font-size: 28rpx;"
+          >删除</u-button>
         </view>
       </view>
     </view>
@@ -78,6 +91,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import CustomHeader from '@/components/CustomHeader.vue'
 
 // 搜索框值
 const searchValue = ref('')
@@ -155,6 +169,13 @@ const viewDetails = (id: number) => {
   // uni.navigateTo({ url: `/pages/orderDetails/index?id=${id}` })
 }
 
+const handleSearch = (value: string) => {
+  console.log('搜索:', value)
+  // 这里可以添加搜索逻辑
+  // 比如过滤订单列表
+  orders.value = orders.value.filter(order => order.tableNumber.includes(value))
+}
+
 const deleteOrder = (id: number) => {
   uni.showModal({
     title: '提示',
@@ -174,7 +195,7 @@ const deleteOrder = (id: number) => {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #ffffff;
 }
 
 .header {
@@ -208,11 +229,12 @@ const deleteOrder = (id: number) => {
 }
 
 .order-item {
-  background-color: #ffffff;
+  background-color: #FBFBFB;
   border-radius: 15rpx;
   padding: 30rpx;
   margin-bottom: 20rpx;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e5e5;
 }
 
 .order-header {
@@ -253,12 +275,14 @@ const deleteOrder = (id: number) => {
 
 .info-item {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .label {
   font-size: 28rpx;
   color: #888888;
+  margin-right: 10px;
 }
 
 .value {
@@ -268,13 +292,26 @@ const deleteOrder = (id: number) => {
 
 .order-actions {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   justify-content: flex-end;
   gap: 10rpx;
-  flex-wrap: wrap;
 }
 
 /* 适配NutUI按钮 */
-.nut-button {
-  margin: 5rpx;
+::v-deep wx-button::after {
+  border: none !important; 
+  /* 把原有的边框、阴影等样式都清掉，按需调整 */
+  box-shadow: none !important; 
+  content: none; /* 若不需要伪元素内容，直接去掉 */
+}
+.u-button--mini{
+  min-width: 20px !important;
+  padding: 0 !important
+}
+.status-icon{
+  width: 80px;
+  height: 35px;
+  margin-right: -25px;
 }
 </style>

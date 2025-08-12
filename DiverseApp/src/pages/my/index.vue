@@ -100,7 +100,7 @@
   /* margin: 0 20rpx; */
   margin-top: -140px;
   overflow: hidden;
-  height:calc(100vh - 550rpx); ;
+  height:calc(100vh - 550rpx);
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
   z-index: 999;
 }
