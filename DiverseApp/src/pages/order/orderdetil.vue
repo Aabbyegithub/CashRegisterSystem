@@ -9,17 +9,24 @@
       <view class="order-table-name">
         {{ tableName }}
         <template v-if="mergedTable"> <span class="order-table-merge">原{{ mergedTable }}并入{{ tableName }}</span></template>
+        <template v-if="changeTable"> <span class="order-table-merge">原{{ changeTable }}换到{{ tableName }}</span></template>
       </view>
       <view class="order-table-actions">
-        <u-button size="mini" custom-style="margin-right:20rpx;background:#f5f5f5;color:#333;border:1px solid #eee" @click="showMergeDialog = true">并台</u-button>
-        <u-button size="mini" custom-style="background:#f5f5f5;color:#333;border:1px solid #eee" @click="showChangeDialog = true">换桌</u-button>
+      <u-button size="mini" custom-style="margin-right:20rpx;background:#f5f5f5;color:#333;border:1px solid #eee" @click="showMergeDialog = true">
+        <image src="/src/static/payFrame(6).png" style="width:15px;height:15px;vertical-align:middle;margin-right:8px;" />
+        并台
+      </u-button>
+      <u-button size="mini" custom-style="margin-right:20rpx;background:#f5f5f5;color:#333;border:1px solid #eee" @click="showChangeDialog = true">
+        <image src="/src/static/payFrame(5).png" style="width:15px;height:15px;vertical-align:middle;margin-right:8px;" />
+        换桌
+      </u-button>
       </view>
     </view>
     <view class="order-list">
       <view v-for="item in orderList" :key="item.id" class="order-item">
         <view class="order-item-name">{{ item.name }} <span class="order-item-spec">{{ item.spec }}</span></view>
         <view class="order-item-price">￥{{ item.price }}</view>
-        <view v-if="item.detail" class="order-item-detail" v-html="item.detail"></view>
+        <!-- <view v-if="item.detail" class="order-item-detail" v-html="item.detail"></view> -->
       </view>
       <view class="order-coupon">
         <view class="order-coupon-label">选择优惠券 <span style="color:#F04216">·</span></view>
@@ -35,8 +42,8 @@
         <image :src="pay.icon" class="order-pay-icon" />
         <view class="order-pay-label">{{ pay.label }}</view>
         <view class="order-pay-check">
-          <u-icon v-if="payType === pay.value" name="checkbox-mark" size="28" custom-style="color:#F04216" />
-          <u-icon v-else name="checkbox-blank" size="28" custom-style="color:#ccc" />
+          <u-icon v-if="payType === pay.value" name="checkmark-circle-fill" size="28" custom-style="color:#F04216" />
+          <u-icon v-else name="checkmark-circle" size="28" custom-style="color:#ccc" />
         </view>
       </view>
     </view>
@@ -77,6 +84,7 @@
 import { ref } from 'vue'
 const tableName = ref('A2桌')
 const mergedTable = ref('')
+const changeTable = ref('')
 const showMergeDialog = ref(false)
 const showChangeDialog = ref(false)
 const mergeTables = ref([
@@ -91,16 +99,19 @@ const orderList = ref([
   { id: 1, name: '麻婆豆腐', spec: '微辣*1', price: 18 },
   { id: 2, name: '小炒黄牛肉', spec: '中辣、不加葱*1', price: 48 },
   { id: 3, name: '清蒸鲈鱼', spec: '味淡*1', price: 16 },
-  { id: 4, name: '小炒黄牛肉', spec: '中辣、不加葱*1', price: 12, detail: '-香辣蟹（微辣）*1<br>-蒜蓉油麦菜*1<br>-米饭*2' }
+  { id: 4, name: '小炒黄牛肉', spec: '中辣、不加葱*1', price: 12 },
+  { id: 5, name: '清蒸鲈鱼', spec: '味淡*1', price: 16 },
+  { id: 6, name: '小炒黄牛肉', spec: '中辣、不加葱*1', price: 12 },
+  { id: 7, name: '清蒸鲈鱼', spec: '味淡*1', price: 16 },
 ])
 const total = ref(71)
 const payType = ref('wechat')
 const payList = ref([
-  { value: 'wechat', label: '微信支付', icon: '/static/wechat.png' },
-  { value: 'balance', label: '余额支付', icon: '/static/balance.png' },
-  { value: 'alipay', label: '支付宝', icon: '/static/alipay.png' },
-  { value: 'bank', label: '银行卡', icon: '/static/bank.png' },
-  { value: 'cash', label: '现金', icon: '/static/cash.png' }
+  { value: 'wechat', label: '微信支付', icon: '/static/Vector.png' },
+  { value: 'balance', label: '余额支付', icon: '/static/payFrame(1).png' },
+  { value: 'alipay', label: '支付宝', icon: '/static/payFrame(2).png' },
+  { value: 'bank', label: '银行卡', icon: '/static/payFrame(3).png' },
+  { value: 'cash', label: '现金', icon: '/static/payFrame(4).png' }
 ])
 function goBack() {
   uni.navigateBack()
@@ -109,7 +120,9 @@ function selectPay(val: string) {
   payType.value = val
 }
 function addDish() {
-  uni.showToast({ title: '加菜功能待开发', icon: 'none' })
+  uni.switchTab({
+    url: '../menu/index'
+  })
 }
 function checkout() {
   uni.showToast({ title: '结账成功', icon: 'success' })
@@ -123,6 +136,7 @@ function confirmMerge() {
 }
 function confirmChange() {
   if (!changeSelect.value) return
+  changeTable.value = tableName.value
   tableName.value = changeSelect.value
   mergedTable.value = ''
   showChangeDialog.value = false
@@ -179,6 +193,7 @@ function confirmChange() {
   border-radius: 16rpx;
   margin: 20rpx 20rpx 0 20rpx;
   padding: 30rpx 20rpx 20rpx 20rpx;
+  max-height: 300px;
 }
 .order-item {
   display: flex;
@@ -211,7 +226,7 @@ function confirmChange() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 20rpx;
+  margin-top: 20px;
   font-size: 26rpx;
 }
 .order-coupon-label {
@@ -247,8 +262,8 @@ function confirmChange() {
   cursor: pointer;
 }
 .order-pay-icon {
-  width: 40px;
-  height: 40px;
+  width: 20px;
+  height: 20px;
   margin-right: 20rpx;
 }
 .order-pay-label {

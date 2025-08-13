@@ -12,27 +12,27 @@
         </view>
         <view class="form-row">
           <view class="form-label">真实姓名</view>
-          <u-picker :columns="[names]" v-model="form.name" custom-style="width:70%" />
+          <u-input v-model="form.name" custom-style="width:70%;background:#ffffff;border: 1px solid #666666;" />
         </view>
         <view class="form-row">
           <view class="form-label">身份证件</view>
-          <u-input v-model="form.idcard" custom-style="width:70%" placeholder="请输入身份证号" />
+          <u-input v-model="form.idcard" custom-style="width:70%;border: 1px solid #666666;" placeholder="请输入身份证号" />
         </view>
         <view class="form-row required">
           <view class="form-label">收款银行账号</view>
-          <u-input v-model="form.banknum" custom-style="width:70%" placeholder="请输入银行账号" />
+          <u-input v-model="form.banknum" custom-style="width:70%;border: 1px solid #666666;" placeholder="请输入银行账号" />
         </view>
         <view class="form-row required">
           <view class="form-label">银行类别</view>
-          <u-input v-model="form.banktype" custom-style="width:70%" placeholder="请输入银行类别" />
+          <u-input v-model="form.banktype" custom-style="width:70%;border: 1px solid #666666;" placeholder="请输入银行类别" />
         </view>
         <view class="form-row required">
           <view class="form-label">开户支行</view>
-          <u-input v-model="form.branch" custom-style="width:70%" placeholder="请输入开户支行" />
+          <u-input v-model="form.branch" custom-style="width:70%;border: 1px solid #666666;" placeholder="请输入开户支行" />
         </view>
         <view class="form-row">
           <view class="form-label">邮箱</view>
-          <u-input v-model="form.email" custom-style="width:70%" placeholder="请输入邮箱" />
+          <u-input v-model="form.email" custom-style="width:70%;border: 1px solid #666666;" placeholder="请输入邮箱" />
         </view>
       </view>
       <view class="form-btns">
@@ -45,9 +45,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-const names = ['李美丽','张三','王五']
 const form = ref({
-  name: ['李美丽'], 
+  name: '李美丽', 
   idcard: '610481199526354236',
   banknum: '621356895456620',
   banktype: '招商银行',

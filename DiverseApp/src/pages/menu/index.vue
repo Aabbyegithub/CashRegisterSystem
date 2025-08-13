@@ -20,7 +20,20 @@
       </view>
       <view class="dish-list">
         <view v-for="dish in dishes" :key="dish.id" class="dish-item">
-          <image :src="dish.img" class="dish-img" />
+         <u-image
+            :src="dish.img"
+            width="80px"
+            height="80px"
+            radius="10rpx"
+            lazy-load
+          >
+            <template #loading>
+              <image src=""/>
+            </template>
+            <template #error>
+              <image src="https://jebben.cn/posts/%E7%BD%91%E9%A1%B5%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD%E5%A4%B1%E8%B4%A5%E6%95%99%E4%BD%A05%E7%A7%8D%E6%96%B9%E6%B3%95%E5%AE%8C%E7%BE%8E%E5%BA%94%E5%AF%B9/cover.png" style="width:80px;height:80px;" />
+            </template>
+          </u-image>
           <view class="dish-info">
             <view class="dish-title">{{ dish.name }}</view>
             <view class="dish-desc">{{ dish.desc }}</view>
@@ -88,7 +101,7 @@
             <u-icon name="plus" size="20" @click="changeQty(1)" custom-style="margin-left:10px" />
           </view>
         </view>
-        <u-button custom-style="width:90%;margin:30px auto 0;border-radius: 50rpx;background:#0E8A9E;color:#ffffff;margin-bottom:-30px" @click="addToCart">加入购物车</u-button>
+        <u-button custom-style="width:90%;margin:30px auto 0;border-radius: 50rpx;background:#0E8A9E;color:#ffffff;" @click="addToCart">加入购物车</u-button>
       </view>
     </u-popup>
     <!-- 购物车弹窗 -->
@@ -177,10 +190,10 @@ const categories = ref([
   { id: 7, name: '酒水饮料', active: false }
 ])
 const dishes = ref([
-  { id: 1, name: '糖醋里脊', desc: '招牌特色菜', price: 28,spece:0, img: 'https://www.bing.com/th/id/OIP.9CNcIETjYp45mB7tEPFXyQHaE9?w=262&h=211&c=8&rs=1&qlt=70&o=7&cb=thws4&dpr=1.8&pid=3.1&rm=3' },
-  { id: 2, name: '麻婆豆腐', desc: '100+热销家常菜', price: 18,spece:0, img: 'https://www.bing.com/th/id/OIP.s6dpfSeTuglKhh1UbDEZDQHaE8?w=260&h=211&c=8&rs=1&qlt=70&o=7&cb=thws4&dpr=1.8&pid=3.1&rm=3' },
-  { id: 3, name: '小炒黄牛肉', desc: '99%好评 老价位回归', price: 58,spece:1, img: 'https://www.bing.com/th/id/OIP.lelIcoytlO5TOExlcyArQwHaLG?w=160&h=211&c=8&rs=1&qlt=70&o=7&cb=thws4&dpr=1.8&pid=3.1&rm=3' },
-  { id: 4, name: '孜然肉片', desc: '香辣孜然，嫩滑', price: 28,spece:0 ,img: 'https://www.bing.com/th/id/OIP.A8Z8G7pKoyCODX4DlvSBfgHaHa?w=187&h=211&c=8&rs=1&qlt=70&o=7&cb=thws4&dpr=1.8&pid=3.1&rm=3' },
+  { id: 1, name: '糖醋里脊', desc: '招牌特色菜', price: 28,spece:0, img: 'https://vcg02.cfp.cn/creative/vcg/nowater800/new/VCG211430891214.jpg?x-oss-process=image/format,webp' },
+  { id: 2, name: '麻婆豆腐', desc: '100+热销家常菜', price: 18,spece:0, img: 'https://vcg02.cfp.cn/creative/vcg/nowater800/new/VCG211430891214.jpg?x-oss-process=image/format,webp' },
+  { id: 3, name: '小炒黄牛肉', desc: '99%好评 老价位回归', price: 58,spece:1, img: 'https://vcg02.cfp.cn/creative/vcg/nowater800/new/VCG211430891214.jpg?x-oss-process=image/format,webp' },
+  { id: 4, name: '孜然肉片', desc: '香辣孜然，嫩滑', price: 28,spece:0 ,img: 'https://vcg02.cfp.cn/creative/vcg/nowater800/new/VCG211430891214.jpg?x-oss-process=image/format,webp' },
   { id: 5, name: '手撕包菜', desc: '99%好评 老价位回归', price: 18,spece:1, img: 'https://vcg02.cfp.cn/creative/vcg/nowater800/new/VCG211430891214.jpg?x-oss-process=image/format,webp' }
 ])
 
@@ -402,6 +415,7 @@ function submitOrder() {
 }
 .dish-info {
   flex: 1;
+  margin-left: 10px;
 }
 .dish-title {
   font-size: 30rpx;
@@ -522,7 +536,6 @@ function submitOrder() {
   align-items: center;
   justify-content: space-between;
   margin-top: 20px;
-  margin-bottom: -20px;
 }
 .cart-total {
   display: flex;

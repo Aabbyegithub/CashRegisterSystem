@@ -154,7 +154,9 @@ const urgeOrder = (id: number) => {
 const addDish = (id: number) => {
   console.log('加菜:', id)
   // 这里可以跳转到加菜页面
-  // uni.navigateTo({ url: `/pages/addDish/index?id=${id}` })
+  uni.switchTab({
+    url: `../menu/index?id=${id}`
+  })
 }
 
 const checkout = (id: number) => {
@@ -226,6 +228,7 @@ const deleteOrder = (id: number) => {
   flex: 1;
   padding: 20rpx;
   overflow-y: auto;
+  height: calc(100vh - 120rpx); /* 减去头部高度 */
 }
 
 .order-item {

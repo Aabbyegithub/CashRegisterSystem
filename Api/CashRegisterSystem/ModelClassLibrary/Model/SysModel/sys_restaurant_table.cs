@@ -79,5 +79,12 @@ namespace MyNamespace
            /// </summary>           
            public DateTime updated_at {get;set;}
 
+        /// <summary>
+        /// Desc:订单id
+        /// Default:CURRENT_TIMESTAMP
+        /// Nullable:False
+        /// </summary>   
+        public int? order_id {get;set;}
+
     }
 }

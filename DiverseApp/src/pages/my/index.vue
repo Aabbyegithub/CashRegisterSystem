@@ -22,16 +22,6 @@
           <image src="/static/右.png" mode="aspectFit"></image>
         </view>
       </view>
-      
-      <view class="setting-item">
-        <view class="item-icon">
-          <image src="/static/Frame(9).png" mode="aspectFit"></image>
-        </view>
-        <view class="item-text">数据维护</view>
-        <view class="item-arrow">
-          <image src="/static/右.png" mode="aspectFit"></image>
-        </view>
-      </view>
     </view>
   </view>
 </template>

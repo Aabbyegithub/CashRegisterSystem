@@ -33,6 +33,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 // 桌台数据示例
 const tables = ref([
   { id: 1, name: 'A1', status: 'free', people: 0, max: 5 },
@@ -76,7 +77,25 @@ function confirmOpen() {
   selectedTable.value.status = 'used'
   selectedTable.value.people = openPeople.value
   showOpenDialog.value = false
+  uni.switchTab({
+    url: `../menu/index?id=${selectedTable.value.id}`
+  })
 }
+
+// 自动弹窗开台逻辑，扫码进入页面带参数 id 时自动弹窗
+onLoad((options: any) => {
+  // 兼容扫码参数为 id 或 tableId
+  const tableId = options.id || options.tableId
+  if (tableId) {
+    // 查找对应桌台，且仅空闲桌台可弹窗
+    const table = tables.value.find(t => String(t.id) === String(tableId) && t.status === 'free')
+    if (table) {
+      selectedTable.value = table
+      openPeople.value = 1
+      showOpenDialog.value = true
+    }
+  }
+})
 </script>
 
 <style>
