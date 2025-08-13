@@ -3329,28 +3329,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\luqiang\\.nuget\\packages\\": {},
-    "D:\\安装\\DevexPress\\Components\\Offline Packages": {},
-    "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\Aabby\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\ModelClassLibrary.csproj",
+      "projectUniqueName": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\ModelClassLibrary.csproj",
       "projectName": "ModelClassLibrary",
-      "projectPath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\ModelClassLibrary.csproj",
-      "packagesPath": "C:\\Users\\luqiang\\.nuget\\packages\\",
-      "outputPath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\obj\\",
+      "projectPath": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\ModelClassLibrary.csproj",
+      "packagesPath": "C:\\Users\\Aabby\\.nuget\\packages\\",
+      "outputPath": "D:\\LQProject\\WaiBaoPro\\CashRegisterSystem\\Api\\CashRegisterSystem\\ModelClassLibrary\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "D:\\安装\\DevexPress\\Components\\Offline Packages",
-        "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\luqiang\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 24.2.config",
+        "C:\\Users\\Aabby\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -3360,9 +3355,7 @@
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "C:\\Program Files\\dotnet\\library-packs": {},
-        "D:\\安装\\DevexPress\\Components\\System\\Components\\Packages": {},
-        "http://api.nuget.org/v3/index.json": {},
-        "https://www.nuget.org/api/v2/": {}
+        "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
@@ -3379,7 +3372,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net8.0": {
@@ -3410,16 +3404,8 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1803",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "正在通过 “HTTP” 源“http://api.nuget.org/v3/index.json”运行“restore”操作。将来的版本中将删除非 HTTPS 访问权限。请考虑迁移到 “HTTPS” 源。"
-    }
-  ]
+  }
 }

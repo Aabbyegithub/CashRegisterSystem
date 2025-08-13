@@ -1,6 +1,12 @@
 {
 	"pages": [ 
 		{
+			"path": "pages/table/index",
+			"style": {
+				"navigationBarTitleText": "桌台"
+			}
+		},
+		{
 			"path": "pages/order/index",
 			"style": {
 				"navigationBarTitleText": "订单",
@@ -21,11 +27,18 @@
 			}
 		},
 		{
-			"path": "pages/table/index",
+			"path": "pages/my/bankcard",
 			"style": {
-				"navigationBarTitleText": "桌台"
+				"navigationBarTitleText": "银行卡设置"
+			}
+		},
+		{
+			"path": "pages/order/orderdetil",
+			"style": {
+				"navigationBarTitleText": "订单结账"
 			}
 		}
+
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

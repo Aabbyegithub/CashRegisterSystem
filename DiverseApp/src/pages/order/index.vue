@@ -160,13 +160,13 @@ const addDish = (id: number) => {
 const checkout = (id: number) => {
   console.log('结账:', id)
   // 这里可以跳转到结账页面
-  // uni.navigateTo({ url: `/pages/checkout/index?id=${id}` })
+   uni.navigateTo({ url: `/pages/order/orderdetil?id=${id}` })
 }
 
 const viewDetails = (id: number) => {
   console.log('查看详情:', id)
   // 这里可以跳转到详情页面
-  // uni.navigateTo({ url: `/pages/orderDetails/index?id=${id}` })
+   uni.navigateTo({ url: `/pages/order/orderdetil?id=${id}` })
 }
 
 const handleSearch = (value: string) => {
@@ -198,7 +198,7 @@ const deleteOrder = (id: number) => {
   background-color: #ffffff;
 }
 
-.header {
+/* .header {
   background-color: #0080ff;
   padding: 20rpx;
   position: relative;
@@ -220,7 +220,7 @@ const deleteOrder = (id: number) => {
   color: #ffffff;
   font-size: 40rpx;
   font-weight: bold;
-}
+} */
 
 .order-list {
   flex: 1;

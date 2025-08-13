@@ -13,7 +13,7 @@
 
     <!-- 设置选项列表 -->
     <view class="settings-list">
-      <view class="setting-item">
+      <view class="setting-item" @click="gobankcard">
         <view class="item-icon">
           <image src="/static/Frame(8).png" mode="aspectFit"></image>
         </view>
@@ -37,6 +37,12 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
+function gobankcard() {
+  uni.navigateTo({
+    url: '/pages/my/bankcard'
+  })
+}
 // 可以添加必要的数据和方法
 </script>
 
