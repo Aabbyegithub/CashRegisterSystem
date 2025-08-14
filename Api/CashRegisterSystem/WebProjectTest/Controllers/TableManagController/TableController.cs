@@ -1,17 +1,104 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MyNamespace;
+using SqlSugar;
 using WebIServices.IBase;
 using WebIServices.IServices.SystemIServices;
+using WebIServices.IServices.TableMangeIServices;
+using WebProjectTest.Common.Filter;
 using WebProjectTest.Controllers.SystemController;
+using static ModelClassLibrary.Model.CommonEnmFixts;
+using static WebProjectTest.Common.Message;
 
 namespace WebProjectTest.Controllers.TableManagController
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize]
-    public class TableController(IRedisCacheService redisCacheService, IStoreServices _StoreServices) : AutherController(redisCacheService)
+    public class TableController(IRedisCacheService redisCacheService, ITableServices _TableServices) : AutherController(redisCacheService)
     {
 
+        /// <summary>
+        /// 获取餐桌列表
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [OperationLogFilter("系统设置>角色管理", "菜品管理查询", ActionType.Search)]
+        public async Task<ApiPageResponse<List<sys_restaurant_table>>> GetTableListAsync(int? tableType, int? status, string? tableCode, int page = 0, int size = 10)
+        {
+            RefAsync<int> count = 0;
+            try
+            {
+                var res = await _TableServices.GetTableListAsync(tableType, status, tableCode, OrgId, page, size, count);
+                if (res != null)
+                {
+                    return PageSuccess(res, count);
+                }
+                return PageFail<List<sys_restaurant_table>>("获取数据失败");
+            }
+            catch (Exception)
+            {
+
+                return PageError<List<sys_restaurant_table>>("服务器错误");
+            }
+        }
+
+        /// <summary>
+        /// 添加餐桌
+        /// </summary>
+        [HttpPost]
+        [OperationLogFilter("系统设置>角色管理", "新增桌台", ActionType.Add)]
+        public async Task<ApiResponse<bool>> AddTableAsync([FromBody] sys_restaurant_table sys_Table)
+        {
+            try
+            {
+                await _TableServices.AddTableAsync(sys_Table);
+                return Success(true);
+            }
+            catch (Exception ex)
+            {
+                return Error<bool>("添加失败" + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 删除餐桌
+        /// </summary>
+        [HttpPost]
+        [OperationLogFilter("系统设置>角色管理", "删除桌台", ActionType.Delete)]
+        public async Task<ApiResponse<bool>> DeleteTableAsync([FromBody] List<int> tableIds)
+        {
+            try
+            {
+                await _TableServices.DeleteTableAsync(tableIds);
+                return Success(true);
+            }
+            catch (Exception e)
+            {
+
+                return Error<bool>("删除失败" + e.Message);
+            }
+        }
+        /// <summary>
+        /// 修改餐桌
+        /// </summary>
+        [HttpPost]
+        [OperationLogFilter("系统设置>角色管理", "修改桌台", ActionType.Edit)]
+        public async Task<ApiResponse<bool>> UpdateTableAsync([FromBody] sys_restaurant_table sys_Table)
+        {
+            try
+            {
+                await _TableServices.UpdateTableAsync(sys_Table);
+                return Success(true);
+            }
+            catch (Exception e)
+            {
+
+                return Error<bool>("修改失败" + e.Message);
+            }
+        }
     }
 }

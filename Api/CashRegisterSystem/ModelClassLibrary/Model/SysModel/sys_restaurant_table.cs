@@ -49,7 +49,7 @@ namespace MyNamespace
            /// Default:
            /// Nullable:False
            /// </summary>           
-           public string table_type {get;set;} = null!;
+           public int? table_type {get;set;} = null!;
 
            /// <summary>
            /// Desc:状态（1-空闲；2-占用；3-预订；4-清洁中）

@@ -28,7 +28,7 @@ namespace MyNamespace
            /// Default:
            /// Nullable:False
            /// </summary>           
-           public long store_id {get;set;}
+           public long? store_id {get;set;}
 
            /// <summary>
            /// Desc:分类名称（热菜/凉菜/主食）

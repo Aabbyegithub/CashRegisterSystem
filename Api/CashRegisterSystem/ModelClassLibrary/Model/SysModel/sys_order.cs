@@ -161,7 +161,14 @@ namespace MyNamespace
            /// Default:CURRENT_TIMESTAMP
            /// Nullable:False
            /// </summary>           
-           public DateTime updated_at {get;set;}
+           public DateTime updated_at {get;set;} 
+
+        /// <summary>
+        /// Desc:用餐人数
+        /// Default:CURRENT_TIMESTAMP
+        /// Nullable:False
+        /// </summary>      
+        public int? table_capacity {get;set;}
 
     }
 }

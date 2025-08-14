@@ -23,7 +23,7 @@ namespace WebIServices.IServices.TableMangeIServices
         /// <param name="size"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        Task<ApiPageResponse<List<sys_restaurant_table>>> GetTableListAsync(int? tableType,int? status,string?tableCode, int orgId,int page,int size,RefAsync<int>count);
+        Task<List<sys_restaurant_table>> GetTableListAsync(int? tableType,int? status,string?tableCode, int orgId,int page,int size,RefAsync<int>count);
 
         /// <summary>
         /// 添加桌台

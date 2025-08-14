@@ -107,5 +107,12 @@ namespace MyNamespace
            /// </summary>           
            public DateTime updated_at {get;set;}
 
+        /// <summary>
+        /// Desc:所属门店ID（支持单店特色菜）
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public long? store_id { get; set; }
+
     }
 }

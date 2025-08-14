@@ -2,20 +2,24 @@
   <div class="table-management-container">
     <!-- 筛选区域 -->
     <div class="filter-bar">
-      <label>桌台类型：</label>
-      <el-select
-        v-model="selectedType"
-        placeholder="请选择桌台类型"
-        class="filter-item"
-        :options="typeOptions"
-      />
+      <!-- <label>桌台类型：</label>
+      <el-select v-model="selectedType" placeholder="请选择桌台类型" class="filter-item">
+        <el-option
+          v-for="item in typeOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select> -->
       <label>桌台状态：</label>
-      <el-select
-        v-model="selectedStatus"
-        placeholder="请选择桌台状态"
-        class="filter-item"
-        :options="statusOptions"
-      />
+      <el-select v-model="selectedStatus" placeholder="请选择桌台状态" class="filter-item">
+        <el-option
+          v-for="item in statusOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
       <label>桌台编号：</label>
       <el-input
         v-model="tableNo"
@@ -126,10 +130,24 @@
           <el-input v-model="form.tableNo" />
         </el-form-item>
         <el-form-item label="桌台类型">
-          <el-select v-model="form.tableType" :options="typeOptions" />
+          <el-select v-model="form.tableType" placeholder="请选择桌台类型">
+            <el-option
+              v-for="item in typeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>  
         </el-form-item>
         <el-form-item label="桌台状态">
-          <el-select v-model="form.status" :options="statusOptions" />
+          <el-select v-model="form.status" placeholder="请选择桌台状态">
+            <el-option
+              v-for="item in statusOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="容纳人数">
           <el-input v-model.number="form.capacity" />
@@ -151,10 +169,24 @@
           <el-input v-model="form.tableNo" disabled />
         </el-form-item>
         <el-form-item label="桌台类型">
-          <el-select v-model="form.tableType" :options="typeOptions" />
+          <el-select v-model="form.tableType" >
+            <el-option
+              v-for="item in typeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="桌台状态">
-          <el-select v-model="form.status" :options="statusOptions" />
+          <el-select v-model="form.status">
+            <el-option
+              v-for="item in statusOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="容纳人数">
           <el-input v-model.number="form.capacity" />
@@ -196,9 +228,10 @@ const typeOptions = ref<Options[]>([
 ]);
 const statusOptions = ref<Options[]>([
   { label: '全部', value: '' },
-  { label: '空闲', value: '空闲' },
-  { label: '占用', value: '占用' },
-  { label: '维护中', value: '维护中' },
+  { label: '空闲', value: '1' },
+  { label: '占用', value: '2' },
+  { label: '预订', value: '3' },
+  { label: '清洁中', value: '4' },
 ]);
 
 // 表格数据
@@ -339,7 +372,12 @@ const handleEditConfirm = () => {
   height: 83%;
 }
 .pagination-bar {
-  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 12px 16px 0 0;
+  font-size: 14px;
 }
 .Btn-Save{
   align-self: flex-start;

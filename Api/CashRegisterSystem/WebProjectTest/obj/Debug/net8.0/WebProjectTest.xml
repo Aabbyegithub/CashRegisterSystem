@@ -65,6 +65,69 @@
             <param name="tableNames"></param>
             <returns></returns>
         </member>
+        <member name="M:WebProjectTest.Controllers.DishController.DishcategoryController.GetDishCategoryListAsync(System.Int32,System.Int32)">
+            <summary>
+            获取菜品分类列表
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.DishController.DishcategoryController.AddDishCategoryAsync(MyNamespace.sys_dish_category)">
+            <summary>
+            添加菜品分类
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.DishController.DishcategoryController.DeleteDishCategoryAsync(System.Collections.Generic.List{System.Int32})">
+            <summary>
+            删除菜品分类
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.DishController.DishcategoryController.UpdateDishCategoryAsync(MyNamespace.sys_dish_category)">
+            <summary>
+            修改菜品分类
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.DishController.DishController.GetDishListAsync(System.String,System.Nullable{System.Int32},System.Int32,System.Int32)">
+            <summary>
+            获取角色列表
+            </summary>
+            <param name="page"></param>
+            <param name="size"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.DishController.DishController.AddDishAsync(MyNamespace.sys_dish)">
+            <summary>
+            添加菜品
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.DishController.DishController.DeleteDishAsync(System.Collections.Generic.List{System.Int32})">
+            <summary>
+            删除菜品
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.DishController.DishController.UpdateDishAsync(MyNamespace.sys_dish)">
+            <summary>
+            修改菜品
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.OrderController.OrderController.GetOrderListAsync(System.Int32,System.Int32)">
+            <summary>
+            获取订单列表
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.OrderController.OrderController.AddOrderAsync(MyNamespace.sys_order)">
+            <summary>
+            添加新订单
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.OrderController.OrderController.DeleteOrderAsync(System.Collections.Generic.List{System.Int32})">
+            <summary>
+            删除订单
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.OrderController.OrderController.UpdateOrderAsync(MyNamespace.sys_order)">
+            <summary>
+            修改订单
+            </summary>
+        </member>
         <member name="T:WebProjectTest.Controllers.SystemController.AutherController">
             <summary>
             获取服务器和人员信息
@@ -262,6 +325,29 @@
         <member name="M:WebProjectTest.Controllers.SystemController.UserController.DeleteAsync(System.Collections.Generic.List{System.Int32})">
             <summary>
             注销账号
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.TableManagController.TableController.GetTableListAsync(System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.Int32,System.Int32)">
+            <summary>
+            获取餐桌列表
+            </summary>
+            <param name="page"></param>
+            <param name="size"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.TableManagController.TableController.AddTableAsync(MyNamespace.sys_restaurant_table)">
+            <summary>
+            添加餐桌
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.TableManagController.TableController.DeleteTableAsync(System.Collections.Generic.List{System.Int32})">
+            <summary>
+            删除餐桌
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.TableManagController.TableController.UpdateTableAsync(MyNamespace.sys_restaurant_table)">
+            <summary>
+            修改餐桌
             </summary>
         </member>
         <member name="M:WebProjectTest.Controllers.TaskController.TaskController.StartTaskAsync">
