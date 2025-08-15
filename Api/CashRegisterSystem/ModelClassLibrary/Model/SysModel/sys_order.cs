@@ -66,7 +66,7 @@ namespace MyNamespace
            public byte source_type {get;set;}
 
            /// <summary>
-           /// Desc:状态（1-待支付；2-已下单；3-已完成；4-已取消；5-挂单）
+           /// Desc:状态（1-待支付；2-已下单；3-已完成；4-已取消；5-挂单；6-预订）
            /// Default:
            /// Nullable:False
            /// </summary>           
@@ -169,6 +169,13 @@ namespace MyNamespace
         /// Nullable:False
         /// </summary>      
         public int? table_capacity {get;set;}
+
+        /// <summary>
+        /// Desc:预订id
+        /// Default:CURRENT_TIMESTAMP
+        /// Nullable:False
+        /// </summary>   
+        public int? reservation_id {get;set;}
 
     }
 }

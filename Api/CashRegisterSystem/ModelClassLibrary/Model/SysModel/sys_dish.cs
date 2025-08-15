@@ -93,19 +93,19 @@ namespace MyNamespace
            /// </summary>           
            public int cooking_time {get;set;}
 
-           /// <summary>
-           /// Desc:
-           /// Default:CURRENT_TIMESTAMP
-           /// Nullable:False
-           /// </summary>           
-           public DateTime created_at {get;set;}
+        /// <summary>
+        /// Desc:
+        /// Default:CURRENT_TIMESTAMP
+        /// Nullable:False
+        /// </summary>           
+        public DateTime created_at { get; set; } = DateTime.Now;
 
-           /// <summary>
-           /// Desc:
-           /// Default:CURRENT_TIMESTAMP
-           /// Nullable:False
-           /// </summary>           
-           public DateTime updated_at {get;set;}
+        /// <summary>
+        /// Desc:
+        /// Default:CURRENT_TIMESTAMP
+        /// Nullable:False
+        /// </summary>           
+        public DateTime updated_at { get; set; } = DateTime.Now;
 
         /// <summary>
         /// Desc:所属门店ID（支持单店特色菜）

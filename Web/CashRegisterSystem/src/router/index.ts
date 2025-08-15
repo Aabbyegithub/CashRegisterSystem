@@ -53,6 +53,11 @@ const routes = [
             name: 'DishCategory',
             component: () => import('../views/Menu/BackendHome/Dish/DishCategoryManagement.vue')
           },
+          {
+            path: 'OrderList',
+            name: 'OrderList',
+            component: () => import('../views/Menu/BackendHome/Order/OrderManager.vue')
+          },
           { 
             path: 'StaffManagement', 
             name: 'StaffManagement',

@@ -6,7 +6,7 @@ using static WebProjectTest.Common.Message;
 
 namespace WebProjectTest.Controllers.SystemController
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class ImgController : ControllerBase
     {

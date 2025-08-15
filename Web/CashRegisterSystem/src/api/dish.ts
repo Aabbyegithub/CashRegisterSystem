@@ -12,7 +12,7 @@ export function getDishCategoryList() {
 }
 
 // 添加菜品
-export function addDish(data: {
+export function addDish(sys_Dish: {
     category_id: string;
     dish_name: string;
     price: number;
@@ -25,7 +25,7 @@ export function addDish(data: {
     cooking_time: number;
     store_id: null;
 }) {
-    return axios.post('/api/Dish/AddDish', data);
+    return axios.post('/api/Dish/AddDish', sys_Dish);
 }
 
 // 删除菜品
@@ -34,7 +34,7 @@ export function deleteDish(ids: number[]) {
 }
 
 // 更新菜品
-export function updateDish(data: {
+export function updateDish(sys_Dish: {
     dish_id: number;
     category_id: string;
     dish_name: string;
@@ -48,5 +48,5 @@ export function updateDish(data: {
     cooking_time: number;
     store_id: null;
 }) {
-    return axios.post('/api/Dish/UpdateDish', data);
+    return axios.post('/api/Dish/UpdateDish', sys_Dish);
 }

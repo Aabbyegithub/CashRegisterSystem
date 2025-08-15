@@ -5,7 +5,7 @@
       <label>菜品名称：</label>
       <el-input v-model="dishName" placeholder="请输入菜品名称" class="filter-item" clearable />
       <label>菜品分类：</label>
-      <el-select v-model="selectedType" placeholder="请选择菜品分类" class="filter-item">
+      <el-select v-model="selectedType" placeholder="请选择菜品分类" class="filter-item" clearable>
         <el-option v-for="store in dishcatageList" :key="store.id" :value="store.id" :label="store.name">{{ store.name }}</el-option>
       </el-select>
       <el-button @click="handleReset" style="margin-left: auto;">重置</el-button>
@@ -58,10 +58,17 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="description" label="描述" align="center" />
+        <el-table-column prop="description" label="描述" align="center" show-overflow-tooltip/>
         <el-table-column prop="image_url" label="图片" align="center">
           <template #default="scope">
-            <img v-if="scope.row.image_url" :src="scope.row.image_url" alt="菜品图片" style="width:40px;height:40px;object-fit:cover;" />
+            <el-image
+            v-if="scope.row.image_url"
+            :src="scope.row.image_url"
+            style="width:40px;height:40px;object-fit:cover;cursor:pointer"
+            :preview-src-list="[scope.row.image_url]"
+            fit="cover"
+            :preview-teleported="true"
+          />
           </template>
         </el-table-column>
         <el-table-column prop="status" label="状态" align="center">
@@ -137,13 +144,13 @@
         <el-form-item label="图片">
           <el-upload
             class="avatar-uploader"
-            action="/api/upload/image"
+            :action="uploadUrl"
             :show-file-list="false"
             :on-success="handleUploadSuccess"
             :before-upload="beforeUpload"
           >
             <img v-if="form.image_url" :src="form.image_url" class="avatar" style="width: 80px; height: 80px; object-fit: cover;" />
-            <el-icon v-else class="avatar-uploader-icon"><i class="el-icon-plus"></i></el-icon>
+            <u-icon v-else class="avatar-uploader-icon" name="plus" size="50"></u-icon>
           </el-upload>
         </el-form-item>
         <el-form-item label="状态">
@@ -202,13 +209,13 @@
         <el-form-item label="图片">
           <el-upload
             class="avatar-uploader"
-            action="/api/upload/image" 
+            action="api/Img/UpImg" 
             :show-file-list="false"
             :on-success="handleUploadSuccess"
             :before-upload="beforeUpload"
           >
             <img v-if="form.image_url" :src="form.image_url" class="avatar" style="width: 80px; height: 80px; object-fit: cover;" />
-            <el-icon v-else class="avatar-uploader-icon"><i class="el-icon-plus"></i></el-icon>
+            <u-icon v-else class="avatar-uploader-icon" name="plus" size="50"></u-icon>
           </el-upload>
         </el-form-item>
         <el-form-item label="状态">
@@ -234,7 +241,8 @@ import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { getDishList, addDish, updateDish, deleteDish, getDishCategoryList } from '../../../../api/dish';
 import { getStoreList } from '../../../../api/login';
-
+import config from '../../../../../public/config';
+const uploadUrl = config.apiBaseUrl + '/api/Img/UpImg';
 const dishName = ref('');
 const dishList = ref<any[]>([]);
 const total = ref(0);
@@ -257,8 +265,6 @@ const form = ref({
   image_url: '',
   status: 1,
   cooking_time: 0,
-  created_at: '',
-  updated_at: '',
   store_id: null
 });
 
@@ -333,8 +339,6 @@ const openAddDialog = () => {
     image_url: '',
     status: 1,
     cooking_time: 0,
-    created_at: '',
-    updated_at: '',
     store_id: null
   };
   addDialogVisible.value = true;
@@ -366,10 +370,9 @@ const handleDelete = async (row: any) => {
 };
 
 // 图片上传相关
-function handleUploadSuccess(response: any) {
-  // 假设后端返回 { url: '图片地址' }
-  if (response && response.url) {
-    form.value.image_url = response.url;
+function handleUploadSuccess(res: any) {
+  if (res && res.response) {
+    form.value.image_url = res.response;
     ElMessage.success('图片上传成功');
   } else {
     ElMessage.error('图片上传失败');

@@ -227,6 +227,10 @@ namespace WebProjectTest
                 // 可以在这里添加其他Swagger UI的配置
             });
             string basePath = OperatingSystem.IsWindows() ? _windowsBasePath : _linuxBasePath;
+            if (!Directory.Exists(basePath))
+            {
+                Directory.CreateDirectory(basePath);
+            }
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(basePath),
