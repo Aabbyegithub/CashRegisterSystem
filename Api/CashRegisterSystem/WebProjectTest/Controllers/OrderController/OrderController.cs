@@ -47,15 +47,7 @@ namespace WebProjectTest.Controllers.OrderController
         [OperationLogFilter("订单管理", "新增订单", ActionType.Add)]
         public async Task<ApiResponse<bool>> AddOrderAsync([FromBody] sys_order sys_Order)
         {
-            try
-            {
-                await _OrderServices.AddOrderAsync(sys_Order);
-                return Success(true);
-            }
-            catch (Exception ex)
-            {
-                return Fail<bool>("添加订单失败: " + ex.Message);
-            }
+           return await _OrderServices.AddOrderAsync(sys_Order);
         }
 
         /// <summary>
@@ -65,15 +57,7 @@ namespace WebProjectTest.Controllers.OrderController
         [OperationLogFilter("订单管理", "删除订单", ActionType.Delete)]
         public async Task<ApiResponse<bool>> DeleteOrderAsync([FromBody] List<int> orderIds)
         {
-            try
-            {
-                await _OrderServices.DeleteOrderAsync(orderIds);
-                return Success(true);
-            }
-            catch (Exception ex)
-            {
-                return Fail<bool>("删除订单失败: " + ex.Message);
-            }
+           return  await _OrderServices.DeleteOrderAsync(orderIds);
         }
 
         /// <summary>
@@ -83,15 +67,7 @@ namespace WebProjectTest.Controllers.OrderController
         [OperationLogFilter("订单管理", "修改订单", ActionType.Edit)]
         public async Task<ApiResponse<bool>> UpdateOrderAsync([FromBody] sys_order sys_Order)
         {
-            try
-            {
-                await _OrderServices.UpdateOrderAsync(sys_Order);
-                return Success(true);
-            }
-            catch (Exception ex)
-            {
-                return Fail<bool>("修改订单失败: " + ex.Message);
-            }
+            return  await _OrderServices.UpdateOrderAsync(sys_Order);
         }
     }
 }

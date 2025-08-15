@@ -46,11 +46,19 @@ namespace WebServiceClass.Services.DishServices
             }
         }
 
-        public async Task<List<sys_dish_category>> GetDishCategoryListAsync(int orgId, int page, int size, RefAsync<int> count)
+        public async Task<List<sys_dish_category>> GetDishCategoryListAsync(string name, int orgId, int page, int size, RefAsync<int> count)
         {
             return await _dal.Db.Queryable<sys_dish_category>()
-                .Where(x => x.store_id ==null || x.store_id == orgId)
+                .WhereIF(!string.IsNullOrEmpty(name),a=>a.category_name.Contains(name))
+                .WhereIF(orgId !=1,a=>a.store_id == orgId || a.store_id == null)
                 .ToPageListAsync(page, size, count);
+        }
+
+        public async Task<List<sys_dish_category>> GetDishCategoryListAsync(int orgId)
+        {
+            return await _dal.Db.Queryable<sys_dish_category>()
+                .WhereIF(orgId != 1, a => a.store_id == orgId || a.store_id == null)
+                .ToListAsync();
         }
 
         public async Task<ApiResponse<bool>> UpdateDishCategoryAsync(sys_dish_category dishCategory)

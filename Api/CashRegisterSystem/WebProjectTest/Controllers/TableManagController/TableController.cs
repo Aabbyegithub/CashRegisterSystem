@@ -53,15 +53,8 @@ namespace WebProjectTest.Controllers.TableManagController
         [OperationLogFilter("系统设置>角色管理", "新增桌台", ActionType.Add)]
         public async Task<ApiResponse<bool>> AddTableAsync([FromBody] sys_restaurant_table sys_Table)
         {
-            try
-            {
-                await _TableServices.AddTableAsync(sys_Table);
-                return Success(true);
-            }
-            catch (Exception ex)
-            {
-                return Error<bool>("添加失败" + ex.Message);
-            }
+
+            return  await _TableServices.AddTableAsync(sys_Table);
         }
 
         /// <summary>
@@ -71,16 +64,9 @@ namespace WebProjectTest.Controllers.TableManagController
         [OperationLogFilter("系统设置>角色管理", "删除桌台", ActionType.Delete)]
         public async Task<ApiResponse<bool>> DeleteTableAsync([FromBody] List<int> tableIds)
         {
-            try
-            {
-                await _TableServices.DeleteTableAsync(tableIds);
-                return Success(true);
-            }
-            catch (Exception e)
-            {
 
-                return Error<bool>("删除失败" + e.Message);
-            }
+            return  await _TableServices.DeleteTableAsync(tableIds);
+
         }
         /// <summary>
         /// 修改餐桌
@@ -89,16 +75,8 @@ namespace WebProjectTest.Controllers.TableManagController
         [OperationLogFilter("系统设置>角色管理", "修改桌台", ActionType.Edit)]
         public async Task<ApiResponse<bool>> UpdateTableAsync([FromBody] sys_restaurant_table sys_Table)
         {
-            try
-            {
-                await _TableServices.UpdateTableAsync(sys_Table);
-                return Success(true);
-            }
-            catch (Exception e)
-            {
+            return  await _TableServices.UpdateTableAsync(sys_Table);
 
-                return Error<bool>("修改失败" + e.Message);
-            }
         }
     }
 }

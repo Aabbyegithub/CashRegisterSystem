@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Quartz;
@@ -20,6 +21,8 @@ namespace WebProjectTest
 {
     public class Startup
     {
+        private static readonly string _windowsBasePath = AppSettings.GetConfig("UpFile:Windows");
+        private static readonly string _linuxBasePath = AppSettings.GetConfig("UpFile:Linux");
         public Startup(IConfiguration configuration) 
         {
             Configuration = configuration;
@@ -223,7 +226,12 @@ namespace WebProjectTest
                 //c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
                 // 可以在这里添加其他Swagger UI的配置
             });
-
+            string basePath = OperatingSystem.IsWindows() ? _windowsBasePath : _linuxBasePath;
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(basePath),
+                RequestPath = "" // 直接映射到根路径，根据实际需求调整
+            });
             // 配置全局异常处理
             app.Use(async (context, next) =>
             {

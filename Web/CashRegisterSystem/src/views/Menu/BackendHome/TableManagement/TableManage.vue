@@ -54,13 +54,22 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="tableNo"
-          label="桌台编号"
+          prop="store_id"
+          label="门店名称"
           align="center"
-        />
-        <el-table-column
+        >
+          <template #default="scope">
+            {{ storeList.find(store => store.id === scope.row.store_id)?.name || scope.row.store_id }}
+          </template>
+        </el-table-column>
+        <!-- <el-table-column
           prop="tableType"
           label="桌台类型"
+          align="center"
+        /> -->
+        <el-table-column
+          prop="table_no"
+          label="桌台编号"
           align="center"
         />
         <el-table-column
@@ -69,10 +78,13 @@
           align="center"
         >
           <template #default="scope">
-            <el-tag 
-              :type="scope.row.status === '空闲' ? 'success' : (scope.row.status === '占用' ? 'warning' : 'info')"
-            >
-              {{ scope.row.status }}
+            <el-tag :type="
+              scope.row.status === 1 ? 'success' :
+              scope.row.status === 2 ? 'warning' :
+              scope.row.status === 3 ? 'info' :
+              scope.row.status === 4 ? 'danger' : undefined
+            ">
+              {{ statusOptions.find((a: { value: any; }) => a.value === scope.row.status)?.label || scope.row.status }}
             </el-tag>
           </template>
         </el-table-column>
@@ -126,10 +138,15 @@
     <!-- 新增弹窗 -->
     <el-dialog v-model="addDialogVisible" width="500" title="新增桌台">
       <el-form :model="form" label-width="120px">
-        <el-form-item label="桌台编号">
-          <el-input v-model="form.tableNo" />
+        <el-form-item label="门店">
+          <el-select v-model="form.store_id" placeholder="请选择门店">
+            <el-option v-for="store in storeList" :key="store.id" :value="store.id" :label="store.name">{{ store.name }}</el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="桌台类型">
+        <el-form-item label="桌台编号">
+          <el-input v-model="form.table_no" />
+        </el-form-item>
+        <!-- <el-form-item label="桌台类型">
           <el-select v-model="form.tableType" placeholder="请选择桌台类型">
             <el-option
               v-for="item in typeOptions"
@@ -138,7 +155,7 @@
               :value="item.value"
             />
           </el-select>  
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="桌台状态">
           <el-select v-model="form.status" placeholder="请选择桌台状态">
             <el-option
@@ -165,10 +182,15 @@
     <!-- 编辑弹窗 -->
     <el-dialog v-model="editDialogVisible"width="500" title="编辑桌台">
       <el-form :model="form" label-width="120px">
-        <el-form-item label="桌台编号">
-          <el-input v-model="form.tableNo" disabled />
+        <el-form-item label="门店">
+          <el-select v-model="form.store_id" placeholder="请选择门店">
+            <el-option v-for="store in storeList" :key="store.id" :value="store.id" :label="store.name">{{ store.name }}</el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="桌台类型">
+        <el-form-item label="桌台编号">
+          <el-input v-model="form.table_no" disabled />
+        </el-form-item>
+        <!-- <el-form-item label="桌台类型">
           <el-select v-model="form.tableType" >
             <el-option
               v-for="item in typeOptions"
@@ -177,7 +199,7 @@
               :value="item.value"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="桌台状态">
           <el-select v-model="form.status">
             <el-option
@@ -207,10 +229,13 @@
 import { ref, onMounted } from 'vue';
 import { 
   ElSelect, ElInput, ElButton, ElTable, ElTableColumn, 
-  ElPagination, ElTag, ElDialog, ElForm, ElFormItem 
+  ElPagination, ElTag, ElDialog, ElForm, ElFormItem, 
+  ElMessage
 } from 'element-plus';
 import type { Options } from 'element-plus';
 import { useRouter } from 'vue-router';
+import { AddTable, DeleteTable, gettableList, UpdateTable } from '../../../../api/tablemanage';
+import { getStoreList } from '../../../../api/login';
 
 const router = useRouter();
 
@@ -218,36 +243,37 @@ const router = useRouter();
 const selectedType = ref<string>('');
 const selectedStatus = ref<string>('');
 const tableNo = ref<string>('');
-
+const storeList = ref<any[]>([]); 
 // 下拉选项
-const typeOptions = ref<Options[]>([
-  { label: '全部', value: '' },
-  { label: '圆桌', value: '圆桌' },
-  { label: '方桌', value: '方桌' },
-  { label: '卡座', value: '卡座' },
-]);
+// const typeOptions = ref<Options[]>([
+//   { label: '全部', value: '' },
+//   { label: '圆桌', value: '圆桌' },
+//   { label: '方桌', value: '方桌' },
+//   { label: '卡座', value: '卡座' },
+// ]);
 const statusOptions = ref<Options[]>([
   { label: '全部', value: '' },
-  { label: '空闲', value: '1' },
-  { label: '占用', value: '2' },
-  { label: '预订', value: '3' },
-  { label: '清洁中', value: '4' },
+  { label: '空闲', value: 1 },
+  { label: '占用', value: 2},
+  { label: '预订', value: 3},
+  { label: '清洁中', value: 4 },
 ]);
 
 // 表格数据
 interface Table {
-  tableNo: string;       
-  tableType: string;     
-  status: string;        
+  table_id: number;
+  store_id: string;
+  table_no: string;          
+  status: number;        
   capacity: number;      
   lastUseTime: string;   
 }
 const tableList = ref<Table[]>([
-  { tableNo: 'A01', tableType: '圆桌', status: '空闲', capacity: 8, lastUseTime: '2025.3.15 12:00' },
-  { tableNo: 'A02', tableType: '方桌', status: '占用', capacity: 6, lastUseTime: '2025.3.15 11:30' },
-  { tableNo: 'A03', tableType: '卡座', status: '空闲', capacity: 4, lastUseTime: '2025.3.14 18:00' },
-  { tableNo: 'A04', tableType: '圆桌', status: '维护中', capacity: 10, lastUseTime: '2025.3.13 14:00' },
-  { tableNo: 'A05', tableType: '方桌', status: '占用', capacity: 6, lastUseTime: '2025.3.15 12:10' },
+  // { tableNo: 'A01', tableType: '圆桌', status: '空闲', capacity: 8, lastUseTime: '2025.3.15 12:00' },
+  // { tableNo: 'A02', tableType: '方桌', status: '占用', capacity: 6, lastUseTime: '2025.3.15 11:30' },
+  // { tableNo: 'A03', tableType: '卡座', status: '空闲', capacity: 4, lastUseTime: '2025.3.14 18:00' },
+  // { tableNo: 'A04', tableType: '圆桌', status: '维护中', capacity: 10, lastUseTime: '2025.3.13 14:00' },
+  // { tableNo: 'A05', tableType: '方桌', status: '占用', capacity: 6, lastUseTime: '2025.3.15 12:10' },
 ]);
 
 // 分页相关
@@ -259,28 +285,40 @@ const currentPage = ref(1);
 const addDialogVisible = ref(false);
 const editDialogVisible = ref(false);
 const form = ref<Table>({
-  tableNo: '',
-  tableType: '',
-  status: '',
+  table_id: 0,
+  store_id: '',
+  table_no: '',
+  status: 1, // 默认状态为空闲
   capacity: 0,
   lastUseTime: ''
 });
 
 // 模拟接口请求
 const getTableList = async () => {
-  console.log('筛选条件：', {
-    selectedType: selectedType.value,
-    selectedStatus: selectedStatus.value,
-    tableNo: tableNo.value,
-    pageSize: pageSize.value,
-    currentPage: currentPage.value,
+
+  await gettableList(selectedStatus.value,tableNo.value,currentPage.value,pageSize.value).then((res:any)=> {
+    if (res && res.response) {
+      tableList.value = res.response;
+      total.value = res.count;
+    }
   });
 };
 
 onMounted(() => {
   getTableList();
+  fetchStoreList();
 });
-
+async function fetchStoreList() {
+  await getStoreList().then((res:any)=> {
+    if (res && res.response) {
+      var storedata = res.response.filter((item: any) => item.store_name !== '管理员');
+      storeList.value = storedata.map((item: any) => ({
+        id: item.store_id,
+        name: item.store_name
+      }));
+    }
+  });
+}
 // 查询
 const handleQuery = () => {
   currentPage.value = 1; 
@@ -313,16 +351,21 @@ const handleDetail = (row: Table) => {
 };
 
 // 删除桌台
-const handleDelete = (row: Table) => {
-  console.log('删除桌台：', row);
+const handleDelete = async (row: Table) => {
+    console.log('删除桌台：', row);
+    await DeleteTable([row.table_id]).then(() => {
+    ElMessage.success('删除成功');
+    getTableList();
+  })
 };
 
 // 打开新增弹窗
 const openAddDialog = () => {
   form.value = {
-    tableNo: '',
-    tableType: '',
-    status: '',
+    table_id: 0,
+    store_id: '',
+    table_no: '',
+    status: 1, // 默认状态为空闲
     capacity: 0,
     lastUseTime: ''
   };
@@ -330,10 +373,17 @@ const openAddDialog = () => {
 };
 
 // 确认新增
-const handleAdd = () => {
-  tableList.value.unshift(form.value);
-  addDialogVisible.value = false;
-  getTableList();
+const handleAdd = async () => {
+   await AddTable({
+    store_id: form.value.store_id,
+    table_no: form.value.table_no,
+    capacity: form.value.capacity,
+    status: form.value.status,
+    // min_consumption: form.value.min_consumption,
+   })
+    ElMessage.success('新增成功');
+    addDialogVisible.value = false;
+    getTableList();
 };
 
 // 打开编辑弹窗
@@ -343,12 +393,20 @@ const openEditDialog = (row: Table) => {
 };
 
 // 确认编辑
-const handleEditConfirm = () => {
-  const index = tableList.value.findIndex(item => item.tableNo === form.value.tableNo);
+const handleEditConfirm = async () => {
+  const index = tableList.value.findIndex(item => item.table_no === form.value.table_no);
   if (index !== -1) {
     tableList.value[index] = { ...form.value };
   }
   editDialogVisible.value = false;
+  await UpdateTable({
+    table_id: form.value.table_id,
+    store_id: form.value.store_id,
+    table_no: form.value.table_no,
+    status: form.value.status,
+    capacity: form.value.capacity,
+  });
+  ElMessage.success('编辑成功');
   getTableList();
 };
 </script>

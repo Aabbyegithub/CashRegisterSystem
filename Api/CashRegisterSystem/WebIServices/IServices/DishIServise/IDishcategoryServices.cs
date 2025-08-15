@@ -20,7 +20,8 @@ namespace WebIServices.IServices.DishIServise
         /// <param name="size"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        Task<List<sys_dish_category>> GetDishCategoryListAsync(int orgId, int page, int size, RefAsync<int> count);
+        Task<List<sys_dish_category>> GetDishCategoryListAsync(string name,int orgId, int page, int size, RefAsync<int> count);
+        Task<List<sys_dish_category>> GetDishCategoryListAsync(int orgId);
 
         /// <summary>
         /// 添加菜品分类

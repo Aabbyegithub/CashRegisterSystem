@@ -2,8 +2,12 @@ WebProjectTest_Task.json
 WebProjectTest_Table.json
 WebProjectTest_Auther.json
 WebProjectTest_DataBackUp.json
+WebProjectTest_Img.json
 WebProjectTest_Operlog.json
 WebProjectTest_Role.json
 WebProjectTest_Store.json
 WebProjectTest_User.json
+WebProjectTest_Order.json
+WebProjectTest_Dishcategory.json
+WebProjectTest_Dish.json
 WebProjectTest_DBFirst.json

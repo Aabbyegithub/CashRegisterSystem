@@ -51,7 +51,7 @@ namespace WebServiceClass.Services.DishServices
             return _dal.Db.Queryable<sys_dish>()
                 .WhereIF(!string.IsNullOrEmpty(name), x => x.dish_name.Contains(name))
                 .WhereIF(type.HasValue, x => x.category_id == type)
-                .Where(x => x.store_id == null || x.store_id == orgId)
+                .WhereIF(orgId != 1, a => a.store_id == orgId || a.store_id == null)
                 .ToPageListAsync(page, size, count);
         }
 

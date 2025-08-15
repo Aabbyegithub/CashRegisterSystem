@@ -43,6 +43,16 @@ const routes = [
             name: 'MemberList',
             component: () => import('../views/Menu/BackendHome/MembershipManagement/MemberManagement.vue')
           },
+          {
+            path: 'DishList',
+            name: 'DishList',
+            component: () => import('../views/Menu/BackendHome/Dish/DishManagement.vue')
+          },
+          {
+            path: 'DishCategory',
+            name: 'DishCategory',
+            component: () => import('../views/Menu/BackendHome/Dish/DishCategoryManagement.vue')
+          },
           { 
             path: 'StaffManagement', 
             name: 'StaffManagement',

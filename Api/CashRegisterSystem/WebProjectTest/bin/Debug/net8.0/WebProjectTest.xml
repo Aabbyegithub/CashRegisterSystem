@@ -65,7 +65,7 @@
             <param name="tableNames"></param>
             <returns></returns>
         </member>
-        <member name="M:WebProjectTest.Controllers.DishController.DishcategoryController.GetDishCategoryListAsync(System.Int32,System.Int32)">
+        <member name="M:WebProjectTest.Controllers.DishController.DishcategoryController.GetDishCategoryListAsync(System.String,System.Int32,System.Int32)">
             <summary>
             获取菜品分类列表
             </summary>
@@ -171,6 +171,11 @@
         <member name="P:WebProjectTest.Controllers.SystemController.AutherController.RoleId">
             <summary>
             角色
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.ImgController.UpImg(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            图片上传
             </summary>
         </member>
         <member name="M:WebProjectTest.Controllers.SystemController.OperlogController.SaveOperationlogAsync(MyNamespace.lq_operationlog)">

@@ -53,16 +53,7 @@ namespace WebProjectTest.Controllers.DishController
         [OperationLogFilter("系统设置>角色管理", "新增菜品", ActionType.Add)]
         public async Task<ApiResponse<bool>> AddDishAsync([FromBody] sys_dish sys_Dish)
         {
-            try
-            {
-                await _DishServices.AddDishAsync(sys_Dish);
-                return Success(true);
-            }
-            catch (Exception e)
-            {
-
-                return Error<bool>("添加失败"+ e.Message);
-            }
+            return    await _DishServices.AddDishAsync(sys_Dish);
         }
 
         /// <summary>
@@ -72,16 +63,7 @@ namespace WebProjectTest.Controllers.DishController
         [OperationLogFilter("系统设置>角色管理", "删除菜品", ActionType.Delete)]
         public async Task<ApiResponse<bool>> DeleteDishAsync([FromBody] List<int> ids)
         {
-            try
-            {
-                await _DishServices.DeleteDishAsync(ids);
-                return Success(true);
-            }
-            catch (Exception e)
-            {
-
-                return Error<bool>("删除失败"+ e.Message);
-            }
+            return    await _DishServices.DeleteDishAsync(ids);
         }
 
         /// <summary>
@@ -91,16 +73,8 @@ namespace WebProjectTest.Controllers.DishController
         [OperationLogFilter("系统设置>角色管理", "修改菜品", ActionType.Edit)]
         public async Task<ApiResponse<bool>> UpdateDishAsync([FromBody] sys_dish sys_Dish)
         {
-            try
-            {
-                await _DishServices.UpdateDishAsync(sys_Dish);
-                return Success(true);
-            }
-            catch (Exception e)
-            {
+           return     await _DishServices.UpdateDishAsync(sys_Dish);
 
-                return Error<bool>("修改失败" + e.Message);
-            }
         }
     }
 }
