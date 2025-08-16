@@ -177,5 +177,9 @@ namespace MyNamespace
         /// </summary>   
         public int? reservation_id {get;set;}
 
+
+        [Navigate(NavigateType.OneToOne, nameof(reservation_id), nameof(sys_reservation.reservation_id))]//一对一 
+        public sys_reservation? reservation { get; set; }
+
     }
 }

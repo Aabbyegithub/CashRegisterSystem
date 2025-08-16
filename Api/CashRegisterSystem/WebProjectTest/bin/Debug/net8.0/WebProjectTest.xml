@@ -51,6 +51,27 @@
             </summary>
             <param name="provider"></param>
         </member>
+        <member name="M:WebProjectTest.Controllers.AppController.ClientController.GetTableListInfoAsync(System.Int32)">
+            <summary>
+            获取门店桌台列表
+            </summary>
+            <param name="store_id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.AppController.ClientController.GetDishTypeAsync(System.Int32)">
+            <summary>
+            获取菜品类型
+            </summary>
+            <param name="store_id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.AppController.ClientController.GetDishAsync(System.Int32)">
+            <summary>
+            获取菜品列表
+            </summary>
+            <param name="store_id"></param>
+            <returns></returns>
+        </member>
         <member name="M:WebProjectTest.Controllers.DBFirst.DBFirstController.GenerateEntitiesList(System.Collections.Generic.List{System.String})">
             <summary>
             批量生成实体类文件

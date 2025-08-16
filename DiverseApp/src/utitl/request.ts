@@ -18,7 +18,7 @@ export function request(options: RequestOptions): Promise<any> {
       data: options.data || {},
       header: { ...DEFAULT_HEADERS, ...(options.headers || {}) },
       timeout: options.timeout || TIMEOUT,
-      success: (res) => {
+      success: (res:any) => {
         if (res.statusCode === 200) {
           resolve(res.data);
         } else if (res.statusCode === 401) {
@@ -28,9 +28,10 @@ export function request(options: RequestOptions): Promise<any> {
           setTimeout(() => {
             uni.redirectTo({ url: '/pages/login/index' });
           }, 1500);
-          reject({ code: 401, message: '登录失效' });
+          
         } else {
-          reject(res);
+            // 其他错误处理
+            uni.showToast({ title: res.data.message || '请求失败', icon: 'none' });
         }
       },
       fail: (err) => {

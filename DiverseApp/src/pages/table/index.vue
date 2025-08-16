@@ -4,10 +4,10 @@
     <view class="table-grid">
       <view v-for="table in tables" :key="table.id" :class="['table-card', table.status, selectedTable?.id === table.id ? 'selected' : '']" @click="handleTableClick(table)">
         <view class="table-name">{{ table.name }}</view>
-        <view class="table-status">{{ table.status === 'free' ? '空闲' : (table.status === 'booked' ? '预定' : '使用中') }}</view>
+        <view class="table-status">{{ table.status === 1 ? '空闲' : (table.status === 2 ? '使用中' : (table.status === 3 ? '预订':'清洁中')) }}</view>
         <view style="display: flex;">
           <view class="table-info">{{ table.people }}/{{ table.max }}</view>
-          <view v-if="table.status === 'booked'" class="table-booked-time">{{ table.bookedTime }}</view>
+          <view v-if="table.status === 3" class="table-booked-time">{{ table.bookedTime }}</view>
         </view>
       </view>
     </view>
@@ -34,30 +34,32 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
+import { request } from '@/utitl/request'
 // 桌台数据示例
 const tables = ref([
-  { id: 1, name: 'A1', status: 'free', people: 0, max: 5 },
-  { id: 2, name: 'A2', status: 'free', people: 0, max: 3 },
-  { id: 3, name: 'A3', status: 'free', people: 0, max: 3 },
-  { id: 4, name: '1', status: 'used', people: 5, max: 5, usedTime: '00:30' },
-  { id: 5, name: '2', status: 'booked', people: 3, max: 3, bookedTime: '今晚8点' },
-  { id: 6, name: '3', status: 'free', people: 0, max: 5 },
-  { id: 7, name: '4', status: 'used', people: 5, max: 5, usedTime: '00:30' },
-  { id: 8, name: '5', status: 'used', people: 5, max: 5, usedTime: '00:30' },
-  { id: 9, name: '6', status: 'used', people: 5, max: 5, usedTime: '00:30' },
-  { id: 10, name: '7', status: 'used', people: 5, max: 5, usedTime: '00:30' },
-  { id: 11, name: '8', status: 'booked', people: 3, max: 3, bookedTime: '明日10点' },
-  { id: 12, name: '9', status: 'free', people: 0, max: 6 },
-  { id: 13, name: '10', status: 'free', people: 0, max: 6 },
-  { id: 14, name: '11', status: 'free', people: 0, max: 4 },
-  { id: 15, name: '12', status: 'free', people: 0, max: 3 },
+  { id: 1, name: 'A1', status:1 , people: 0, max: 5 },
+  { id: 2, name: 'A2', status: 1, people: 0, max: 3 },
+  { id: 3, name: 'A3', status: 1, people: 0, max: 3 },
+  { id: 4, name: '1', status: 1, people: 5, max: 5, usedTime: '00:30' },
+  { id: 5, name: '2', status: 1, people: 3, max: 3, bookedTime: '今晚8点' },
+  { id: 6, name: '3', status: 1, people: 0, max: 5 },
+  { id: 7, name: '4', status: 1, people: 5, max: 5, usedTime: '00:30' },
+  { id: 8, name: '5', status: 1, people: 5, max: 5, usedTime: '00:30' },
+  { id: 9, name: '6', status:1, people: 5, max: 5, usedTime: '00:30' },
+  { id: 10, name: '7', status: 1, people: 5, max: 5, usedTime: '00:30' },
+  { id: 11, name: '8', status: 1, people: 3, max: 3, bookedTime: '明日10点' },
+  { id: 12, name: '9', status: 1, people: 0, max: 6 },
+  { id: 13, name: '10', status:1, people: 0, max: 6 },
+  { id: 14, name: '11', status:1, people: 0, max: 4 },
+  { id: 15, name: '12', status: 1, people: 0, max: 3 },
 ])
 const showOpenDialog = ref(false)
 const selectedTable = ref<any>(null)
+const selectStoreId = ref(0)
 const openPeople = ref(1)
 
 function handleTableClick(table: any) {
-  if (table.status === 'free') {
+  if (table.status === 1) {
     selectedTable.value = table
     openPeople.value = 1
     showOpenDialog.value = true
@@ -74,21 +76,47 @@ function changePeople(val: number) {
 }
 function confirmOpen() {
   if (!selectedTable.value) return
-  selectedTable.value.status = 'used'
+  selectedTable.value.status = 2
   selectedTable.value.people = openPeople.value
   showOpenDialog.value = false
+  // 跳转前存储参数
+  uni.setStorageSync('TableInfo',{
+    tableId: selectedTable.value.id,
+    storeId:  selectStoreId.value,
+    people: openPeople.value
+  })
   uni.switchTab({
-    url: `../menu/index?id=${selectedTable.value.id}`
+    url: '../menu/index'
+  })
+}
+
+//获取桌台数据
+async function GetTables(store_id: number) {
+  await request({
+    url: '/api/Client/GetTableListInfo',
+    method: 'GET',
+    data: {
+      store_id:store_id
+    }
+  }).then((res: any) => {
+    console.log('获取桌台数据', res)
+    tables.value = res.response || []
   })
 }
 
 // 自动弹窗开台逻辑，扫码进入页面带参数 id 时自动弹窗
 onLoad((options: any) => {
-  // 兼容扫码参数为 id 或 tableId
-  const tableId = options.id || options.tableId
+  const { tableId, storeId } = options
+  let actualStoreId = storeId
+  if (!actualStoreId) {
+    actualStoreId = uni.getStorageSync('UserInfo').store_id || 2
+  }
+  selectStoreId.value = actualStoreId
+  //获取桌台数据
+  GetTables(actualStoreId)
   if (tableId) {
     // 查找对应桌台，且仅空闲桌台可弹窗
-    const table = tables.value.find(t => String(t.id) === String(tableId) && t.status === 'free')
+    const table = tables.value.find(t => String(t.id) === String(tableId) && t.status === 1)
     if (table) {
       selectedTable.value = table
       openPeople.value = 1

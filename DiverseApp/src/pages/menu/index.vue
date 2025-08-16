@@ -158,6 +158,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 // 规格弹窗相关
 const showSpecDialog = ref(false)
 const selectedDish = ref<any>(null)
@@ -166,6 +167,7 @@ const spicyList = ['不辣', '正常', '中辣', '重辣']
 const selectedSpec = ref(specList[0])
 const selectedSpicy = ref(spicyList[0])
 const qty = ref(1)
+const TableId = ref(0)
 
 function openSpecDialog(dish: any) {
   selectedDish.value = dish
@@ -178,6 +180,7 @@ function changeQty(val: number) {
   if (qty.value + val >= 1) qty.value += val
 }
 import CustomHeader from '@/components/CustomHeader.vue'
+import { request } from '@/utitl/request'
 
 const searchValue = ref('')
 const categories = ref([
@@ -190,16 +193,33 @@ const categories = ref([
   { id: 7, name: '酒水饮料', active: false }
 ])
 const dishes = ref([
-  { id: 1, name: '糖醋里脊', desc: '招牌特色菜', price: 28,spece:0, img: 'https://vcg02.cfp.cn/creative/vcg/nowater800/new/VCG211430891214.jpg?x-oss-process=image/format,webp' },
-  { id: 2, name: '麻婆豆腐', desc: '100+热销家常菜', price: 18,spece:0, img: 'https://vcg02.cfp.cn/creative/vcg/nowater800/new/VCG211430891214.jpg?x-oss-process=image/format,webp' },
-  { id: 3, name: '小炒黄牛肉', desc: '99%好评 老价位回归', price: 58,spece:1, img: 'https://vcg02.cfp.cn/creative/vcg/nowater800/new/VCG211430891214.jpg?x-oss-process=image/format,webp' },
-  { id: 4, name: '孜然肉片', desc: '香辣孜然，嫩滑', price: 28,spece:0 ,img: 'https://vcg02.cfp.cn/creative/vcg/nowater800/new/VCG211430891214.jpg?x-oss-process=image/format,webp' },
-  { id: 5, name: '手撕包菜', desc: '99%好评 老价位回归', price: 18,spece:1, img: 'https://vcg02.cfp.cn/creative/vcg/nowater800/new/VCG211430891214.jpg?x-oss-process=image/format,webp' }
+  { id: 1, name: '糖醋里脊', desc: '招牌特色菜', price: 28,spece:0,dishCategoryType:1, img: 'https://vcg02.cfp.cn/creative/vcg/nowater800/new/VCG211430891214.jpg?x-oss-process=image/format,webp' },
+  { id: 2, name: '麻婆豆腐', desc: '100+热销家常菜', price: 18,spece:0,dishCategoryType:1,  img: 'https://vcg02.cfp.cn/creative/vcg/nowater800/new/VCG211430891214.jpg?x-oss-process=image/format,webp' },
+  { id: 3, name: '小炒黄牛肉', desc: '99%好评 老价位回归', price: 58,spece:1,dishCategoryType:1,  img: 'https://vcg02.cfp.cn/creative/vcg/nowater800/new/VCG211430891214.jpg?x-oss-process=image/format,webp' },
+  { id: 4, name: '孜然肉片', desc: '香辣孜然，嫩滑', price: 28,spece:0 ,dishCategoryType:1,img: 'https://vcg02.cfp.cn/creative/vcg/nowater800/new/VCG211430891214.jpg?x-oss-process=image/format,webp' },
+  { id: 5, name: '手撕包菜', desc: '99%好评 老价位回归', price: 18,spece:1,dishCategoryType:1,  img: 'https://vcg02.cfp.cn/creative/vcg/nowater800/new/VCG211430891214.jpg?x-oss-process=image/format,webp' }
 ])
 
 function selectCategory(id: number) {
   categories.value.forEach(item => item.active = item.id === id)
-  // TODO: 切换分类时筛选菜品
+  // 切换分类时定位到当前选中分类的第一个菜品
+  setTimeout(() => {
+    const dishIndex = dishes.value.findIndex(d => d.dishCategoryType === id)
+    if (dishIndex > -1) {
+      const selector = `.dish-item:nth-child(${dishIndex + 1})`
+      uni.createSelectorQuery()
+        .select(selector)
+        .boundingClientRect((rect: any) => {
+          if (rect && typeof rect.top === 'number') {
+            uni.pageScrollTo({
+              scrollTop: rect.top - 80, // 80为header高度，可根据实际调整
+              duration: 300
+            })
+          }
+        })
+        .exec()
+    }
+  }, 50)
 }
 function handleSearch(val:any) {
   // TODO: 搜索逻辑
@@ -273,6 +293,40 @@ function submitOrder() {
   cartList.value = []
   cartTotal.value = 0
   showCartDialog.value = false
+}
+
+onLoad(() => {
+  const { tableId, storeId,people } = uni.getStorageSync('TableInfo') || {}
+  if (tableId) {
+    // 获取桌台ID
+    TableId.value = tableId
+  }else {
+    uni.showToast({ title: '未指定桌台', icon: 'none' })
+  }
+  getmenuType(storeId) 
+  getmenuList(storeId)
+})
+
+async function getmenuType(storeId: number) {
+   await request({
+    url: '/api/Client/GetDishType',
+    method: 'GET',
+    data: {
+      store_id: storeId
+    }}).then((res: any) => {
+      categories.value = res.response || []
+    })
+}
+
+async function getmenuList(storeId: number) {
+  await request({
+    url: '/api/Client/GetDish',
+    method: 'GET',
+    data: {
+      store_id: storeId
+    }}).then((res: any) => {
+      dishes.value = res.response || []
+    })
 }
 </script>
 

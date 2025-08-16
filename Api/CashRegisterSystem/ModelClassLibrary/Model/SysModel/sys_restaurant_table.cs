@@ -86,5 +86,8 @@ namespace MyNamespace
         /// </summary>   
         public int? order_id {get;set;}
 
+        [Navigate(NavigateType.OneToOne, nameof(order_id), nameof(sys_order.order_id))]//一对一 
+        public sys_order? order { get; set; }
+
     }
 }
