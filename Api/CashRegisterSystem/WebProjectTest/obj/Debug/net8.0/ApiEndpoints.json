@@ -1,5 +1,83 @@
 [
   {
+    "ContainingType": "WebProjectTest.Controllers.AppController.ClientController",
+    "Method": "GetDishAsync",
+    "RelativePath": "api/Client/GetDish",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "store_id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Collections.Generic.List\u00601[[ModelClassLibrary.Model.Dto.AppDto.DishList, ModelClassLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.AppController.ClientController",
+    "Method": "GetDishTypeAsync",
+    "RelativePath": "api/Client/GetDishType",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "store_id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Collections.Generic.List\u00601[[ModelClassLibrary.Model.Dto.AppDto.DishCategory, ModelClassLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.AppController.ClientController",
+    "Method": "GetTableListInfoAsync",
+    "RelativePath": "api/Client/GetTableListInfo",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "store_id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Collections.Generic.List\u00601[[ModelClassLibrary.Model.Dto.AppDto.ClientModel, ModelClassLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "WebProjectTest.Controllers.DBFirst.DBFirstController",
     "Method": "GenerateEntities",
     "RelativePath": "api/DBFirst/GenerateEntities",
@@ -287,7 +365,7 @@
   {
     "ContainingType": "WebProjectTest.Controllers.SystemController.ImgController",
     "Method": "UpImg",
-    "RelativePath": "api/Img",
+    "RelativePath": "api/Img/UpImg",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

@@ -451,7 +451,6 @@ D:\LQProject\WaiBaoPro\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\
 D:\LQProject\WaiBaoPro\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\WebProjectTest.AssemblyInfoInputs.cache
 D:\LQProject\WaiBaoPro\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\WebProjectTest.AssemblyInfo.cs
 D:\LQProject\WaiBaoPro\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\WebProjectTest.csproj.CoreCompileInputs.cache
-D:\LQProject\WaiBaoPro\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\WebProjectTest.MvcApplicationPartsAssemblyInfo.cs
 D:\LQProject\WaiBaoPro\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\WebProjectTest.MvcApplicationPartsAssemblyInfo.cache
 D:\LQProject\WaiBaoPro\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\WebProjectTest.sourcelink.json
 D:\LQProject\WaiBaoPro\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\WebProjectTest.dll

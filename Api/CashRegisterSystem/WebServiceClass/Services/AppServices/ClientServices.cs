@@ -26,7 +26,7 @@ namespace WebServiceClass.Services.AppServices
         {
             var tableList = await _dal.Db.Queryable<sys_restaurant_table>()
                 .Includes(a => a.order)
-                .Includes(a=>a.order.reservation)
+                .Includes(a => a.order.reservation)
                 .Where(a => a.store_id == store_id)
                 .ToListAsync();
 
@@ -37,7 +37,7 @@ namespace WebServiceClass.Services.AppServices
                 Status = a.status,
                 People = a.order == null ? 0 : (int)(a.order.table_capacity ?? 0),
                 Max = a.capacity,
-                bookedTime = a.order == null ? "" :  (a.order.reservation == null ? "":  a.order.reservation?.reservation_time.ToString("yy-MM-dd HH:mm:ss"))
+                bookedTime = a.order == null ? "" : (a.order.reservation == null ? "" : a.order.reservation?.reservation_time.ToString("yy-MM-dd HH:mm:ss"))
             }).ToList();
             return Success(result, "获取桌台列表成功");
         }
@@ -45,7 +45,7 @@ namespace WebServiceClass.Services.AppServices
         public async Task<ApiResponse<List<DishList>>> GetDish(int store_id)
         {
             var res = await _dal.Db.Queryable<sys_dish>()
-                  .Includes(a=>a.dish_category).OrderBy(a=>a.dish_category.sort_order)
+                  .Includes(a => a.dish_category).OrderBy(a => a.dish_category.sort_order)
                   .Where(a => a.store_id == store_id || a.store_id == null)
                   .Select(a => new DishList
                   {
@@ -63,20 +63,112 @@ namespace WebServiceClass.Services.AppServices
         public async Task<ApiResponse<List<DishCategory>>> GetDishType(int store_id)
         {
             var res = await _dal.Db.Queryable<sys_dish_category>()
-                 .Where(a=>a.store_id == store_id || a.store_id == null).OrderBy(a=>a.sort_order)
+                 .Where(a => a.store_id == store_id || a.store_id == null).OrderBy(a => a.sort_order)
                  .Select(a => new DishCategory
                  {
                      Id = a.category_id,
                      Name = a.category_name,
                  }).ToListAsync();
-            if(res.Count > 0)
-              res.FirstOrDefault().active = true;
-            return Success(res,"菜品类型获取成功");
+            if (res.Count > 0)
+                res.FirstOrDefault().active = true;
+            return Success(res, "菜品类型获取成功");
         }
 
-        public Task<ApiResponse<List<bool>>> SaveOrder(Order order)
+        public async Task<ApiResponse<bool>> SaveOrder(List<Order> order, int store_id, int table_id, int sourceType, int people)
         {
-             
+            try
+            {
+                var table = await _dal.Db.Queryable<sys_restaurant_table>()
+                    .Where(a => a.store_id == store_id && a.table_id == table_id)
+                    .FirstAsync();
+                await _dal.Db.Ado.BeginTranAsync();
+                var orderId = await _dal.Db.Insertable(new sys_order
+                {
+                    store_id = store_id,
+                    table_id = table_id,
+                    order_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(1000, 9999),
+                    order_type = 1, // 堂食
+                    source_type = (byte)sourceType, // 下单方式
+                    status = 2,// 已下单
+                    discount_amount = 0, // 优惠金额
+                    service_fee = 0, // 服务费
+                    total_amount = order.Sum(o => decimal.Parse(o.price) * o.qty),
+                    payable_amount = order.Sum(o => decimal.Parse(o.price) * o.qty),
+                    table_fee = 0, // 桌台费
+                    start_time = DateTime.Now,
+                    is_split = 0, // 是否分单
+                    operator_id = 0, // 操作员ID  0默认用户
+                    table_capacity = people
+                }).ExecuteReturnBigIdentityAsync();
+
+                if (orderId <= 0)
+                {
+                    return Fail<bool>("下单失败");
+                }
+                //保存订单明细
+                var orderItems = order.Select(o => new sys_order_item
+                {
+                    order_id = orderId,
+                    dish_id = o.Id,
+                    quantity = o.qty,
+                    unit_price = decimal.Parse(o.price),
+                    total_price = decimal.Parse(o.price) * o.qty,
+                    status = 1, // 状态 1-待制作
+                    is_rush = 0,
+                }).ToList();
+                foreach (var item in orderItems)
+                {
+                    var itemId = await _dal.Db.Insertable(item).ExecuteReturnBigIdentityAsync();
+                    if (itemId <= 0)
+                    {
+                        await _dal.Db.Ado.RollbackTranAsync();
+                        return Fail<bool>("下单失败，订单明细保存失败！");
+                    }
+                    //保存厨房订单
+                    var kitchenOrders = order.Select(o => new sys_kitchen_order
+                    {
+                        item_id = itemId,
+                        store_id = store_id,
+                        table_no = table?.table_no,
+                        dish_name = o.name,
+                        quantity = o.qty,
+                        kitchen_type = "热菜",
+                        status = 1, // 1-待制作
+                        create_time = DateTime.Now,
+                        overtime_warn = 0, // 超时预警时间
+                    }).ToList();
+                    await _dal.Db.Insertable(kitchenOrders).ExecuteCommandAsync();
+                }
+                table.order_id = (int)orderId;
+                table.status = 2;
+                await _dal.Db.Updateable(table).ExecuteCommandAsync();
+
+
+                await _dal.Db.Ado.CommitTranAsync();
+                return Success(true, "下单成功");
+            }
+            catch (Exception)
+            {
+                await _dal.Db.Ado.RollbackTranAsync();
+                return Fail<bool>("下单失败！");
+            }
+        }
+
+        public async Task<ApiResponse<List<sys_order>>> GetTableOrder(int store_id, int table_id)
+        {
+            var res = await _dal.Db.Queryable<sys_order>().Includes(a => a.table)
+                .Where(a => a.store_id == store_id && a.table_id == table_id)
+                .Select(a => new sys_order { }, true).ToListAsync();
+            return Success(res, "获取成功");
+        }
+
+        public async Task<ApiResponse<bool>> OrderReminder(int orderId)
+        {
+            var Orderitem = await _dal.Db.Queryable<sys_order_item>()
+                .Where(a => a.order_id == orderId && (a.status == 1 || a.status ==2)).ToListAsync();
+            Orderitem.ForEach(a => a.is_rush = 1);
+            await _dal.Db.Updateable(Orderitem).ExecuteCommandAsync();
+            return Success(true );
         }
     }
 }

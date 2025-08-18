@@ -43,7 +43,5 @@ namespace WebIServices.IServices.TableMangeIServices
         ///修改桌台
         ///<summary>
         Task<ApiResponse<bool>> UpdateTableAsync(sys_restaurant_table  table);
-
-
     }
 }

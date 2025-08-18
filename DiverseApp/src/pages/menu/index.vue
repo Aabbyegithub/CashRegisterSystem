@@ -284,15 +284,40 @@ function changeCartQty(item: any, val: number) {
 function calcCartTotal() {
   cartTotal.value = cartList.value.reduce((sum, item) => sum + item.price * item.qty, 0)
 }
-function submitOrder() {
+async function submitOrder() {
   if (cartList.value.length === 0) {
     uni.showToast({ title: '购物车为空', icon: 'none' })
     return
   }
-  uni.showToast({ title: '下单成功', icon: 'success' })
-  cartList.value = []
-  cartTotal.value = 0
-  showCartDialog.value = false
+  var sourceType = 2
+  var UserInfo = uni.getStorageSync('UserInfo')
+  if (!UserInfo) {
+     sourceType = 1
+  }
+  const { tableId, storeId,people } = uni.getStorageSync('TableInfo') || {}
+  // 提交订单逻辑
+  await request({
+    url: '/api/Client/SubmitOrder',
+    method: 'POST',
+    data: {
+      store_id:storeId,
+      table_id: tableId,
+      sourceType : sourceType,
+      people: people,
+      order: cartList.value
+    }
+  }).then((res: any) => {
+    if (res.Start == 200) {
+      uni.showToast({ title: '下单成功', icon: 'success' })
+      cartList.value = []
+      cartTotal.value = 0
+      showCartDialog.value = false
+    } else {
+      uni.showToast({ title: res.message || '下单失败', icon: 'none' })
+    }
+  }).catch(() => {
+    uni.showToast({ title: '网络错误，请稍后再试', icon: 'none' })
+  })
 }
 
 onLoad(() => {

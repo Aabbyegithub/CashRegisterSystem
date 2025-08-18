@@ -181,5 +181,12 @@ namespace MyNamespace
         [Navigate(NavigateType.OneToOne, nameof(reservation_id), nameof(sys_reservation.reservation_id))]//一对一 
         public sys_reservation? reservation { get; set; }
 
+
+        [Navigate(NavigateType.OneToOne, nameof(table_id), nameof(sys_restaurant_table.table_id))]//一对一 
+        public sys_restaurant_table? table { get; set; }
+
+        [SugarColumn(IsIgnore = true)]
+        public string TableNo { get; set; }
+
     }
 }
