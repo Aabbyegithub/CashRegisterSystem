@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ModelClassLibrary.Model.Dto.AppDto;
+using MyNamespace;
 using WebIServices.IServices.ClientIServices;
 using static WebProjectTest.Common.Message;
 
@@ -41,6 +42,45 @@ namespace WebProjectTest.Controllers.AppController
         public async Task<ApiResponse<List<DishList>>> GetDishAsync(int store_id)
         {
             return await _clientServices.GetDish(store_id);
+        }
+
+        /// <summary>
+        /// 下单
+        /// </summary>
+        /// <param name="order"></param>
+        /// <param name="store_id"></param>
+        /// <param name="table_id"></param>
+        /// <param name="sourceType"></param>
+        /// <param name="people"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<ApiResponse<bool>>SaveOrderAsync(List<Order> order, int store_id, int table_id, int sourceType,int people,int? orderId)
+        {
+            return await _clientServices.SaveOrder(order, store_id, table_id, sourceType, people,orderId);
+        }
+
+        /// <summary>
+        /// 获取桌台订单，可以结算或者加菜，催菜
+        /// </summary>
+        /// <param name="store_id"></param>
+        /// <param name="table_id"></param>
+        /// <returns></returns>
+        [HttpGet]
+
+        public async Task<ApiResponse<List<sys_order>>> GetTableOrderAsync(int store_id, int table_id,int sourceType)
+        {
+            return await _clientServices.GetTableOrder(store_id, table_id,sourceType);
+        }
+
+        /// <summary>
+        /// 长时间有未上菜品，对未上菜品进行催单
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async  Task<ApiResponse<bool>> OrderReminderAsync(int orderId)
+        {
+            return await _clientServices.OrderReminder(orderId);
         }
     }
 }

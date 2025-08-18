@@ -72,6 +72,32 @@
             <param name="store_id"></param>
             <returns></returns>
         </member>
+        <member name="M:WebProjectTest.Controllers.AppController.ClientController.SaveOrder(System.Collections.Generic.List{ModelClassLibrary.Model.Dto.AppDto.Order},System.Int32,System.Int32,System.Int32,System.Int32,System.Nullable{System.Int32})">
+            <summary>
+            下单
+            </summary>
+            <param name="order"></param>
+            <param name="store_id"></param>
+            <param name="table_id"></param>
+            <param name="sourceType"></param>
+            <param name="people"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.AppController.ClientController.GetTableOrder(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            获取桌台订单，可以结算或者加菜，催菜
+            </summary>
+            <param name="store_id"></param>
+            <param name="table_id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.AppController.ClientController.OrderReminder(System.Int32)">
+            <summary>
+            长时间有未上菜品，对未上菜品进行催单
+            </summary>
+            <param name="orderId"></param>
+            <returns></returns>
+        </member>
         <member name="M:WebProjectTest.Controllers.DBFirst.DBFirstController.GenerateEntitiesList(System.Collections.Generic.List{System.String})">
             <summary>
             批量生成实体类文件

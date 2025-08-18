@@ -107,5 +107,9 @@ namespace MyNamespace
            /// </summary>           
            public long? return_audit_id {get;set;}
 
+
+        [Navigate(NavigateType.OneToOne, nameof(dish_id), nameof(sys_dish.dish_id))]//一对一 
+        public sys_dish? dish { get; set; }
+
     }
 }

@@ -2,7 +2,7 @@
   <view class="table-page">
     <view class="table-area">大堂</view>
     <view class="table-grid">
-      <view v-for="table in tables" :key="table.id" :class="['table-card', table.status, selectedTable?.id === table.id ? 'selected' : '']" @click="handleTableClick(table)">
+      <view v-for="table in tables" :key="table.id" :class="['table-card', table.status === 2 ? 'used-red' : table.status, selectedTable?.id === table.id ? 'selected' : '']" @click="handleTableClick(table)">
         <view class="table-name">{{ table.name }}</view>
         <view class="table-status">{{ table.status === 1 ? '空闲' : (table.status === 2 ? '使用中' : (table.status === 3 ? '预订':'清洁中')) }}</view>
         <view style="display: flex;">
@@ -32,8 +32,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
+import { onMounted, ref } from 'vue'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 import { request } from '@/utitl/request'
 // 桌台数据示例
 const tables = ref([
@@ -124,6 +124,10 @@ onLoad((options: any) => {
     }
   }
 })
+onShow(() => {
+  // 页面加载时获取桌台数据
+  GetTables(selectStoreId.value)
+})
 </script>
 
 <style>
@@ -166,6 +170,11 @@ onLoad((options: any) => {
 .table-card.selected {
   border-color: #F04216;
   background: #FFF6F2;
+}
+
+.table-card.used-red {
+  border-color: #F04216;
+  background: #F04216;
 }
 .table-card.free {
   color: #333;

@@ -74,76 +74,121 @@ namespace WebServiceClass.Services.AppServices
             return Success(res, "菜品类型获取成功");
         }
 
-        public async Task<ApiResponse<bool>> SaveOrder(List<Order> order, int store_id, int table_id, int sourceType, int people)
+        public async Task<ApiResponse<bool>> SaveOrder(List<Order> order, int store_id, int table_id, int sourceType, int people,int? order_Id)
         {
             try
             {
+                await _dal.Db.Ado.BeginTranAsync();
                 var table = await _dal.Db.Queryable<sys_restaurant_table>()
                     .Where(a => a.store_id == store_id && a.table_id == table_id)
                     .FirstAsync();
-                await _dal.Db.Ado.BeginTranAsync();
-                var orderId = await _dal.Db.Insertable(new sys_order
+                if (order_Id.HasValue)
                 {
-                    store_id = store_id,
-                    table_id = table_id,
-                    order_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(1000, 9999),
-                    order_type = 1, // 堂食
-                    source_type = (byte)sourceType, // 下单方式
-                    status = 2,// 已下单
-                    discount_amount = 0, // 优惠金额
-                    service_fee = 0, // 服务费
-                    total_amount = order.Sum(o => decimal.Parse(o.price) * o.qty),
-                    payable_amount = order.Sum(o => decimal.Parse(o.price) * o.qty),
-                    table_fee = 0, // 桌台费
-                    start_time = DateTime.Now,
-                    is_split = 0, // 是否分单
-                    operator_id = 0, // 操作员ID  0默认用户
-                    table_capacity = people
-                }).ExecuteReturnBigIdentityAsync();
+                    var orderData = await _dal.Db.Queryable<sys_order>().FirstAsync(a=>a.order_id == order_Id);
+                    orderData.total_amount = orderData.total_amount + order.Sum(o => decimal.Parse(o.price) * o.qty);
+                    orderData.payable_amount = orderData.payable_amount + order.Sum(o => decimal.Parse(o.price) * o.qty);
+                    await _dal.Db.Updateable(orderData).ExecuteCommandAsync();
 
-                if (orderId <= 0)
-                {
-                    return Fail<bool>("下单失败");
-                }
-                //保存订单明细
-                var orderItems = order.Select(o => new sys_order_item
-                {
-                    order_id = orderId,
-                    dish_id = o.Id,
-                    quantity = o.qty,
-                    unit_price = decimal.Parse(o.price),
-                    total_price = decimal.Parse(o.price) * o.qty,
-                    status = 1, // 状态 1-待制作
-                    is_rush = 0,
-                }).ToList();
-                foreach (var item in orderItems)
-                {
-                    var itemId = await _dal.Db.Insertable(item).ExecuteReturnBigIdentityAsync();
-                    if (itemId <= 0)
+                    var orderItems = order.Select(o => new sys_order_item
                     {
-                        await _dal.Db.Ado.RollbackTranAsync();
-                        return Fail<bool>("下单失败，订单明细保存失败！");
-                    }
-                    //保存厨房订单
-                    var kitchenOrders = order.Select(o => new sys_kitchen_order
-                    {
-                        item_id = itemId,
-                        store_id = store_id,
-                        table_no = table?.table_no,
-                        dish_name = o.name,
+                        order_id =(int) order_Id,
+                        dish_id = o.Id,
                         quantity = o.qty,
-                        kitchen_type = "热菜",
-                        status = 1, // 1-待制作
-                        create_time = DateTime.Now,
-                        overtime_warn = 0, // 超时预警时间
+                        unit_price = decimal.Parse(o.price),
+                        total_price = decimal.Parse(o.price) * o.qty,
+                        status = 1, // 状态 1-待制作
+                        is_rush = 0,
                     }).ToList();
-                    await _dal.Db.Insertable(kitchenOrders).ExecuteCommandAsync();
+                    foreach (var item in orderItems)
+                    {
+                        var itemId = await _dal.Db.Insertable(item).ExecuteReturnBigIdentityAsync();
+                        if (itemId <= 0)
+                        {
+                            await _dal.Db.Ado.RollbackTranAsync();
+                            return Fail<bool>("下单失败，订单明细保存失败！");
+                        }
+                        //保存厨房订单
+                        var kitchenOrders = order.Select(o => new sys_kitchen_order
+                        {
+                            item_id = itemId,
+                            store_id = store_id,
+                            table_no = table?.table_no,
+                            dish_name = o.name,
+                            quantity = o.qty,
+                            kitchen_type = "热菜",
+                            status = 1, // 1-待制作
+                            create_time = DateTime.Now,
+                            overtime_warn = 0, // 超时预警时间
+                        }).ToList();
+                        await _dal.Db.Insertable(kitchenOrders).ExecuteCommandAsync();
+                    }
                 }
-                table.order_id = (int)orderId;
-                table.status = 2;
-                await _dal.Db.Updateable(table).ExecuteCommandAsync();
+                else
+                {
 
 
+                    var orderId = await _dal.Db.Insertable(new sys_order
+                    {
+                        store_id = store_id,
+                        table_id = table_id,
+                        order_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(1000, 9999),
+                        order_type = 1, // 堂食
+                        source_type = (byte)sourceType, // 下单方式
+                        status = 2,// 已下单
+                        discount_amount = 0, // 优惠金额
+                        service_fee = 0, // 服务费
+                        total_amount = order.Sum(o => decimal.Parse(o.price) * o.qty),
+                        payable_amount = order.Sum(o => decimal.Parse(o.price) * o.qty),
+                        table_fee = 0, // 桌台费
+                        start_time = DateTime.Now,
+                        is_split = 0, // 是否分单
+                        operator_id = 0, // 操作员ID  0默认用户
+                        table_capacity = people
+                    }).ExecuteReturnBigIdentityAsync();
+
+                    if (orderId <= 0)
+                    {
+                        return Fail<bool>("下单失败");
+                    }
+                    //保存订单明细
+                    var orderItems = order.Select(o => new sys_order_item
+                    {
+                        order_id = orderId,
+                        dish_id = o.Id,
+                        quantity = o.qty,
+                        unit_price = decimal.Parse(o.price),
+                        total_price = decimal.Parse(o.price) * o.qty,
+                        status = 1, // 状态 1-待制作
+                        is_rush = 0,
+                    }).ToList();
+                    foreach (var item in orderItems)
+                    {
+                        var itemId = await _dal.Db.Insertable(item).ExecuteReturnBigIdentityAsync();
+                        if (itemId <= 0)
+                        {
+                            await _dal.Db.Ado.RollbackTranAsync();
+                            return Fail<bool>("下单失败，订单明细保存失败！");
+                        }
+                        //保存厨房订单
+                        var kitchenOrders = order.Select(o => new sys_kitchen_order
+                        {
+                            item_id = itemId,
+                            store_id = store_id,
+                            table_no = table?.table_no,
+                            dish_name = o.name,
+                            quantity = o.qty,
+                            kitchen_type = "热菜",
+                            status = 1, // 1-待制作
+                            create_time = DateTime.Now,
+                            overtime_warn = 0, // 超时预警时间
+                        }).ToList();
+                        await _dal.Db.Insertable(kitchenOrders).ExecuteCommandAsync();
+                    }
+                    table.order_id = (int)orderId;
+                    table.status = 2;
+                    await _dal.Db.Updateable(table).ExecuteCommandAsync();
+                }
+               
                 await _dal.Db.Ado.CommitTranAsync();
                 return Success(true, "下单成功");
             }
@@ -154,11 +199,12 @@ namespace WebServiceClass.Services.AppServices
             }
         }
 
-        public async Task<ApiResponse<List<sys_order>>> GetTableOrder(int store_id, int table_id)
+        public async Task<ApiResponse<List<sys_order>>> GetTableOrder(int store_id, int table_id, int sourceType)
         {
             var res = await _dal.Db.Queryable<sys_order>().Includes(a => a.table)
-                .Where(a => a.store_id == store_id && a.table_id == table_id)
-                .Select(a => new sys_order { }, true).ToListAsync();
+                .WhereIF(sourceType == 2,a => a.store_id == store_id && a.table_id == table_id)
+                .WhereIF(sourceType == 1,a => a.store_id == store_id)
+                .ToListAsync();
             return Success(res, "获取成功");
         }
 
@@ -169,6 +215,16 @@ namespace WebServiceClass.Services.AppServices
             Orderitem.ForEach(a => a.is_rush = 1);
             await _dal.Db.Updateable(Orderitem).ExecuteCommandAsync();
             return Success(true );
+        }
+
+        public Task<ApiResponse<bool>> OrderDetails(int orderId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ApiResponse<bool>> OrderCheckout(int orderId, int? CouponsId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -128,5 +128,9 @@ namespace MyNamespace
            /// </summary>           
            public long? picker_id {get;set;}
 
+
+        [Navigate(NavigateType.OneToOne, nameof(item_id), nameof(sys_order_item.item_id))]//一对一 
+        public sys_order_item? orderitem { get; set; }
+
     }
 }

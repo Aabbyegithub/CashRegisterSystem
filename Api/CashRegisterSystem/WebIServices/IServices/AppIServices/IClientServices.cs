@@ -42,7 +42,7 @@ namespace WebIServices.IServices.ClientIServices
         /// <param name="sourceType"></param>
         /// <param name="people"></param>
         /// <returns></returns>
-        Task<ApiResponse<bool>>SaveOrder(List<Order> order, int store_id, int table_id, int sourceType,int people);
+        Task<ApiResponse<bool>>SaveOrder(List<Order> order, int store_id, int table_id, int sourceType,int people,int? orderId);
 
         /// <summary>
         /// 获取桌台订单
@@ -50,7 +50,7 @@ namespace WebIServices.IServices.ClientIServices
         /// <param name="store_id"></param>
         /// <param name="table_id"></param>
         /// <returns></returns>
-        Task<ApiResponse<List<sys_order>>> GetTableOrder(int store_id, int table_id);
+        Task<ApiResponse<List<sys_order>>> GetTableOrder(int store_id, int table_id,int sourceType);
 
         /// <summary>
         /// 催单
@@ -58,5 +58,20 @@ namespace WebIServices.IServices.ClientIServices
         /// <param name="orderId"></param>
         /// <returns></returns>
         Task<ApiResponse<bool>> OrderReminder(int orderId);
+
+        /// <summary>
+        /// 获取订单明细
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        Task<ApiResponse<bool>> OrderDetails(int orderId);
+
+        /// <summary>
+        /// 订单结账
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <param name="CouponsId"></param>
+        /// <returns></returns>
+        Task<ApiResponse<bool>> OrderCheckout(int orderId,int? CouponsId);
     }
 }

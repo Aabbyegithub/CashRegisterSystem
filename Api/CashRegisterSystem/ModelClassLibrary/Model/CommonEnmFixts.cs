@@ -90,5 +90,21 @@ namespace ModelClassLibrary.Model
             [Description("暂停")]
             Pause = 15,
         }
+
+        public enum PayChannel
+        {
+            AliPay_App,
+            AliPay_Wap,
+            AliPay_Page,
+            AliPay_QRCode,
+            AliPay_Barcode,
+            WeChat_JSAPI,
+            WeChat_App,
+            WeChat_H5,
+            WeChat_Native,
+            WeChat_Barcode,
+            Bank_NetBanking,
+            Bank_QuickPay
+        }
     }
 }

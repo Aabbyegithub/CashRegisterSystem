@@ -35,7 +35,7 @@
           </view>
           <view class="info-item">
             <text class="label">下单时间</text>
-            <text class="value">{{ order.orderTime }}</text>
+            <text class="value" style="font-size: 10px;">{{ order.orderTime }}</text>
           </view>
           <view class="info-item">
             <text class="label">消费金额</text>
@@ -43,7 +43,7 @@
           </view>
           <view class="info-item">
             <text class="label">用餐时间</text>
-            <text class="value">{{ order.diningTime }}</text>
+            <text class="value" style="font-size: 10px;">{{ order.diningTime }}</text>
           </view>
         </view>
 
@@ -66,23 +66,23 @@
             v-if="order.status === '待支付'"
             type="default"
             size="mini"
-            @click="checkout(order.id)"
+            @click="checkout(order.id,order.status)"
             custom-style="margin:5rpx;border:none;box-shadow:none;background-color:transparent;width:30px;font-size: 28rpx;"
           >结账</u-button>
           <u-button
             v-if="order.status === '已结清'"
             type="default"
             size="mini"
-            @click="viewDetails(order.id)"
+            @click="viewDetails(order.id,order.status)"
             custom-style="margin:5rpx;border:none;box-shadow:none;background-color:transparent;width:30px;font-size: 28rpx;"
           >详情</u-button>
-          <u-button
+          <!-- <u-button
             v-if="order.status === '已结清'"
             type="default"
             size="mini"
             @click="deleteOrder(order.id)"
             custom-style="margin:5rpx;border:none;box-shadow:none;background-color:transparent;width:30px;font-size: 28rpx;"
-          >删除</u-button>
+          >删除</u-button> -->
         </view>
       </view>
     </view>
@@ -92,9 +92,18 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import CustomHeader from '@/components/CustomHeader.vue'
+import { request } from '@/utitl/request'
+import dayjs from 'dayjs';
+import { onShow } from '@dcloudio/uni-app';
 
 // 搜索框值
 const searchValue = ref('')
+const sourceType =ref(2) // 默认客人
+var UserInfo = uni.getStorageSync('UserInfo')
+if (!UserInfo) {
+   sourceType.value = 1
+}
+ const { tableId, storeId,people } = uni.getStorageSync('TableInfo') || {}
 
 // 订单数据
 const orders = ref([
@@ -146,29 +155,37 @@ const orders = ref([
 ])
 
 // 订单操作函数
-const urgeOrder = (id: number) => {
+const urgeOrder = async (id: number) => {
   console.log('催单:', id)
-  uni.showToast({ title: '催单成功', icon: 'success' })
+  await request({
+    url: `/api/Client/OrderReminder?orderId=${id}`,
+    method: 'GET'
+  }).then(() => {
+    uni.showToast({ title: '催单成功', icon: 'success' })
+  }).catch(() => {
+    uni.showToast({ title: '催单失败', icon: 'none' })
+  })
 }
 
 const addDish = (id: number) => {
   console.log('加菜:', id)
+   uni.setStorageSync('OrderId', id)
   // 这里可以跳转到加菜页面
   uni.switchTab({
-    url: `../menu/index?id=${id}`
+    url: `../menu/index`
   })
 }
 
-const checkout = (id: number) => {
+const checkout = (id: number,orderstatus:string) => {
   console.log('结账:', id)
   // 这里可以跳转到结账页面
-   uni.navigateTo({ url: `/pages/order/orderdetil?id=${id}` })
+   uni.navigateTo({ url: `/pages/order/orderdetil?orderId=${id}&orderstatus=${orderstatus}` })
 }
 
-const viewDetails = (id: number) => {
+const viewDetails = (id: number,orderstatus:string) => {
   console.log('查看详情:', id)
   // 这里可以跳转到详情页面
-   uni.navigateTo({ url: `/pages/order/orderdetil?id=${id}` })
+   uni.navigateTo({ url: `/pages/order/orderdetil?orderId=${id}&orderstatus=${orderstatus}` })
 }
 
 const handleSearch = (value: string) => {
@@ -190,6 +207,38 @@ const deleteOrder = (id: number) => {
     }
   })
 }
+
+onShow(() => {
+  //加载订单数据 --员工可以获取所有，客人只能获取自己所对应的桌台
+  getOrders()
+})
+
+const getOrders = async () => {
+  await request({
+    url: `/api/Client/GetTableOrder?store_id=${storeId}&table_id=${tableId}&sourceType=${sourceType.value}`,
+    method: 'GET'
+  }).then((res: any) => {
+    console.log('获取订单数据', res)
+    if (res.start === 200) {
+      orders.value = res.response.map((order: any) => ({
+        ...order,
+        id: order.order_id,
+        tableNumber: order.table.table_no,
+        orderTime:dayjs(order.start_time).format('YYYY-MM-DD HH:mm:ss') ,
+        diningTime:dayjs(order.start_time).format('YYYY-MM-DD HH:mm:ss'),
+        status: order.status === 1 || order.status == 2? '待支付' : '已结清',
+        peopleCount: order.table_capacity,
+        amount: order.payable_amount
+      }))
+    } else {
+      uni.showToast({ title: res.message, icon: 'none' })
+    }
+  }).catch((error) => {
+    console.error('获取订单数据失败', error)
+    uni.showToast({ title: '获取订单数据失败', icon: 'none' })
+  })
+}
+
 </script>
 
 <style>

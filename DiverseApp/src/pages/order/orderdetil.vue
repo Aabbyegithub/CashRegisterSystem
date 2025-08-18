@@ -47,7 +47,7 @@
         </view>
       </view>
     </view>
-    <view class="order-btns">
+    <view v-if="orderstatus=== '待支付'" class="order-btns">
       <u-button custom-style="width:45%;border-radius: 50rpx;background:#fff;color:#333;border:1px solid #ccc" @click="addDish">加菜</u-button>
       <u-button type="primary" custom-style="width:45%;border-radius: 50rpx;background:linear-gradient(90deg,#0E8A9E,#1CB5E0);color:#fff" @click="checkout">结账</u-button>
     </view>
@@ -81,6 +81,7 @@
 </template>
 
 <script setup lang="ts">
+import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 const tableName = ref('A2桌')
 const mergedTable = ref('')
@@ -104,6 +105,8 @@ const orderList = ref([
   { id: 6, name: '小炒黄牛肉', spec: '中辣、不加葱*1', price: 12 },
   { id: 7, name: '清蒸鲈鱼', spec: '味淡*1', price: 16 },
 ])
+const orderId = ref(0)
+const orderstatus = ref()
 const total = ref(71)
 const payType = ref('wechat')
 const payList = ref([
@@ -142,6 +145,13 @@ function confirmChange() {
   showChangeDialog.value = false
   changeSelect.value = ''
 }
+
+onLoad((options: any) => {
+    console.log('订单详情参数:', options)
+    const { orderId,orderstatus} = options
+    orderId.value = orderId 
+    orderstatus.value = orderstatus
+})
 </script>
 
 <style>

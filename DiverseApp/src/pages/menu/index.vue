@@ -295,19 +295,20 @@ async function submitOrder() {
      sourceType = 1
   }
   const { tableId, storeId,people } = uni.getStorageSync('TableInfo') || {}
+  const orderId = uni.getStorageSync('OrderId')
   // 提交订单逻辑
   await request({
-    url: '/api/Client/SubmitOrder',
+    url: `/api/Client/SaveOrder?store_id=${storeId}&table_id=${tableId}&sourceType=${sourceType}&people=${people}&orderId=${orderId}`,
     method: 'POST',
-    data: {
-      store_id:storeId,
-      table_id: tableId,
-      sourceType : sourceType,
-      people: people,
-      order: cartList.value
-    }
+    data:  cartList.value.map(item => ({
+    ...item,
+    price: String(item.price),
+    spec: String(item.spec || ''),
+    spicy: String(item.spicy || ''),
+    qty: Number(item.qty)
+  }))
   }).then((res: any) => {
-    if (res.Start == 200) {
+    if (res.start == 200) {
       uni.showToast({ title: '下单成功', icon: 'success' })
       cartList.value = []
       cartTotal.value = 0
