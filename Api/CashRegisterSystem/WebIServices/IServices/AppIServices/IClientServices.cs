@@ -33,6 +33,6 @@ namespace WebIServices.IServices.ClientIServices
         /// <returns></returns>
         Task<ApiResponse<List<DishList>>> GetDish(int store_id);
 
-       Task<ApiResponse<List<bool>>>SaveOrder();
+       Task<ApiResponse<List<bool>>>SaveOrder(Order order);
     }
 }

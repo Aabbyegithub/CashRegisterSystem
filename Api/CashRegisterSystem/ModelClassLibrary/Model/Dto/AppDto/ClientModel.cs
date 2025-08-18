@@ -41,4 +41,14 @@ namespace ModelClassLibrary.Model.Dto.AppDto
 
         public long DishCategoryType { get; set; }
     }
+
+    public class Order
+    {
+        public long Id { get; set; }
+        public string name { get; set; }
+        public string price { get; set; }
+        public string spec { get; set; }
+        public string spicy { get; set; }
+        public int qty { get; set; }
+    }
 }

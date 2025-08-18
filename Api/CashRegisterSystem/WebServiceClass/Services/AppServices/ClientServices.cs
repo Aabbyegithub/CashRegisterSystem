@@ -74,9 +74,9 @@ namespace WebServiceClass.Services.AppServices
             return Success(res,"菜品类型获取成功");
         }
 
-        public Task<ApiResponse<List<bool>>> SaveOrder()
+        public Task<ApiResponse<List<bool>>> SaveOrder(Order order)
         {
-            throw new NotImplementedException();
+             
         }
     }
 }
