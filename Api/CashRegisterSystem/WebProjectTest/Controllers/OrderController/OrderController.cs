@@ -40,6 +40,26 @@ namespace WebProjectTest.Controllers.OrderController
             }
         }
 
+        [HttpGet]
+        [OperationLogFilter("订单管理", "查询未结算订单列表", ActionType.Search)]
+        public async Task<ApiPageResponse<List<sys_order>>> GetNotCheckoutOrderListAsync(int page = 0, int size = 10)
+        {
+            RefAsync<int> count = 0;
+            try
+            {
+                var res = await _OrderServices.GetNotCheckoutOrderListAsync(OrgId, page, size, count);
+                if (res != null)
+                {
+                    return PageSuccess(res, count);
+                }
+                return PageFail<List<sys_order>>("获取数据失败");
+            }
+            catch (Exception)
+            {
+                return PageError<List<sys_order>>("服务器错误");
+            }
+        }
+
         /// <summary>
         /// 添加新订单
         /// </summary>

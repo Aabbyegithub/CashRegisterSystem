@@ -598,3 +598,4 @@ D:\LQProject\WaiBaoPro\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\
 D:\LQProject\WaiBaoPro\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\WebProje.75F6C62A.Up2Date
 D:\LQProject\WaiBaoPro\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\WebProjectTest.genruntimeconfig.cache
 D:\LQProject\WaiBaoPro\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\ref\WebProjectTest.dll
+D:\LQProject\WaiBaoPro\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\WebProjectTest.MvcApplicationPartsAssemblyInfo.cs

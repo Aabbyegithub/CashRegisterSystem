@@ -51,4 +51,28 @@ namespace ModelClassLibrary.Model.Dto.AppDto
         public string spicy { get; set; }
         public int qty { get; set; }
     }
+
+    public class OrderDetail
+    {
+        public long Id { get; set; }
+        public string Name { get; set; }
+        public string Spec { get; set; }
+        public decimal Price { get; set; }
+    }
+
+    public class OrderDetailResult
+    {
+        public int orderId { get; set; }
+        public int tableId { get; set; }
+        public int storeId { get; set; }
+
+        public string tableName { get; set; }
+        public decimal total { get; set; }
+
+        public List<OrderDetail> orderDetails { get; set; }
+    }
+
+
+
+
 }

@@ -11,6 +11,7 @@
       </div>
       <nav class="nav-links">
         <el-button
+          v-if="isShow"
           type="text"
           :class="{ active: currentRoute === 'Orderhome' }"
           @click="handleNavClick('Orderhome')"
@@ -72,15 +73,31 @@ import { logoutApi } from '../../../api/login';
 
 const router = useRouter();
 const currentRoute = ref("Orderhome");
+const isShow = ref(true);
 
 // 初始化时设置当前路由
 onMounted(() => {
-  router.push('/Layout/Orderhome');
+  const userInfoStr = localStorage.getItem('UserInfo');
+  const orgId = userInfoStr ? JSON.parse(userInfoStr).orgId : null;
+  if(orgId == 1){
+      isShow.value = false;
+      router.push('/Layout/Backendhome/DashboardIndex');
+  }else{
+      isShow.value = true;
+      router.push('/Layout/Orderhome');
+  }
+
+
 });
 
 const handleNavClick = (routeName: string) => {
   currentRoute.value = routeName;
-  router.push(`/Layout/${routeName}`);
+  if (routeName === 'Orderhome') {
+    router.push('/Layout/Orderhome');
+  } else if (routeName === 'Backendhome') {
+    router.push('/Layout/Backendhome/DashboardIndex');
+  }
+  // router.push(`/Layout/${routeName}`);
 };
 
 // 处理下拉框命令（退出系统逻辑）

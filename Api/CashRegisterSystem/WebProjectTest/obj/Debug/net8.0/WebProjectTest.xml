@@ -72,7 +72,7 @@
             <param name="store_id"></param>
             <returns></returns>
         </member>
-        <member name="M:WebProjectTest.Controllers.AppController.ClientController.SaveOrder(System.Collections.Generic.List{ModelClassLibrary.Model.Dto.AppDto.Order},System.Int32,System.Int32,System.Int32,System.Int32,System.Nullable{System.Int32})">
+        <member name="M:WebProjectTest.Controllers.AppController.ClientController.SaveOrderAsync(System.Collections.Generic.List{ModelClassLibrary.Model.Dto.AppDto.Order},System.Int32,System.Int32,System.Int32,System.Int32,System.Nullable{System.Int32})">
             <summary>
             下单
             </summary>
@@ -83,7 +83,7 @@
             <param name="people"></param>
             <returns></returns>
         </member>
-        <member name="M:WebProjectTest.Controllers.AppController.ClientController.GetTableOrder(System.Int32,System.Int32,System.Int32)">
+        <member name="M:WebProjectTest.Controllers.AppController.ClientController.GetTableOrderAsync(System.Int32,System.Int32,System.Int32)">
             <summary>
             获取桌台订单，可以结算或者加菜，催菜
             </summary>
@@ -91,11 +91,27 @@
             <param name="table_id"></param>
             <returns></returns>
         </member>
-        <member name="M:WebProjectTest.Controllers.AppController.ClientController.OrderReminder(System.Int32)">
+        <member name="M:WebProjectTest.Controllers.AppController.ClientController.OrderReminderAsync(System.Int32)">
             <summary>
             长时间有未上菜品，对未上菜品进行催单
             </summary>
             <param name="orderId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.AppController.ClientController.OrderDetails(System.Int32)">
+            <summary>
+            获取订单详情
+            </summary>
+            <param name="orderId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.AppController.ClientController.OrderCheckout(System.Int32,System.Nullable{System.Int32},System.String)">
+            <summary>
+            结账
+            </summary>
+            <param name="orderId"></param>
+            <param name="CouponsId"></param>
+            <param name="type"></param>
             <returns></returns>
         </member>
         <member name="M:WebProjectTest.Controllers.DBFirst.DBFirstController.GenerateEntitiesList(System.Collections.Generic.List{System.String})">

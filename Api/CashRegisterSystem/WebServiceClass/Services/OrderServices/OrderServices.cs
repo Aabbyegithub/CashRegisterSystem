@@ -11,7 +11,7 @@ using static WebProjectTest.Common.Message;
 
 namespace WebServiceClass.Services.OrderServices
 {
-    public class OrderServices:IBaseService,IOrderServices
+    public class OrderServices : IBaseService, IOrderServices
     {
         private readonly ISqlHelper _dal;
 
@@ -44,6 +44,15 @@ namespace WebServiceClass.Services.OrderServices
             {
                 return Error<bool>($"删除订单失败:{ex.Message}");
             }
+        }
+
+        public Task<List<sys_order>> GetNotCheckoutOrderListAsync(int orgId, int page, int size, RefAsync<int> count)
+        {
+            return _dal.Db.Queryable<sys_order>()
+                 .WhereIF(orgId != 1, x => x.store_id == orgId)
+                 .Where(x => x.status == 1|| x.status == 2)
+                 .OrderBy(x => x.created_at, OrderByType.Desc)
+                 .ToPageListAsync(page, size, count);
         }
 
         public Task<List<sys_order>> GetOrderListAsync(int orgId, int page, int size, RefAsync<int> count)

@@ -107,9 +107,17 @@ namespace MyNamespace
            /// </summary>           
            public long? return_audit_id {get;set;}
 
+        /// <summary>
+        /// 客户选择规格
+        /// </summary>
+        public string specification { get; set; }
+
 
         [Navigate(NavigateType.OneToOne, nameof(dish_id), nameof(sys_dish.dish_id))]//一对一 
         public sys_dish? dish { get; set; }
+
+        [Navigate(NavigateType.OneToOne, nameof(order_id), nameof(sys_order.order_id))]//一对一 
+        public sys_order? order { get; set; }
 
     }
 }

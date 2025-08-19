@@ -64,7 +64,7 @@ namespace WebIServices.IServices.ClientIServices
         /// </summary>
         /// <param name="orderId"></param>
         /// <returns></returns>
-        Task<ApiResponse<bool>> OrderDetails(int orderId);
+        Task<ApiResponse<OrderDetailResult>> OrderDetails(int orderId);
 
         /// <summary>
         /// 订单结账
@@ -72,6 +72,6 @@ namespace WebIServices.IServices.ClientIServices
         /// <param name="orderId"></param>
         /// <param name="CouponsId"></param>
         /// <returns></returns>
-        Task<ApiResponse<bool>> OrderCheckout(int orderId,int? CouponsId);
+        Task<ApiResponse<bool>> OrderCheckout(int orderId,int? CouponsId,string type);
     }
 }

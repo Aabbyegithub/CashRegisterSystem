@@ -37,6 +37,18 @@
 			"style": {
 				"navigationBarTitleText": "订单结账"
 			}
+		},
+		{
+			"path": "pages/my/Login",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		},
+		{
+			"path": "pages/my/Register",
+			"style": {
+				"navigationBarTitleText": "注册"
+			}
 		}
 
 	],

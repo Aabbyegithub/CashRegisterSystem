@@ -229,6 +229,7 @@ const submit = async () => {
     }
     console.log(res);
     localStorage.setItem('token', res.response.token)
+    localStorage.setItem('UserInfo', JSON.stringify(res.response))
     ElMessage.success('登录成功')
     router.push('/Layout') // 登录成功后跳转到订单管理页面
   } catch (err: any) {

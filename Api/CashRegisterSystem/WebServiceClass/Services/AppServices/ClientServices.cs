@@ -96,6 +96,7 @@ namespace WebServiceClass.Services.AppServices
                         quantity = o.qty,
                         unit_price = decimal.Parse(o.price),
                         total_price = decimal.Parse(o.price) * o.qty,
+                        specification = $"{o.spec},{o.spicy}",
                         status = 1, // 状态 1-待制作
                         is_rush = 0,
                     }).ToList();
@@ -158,6 +159,7 @@ namespace WebServiceClass.Services.AppServices
                         quantity = o.qty,
                         unit_price = decimal.Parse(o.price),
                         total_price = decimal.Parse(o.price) * o.qty,
+                        specification = $"{o.spec},{o.spicy}",
                         status = 1, // 状态 1-待制作
                         is_rush = 0,
                     }).ToList();
@@ -203,7 +205,7 @@ namespace WebServiceClass.Services.AppServices
         {
             var res = await _dal.Db.Queryable<sys_order>().Includes(a => a.table)
                 .WhereIF(sourceType == 2,a => a.store_id == store_id && a.table_id == table_id)
-                .WhereIF(sourceType == 1,a => a.store_id == store_id)
+                .WhereIF(sourceType == 1,a => a.store_id == store_id).OrderByDescending(a=>a.order_id)
                 .ToListAsync();
             return Success(res, "获取成功");
         }
@@ -217,12 +219,30 @@ namespace WebServiceClass.Services.AppServices
             return Success(true );
         }
 
-        public Task<ApiResponse<bool>> OrderDetails(int orderId)
+        public async Task<ApiResponse<OrderDetailResult>> OrderDetails(int orderId)
         {
-            throw new NotImplementedException();
+            var res = await _dal.Db.Queryable<sys_order_item>()
+                .Includes(a => a.dish)
+                .Where(a => a.order_id == orderId).ToListAsync();
+
+            var order = await _dal.Db.Queryable<sys_order>().Includes(a => a.table).FirstAsync(a => a.order_id == orderId);
+            var result = new OrderDetailResult();
+            result.total = order.payable_amount;
+            result.tableName = order.table.table_no;
+            result.orderId = orderId;
+            result.tableId = (int)order.table_id;
+            result.storeId = (int)order.store_id;
+            result.orderDetails = res.Select(a => new OrderDetail
+            {
+                Id = a.item_id,
+                Name = a.dish.dish_name,
+                Spec = $"{a.specification}*{a.quantity}",
+                Price = a.total_price,
+            }).ToList();
+            return Success(result, "获取订单明细成功");
         }
 
-        public Task<ApiResponse<bool>> OrderCheckout(int orderId, int? CouponsId)
+        public Task<ApiResponse<bool>> OrderCheckout(int orderId, int? CouponsId, string type)
         {
             throw new NotImplementedException();
         }

@@ -54,9 +54,9 @@ namespace WebProjectTest.Controllers.AppController
         /// <param name="people"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ApiResponse<bool>>SaveOrderAsync(List<Order> order, int store_id, int table_id, int sourceType,int people,int? orderId)
+        public async Task<ApiResponse<bool>> SaveOrderAsync(List<Order> order, int store_id, int table_id, int sourceType, int people, int? orderId)
         {
-            return await _clientServices.SaveOrder(order, store_id, table_id, sourceType, people,orderId);
+            return await _clientServices.SaveOrder(order, store_id, table_id, sourceType, people, orderId);
         }
 
         /// <summary>
@@ -67,9 +67,9 @@ namespace WebProjectTest.Controllers.AppController
         /// <returns></returns>
         [HttpGet]
 
-        public async Task<ApiResponse<List<sys_order>>> GetTableOrderAsync(int store_id, int table_id,int sourceType)
+        public async Task<ApiResponse<List<sys_order>>> GetTableOrderAsync(int store_id, int table_id, int sourceType)
         {
-            return await _clientServices.GetTableOrder(store_id, table_id,sourceType);
+            return await _clientServices.GetTableOrder(store_id, table_id, sourceType);
         }
 
         /// <summary>
@@ -78,9 +78,33 @@ namespace WebProjectTest.Controllers.AppController
         /// <param name="orderId"></param>
         /// <returns></returns>
         [HttpGet]
-        public async  Task<ApiResponse<bool>> OrderReminderAsync(int orderId)
+        public async Task<ApiResponse<bool>> OrderReminderAsync(int orderId)
         {
             return await _clientServices.OrderReminder(orderId);
+        }
+
+        /// <summary>
+        /// 获取订单详情
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ApiResponse<OrderDetailResult>> OrderDetails(int orderId)
+        {
+            return await _clientServices.OrderDetails(orderId);
+        }
+
+        /// <summary>
+        /// 结账
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <param name="CouponsId"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ApiResponse<bool>> OrderCheckout(int orderId, int? CouponsId, string type)
+        {
+            return await _clientServices.OrderCheckout(orderId, CouponsId, type);
         }
     }
 }
