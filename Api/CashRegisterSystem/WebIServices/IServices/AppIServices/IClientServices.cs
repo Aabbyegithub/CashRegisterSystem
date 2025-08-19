@@ -73,5 +73,23 @@ namespace WebIServices.IServices.ClientIServices
         /// <param name="CouponsId"></param>
         /// <returns></returns>
         Task<ApiResponse<bool>> OrderCheckout(int orderId,int? CouponsId,string type);
+
+        /// <summary>
+        /// 订单并桌
+        /// </summary>
+        /// <param name="oldTableId"></param>
+        /// <param name="newTableId"></param>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        Task<ApiResponse<bool>> MergeTables(int oldTableId, int newTableId, int orderId);
+
+        /// <summary>
+        /// 订单转桌
+        /// </summary>
+        /// <param name="oldTableId"></param>
+        /// <param name="newTableId"></param>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        Task<ApiResponse<bool>> ChangeTables(int oldTableId, int newTableId, int orderId);
     }
 }

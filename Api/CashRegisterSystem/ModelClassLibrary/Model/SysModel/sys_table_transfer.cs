@@ -64,6 +64,18 @@ namespace MyNamespace
            /// Nullable:True
            /// </summary>           
            public string? remark {get;set;}
+        /// <summary>
+        /// Desc:1:转桌；2并桌
+        /// Default:
+        /// Nullable:True
+        /// </summary>  
+        public int type {get;set;}
+
+        //[Navigate(NavigateType.OneToOne, nameof(old_table_id), nameof(sys_restaurant_table.table_id))]//一对一 
+        //public sys_restaurant_table? table { get; set; }
+
+        //[Navigate(NavigateType.OneToOne, nameof(new_table_id), nameof(sys_restaurant_table.table_id))]//一对一 
+        //public sys_restaurant_table? table { get; set; }
 
     }
 }

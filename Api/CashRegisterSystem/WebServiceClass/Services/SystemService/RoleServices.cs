@@ -38,6 +38,12 @@ namespace WebServiceClass.Services.SystemService
                 .ToPageListAsync(page,size,count);
         }
 
+        public async Task<List<sys_role>> GetRoleListAsync()
+        {
+            return await _dal.Db.Queryable<sys_role>()
+                .ToListAsync();
+        }
+
         public async Task<List<UserPermission>> GetUserPermissionsAsync(int role_id)
         {
             var menu = await _dal.Db.Queryable<sys_role_permission>()

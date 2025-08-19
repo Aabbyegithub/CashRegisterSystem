@@ -106,5 +106,31 @@ namespace WebProjectTest.Controllers.AppController
         {
             return await _clientServices.OrderCheckout(orderId, CouponsId, type);
         }
+
+        /// <summary>
+        /// 并桌
+        /// </summary>
+        /// <param name="oldTableId"></param>
+        /// <param name="newTableId"></param>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ApiResponse<bool>> MergeTablesAsync(int oldTableId, int newTableId, int orderId)
+        {
+            return await _clientServices.MergeTables(oldTableId, newTableId, orderId);
+        }
+
+        /// <summary>
+        /// 转桌
+        /// </summary>
+        /// <param name="oldTableId"></param>
+        /// <param name="newTableId"></param>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ApiResponse<bool>> ChangeTablesAsync(int oldTableId, int newTableId, int orderId)
+        {
+            return await _clientServices.ChangeTables(oldTableId, newTableId, orderId);
+        }
     }
 }

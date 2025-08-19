@@ -56,7 +56,7 @@
       <view class="merge-dialog">
         <view class="merge-title">并台</view>
         <view class="merge-grid">
-          <view v-for="table in mergeTables" :key="table.id" class="merge-table" :class="{selected: mergeSelect === table.id}" @click="mergeSelect = table.id">[并入]<dr/> {{ table.name }}</view>
+          <view v-for="table in mergeTables" :key="table.id" class="merge-table" :class="{selected: mergeSelect === table.id}" @click="mergeSelect = table.id">[并入]<br/> {{ table.name }}</view>
         </view>
         <view class="merge-btns">
           <u-button custom-style="width:45%;border-radius: 50rpx;background:#fff;color:#333;border:1px solid #ccc" @click="showMergeDialog = false">取消</u-button>
@@ -69,7 +69,7 @@
       <view class="merge-dialog">
         <view class="merge-title">换桌</view>
         <view class="merge-grid">
-          <view v-for="table in changeTables" :key="table.id" class="merge-table" :class="{selected: changeSelect === table.id}" @click="changeSelect = table.id">[换到] <dr/> {{ table }}</view>
+          <view v-for="table in changeTables" :key="table.id" class="merge-table" :class="{selected: changeSelect === table.id}" @click="changeSelect = table.id">[换到] <br/> {{ table.name }}</view>
         </view>
         <view class="merge-btns">
           <u-button custom-style="width:45%;border-radius: 50rpx;background:#fff;color:#333;border:1px solid #ccc" @click="showChangeDialog = false">取消</u-button>
@@ -85,6 +85,8 @@ import { request } from '@/utitl/request'
 import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 const tableName = ref('A2桌')
+const oldtableId = ref(0)
+const storeId = ref(0)
 const mergedTable = ref('')
 const changeTable = ref('')
 const showMergeDialog = ref(false)
@@ -106,7 +108,7 @@ const orderList = ref([
   { id: 6, name: '小炒黄牛肉', spec: '中辣、不加葱*1', price: 12 },
   { id: 7, name: '清蒸鲈鱼', spec: '味淡*1', price: 16 },
 ])
-const orderId = ref(0)
+const orderId = ref("0")
 const orderstatus = ref()
 const total = ref(71)
 const payType = ref('wechat')
@@ -131,27 +133,64 @@ function addDish() {
 function checkout() {
   uni.showToast({ title: '结账成功', icon: 'success' })
 }
-function confirmMerge() {
+async function confirmMerge() {
   if (!mergeSelect.value) return
-  mergedTable.value = tableName.value
-  tableName.value =  mergeTables.value.find(item => item.id == mergeSelect.value)?.name || '';
-  showMergeDialog.value = false
-  mergeSelect.value = 0
+  await request({
+    url: '/api/Client/MergeTables',
+    method: 'GET',
+    data: {
+      orderId: orderId.value,
+      oldTableId: oldtableId.value,
+      newTableId: mergeSelect.value
+    }
+  }).then((res:any) => {
+    if (res.start == 200) {
+      mergedTable.value = tableName.value
+      tableName.value =  mergeTables.value.find(item => item.id == mergeSelect.value)?.name || '';
+      showMergeDialog.value = false
+      mergeSelect.value = 0
+      uni.showToast({ title: '并台成功', icon: 'success' })
+    }
+    else {
+      uni.showToast({ title: '并台失败', icon: 'none' })
+    }
+  }).catch(() => {
+    uni.showToast({ title: '并台失败', icon: 'none' })
+  })
 }
-function confirmChange() {
+async function confirmChange() {
   if (!changeSelect.value) return
-  changeTable.value = tableName.value
-  tableName.value = changeTables.value.find(item => item.id == changeSelect.value)?.name || '';
-  showChangeDialog.value = false
-  changeSelect.value = 0
+  await request({
+    url: '/api/Client/ChangeTables',
+    method: 'GET',
+    data: {
+      orderId: orderId.value,
+      oldTableId: oldtableId.value,
+      newTableId: changeSelect.value
+    }
+  }).then((res:any) => {
+    if (res.start == 200) {
+      changeTable.value = tableName.value
+      tableName.value = changeTables.value.find(item => item.id == changeSelect.value)?.name || '';
+      showChangeDialog.value = false
+      changeSelect.value = 0
+      uni.showToast({ title: '换桌成功', icon: 'success' })
+    }
+    else {
+      uni.showToast({ title: '换桌失败', icon: 'none' })
+    }
+  }).catch(() => {
+    uni.showToast({ title: '换桌失败', icon: 'none' })
+  })
+  GetTables(storeId.value)
 }
 
 onLoad((options: any) => {
     console.log('订单详情参数:', options)
-    const { orderId,orderstatus} = options
-    orderId.value = orderId 
-    orderstatus.value = orderstatus
-    GetOrderDetail(orderId)
+    const { orderId: oid, orderstatus: ostatus } = options
+    orderId.value = oid
+    orderstatus.value = ostatus
+    GetOrderDetail(oid)
 })
 async function GetOrderDetail(orderId: number) {
   await request({
@@ -164,9 +203,13 @@ async function GetOrderDetail(orderId: number) {
     console.log('获取订单详情', res)
     if (res.response) {
       orderList.value = res.response.orderDetails || []
+      oldtableId.value = res.response.tableId || 0
       total.value = res.response.total || 0
       tableName.value = res.response.tableName || 'A2桌'
-       GetTables(res.response.storeId)
+      mergedTable.value = res.response.mergedTable || ''
+      changeTable.value = res.response.changeTable || ''
+      storeId.value = res.response.storeId || 0
+       GetTables(storeId.value)
     }
   })
 }
@@ -181,8 +224,8 @@ async function GetTables(store_id: number) {
     }
   }).then((res: any) => {
     console.log('获取桌台数据', res)
-    mergeTables.value = res.response || []
-    changeTables.value = res.response || []
+    mergeTables.value = res.response.filter((item: any) => item.status === 2 && item.name !=tableName.value) || []
+    changeTables.value = res.response.filter((item: any) => item.status === 1) || []
   })
 }
 </script>
@@ -330,7 +373,7 @@ async function GetTables(store_id: number) {
   background: #fff;
   border-radius: 16rpx;
   padding: 40rpx 30rpx 30rpx 30rpx;
-  width: 90vw;
+  width: 75vw;
   max-width: 500px;
   text-align: center;
 }

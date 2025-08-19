@@ -88,5 +88,8 @@ namespace MyNamespace
         [Navigate(NavigateType.OneToOne, nameof(store_id), nameof(sys_store.store_id))]//一对一 
         public sys_store? store { get; set; }
 
+        [SugarColumn(IsIgnore = true)]
+        public long RoleId { get; set; }
+
     }
 }

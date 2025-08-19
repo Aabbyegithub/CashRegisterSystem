@@ -18,6 +18,12 @@ namespace WebIServices.IServices.SystemIServices
         /// </summary>
         /// <returns></returns>
         Task<List<sys_role>> GetRoleListAsync(int page, int size, RefAsync<int> count,string RoleName);
+
+        /// <summary>
+        /// 获取所有角色
+        /// </summary>
+        /// <returns></returns>
+        Task<List<sys_role>> GetRoleListAsync();
         /// <summary>
         /// 添加角色
         /// </summary>

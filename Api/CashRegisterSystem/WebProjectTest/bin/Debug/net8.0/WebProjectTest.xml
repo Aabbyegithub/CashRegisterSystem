@@ -114,6 +114,24 @@
             <param name="type"></param>
             <returns></returns>
         </member>
+        <member name="M:WebProjectTest.Controllers.AppController.ClientController.MergeTablesAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            并桌
+            </summary>
+            <param name="oldTableId"></param>
+            <param name="newTableId"></param>
+            <param name="orderId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.AppController.ClientController.ChangeTablesAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            转桌
+            </summary>
+            <param name="oldTableId"></param>
+            <param name="newTableId"></param>
+            <param name="orderId"></param>
+            <returns></returns>
+        </member>
         <member name="M:WebProjectTest.Controllers.DBFirst.DBFirstController.GenerateEntitiesList(System.Collections.Generic.List{System.String})">
             <summary>
             批量生成实体类文件
@@ -254,6 +272,12 @@
             </summary>
             <param name="page"></param>
             <param name="size"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.RoleController.GetAllRoleListAsync">
+            <summary>
+            获取所有角色
+            </summary>
             <returns></returns>
         </member>
         <member name="M:WebProjectTest.Controllers.SystemController.RoleController.AddRoleAsync(MyNamespace.sys_role)">

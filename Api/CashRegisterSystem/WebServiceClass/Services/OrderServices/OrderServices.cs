@@ -46,11 +46,13 @@ namespace WebServiceClass.Services.OrderServices
             }
         }
 
-        public Task<List<sys_order>> GetNotCheckoutOrderListAsync(int orgId, int page, int size, RefAsync<int> count)
+        public Task<List<sys_order>> GetNotCheckoutOrderListAsync(int? tableId,string? orderno, int orgId, int page, int size, RefAsync<int> count)
         {
             return _dal.Db.Queryable<sys_order>()
                  .WhereIF(orgId != 1, x => x.store_id == orgId)
                  .Where(x => x.status == 1|| x.status == 2)
+                 .WhereIF(tableId.HasValue,x=>x.table_id == tableId)
+                 .WhereIF(!string.IsNullOrEmpty(orderno),x=>x.order_no.Contains(orderno))
                  .OrderBy(x => x.created_at, OrderByType.Desc)
                  .ToPageListAsync(page, size, count);
         }

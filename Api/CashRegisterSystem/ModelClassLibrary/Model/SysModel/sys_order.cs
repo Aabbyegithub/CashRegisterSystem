@@ -66,7 +66,7 @@ namespace MyNamespace
            public byte source_type {get;set;}
 
            /// <summary>
-           /// Desc:状态（1-待支付；2-已下单；3-已完成；4-已取消；5-挂单；6-预订）
+           /// Desc:状态（1-待支付；2-已下单；3-已完成；4-已取消；5-挂单；6-预订；7-已并如其他订单）
            /// Default:
            /// Nullable:False
            /// </summary>           

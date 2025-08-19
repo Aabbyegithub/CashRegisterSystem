@@ -46,6 +46,28 @@ namespace WebProjectTest.Controllers.SystemController
             }
         }
 
+        /// <summary>
+        /// 获取所有角色
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ApiResponse<List<sys_role>>> GetAllRoleListAsync()
+        {
+            try
+            {
+                var res = await _RoleServices.GetRoleListAsync();
+                if (res != null)
+                {
+                    return Success(res);
+                }
+                return Fail<List<sys_role>>("获取数据失败");
+            }
+            catch (Exception)
+            {
+
+                return Error<List<sys_role>>("服务器错误");
+            }
+        }
 
         /// <summary>
         /// 添加新角色

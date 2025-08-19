@@ -16,7 +16,7 @@ namespace WebIServices.IServices.OrderIServices
         /// 获取订单列表
         /// </summary>
         Task<List<sys_order>> GetOrderListAsync(int orgId, int page, int size, RefAsync<int> count);
-        Task<List<sys_order>> GetNotCheckoutOrderListAsync(int orgId, int page, int size, RefAsync<int> count);
+        Task<List<sys_order>> GetNotCheckoutOrderListAsync(int? tableId,string? orderno,int orgId, int page, int size, RefAsync<int> count);
 
         /// <summary>
         /// 添加订单

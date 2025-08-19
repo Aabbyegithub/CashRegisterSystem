@@ -28,6 +28,11 @@
           :header-cell-style="{ background: '#f8f9fa', color: '#606266' }"
         >
           <el-table-column type="selection" width="55" />
+           <el-table-column label="门店名称" prop="store_id" align="center">
+            <template #default="scope">
+             {{ storeList.find(cat => cat.id === scope.row.store_id)?.name || '' }}
+            </template>
+          </el-table-column>
           <el-table-column label="姓名" prop="name" align="center" />
           <el-table-column label="账号" prop="username" align="center" />
           <el-table-column label="手机号" prop="phone" align="center" :formatter="(row) => row.phone || '--'" />
@@ -37,6 +42,11 @@
               <el-tag :type="scope.row.status === 1 ? 'success' : 'info'" @click="toggleStatus(scope.row)">
                 {{ scope.row.status === 1 ? '在职' : '离职' }}
               </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="角色" prop="staff_role" align="center">
+            <template #default="scope">
+              {{ roleList.find(cat => cat.id === scope.row.staff_role?.role_id)?.name || '' }}
             </template>
           </el-table-column>
           <el-table-column label="最后登录" prop="last_login_time" align="center" :formatter="(row) => row.last_login_time || '--'" />
@@ -88,6 +98,11 @@
             <el-option label="店长" value="店长" />
           </el-select>
         </el-form-item>
+        <el-form-item label="角色">
+          <el-select v-model="editForm.roleId" placeholder="请选择权限角色">
+            <el-option v-for="role in roleList" :key="role.id" :value="role.id" :label="role.name">{{ role.name }}</el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="密码" v-if="!editForm.staff_id">
           <el-input v-model="editForm.password" type="password" placeholder="请输入密码" />
         </el-form-item>
@@ -110,7 +125,7 @@
 import { ref, reactive, computed, onMounted } from 'vue';
 import { ElSelect, ElInput, ElButton, ElTable, ElTableColumn, ElPagination, ElTag, ElDialog, ElForm, ElFormItem, ElMessage } from 'element-plus';
 import { getStoreList } from '../../../../api/login';
-import { addStaffApi, deleteStaffApi, editStaffApi, getStaffList } from '../../../../api/staffmang';
+import { addStaffApi, deleteStaffApi, editStaffApi, getRoleList, getStaffList } from '../../../../api/staffmang';
 
 const storeList = ref([
   { id: 0, name: '总部' },
@@ -127,6 +142,7 @@ const pageSize = ref(10);
 const showEditModal = ref(false);
 const editForm = reactive<any>({});
 const total = ref(10)
+const roleList = ref<any[]>([]);
 
 // 新增缺失的参数和接口方法
 const selectAll = ref(false);
@@ -148,12 +164,12 @@ async function handleSave() {
     // 编辑
     const idx = staffList.value.findIndex(item => item.staff_id === editForm.staff_id);
     if (idx > -1) {
-      await editStaffApi(editForm.staff_id,editForm.name,editForm.username,editForm.password,editForm.phone,editForm.position,editForm.store_id,editForm.status)
+      await editStaffApi(editForm.staff_id,editForm.name,editForm.username,editForm.password,editForm.phone,editForm.position,editForm.store_id,editForm.status,editForm.roleId)
       ElMessage.success('编辑成功');
     }
   } else {
     // 新增
-    await addStaffApi(editForm.name,editForm.username,editForm.password,editForm.phone,editForm.position,editForm.store_id,editForm.status)
+    await addStaffApi(editForm.name,editForm.username,editForm.password,editForm.phone,editForm.position,editForm.store_id,editForm.status,editForm.roleId)
     ElMessage.success('新增成功');
   }
   fetchStaffList()
@@ -171,19 +187,29 @@ function toggleStatus(staff:any) {
 function openEditModal(staff?:any) {
   showEditModal.value = true;
   if (staff) {
-Object.keys(staff).forEach(key => {
-  editForm[key] = staff[key];
-});
+    Object.keys(staff).forEach(key => {
+      editForm[key] = staff[key];
+    });
     editForm.password = '';
+    // 修正角色id类型，防止下拉框映射不上
+    if (!roleList.value.some(role => role.id === staff.staff_role?.role_id)) {
+      editForm.roleId = '';
+    }else
+      editForm.roleId = staff.staff_role?.role_id;
+    // 修正门店id类型，防止下拉框映射不上
+    if (!storeList.value.some(store => store.id === editForm.store_id)) {
+      editForm.store_id = '';
+    }
   } else {
-editForm.staff_id = '';
-editForm.store_id ='';
-editForm.username = '';
-editForm.password = '';
-editForm.name = '';
-editForm.phone = '';
-editForm.position = '';
-editForm.status = 1;
+    editForm.staff_id = '';
+    editForm.store_id = '';
+    editForm.username = '';
+    editForm.password = '';
+    editForm.name = '';
+    editForm.phone = '';
+    editForm.position = '';
+    editForm.status = 1;
+    editForm.roleId = '';
   }
 }
 function closeEditModal() {
@@ -212,6 +238,7 @@ async function handleBatchDelete() {
 onMounted(() => {
   fetchStaffList();
   fetchStoreList();
+  fetchRoleList();
 });
 async function fetchStoreList() {
   await getStoreList().then((res:any)=> {
@@ -220,6 +247,18 @@ async function fetchStoreList() {
       storeList.value = storedata.map((item: any) => ({
         id: item.store_id,
         name: item.store_name
+      }));
+    }
+  });
+}
+
+async function fetchRoleList() {
+  // 获取角色列表
+ await getRoleList().then((res:any) => {
+    if (res && res.response) {
+      roleList.value = res.response.map((item: any) => ({
+        id: item.role_id,
+        name: item.role_name
       }));
     }
   });

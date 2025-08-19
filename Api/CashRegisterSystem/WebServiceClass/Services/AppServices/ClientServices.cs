@@ -204,8 +204,8 @@ namespace WebServiceClass.Services.AppServices
         public async Task<ApiResponse<List<sys_order>>> GetTableOrder(int store_id, int table_id, int sourceType)
         {
             var res = await _dal.Db.Queryable<sys_order>().Includes(a => a.table)
-                .WhereIF(sourceType == 2,a => a.store_id == store_id && a.table_id == table_id)
-                .WhereIF(sourceType == 1,a => a.store_id == store_id).OrderByDescending(a=>a.order_id)
+                .WhereIF(sourceType == 2,a => a.store_id == store_id && a.table_id == table_id &&( a.status == 1 || a.status == 2))
+                .WhereIF(sourceType == 1,a => a.store_id == store_id &&( a.status == 1 || a.status == 2)).OrderByDescending(a=>a.order_id)
                 .ToListAsync();
             return Success(res, "获取成功");
         }
@@ -239,12 +239,125 @@ namespace WebServiceClass.Services.AppServices
                 Spec = $"{a.specification}*{a.quantity}",
                 Price = a.total_price,
             }).ToList();
+            //判断是否有转桌并桌记录
+            var tableChangeTable = await _dal.Db.Queryable<sys_table_transfer>().Where(a => a.order_id == orderId && a.type == 1)
+                .OrderBy(a=>a.transfer_id).ToListAsync();
+            if (tableChangeTable.Count()> 0)
+            {
+                result.changeTable =  order.table.table_no;
+            }
+            //并桌取最后合并订单
+            var tableMergedTable = await _dal.Db.Queryable<sys_table_transfer>().Where(a => a.order_id == orderId && a.type == 2)
+                .OrderBy(a => a.transfer_id).ToListAsync();
+            if (tableMergedTable.Count() > 0)
+            {
+                result.mergedTable = order.table.table_no;
+            }
+
+
             return Success(result, "获取订单明细成功");
         }
 
         public Task<ApiResponse<bool>> OrderCheckout(int orderId, int? CouponsId, string type)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 并桌--不更新桌台状态
+        /// </summary>
+        /// <param name="oldTableId"></param>
+        /// <param name="newTableId"></param>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<ApiResponse<bool>> MergeTables(int oldTableId, int newTableId, int orderId)
+        {
+            try
+            {
+                await _dal.Db.Ado.BeginTranAsync();
+
+
+                await _dal.Db.Insertable(new sys_table_transfer
+                {
+                    order_id = orderId,
+                    old_table_id = oldTableId,
+                    new_table_id = newTableId,
+                    transfer_time = DateTime.Now,
+                    type = 2
+                }).ExecuteCommandAsync();
+                var table = await _dal.Db.Queryable<sys_restaurant_table>().FirstAsync(a=>a.table_id == newTableId);
+                var order = await _dal.Db.Queryable<sys_order>().Where(a=>a.order_id == orderId || a.order_id == table.order_id).ToListAsync();
+                await _dal.Db.Updateable<sys_restaurant_table>().SetColumns(a =>new sys_restaurant_table { order_id = table.order_id }).Where(a => a.table_id == oldTableId).ExecuteCommandAsync();
+                await _dal.Db.Updateable(new sys_order
+                {
+                    order_id =(long) table.order_id,
+                    total_amount = order.Sum(o =>o.total_amount),
+                    payable_amount = order.Sum(o => o.payable_amount),
+                }).ExecuteCommandAsync();
+
+                var orderitem = await _dal.Db.Queryable<sys_order_item>().Where(a=>a.order_id==orderId)
+                    .Select(a =>new sys_order_item
+                    {
+                        item_id = 0,
+                        order_id =(long) table.order_id,
+                    },true).ToListAsync();
+
+                await _dal.Db.Insertable(orderitem).ExecuteCommandAsync();
+
+                await _dal.Db.Updateable<sys_order>().SetColumns(a =>new sys_order { status = 7}).Where(a => a.order_id == orderId).ExecuteCommandAsync();
+
+                await _dal.Db.Ado.CommitTranAsync();
+
+                return Success(true, "转桌成功！");
+            }
+            catch (Exception e)
+            {
+
+                await _dal.Db.Ado.RollbackTranAsync();
+                return Fail<bool>($"转桌失败！{e.Message}");
+            }
+        }
+
+        /// <summary>
+        /// 转桌
+        /// </summary>
+        /// <param name="oldTableId"></param>
+        /// <param name="newTableId"></param>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<ApiResponse<bool>> ChangeTables(int oldTableId, int newTableId, int orderId)
+        {
+            try
+            {
+               await _dal.Db.Ado.BeginTranAsync();
+
+
+                await _dal.Db.Insertable(new sys_table_transfer
+                {
+                    order_id = orderId,
+                    old_table_id = oldTableId,
+                    new_table_id = newTableId,
+                    transfer_time = DateTime.Now,
+                    type = 1
+                }).ExecuteCommandAsync();
+                await _dal.Db.Updateable<sys_restaurant_table>()
+                    .SetColumns(a=>new sys_restaurant_table { status =1,order_id = null }).Where(a=>a.table_id == oldTableId).ExecuteCommandAsync();
+                await _dal.Db.Updateable<sys_restaurant_table>()
+                    .SetColumns(a => new sys_restaurant_table { status = 2, order_id = orderId }).Where(a => a.table_id == newTableId).ExecuteCommandAsync();
+                await _dal.Db.Updateable<sys_order>().SetColumns(a => a.table_id == newTableId).Where(a => a.order_id == orderId).ExecuteCommandAsync();
+
+                await _dal.Db.Ado.CommitTranAsync();
+
+                return Success(true, "转桌成功！");
+            }
+            catch (Exception e)
+            {
+
+               await _dal.Db.Ado.RollbackTranAsync();
+               return Fail<bool>($"转桌失败！{e.Message}");
+            }
         }
     }
 }

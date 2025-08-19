@@ -67,6 +67,8 @@ namespace ModelClassLibrary.Model.Dto.AppDto
         public int storeId { get; set; }
 
         public string tableName { get; set; }
+        public string mergedTable { get; set; }
+        public string changeTable { get; set; }
         public decimal total { get; set; }
 
         public List<OrderDetail> orderDetails { get; set; }

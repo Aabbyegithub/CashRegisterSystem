@@ -2,20 +2,19 @@
   <div class="order-management-container">
     <!-- 筛选区域 -->
     <div class="filter-bar">
-      <label>类型：</label>
-      <el-select
-        v-model="selectedType"
-        placeholder="类型"
-        class="filter-item"
-        :options="typeOptions"
-      />
       <label>所属桌码：</label>
       <el-select
         v-model="selectedCode"
         placeholder="所属桌码"
         class="filter-item"
-        :options="codeOptions"
-      />
+      >
+        <el-option
+          v-for="option in codeOptions"
+          :key="option.value"
+          :label="option.label"
+          :value="option.value"
+        />
+    </el-select>
       <label>订单编号：</label>
       <el-input
         v-model="orderNo"
@@ -59,7 +58,7 @@
             type="text"style="color:#666;"
             @click="handleModify(order)"
           >收款</el-button>
-          <el-button type="text" style="color:#666;" @click.stop="handleDelete(order)">删除</el-button>
+          <!-- <el-button type="text" style="color:#666;" @click.stop="handleDelete(order)">删除</el-button> -->
         </div>
       </div>
     </div>
@@ -92,9 +91,7 @@ const router = useRouter()
 const selectedType = ref<string>('全部');
 const selectedCode = ref<string>('全部');
 const orderNo = ref<string>('');
-const typeOptions: Options[] = [
-  { label: '全部', value: '全部' },
-];
+
 const codeOptions: Options[] = [
   { label: '全部', value: '全部' },
 ];
@@ -148,6 +145,10 @@ const handleModify = (order: Order) => {
   console.log('修改订单', order);
 };
 const handleDelete = (order: Order) => { console.log('删除订单', order); };
+onload = () => {
+
+};
+
 </script>
 
 <style scoped>

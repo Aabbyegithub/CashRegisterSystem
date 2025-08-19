@@ -19,7 +19,11 @@
         </view>
         <view class="item-text">银行卡设置</view>
         <view class="item-arrow">
-          <image src="/static/右.png" mode="aspectFit"></image>
+            <u-icon
+                  size="24"
+                  name="arrow-right"
+                  custom-style="width:50px;float:right;color:#0E8A9E;margin-right:-40px;"
+            ></u-icon>
         </view>
       </view>
     </view>

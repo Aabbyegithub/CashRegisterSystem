@@ -40,7 +40,7 @@ namespace WebServiceClass.Services.UserService
             if (User == null)
             {
 
-                return new UserResult();
+                return null;
             }
             else
             {
@@ -48,7 +48,7 @@ namespace WebServiceClass.Services.UserService
                 var Istrue = PasswordHelper.VerifyPassword(PassWord, User.password, User.Salt);
                 if (!Istrue)
                 {
-                    return new UserResult();
+                    return null;
                 }
                 else
                 {
@@ -113,11 +113,19 @@ namespace WebServiceClass.Services.UserService
                     return Fail<string>("账号已存在！");
                 }
                 User.password = hashpassword; User.Salt = salt; User.IsDelete = 1;
-                var id = await _dal.Db.Insertable(User).ExecuteCommandAsync();
+                var id = await _dal.Db.Insertable(User).ExecuteReturnBigIdentityAsync();
                 if (id == 0)
                     return Error<string>("账号密码保存失败！");
                 else
+                {
+                    await _dal.Db.Insertable(new sys_staff_role
+                    {
+                        staff_id = id,
+                        role_id = User.RoleId,
+                    }).ExecuteCommandAsync();
                     return Success<string>(id.ToString(), "账号创建成功！");
+                }
+
             }
             catch (Exception)
             {
@@ -132,6 +140,7 @@ namespace WebServiceClass.Services.UserService
             try
             {
                await _dal.Db.Deleteable<sys_staff>().In(Ids).ExecuteCommandAsync();
+                await _dal.Db.Deleteable<sys_staff_role>().In(a => a.staff_id,Ids ).ExecuteCommandAsync();
                 return Success("删除成功");
             }
             catch (Exception)
@@ -155,7 +164,18 @@ namespace WebServiceClass.Services.UserService
                 if (id == 0)
                     return Error<string>("账号密码保存失败！");
                 else
-                    return Success<string>(id.ToString(), "账号创建成功！");
+                {
+                    if( _dal.Db.Queryable<sys_staff_role>().First(a=>a.staff_id == User.staff_id)!=null)
+                    await _dal.Db.Updateable<sys_staff_role>().SetColumns(a=>new sys_staff_role { role_id = User.RoleId }).Where(a=>a.staff_id == User.staff_id).ExecuteCommandAsync();
+                    else
+                        await _dal.Db.Insertable(new sys_staff_role
+                        {
+                            staff_id = User.staff_id,
+                            role_id = User.RoleId,
+                        }).ExecuteCommandAsync();
+                    return Success<string>(id.ToString(), "账号更新成功！");
+                }
+
             }
             catch (Exception)
             {
