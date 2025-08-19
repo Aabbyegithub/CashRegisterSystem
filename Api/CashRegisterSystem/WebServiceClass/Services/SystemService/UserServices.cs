@@ -31,11 +31,12 @@ namespace WebServiceClass.Services.UserService
             _redis = redis;
         }
 
-        public async Task<UserResult> UserLoginAsync(string UserName, string PassWord, int? orgid)
+        public async Task<UserResult> UserLoginAsync(string UserName, string PassWord)
         {
             var User = await _dal.Db.Queryable<sys_staff>()
                 .Includes(a=>a.staff_role)
-                .FirstAsync(a => a.username == UserName && a.store_id == orgid && a.IsDelete == 1);
+                .Includes(a=>a.store)
+                .FirstAsync(a => a.username == UserName && a.IsDelete == 1);
             if (User == null)
             {
 
@@ -51,12 +52,12 @@ namespace WebServiceClass.Services.UserService
                 }
                 else
                 {
-                    var org = await _dal.Db.Queryable<sys_store>().FirstAsync(a => a.store_id == orgid);
-                    if (orgid.HasValue && orgid.Value > 0)
-                    {
-                        if (org == null)
-                            return new UserResult();
-                    }
+                    //var org = await _dal.Db.Queryable<sys_store>().FirstAsync(a => a.store_id == orgid);
+                    //if (orgid.HasValue && orgid.Value > 0)
+                    //{
+                    //    if (org == null)
+                    //        return new UserResult();
+                    //}
 
                     await _dal.Db.Insertable(new lq_operationlog
                     {
@@ -75,7 +76,7 @@ namespace WebServiceClass.Services.UserService
                         UserName = User.username,
                         Name = User.name,
                         OrgId = (int)User.store_id,
-                        OrgName = org?.store_name,
+                        OrgName =User.store.store_name,
                         PassWord = User.password,
                         Salt = User.Salt,
                         RoleId = (int)User.staff_role.role_id
@@ -106,7 +107,7 @@ namespace WebServiceClass.Services.UserService
             try
             {
                 var (hashpassword, salt) = PasswordHelper.HashPassword(User.password);
-                var istrue = await _dal.Db.Queryable<sys_staff>().FirstAsync(a => a.username == User.username && a.store_id == User.store_id && a.IsDelete == 0);
+                var istrue = await _dal.Db.Queryable<sys_staff>().FirstAsync(a => a.username == User.username && a.IsDelete == 1);
                 if (istrue != null)
                 {
                     return Fail<string>("账号已存在！");
@@ -144,7 +145,7 @@ namespace WebServiceClass.Services.UserService
             try
             {
                 var (hashpassword, salt) = PasswordHelper.HashPassword(User.password);
-                var istrue = await _dal.Db.Queryable<sys_staff>().FirstAsync(a => a.username == User.username && a.store_id == User.store_id);
+                var istrue = await _dal.Db.Queryable<sys_staff>().FirstAsync(a => a.username == User.username);
                 if (istrue == null)
                 {
                     return Fail<string>("账号不存在！");

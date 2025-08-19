@@ -27,15 +27,6 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "orgid",
-            "in": "query",
-            "description": "",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
           }
         ],
         "responses": {
@@ -591,6 +582,9 @@
           },
           "staff_role": {
             "$ref": "#/components/schemas/sys_staff_role"
+          },
+          "store": {
+            "$ref": "#/components/schemas/sys_store"
           }
         },
         "additionalProperties": false
@@ -641,6 +635,49 @@
           },
           "role": {
             "$ref": "#/components/schemas/sys_role"
+          }
+        },
+        "additionalProperties": false
+      },
+      "sys_store": {
+        "type": "object",
+        "properties": {
+          "store_id": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "store_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "business_hours": {
+            "type": "string",
+            "nullable": true
+          },
+          "total_tables": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false

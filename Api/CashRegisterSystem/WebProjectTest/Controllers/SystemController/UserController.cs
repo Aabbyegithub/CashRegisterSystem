@@ -39,7 +39,7 @@ namespace WebProjectTest.Controllers.SystemController
         /// <exception cref="Exception"></exception>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ApiResponse<UserResult>> LoginAsync(string UserName, string PassWord, int? orgid)
+        public async Task<ApiResponse<UserResult>> LoginAsync(string UserName, string PassWord)
         {
             if (string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(PassWord))
             {
@@ -47,7 +47,7 @@ namespace WebProjectTest.Controllers.SystemController
             }
             try
             {
-                var res = await _UserService.UserLoginAsync(UserName, PassWord, orgid);
+                var res = await _UserService.UserLoginAsync(UserName, PassWord);
                 if (res != null)
                 {
                     return Success(res);

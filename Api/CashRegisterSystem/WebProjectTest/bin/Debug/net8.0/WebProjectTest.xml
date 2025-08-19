@@ -345,7 +345,7 @@
             验证登陆
             </summary>
         </member>
-        <member name="M:WebProjectTest.Controllers.SystemController.UserController.LoginAsync(System.String,System.String,System.Nullable{System.Int32})">
+        <member name="M:WebProjectTest.Controllers.SystemController.UserController.LoginAsync(System.String,System.String)">
             <summary>
             验证登陆
             </summary>

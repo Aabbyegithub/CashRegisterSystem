@@ -85,5 +85,8 @@ namespace MyNamespace
         [Navigate(NavigateType.OneToOne, nameof(staff_id), nameof(sys_staff_role.staff_id))]//一对一 
         public sys_staff_role? staff_role { get; set; }
 
+        [Navigate(NavigateType.OneToOne, nameof(store_id), nameof(sys_store.store_id))]//一对一 
+        public sys_store? store { get; set; }
+
     }
 }

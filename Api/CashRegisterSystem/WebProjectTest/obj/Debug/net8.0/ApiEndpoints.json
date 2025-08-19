@@ -639,6 +639,37 @@
   },
   {
     "ContainingType": "WebProjectTest.Controllers.OrderController.OrderController",
+    "Method": "GetNotCheckoutOrderListAsync",
+    "RelativePath": "api/Order/GetNotCheckoutOrderList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "size",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiPageResponse\u00601[[System.Collections.Generic.List\u00601[[MyNamespace.sys_order, ModelClassLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.OrderController.OrderController",
     "Method": "GetOrderListAsync",
     "RelativePath": "api/Order/GetOrderList",
     "HttpMethod": "GET",
@@ -1452,11 +1483,6 @@
       {
         "Name": "PassWord",
         "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "orgid",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       }
     ],

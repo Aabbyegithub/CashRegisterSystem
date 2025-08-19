@@ -22,7 +22,7 @@ namespace WebIServices.IServices.SystemIServices
         /// <param name="PassWord"></param>
         /// <param name="orgid"></param>
         /// <returns></returns>
-        Task<UserResult> UserLoginAsync(string UserName, string PassWord, int? orgid);
+        Task<UserResult> UserLoginAsync(string UserName, string PassWord);
 
         /// <summary>
         /// 查询用户分页
