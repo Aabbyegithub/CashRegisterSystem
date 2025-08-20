@@ -94,6 +94,11 @@
           align="center"
         />
         <el-table-column
+          prop="desc"
+          label="桌台描述"
+          align="center"
+        />
+        <el-table-column
           prop="lastUseTime"
           label="最后使用时间"
           align="center"
@@ -169,6 +174,9 @@
         <el-form-item label="容纳人数">
           <el-input v-model.number="form.capacity" />
         </el-form-item>
+        <el-form-item label="桌台描述">
+          <el-input v-model="form.desc" />
+        </el-form-item>
         <el-form-item label="最后使用时间">
           <el-input v-model="form.lastUseTime" />
         </el-form-item>
@@ -212,6 +220,9 @@
         </el-form-item>
         <el-form-item label="容纳人数">
           <el-input v-model.number="form.capacity" />
+        </el-form-item>
+        <el-form-item label="桌台描述">
+          <el-input v-model="form.desc" />
         </el-form-item>
         <el-form-item label="最后使用时间">
           <el-input v-model="form.lastUseTime" />
@@ -265,7 +276,8 @@ interface Table {
   store_id: string;
   table_no: string;          
   status: number;        
-  capacity: number;      
+  capacity: number;
+  desc: string;      
   lastUseTime: string;   
 }
 const tableList = ref<Table[]>([
@@ -290,6 +302,7 @@ const form = ref<Table>({
   table_no: '',
   status: 1, // 默认状态为空闲
   capacity: 0,
+  desc: '',
   lastUseTime: ''
 });
 
@@ -367,6 +380,7 @@ const openAddDialog = () => {
     table_no: '',
     status: 1, // 默认状态为空闲
     capacity: 0,
+    desc: '',
     lastUseTime: ''
   };
   addDialogVisible.value = true;
@@ -379,6 +393,7 @@ const handleAdd = async () => {
     table_no: form.value.table_no,
     capacity: form.value.capacity,
     status: form.value.status,
+    desc: form.value.desc,
     // min_consumption: form.value.min_consumption,
    })
     ElMessage.success('新增成功');
@@ -405,6 +420,7 @@ const handleEditConfirm = async () => {
     table_no: form.value.table_no,
     status: form.value.status,
     capacity: form.value.capacity,
+    desc: form.value.desc,
   });
   ElMessage.success('编辑成功');
   getTableList();

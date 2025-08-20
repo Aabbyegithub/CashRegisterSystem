@@ -161,59 +161,25 @@
           </div>
 
           <!-- 数字键盘 -->
-          <div class="number-keypad">
-            <div class="keypad-row">
-              <div 
-                class="keypad-btn" 
-                v-for="num in [7,8,9,'&times;']" 
-                :key="num"
-                @click="handleKeypadClick(num)"
-                :class="{ 'delete-btn': num === '&times;' }"
-              >
-                <span v-if="num !== '&times;'">{{ num }}</span>
-                <template v-else>
-                  <img 
-                    src="/src/assets/Rectangle 5894.png" 
-                    alt="删除" 
-                    class="delete-icon"
-                  >
-                </template>
-              </div>
+          <div class="number-keypad custom-keypad-grid">
+            <div class="keypad-btn" @click="handleKeypadClick(7)">7</div>
+            <div class="keypad-btn" @click="handleKeypadClick(8)">8</div>
+            <div class="keypad-btn" @click="handleKeypadClick(9)">9</div>
+            <div class="keypad-btn delete-btn" @click="handleKeypadClick('&times;')">
+              <img src="/src/assets/Rectangle 5894.png" alt="删除" class="delete-icon" />
             </div>
-            <div class="keypad-row">
-              <div 
-                class="keypad-btn" 
-                v-for="num in [4,5,6]" 
-                :key="num"
-                @click="handleKeypadClick(num)"
-              >{{ num }}</div>
-            </div>
-            <div class="keypad-row">
-              <div 
-                class="keypad-btn" 
-                v-for="num in [1,2,3]" 
-                :key="num"
-                @click="handleKeypadClick(num)"
-              >{{ num }}</div>
-            </div>
-            <div class="keypad-row">
-              <div 
-                class="keypad-btn zero-btn" 
-                @click="handleKeypadClick(0)"
-              >0</div>
-              <div 
-                class="keypad-btn" 
-                @click="handleKeypadClick('00')"
-              >00</div>
-              <div 
-                class="keypad-btn" 
-                @click="handleKeypadClick('.')"
-              >.</div>
-              <div 
-                class="keypad-btn" 
-                @click="handleClear"
-              >清空</div>
-            </div>
+            <div class="keypad-btn" @click="handleKeypadClick(4)">4</div>
+            <div class="keypad-btn" @click="handleKeypadClick(5)">5</div>
+            <div class="keypad-btn" @click="handleKeypadClick(6)">6</div>
+            <div class="keypad-btn clear-btn" @click="handleClear">清空</div>
+            <div class="keypad-btn" @click="handleKeypadClick(1)">1</div>
+            <div class="keypad-btn" @click="handleKeypadClick(2)">2</div>
+            <div class="keypad-btn" @click="handleKeypadClick(3)">3</div>
+            <!-- <div class="keypad-btn" style="visibility: hidden;"></div> -->
+            <div class="keypad-btn" @click="handleKeypadClick(0)">0</div>
+            <div class="keypad-btn" @click="handleKeypadClick('00')">00</div>
+            <div class="keypad-btn" @click="handleKeypadClick('.')">.</div>
+            <div class="keypad-btn" style="visibility: hidden;"></div>
           </div>
         </div>
 
@@ -841,19 +807,15 @@ const confirmChangeTable = () => {
 }
 
 /* 数字键盘样式 */
-.number-keypad {
-  display: flex;
-  flex-direction: column;
+/* 数字键盘网格布局 */
+.custom-keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 69px);
+  grid-template-rows: repeat(4, 60px);
   gap: 5px;
   margin-bottom: 50px;
 }
-.keypad-row {
-  display: flex;
-  gap: 5px;
-}
 .keypad-btn {
-  width: 69px;
-  height: 60px;
   background-color: #f8f9fa;
   border: 1px solid #ebeef5;
   display: flex;
@@ -861,21 +823,24 @@ const confirmChangeTable = () => {
   justify-content: center;
   cursor: pointer;
   border-radius: 4px;
+  font-size: 20px;
+  font-weight: 400;
 }
 .keypad-btn:hover {
   background-color: #f1f2f4;
 }
+.delete-btn {
+  grid-row: 1 / span 2;
+  grid-column: 4;
+}
+.clear-btn {
+  grid-row: 3 / span 2;
+  grid-column: 4;
+  font-size: 16px;
+}
 .delete-icon {
   width: 20px;
   height: 20px;
-}
-.zero-btn {
-  /* flex-grow: 1; */
-  /* width: 5px; 确保0键宽度更大 */
-}
-:deep(.delete-btn) {
-  /* height: 60px; 这里设置你想要的高度，比如60px，可根据需求调整 */
-   grid-row: span 2; 
 }
 /* 取消按钮 */
 .cancel-btn {

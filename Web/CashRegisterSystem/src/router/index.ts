@@ -9,7 +9,7 @@ const routes = [
     component: () => import('../views/Menu/Layout/Layout.vue'),
     children: [
       { path: 'Orderhome',name: 'Orderhome', component: () => import('../views/Menu/OrderHome/FlatOrderManagement.vue') },
-      { path: 'OrderDetail',name: 'OrderDetail', component: () => import('../views/Menu/OrderHome/OrderDetail.vue') },
+      { path: 'OrderDetail',name: 'OrderDetail', component: () => import('../views/Menu/OrderHome/OrderDetail.vue') , props: (route:any) => ({ order_id: route.query.order_id }) },
       { path: 'Backendhome',name: 'Backendhome',
         component: () => import('../views/Menu/BackendHome/BackendHome.vue'),
         children: [

@@ -47,7 +47,7 @@
             {{ order.status }}
           </div>
         </div>
-        
+        <div class="detail-item">订单单号 {{ order.order_no }}</div>
         <div class="detail-item">就餐人数 {{ order.peopleCount }} 人</div>
         <div class="detail-item">下单时间 {{ order.orderTime }}</div>
         <div class="detail-item">消费金额 {{ order.amount }} 元</div>
@@ -84,9 +84,10 @@
 <script lang="ts" setup>
 // 脚本逻辑保持不变（与之前完全一致）
 import { ref, onMounted } from 'vue';
-import { ElSelect, ElInput, ElButton, ElPagination } from 'element-plus';
+import { ElSelect, ElInput, ElButton, ElPagination, ElMessage, dayjs } from 'element-plus';
 import type { Options } from 'element-plus';
 import { useRouter } from 'vue-router'
+import { getFlatOrderList, getTableList } from '../../../api/FlatOrderManagement';
 const router = useRouter()
 const selectedType = ref<string>('全部');
 const selectedCode = ref<string>('全部');
@@ -97,6 +98,8 @@ const codeOptions: Options[] = [
 ];
 
 interface Order {
+  order_id: number;
+  order_no: string;
   tableNo: string;
   status: '待支付' | '已结清';
   peopleCount: number;
@@ -104,33 +107,55 @@ interface Order {
   amount: number;
   diningTime: string;
 }
-const orderList = ref<Order[]>([
-  { tableNo: 'A01', status: '待支付', peopleCount: 6, orderTime: '12:15:30', amount: 376, diningTime: 'XXXXXXXXXX' },
-  { tableNo: 'A02', status: '待支付', peopleCount: 6, orderTime: '12:15:30', amount: 376, diningTime: 'XXXXXXXXXX' },
-  { tableNo: 'A03', status: '已结清', peopleCount: 6, orderTime: '12:15:30', amount: 376, diningTime: 'XXXXXXXXXX' },
-  { tableNo: 'A01', status: '待支付', peopleCount: 6, orderTime: '12:15:30', amount: 376, diningTime: 'XXXXXXXXXX' },
-  { tableNo: 'A02', status: '待支付', peopleCount: 6, orderTime: '12:15:30', amount: 376, diningTime: 'XXXXXXXXXX' },
-  { tableNo: 'A03', status: '已结清', peopleCount: 6, orderTime: '12:15:30', amount: 376, diningTime: 'XXXXXXXXXX' },
-  { tableNo: 'A01', status: '待支付', peopleCount: 6, orderTime: '12:15:30', amount: 376, diningTime: 'XXXXXXXXXX' },
-  { tableNo: 'A02', status: '待支付', peopleCount: 6, orderTime: '12:15:30', amount: 376, diningTime: 'XXXXXXXXXX' },
-  { tableNo: 'A03', status: '已结清', peopleCount: 6, orderTime: '12:15:30', amount: 376, diningTime: 'XXXXXXXXXX' },
-  { tableNo: 'A01', status: '待支付', peopleCount: 6, orderTime: '12:15:30', amount: 376, diningTime: 'XXXXXXXXXX' },
-  { tableNo: 'A02', status: '待支付', peopleCount: 6, orderTime: '12:15:30', amount: 376, diningTime: 'XXXXXXXXXX' },
-  { tableNo: 'A03', status: '已结清', peopleCount: 6, orderTime: '12:15:30', amount: 376, diningTime: 'XXXXXXXXXX' },
-  { tableNo: 'A01', status: '待支付', peopleCount: 6, orderTime: '12:15:30', amount: 376, diningTime: 'XXXXXXXXXX' },
-  { tableNo: 'A02', status: '待支付', peopleCount: 6, orderTime: '12:15:30', amount: 376, diningTime: 'XXXXXXXXXX' },
-  { tableNo: 'A03', status: '已结清', peopleCount: 6, orderTime: '12:15:30', amount: 376, diningTime: 'XXXXXXXXXX' },
-  { tableNo: 'A01', status: '待支付', peopleCount: 6, orderTime: '12:15:30', amount: 376, diningTime: 'XXXXXXXXXX' },
-  { tableNo: 'A02', status: '待支付', peopleCount: 6, orderTime: '12:15:30', amount: 376, diningTime: 'XXXXXXXXXX' },
-  { tableNo: 'A03', status: '已结清', peopleCount: 6, orderTime: '12:15:30', amount: 376, diningTime: 'XXXXXXXXXX' },
-]);
+const orderList = ref<Order[]>([]);
 
 const total = ref(20);
 const pageSize = ref(10);
 const currentPage = ref(1);
 
-const getOrderList = async () => {};
-onMounted(() => { getOrderList(); });
+const getOrderList = async () => {
+  await getFlatOrderList(
+    selectedCode.value === '全部' ? '' : selectedCode.value,
+    orderNo.value,
+    currentPage.value,
+    pageSize.value
+  ).then((res:any) => {
+    if (res.start === 200) {
+      orderList.value = res.response.map((item: any) => ({
+        order_no: item.order_no,
+        tableNo: item.table?.table_no,
+        status: '待支付',
+        peopleCount: item.table_capacity,
+        orderTime: dayjs(item.start_time).format('YYYY-MM-DD HH:mm:ss'),
+        amount: item.total_amount,
+        diningTime: dayjs(item.start_time).format('YYYY-MM-DD HH:mm:ss'),
+      }));
+      total.value = res.count;
+    } else {
+      ElMessage.error(res.msg);
+    }
+  }).catch((error) => {
+    ElMessage.error('获取订单列表失败，请稍后重试');
+    console.error(error);
+  });
+};
+
+async function gettableList() {
+  await getTableList().then((res: any) => {
+    if (res.start === 200) {
+      codeOptions.push(...res.response.map((item: any) => ({
+        label: item.name,
+        value: item.id
+      })));
+    } else {
+      ElMessage.error(res.msg);
+    }
+  }).catch((error) => {
+    ElMessage.error('获取桌台列表失败，请稍后重试');
+    console.error(error);
+  });
+}
+onMounted(() => { getOrderList(); gettableList(); });
 const handleQuery = () => { currentPage.value = 1; getOrderList(); };
 const handleReset = () => {
   selectedType.value = '全部';
@@ -141,13 +166,10 @@ const handleReset = () => {
 const handleSizeChange = (val: number) => { pageSize.value = val; getOrderList(); };
 const handlePageChange = (val: number) => { currentPage.value = val; getOrderList(); };
 const handleModify = (order: Order) => { 
-  router.push({ path: '/Layout/OrderDetail', query: { orderNo: order.tableNo } });
+  router.push({ path: '/Layout/OrderDetail', query: { order_id: order.order_id } });
   console.log('修改订单', order);
 };
 const handleDelete = (order: Order) => { console.log('删除订单', order); };
-onload = () => {
-
-};
 
 </script>
 
@@ -188,7 +210,7 @@ onload = () => {
   overflow-y: auto;
 }
 .order-card {
-  width: 230px;
+  width: 300px;
   border: 1px solid #ebeef5;
   border-radius: 4px;
   padding-top: 15px; 
@@ -196,7 +218,7 @@ onload = () => {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   border-color: #fde2e2;
   background-color: #f7fafb;
-  height: 230px;
+  height: 250px;
   cursor: pointer;
 }
 .table-info {
@@ -213,7 +235,7 @@ onload = () => {
   width: 86px;
   text-align: center;
   line-height: 35px;
-  margin-left: 20px;
+  margin-left: auto;
 }
 .status-pending {
   background-image: url(/src/assets/Group\ 1355.png);

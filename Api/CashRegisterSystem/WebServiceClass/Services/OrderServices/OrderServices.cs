@@ -48,7 +48,7 @@ namespace WebServiceClass.Services.OrderServices
 
         public Task<List<sys_order>> GetNotCheckoutOrderListAsync(int? tableId,string? orderno, int orgId, int page, int size, RefAsync<int> count)
         {
-            return _dal.Db.Queryable<sys_order>()
+            return _dal.Db.Queryable<sys_order>().Includes(x=>x.table)
                  .WhereIF(orgId != 1, x => x.store_id == orgId)
                  .Where(x => x.status == 1|| x.status == 2)
                  .WhereIF(tableId.HasValue,x=>x.table_id == tableId)

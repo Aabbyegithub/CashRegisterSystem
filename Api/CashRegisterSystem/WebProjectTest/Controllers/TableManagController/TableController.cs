@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ModelClassLibrary.Model.Dto.AppDto;
 using MyNamespace;
 using SqlSugar;
 using WebIServices.IBase;
+using WebIServices.IServices.ClientIServices;
 using WebIServices.IServices.SystemIServices;
 using WebIServices.IServices.TableMangeIServices;
 using WebProjectTest.Common.Filter;
@@ -16,7 +18,7 @@ namespace WebProjectTest.Controllers.TableManagController
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize]
-    public class TableController(IRedisCacheService redisCacheService, ITableServices _TableServices) : AutherController(redisCacheService)
+    public class TableController(IRedisCacheService redisCacheService, ITableServices _TableServices,IClientServices _clientServices) : AutherController(redisCacheService)
     {
 
         /// <summary>
@@ -44,6 +46,17 @@ namespace WebProjectTest.Controllers.TableManagController
 
                 return PageError<List<sys_restaurant_table>>("服务器错误");
             }
+        }
+
+        /// <summary>
+        /// 获取门店桌台列表
+        /// </summary>
+        /// <param name="store_id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ApiResponse<List<ClientModel>>> GetTableListInfoAsync()
+        {
+            return await _clientServices.GetTableListInfo(OrgId);
         }
 
         /// <summary>

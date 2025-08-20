@@ -11,6 +11,7 @@ export function AddTable(data: {
     table_no: string;
     capacity: number;
     status: number;
+    desc: string;
     // min_consumption: number;
 }) {
     return axios.post('/api/Table/AddTable', data);
@@ -28,6 +29,7 @@ export function UpdateTable(data: {
     table_no: string;
     capacity: number;
     status: number;
+    desc: string;
 }) {
     return axios.post('/api/Table/UpdateTable', data);
 }

@@ -427,6 +427,13 @@
             <param name="size"></param>
             <returns></returns>
         </member>
+        <member name="M:WebProjectTest.Controllers.TableManagController.TableController.GetTableListInfoAsync">
+            <summary>
+            获取门店桌台列表
+            </summary>
+            <param name="store_id"></param>
+            <returns></returns>
+        </member>
         <member name="M:WebProjectTest.Controllers.TableManagController.TableController.AddTableAsync(MyNamespace.sys_restaurant_table)">
             <summary>
             添加餐桌
