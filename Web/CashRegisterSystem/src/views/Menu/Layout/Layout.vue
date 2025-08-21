@@ -72,22 +72,36 @@ import { ElButton, ElDropdown, ElDropdownMenu, ElDropdownItem } from 'element-pl
 import { logoutApi } from '../../../api/login';
 
 const router = useRouter();
-const currentRoute = ref("Orderhome");
+const currentRoute = ref('');
 const isShow = ref(true);
+
+function updateCurrentRoute() {
+  const route = router.currentRoute.value;
+  if (route.path.includes('Orderhome')) {
+    currentRoute.value = 'Orderhome';
+  } else if (route.path.includes('Backendhome')) {
+    currentRoute.value = 'Backendhome';
+  } else {
+    currentRoute.value = '';
+  }
+  console.log('当前路由变化:', route.fullPath, currentRoute.value);
+};
 
 // 初始化时设置当前路由
 onMounted(() => {
   const userInfoStr = localStorage.getItem('UserInfo');
   const orgId = userInfoStr ? JSON.parse(userInfoStr).orgId : null;
-  if(orgId == 1){
-      isShow.value = false;
+  isShow.value = orgId !== 1;
+  // 只在首次进入（没有子路由时）才跳转，刷新时保留当前页面
+  const currentPath = router.currentRoute.value.fullPath;
+  if (currentPath === '/Layout' || currentPath === '/Layout/') {
+    if (orgId == 1) {
       router.push('/Layout/Backendhome/DashboardIndex');
-  }else{
-      isShow.value = true;
+    } else {
       router.push('/Layout/Orderhome');
+    }
   }
-
-
+  updateCurrentRoute();
 });
 
 const handleNavClick = (routeName: string) => {

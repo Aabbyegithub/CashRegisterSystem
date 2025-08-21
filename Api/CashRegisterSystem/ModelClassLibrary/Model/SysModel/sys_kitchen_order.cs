@@ -80,7 +80,7 @@ namespace MyNamespace
            public string kitchen_type {get;set;} = null!;
 
            /// <summary>
-           /// Desc:状态（1-待制作；2-制作中；3-已完成；4-已取餐）
+           /// Desc:状态（1-待制作；2-制作中；3-已完成；4-已取餐；5-已退菜）
            /// Default:1
            /// Nullable:False
            /// </summary>           

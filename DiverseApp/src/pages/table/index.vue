@@ -36,23 +36,7 @@ import { onMounted, ref } from 'vue'
 import { onLoad, onShow } from '@dcloudio/uni-app'
 import { request } from '@/utitl/request'
 // 桌台数据示例
-const tables = ref([
-  { id: 1, name: 'A1', status:1 , people: 0, max: 5 },
-  { id: 2, name: 'A2', status: 1, people: 0, max: 3 },
-  { id: 3, name: 'A3', status: 1, people: 0, max: 3 },
-  { id: 4, name: '1', status: 1, people: 5, max: 5, usedTime: '00:30' },
-  { id: 5, name: '2', status: 1, people: 3, max: 3, bookedTime: '今晚8点' },
-  { id: 6, name: '3', status: 1, people: 0, max: 5 },
-  { id: 7, name: '4', status: 1, people: 5, max: 5, usedTime: '00:30' },
-  { id: 8, name: '5', status: 1, people: 5, max: 5, usedTime: '00:30' },
-  { id: 9, name: '6', status:1, people: 5, max: 5, usedTime: '00:30' },
-  { id: 10, name: '7', status: 1, people: 5, max: 5, usedTime: '00:30' },
-  { id: 11, name: '8', status: 1, people: 3, max: 3, bookedTime: '明日10点' },
-  { id: 12, name: '9', status: 1, people: 0, max: 6 },
-  { id: 13, name: '10', status:1, people: 0, max: 6 },
-  { id: 14, name: '11', status:1, people: 0, max: 4 },
-  { id: 15, name: '12', status: 1, people: 0, max: 3 },
-])
+const tables = ref<any[]>([])
 const showOpenDialog = ref(false)
 const selectedTable = ref<any>(null)
 const selectStoreId = ref(0)

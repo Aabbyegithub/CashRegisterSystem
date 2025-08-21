@@ -32,7 +32,7 @@
         <p class="total-amount">¥{{ tableInfo.totalAmount }}</p>
         <p class="sub-title">应收金额</p>
         <p>实收金额: ¥{{ tableInfo.receivedAmount }}</p>
-        <p style="text-align: left;">抹零金额: ¥{{ tableInfo.zeroAmount.toFixed(2) }}</p>
+        <p style="text-align: left;">抹零金额: ¥{{ tableInfo.zeroAmount?.toFixed(2) }}</p>
       </div>
       <el-button type="success" class="pay-btn" @click="handlePay" style="background-color: #22A2B6;width: 300px;height: 40px;">收款</el-button>
     </div>
@@ -44,6 +44,7 @@
         <p style="color: #999; font-size: 13px;">创建时间: {{ orderInfo.createTime }}</p>
         </div>
         <div class="order-actions">
+          <el-button  @click="handleReturn">返回</el-button>
           <el-button  @click="handleRefund">退款</el-button>
           <el-button type="success"  @click="handleRedo" style="background-color: #22A2B6;">重做</el-button>
         </div>
@@ -51,7 +52,7 @@
       <el-table
         :data="orderInfo.items"
         border
-        style="width: 100%"
+        style="width: 100%;height: 80vh;"
          @selection-change="handleSelectionChange"
         class="order-table"
       >
@@ -130,9 +131,9 @@
           <div class="pay-info">
             <p class="pay-title">
               待支付金额
-              <span class="amount">¥ {{ toPayAmount.toFixed(2) }}</span>
+              <span class="amount">¥ {{ toPayAmount?.toFixed(2) }}</span>
             </p>
-            <p>本次支付：¥ {{ toPayAmount.toFixed(2) }} (抹分：¥ 0.00)</p>
+            <p>本次支付：¥ {{ toPayAmount?.toFixed(2) }} (抹分：¥ 0.00)</p>
           </div>
 
           <!-- 金额输入框与操作按钮 -->
@@ -297,42 +298,22 @@
 </template>
 
 <script lang="ts" setup>
-import { ElButton, ElTable, ElTableColumn ,ElDialog } from 'element-plus';
-import { ref } from 'vue';
+import { ElButton, ElTable, ElTableColumn ,ElDialog, dayjs } from 'element-plus';
+import { onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { getOrderDetail } from '../../../api/OrderDetial';
+import { getTableList } from '../../../api/FlatOrderManagement';
 
-// 定义数据结构类型
-interface TableInfo {
-  tableNumber: string;
-  desc: string;
-  totalAmount: number;
-  receivedAmount: number;
-  zeroAmount: number;
-}
+const route = useRoute();
+const router = useRouter();
 
-interface OrderItem {
-  index: number;
-  name: string;
-  price: number;
-  quantity: number;
-  unit: string;
-  amount: number;
-  action: string;
-}
-
-interface OrderInfo {
-  orderNumber: string;
-  createTime: string;
-  items: OrderItem[];
-  totalOrderAmount: number;
-  nonDiscountAmount: number;
-  consumeAmount: number;
-}
 // 控制支付弹窗显示隐藏
 const payDialogVisible = ref(false); 
 // 选中的支付方式，默认选微信
 const selectedPayType = ref('wechat'); 
 const selectEraseZero = ref('score'); // 是否抹零
 const inputAmount = ref('￥');
+const orderid = ref(route.query.order_id || ''); // 获取订单ID
 // 支付方式列表
 const payTypes = ref([
   { label: '微信', value: 'wechat' },
@@ -350,137 +331,30 @@ const payErase=ref([
   { label: '抹角', value: 'angle' },
 ])
 // 模拟数据
-const tableInfo=ref< TableInfo>({
-  tableNumber: 'A02',
-  desc: '(四人桌; 一楼大厅)',
-  totalAmount: 284,
-  receivedAmount: 230,
-  zeroAmount: 0.00,
-});
+const tableInfo=ref<any>({})
 
-const orderInfo=ref<OrderInfo>( {
-  orderNumber: '00000001',
-  createTime: '2025-03-20 18:19:20',
-  items: [
-    {
-      index: 1,
-      name: '小鸡炖蘑菇 (麻辣、不加葱) *1',
-      price: 35,
-      quantity: 1,
-      unit: '份',
-      amount: 35,
-      action: '退款',
-    },
-    {
-      index: 2,
-      name: '红烧排骨 (少油) *1',
-      price: 58,
-      quantity: 1,
-      unit: '份',
-      amount: 58,
-      action: '退款',
-    },
-    {
-      index: 3,
-      name: '情侣套餐A套餐 *1<br/>-鲜猪脑花 (微辣、不加葱) *2<br/>-米饭 *2<br/>-可乐 (去冰) *2',
-      price: 49,
-      quantity: 1,
-      unit: '份',
-      amount: 49,
-      action: '退款',
-    },
-    {
-      index: 4,
-      name: '糖醋里脊 (少油) *1',
-      price: 36,
-      quantity: 1,
-      unit: '份',
-      amount: 36,
-      action: '退款',
-    },
-    {
-      index: 5,
-      name: '辣椒炒肉 (少盐) *1',
-      price: 42,
-      quantity: 1,
-      unit: '份',
-      amount: 42,
-      action: '退款',
-    },
-    {
-      index: 6,
-      name: '情侣套餐B套餐 *1<br/>-香辣蟹 (微辣) *1<br/>-蒜蓉油麦菜 *1<br/>-米饭 *2',
-      price: 62,
-      quantity: 1,
-      unit: '份',
-      amount: 62,
-      action: '退款',
-    },
-    {
-      index: 7,
-      name: '清蒸鲈鱼 (味淡) *1',
-      price: 40,
-      quantity: 1,
-      unit: '份',
-      amount: 40,
-      action: '退款',
-    },
-  ],
-  totalOrderAmount: 376,
-  nonDiscountAmount: 30,
-  consumeAmount: 230,
-});
+const orderInfo=ref<any>( {});
 
 
 // 控制并台弹窗显示隐藏
 const mergeDialogVisible = ref(false); 
 // 模拟桌台数据，可根据实际接口返回调整
-const tableList = ref([
-  { label: 'A05桌', value: 'A05' },
-  { label: 'A07桌', value: 'A07' },
-  { label: 'A08桌', value: 'A08' },
-  { label: 'A011桌', value: 'A011' },
-  { label: 'A13桌', value: 'A13' },
-  { label: 'A15桌', value: 'A15' },
-  { label: 'A05桌', value: 'A05' },
-  { label: 'A07桌', value: 'A07' },
-  { label: 'A08桌', value: 'A08' },
-  { label: 'A011桌', value: 'A011' },
-  { label: 'A13桌', value: 'A13' },
-  { label: 'A15桌', value: 'A15' },
-]);
+const tableList = ref<any[]>([])
 // 选中的并台桌台
 const selectedMergeTables = ref<string[]>([]); 
 
 // 换桌弹窗相关变量
 const changeTableDialogVisible = ref(false);
 // 当前桌台信息
-const currentTable = ref({
-  label: 'A02桌',
-  value: 'A02'
-});
+const currentTable = ref<any>({});
 // 可选目标桌台列表（模拟数据）
-const availableTables = ref([
-  { label: 'A01桌', value: 'A01', disabled: false },
-  { label: 'A02桌', value: 'A02', disabled: true },
-  { label: 'A03桌', value: 'A03', disabled: true }, // 已占用
-  { label: 'A05桌', value: 'A05', disabled: false },
-  { label: 'A06桌', value: 'A06', disabled: false },
-  { label: 'A07桌', value: 'A07', disabled: true }, // 已占用
-  { label: 'A08桌', value: 'A08', disabled: false },
-  { label: 'A09桌', value: 'A09', disabled: false },
-  { label: 'A10桌', value: 'A10', disabled: false },
-  { label: 'A11桌', value: 'A11', disabled: false },
-  { label: 'A12桌', value: 'A12', disabled: true }, // 已占用
-  { label: 'A13桌', value: 'A13', disabled: false },
-  { label: 'A15桌', value: 'A15', disabled: false },
-]);
+const availableTables = ref<any[]>([]);
 // 选中的目标桌台
 const selectedTargetTable = ref('');
 
 
 // 待支付金额（从 tableInfo 取，也可根据实际逻辑调整）
-const toPayAmount = ref(tableInfo.value.totalAmount); 
+const toPayAmount = ref(0); 
 // 事件处理函数，可根据实际需求对接接口或逻辑
 const handleMerge = () => {
   mergeDialogVisible.value = true; // 打开并台弹窗
@@ -496,6 +370,7 @@ const handleChangeTable = () => {
 
 const handlePay = () => {
   payDialogVisible.value = true; // 打开支付弹窗
+  toPayAmount.value = tableInfo.value.totalAmount; // 初始化待支付金额
   console.log('点击收款');
   // 收款逻辑
 };
@@ -510,7 +385,7 @@ const handleRedo = () => {
   // 重做逻辑
 };
 
-const handleItemRefund = (row: OrderItem) => {
+const handleItemRefund = (row: any) => {
   console.log('点击品项退款', row);
   // 品项退款逻辑
 };
@@ -602,7 +477,9 @@ const confirmMerge = () => {
   mergeDialogVisible.value = false;
 };
 
-
+const handleReturn =()=> {
+   router.push('/Layout/Orderhome');
+}
 // 换桌弹窗方法
 const selectTargetTable = (tableValue: string) => {
   // 跳过已禁用的桌台
@@ -633,8 +510,41 @@ const confirmChangeTable = () => {
   handleChangeTableDialogClose();
 };
 
+onMounted(async () => {
+  console.log('订单ID:', orderid.value);
+  await OrderDetail();
+  await gettableList();
+});
 
+async function OrderDetail() {
+  await getOrderDetail(orderid.value as string)
+    .then((res: any) => {
+      orderInfo.value = res.response;
+      orderInfo.value.createTime = dayjs(orderInfo.value.createTime).format('YYYY-MM-DD HH:mm:ss');
+      tableInfo.value = res.response;
+      currentTable.value = {
+        label: tableInfo.value.tableNumber,
+        value: tableInfo.value.tableId.toString(),
+      };
+      console.log('订单详情数据:', orderInfo.value);
+    })
+}
 
+async function gettableList() {
+  await getTableList().then((res: any) => {
+    tableList.value = res.response.filter((item: any) => item.status === 2 && item.name !=currentTable.value.label).map((item: any) => ({
+      label: item.name,
+      value: item.id,
+    }));
+    console.log('桌台列表数据:', tableList.value);
+    console.log('当前桌台:', currentTable.value);
+    availableTables.value = res.response.map((item: any) => ({
+      label: item.name,
+      value: item.id,
+      disabled: item.status !== 1, // 假设状态2表示可用
+    }));
+  })
+}
 </script>
 
 <style scoped>

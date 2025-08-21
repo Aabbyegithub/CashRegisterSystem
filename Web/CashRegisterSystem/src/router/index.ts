@@ -44,6 +44,11 @@ const routes = [
             component: () => import('../views/Menu/BackendHome/MembershipManagement/MemberManagement.vue')
           },
           {
+            path: 'RechargeRecord',
+            name: 'RechargeRecord',
+            component: () => import('../views/Menu/BackendHome/MembershipManagement/MemberBalanceRecord.vue')
+          },
+          {
             path: 'DishList',
             name: 'DishList',
             component: () => import('../views/Menu/BackendHome/Dish/DishManagement.vue')
@@ -54,9 +59,29 @@ const routes = [
             component: () => import('../views/Menu/BackendHome/Dish/DishCategoryManagement.vue')
           },
           {
+            path: 'DishSpec',
+            name: 'DishSpec',
+            component: () => import('../views/Menu/BackendHome/Dish/DishSpecManagement.vue')
+          },
+          {
+            path: 'SetMeal',
+            name: 'SetMeal',
+            component: () => import('../views/Menu/BackendHome/Dish/SetMealManagement.vue')
+          },
+          {
             path: 'OrderList',
             name: 'OrderList',
             component: () => import('../views/Menu/BackendHome/Order/OrderManager.vue')
+          },
+          {
+            path: 'KitchenBoard',
+            name: 'KitchenBoard',
+            component: () => import('../views/Menu/BackendHome/kitchen/KitchenDashboard.vue')
+          },
+          {
+            path: 'OutMealRecord',
+            name: 'OutMealRecord',
+            component: () => import('../views/Menu/BackendHome/kitchen/KitchenRecord.vue')
           },
           { 
             path: 'StaffManagement', 

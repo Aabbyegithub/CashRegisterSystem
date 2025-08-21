@@ -1,64 +1,61 @@
 <template>
   <div class="member-management-container">
-    <div class="page-header">
-      <div class="operation-bar">
-        <div class="filter-group">
-          <el-input v-model="searchKeyword" placeholder="手机号/姓名/会员编号" class="search-input" @keyup.enter="fetchMemberList" clearable />
-          <el-button type="primary" @click="fetchMemberList">搜索</el-button>
-        </div>
-        <div class="action-buttons">
-          <el-button type="primary" @click="openEditModal()">新增会员</el-button>
-          <el-button type="danger" :disabled="!selectedRows.length" @click="handleBatchDelete">批量删除</el-button>
-        </div>
-      </div>
-    </div>
-    <div class="member-table-view">
-      <el-table
-        :data="pagedMemberList"
-        border
-        style="width: 100%"
-        :header-cell-style="{ background: '#f8f9fa', color: '#606266' }"
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column type="selection" width="55" />
-        <el-table-column label="会员编号" prop="member_no" align="center" />
-        <el-table-column label="手机号" prop="phone" align="center" />
-        <el-table-column label="姓名" prop="name" align="center" />
-        <el-table-column label="生日" prop="birthday" align="center" :formatter="(row: { birthday: any; }) => row.birthday || '--'" />
-        <el-table-column label="注册时间" prop="register_time" align="center" :formatter="(row: { register_time: any; }) => row.register_time || '--'" />
-        <el-table-column label="状态" prop="status" align="center">
-          <template #default="scope">
-            <el-tag :type="scope.row.status === 1 ? 'success' : 'info'" @click="toggleStatus(scope.row)" style="cursor:pointer;">
-              {{ scope.row.status === 1 ? '正常' : '冻结' }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="积分" prop="total_points" align="center" />
-        <el-table-column label="推荐人" prop="referrer_id" align="center" :formatter="formatReferrer" />
-        <el-table-column label="操作" align="center" width="180">
-          <template #default="scope">
-            <el-button type="text" style="color: #67c23a;" @click="openEditModal(scope.row)">编辑</el-button>
-            <el-button type="text" style="color: #f56c6c;" @click="handleDelete(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="pagination-bar">
-        <el-pagination
-          layout="prev, pager, next, ->, sizes, jumper"
-          :total="memberList.length"
-          :page-size="pageSize"
-          :current-page="pageIndex"
-          :page-sizes="[10, 20, 30, 40, 50]"
-          @size-change="handleSizeChange"
-          @current-change="handlePageChange"
-        />
-      </div>
-    </div>
-    <!-- 编辑/新增弹窗 -->
-    <el-dialog v-model="showEditModal" width="500" :title="editForm.member_id ? '编辑会员' : '新增会员'">
+    <!-- 筛选区 -->
+    <el-form class="filter-bar" :inline="true">
+      <el-form-item label="手机号：">
+        <el-input v-model="searchPhone" placeholder="请输入手机号" clearable style="min-width:140px;" />
+      </el-form-item>
+      <el-form-item label="姓名：">
+        <el-input v-model="searchName" placeholder="请输入姓名" clearable style="min-width:140px;" />
+      </el-form-item>
+      <el-form-item label="状态：">
+        <el-select v-model="searchStatus" placeholder="全部状态" style="min-width:120px;">
+          <el-option value="" label="全部" />
+          <el-option value="1" label="正常" />
+          <el-option value="0" label="冻结" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="注册时间：">
+        <el-date-picker v-model="searchRegister" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" style="min-width:220px;" />
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="handleReset" class="cancel-btn">重置</el-button>
+        <el-button type="primary" @click="handleQuery" style="background-color: #22A2B6;">查询</el-button>
+        <el-button type="primary" @click="showAddMember = true" class="Btn-Save">新增会员</el-button>
+      </el-form-item>
+    </el-form>
+
+    <!-- 会员列表 -->
+    <el-table :data="filteredMembers" border style="width:100%" :header-cell-style="{ background: '#f8f9fa', color: '#606266' }" class="custom-table">
+      <el-table-column type="index" label="序号" width="60" align="center" />
+      <el-table-column prop="member_no" label="会员编号" align="center" />
+      <el-table-column prop="phone" label="手机号" align="center" />
+      <el-table-column prop="name" label="姓名" align="center" />
+      <el-table-column prop="birthday" label="生日" align="center" />
+      <el-table-column prop="register_time" label="注册时间" align="center" />
+      <el-table-column prop="status" label="状态" align="center">
+        <template #default="scope">
+          <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'" effect="plain">{{ scope.row.status === 1 ? '正常' : '冻结' }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="total_points" label="总积分" align="center" />
+      <el-table-column prop="referrer_id" label="推荐人" align="center">
+        <template #default="scope">
+          {{ getReferrerName(scope.row.referrer_id) }}
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" width="220">
+        <template #default="scope">
+          <el-button type="text" class="table-btn-balance" @click="openBalanceDialog(scope.row)">储值</el-button>
+          <el-button type="text" class="table-btn-edit" @click="openEditDialog(scope.row)">编辑</el-button>
+          <el-button type="text" class="table-btn-status" @click="toggleStatus(scope.row)">{{ scope.row.status === 1 ? '冻结' : '解冻' }}</el-button>
+        </template>
+      </el-table-column>
+    <!-- 编辑会员弹窗（移到根节点，避免嵌套在 el-table-column 内） -->
+    <el-dialog v-model="showEditMember" width="500" title="编辑会员">
       <el-form :model="editForm" label-width="120px">
         <el-form-item label="手机号">
-          <el-input v-model="editForm.phone" placeholder="请输入手机号" :disabled="!!editForm.member_id" />
+          <el-input v-model="editForm.phone" placeholder="请输入手机号" />
         </el-form-item>
         <el-form-item label="姓名">
           <el-input v-model="editForm.name" placeholder="请输入姓名" />
@@ -66,164 +63,258 @@
         <el-form-item label="生日">
           <el-date-picker v-model="editForm.birthday" type="date" placeholder="请选择生日" style="width:100%;" />
         </el-form-item>
-        <el-form-item label="状态">
-          <el-select v-model="editForm.status">
-            <el-option label="正常" :value="1" />
-            <el-option label="冻结" :value="0" />
+        <el-form-item label="推荐人">
+          <el-select v-model="editForm.referrer_id" placeholder="请选择推荐人">
+            <el-option v-for="m in memberList" :key="m.member_id" :label="m.name" :value="m.member_id" />
           </el-select>
-        </el-form-item>
-        <el-form-item label="推荐人ID">
-          <el-input v-model="editForm.referrer_id" placeholder="可选，推荐人会员ID" />
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="closeEditModal">取消</el-button>
-        <el-button type="primary" @click="handleSave">保存</el-button>
+        <el-button @click="showEditMember = false" class="cancel-btn">取消</el-button>
+        <el-button type="primary" @click="handleEditMember" class="Btn-Save">保存</el-button>
+      </template>
+    </el-dialog>
+    </el-table>
+    <div v-if="filteredMembers.length === 0" class="empty-row">
+      <el-empty description="暂无会员记录" />
+    </div>
+
+    <!-- 分页 -->
+    <div class="pagination-bar">
+      <el-pagination
+        layout="prev, pager, next, ->, sizes, jumper"
+        :total="total"
+        :page-size="pageSize"
+        :current-page="currentPage"
+        :page-sizes="[10, 20, 30, 40, 50]"
+        @size-change="handleSizeChange"
+        @current-change="handlePageChange"
+      />
+    </div>
+
+    <!-- 新增会员弹窗 -->
+    <el-dialog v-model="showAddMember" width="500" title="新增会员">
+      <el-form :model="addForm" label-width="120px">
+        <el-form-item label="手机号">
+          <el-input v-model="addForm.phone" placeholder="请输入手机号" />
+        </el-form-item>
+        <el-form-item label="姓名">
+          <el-input v-model="addForm.name" placeholder="请输入姓名" />
+        </el-form-item>
+        <el-form-item label="生日">
+          <el-date-picker v-model="addForm.birthday" type="date" placeholder="请选择生日" style="width:100%;" />
+        </el-form-item>
+        <el-form-item label="推荐人">
+          <el-select v-model="addForm.referrer_id" placeholder="请选择推荐人">
+            <el-option v-for="m in memberList" :key="m.member_id" :label="m.name" :value="m.member_id" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="showAddMember = false" class="cancel-btn">取消</el-button>
+        <el-button type="primary" @click="handleAddMember" class="Btn-Save">保存</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 储值弹窗 -->
+    <el-dialog v-model="showBalanceDialog" width="500" title="会员储值">
+      <el-form :model="balanceForm" label-width="120px">
+        <el-form-item label="充值金额">
+          <el-input v-model.number="balanceForm.recharge_amount" type="number" placeholder="请输入充值金额" />
+        </el-form-item>
+        <el-form-item label="赠送金额">
+          <el-input v-model.number="balanceForm.give_amount" type="number" placeholder="请输入赠送金额" />
+        </el-form-item>
+        <el-form-item label="支付方式">
+          <el-select v-model="balanceForm.payment_id" placeholder="请选择支付方式">
+            <el-option value="1" label="微信" />
+            <el-option value="2" label="支付宝" />
+            <el-option value="3" label="现金" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="操作员工">
+          <el-input v-model="balanceForm.operator_id" placeholder="请输入员工ID" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="showBalanceDialog = false" class="cancel-btn">取消</el-button>
+        <el-button type="primary" @click="handleBalance" class="Btn-Save">确认储值</el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted } from 'vue';
+const showEditMember = ref(false);
+const editForm = ref({
+  member_id: 0,
+  phone: '',
+  name: '',
+  birthday: '',
+  referrer_id: undefined as number | undefined
+});
+import { ref, computed } from 'vue';
 import { ElMessage } from 'element-plus';
 
-const memberList = ref<any[]>([]);
-const searchKeyword = ref('');
-const pageIndex = ref(1);
+interface Member {
+  member_id: number;
+  member_no: string;
+  phone: string;
+  name?: string;
+  birthday?: string;
+  register_time: string;
+  status: number;
+  total_points: number;
+  referrer_id?: null | number;
+}
+interface BalanceRecord {
+  balance_id: number;
+  member_id: number;
+  balance: number;
+  recharge_amount: number;
+  give_amount: number;
+  recharge_time: string;
+  payment_id: number;
+  operator_id: number;
+}
+
+const searchPhone = ref('');
+const searchName = ref('');
+const searchStatus = ref('');
+const searchRegister = ref<[Date | null, Date | null] | null>(null);
+const currentPage = ref(1);
 const pageSize = ref(10);
-const showEditModal = ref(false);
-const editForm = reactive<any>({});
-const selectedRows = ref<any[]>([]);
+const total = ref(0);
 
-const pagedMemberList = computed(() => {
-  let filtered = memberList.value.filter((member: any) => {
-    const keyword = searchKeyword.value.trim();
-    return (
-      !keyword ||
-      member.phone?.includes(keyword) ||
-      member.name?.includes(keyword) ||
-      member.member_no?.includes(keyword)
-    );
+const memberList = ref<Member[]>([
+  { member_id: 1, member_no: 'M001', phone: '13812345678', name: '张三', birthday: '1990-01-01', register_time: '2025-08-01 10:00:00', status: 1, total_points: 100 },
+  { member_id: 2, member_no: 'M002', phone: '13987654321', name: '李四', birthday: '1992-05-12', register_time: '2025-08-10 09:30:00', status: 0, total_points: 50, referrer_id: 1 },
+]);
+
+const filteredMembers = computed(() => {
+  let result = memberList.value.filter(m => {
+    const matchPhone = !searchPhone.value || m.phone.includes(searchPhone.value);
+    const matchName = !searchName.value || (m.name && m.name.includes(searchName.value));
+    const matchStatus = !searchStatus.value || String(m.status) === searchStatus.value;
+    let matchRegister = true;
+    if (searchRegister.value && searchRegister.value[0] && searchRegister.value[1]) {
+      const start = new Date(searchRegister.value[0]).getTime();
+      const end = new Date(searchRegister.value[1]).getTime();
+      const reg = new Date(m.register_time).getTime();
+      matchRegister = reg >= start && reg <= end;
+    }
+    return matchPhone && matchName && matchStatus && matchRegister;
   });
-  const start = (pageIndex.value - 1) * pageSize.value;
-  return filtered.slice(start, start + pageSize.value);
+  total.value = result.length;
+  // 分页
+  const startIdx = (currentPage.value - 1) * pageSize.value;
+  return result.slice(startIdx, startIdx + pageSize.value);
 });
 
-function fetchMemberList() {
-  // TODO: 这里调用API获取会员列表，示例用假数据
-  memberList.value = [
-    {
-      member_id: 1,
-      member_no: 'M20230801001',
-      phone: '13800000001',
-      name: '张三',
-      birthday: '1990-01-01',
-      register_time: '2024-08-01 10:00:00',
-      status: 1,
-      total_points: 100,
-      referrer_id: null
-    },
-    {
-      member_id: 2,
-      member_no: 'M20230801002',
-      phone: '13900000002',
-      name: '李四',
-      birthday: '1992-05-10',
-      register_time: '2024-08-02 09:00:00',
-      status: 0,
-      total_points: 50,
-      referrer_id: 1
-    }
-  ];
-}
-
-function handleSave() {
-  // TODO: 保存会员信息（新增或编辑）
-  if (editForm.member_id) {
-    // 编辑
-    const idx = memberList.value.findIndex(item => item.member_id === editForm.member_id);
-    if (idx > -1) {
-      memberList.value[idx] = { ...editForm };
-      ElMessage.success('编辑成功');
-    }
-  } else {
-    // 新增
-    editForm.member_id = Date.now();
-    editForm.member_no = 'M' + Date.now();
-    editForm.register_time = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    editForm.total_points = 0;
-    memberList.value.push({ ...editForm });
-    ElMessage.success('新增成功');
+const showAddMember = ref(false);
+const addForm = ref({
+  phone: '',
+  name: '',
+  birthday: '',
+  referrer_id: undefined as number | undefined
+});
+const handleAddMember = () => {
+  if (!addForm.value.phone) {
+    ElMessage.warning('请填写手机号');
+    return;
   }
-  fetchMemberList();
-  closeEditModal();
-}
+  const newId = Date.now();
+  const member: Member = {
+    member_id: newId,
+    member_no: 'M' + newId,
+    phone: addForm.value.phone,
+    name: addForm.value.name,
+    birthday: addForm.value.birthday,
+    register_time: new Date().toISOString(),
+    status: 1,
+    total_points: 0
+  };
+  if (addForm.value.referrer_id !== undefined) member.referrer_id = addForm.value.referrer_id;
+  memberList.value.push(member);
+  showAddMember.value = false;
+  ElMessage.success('新增会员成功');
+};
 
-function handleDelete(member: any) {
-  // TODO: 删除会员
-  memberList.value = memberList.value.filter(item => item.member_id !== member.member_id);
-  ElMessage.success('删除成功');
-  fetchMemberList();
-}
-
-function handleBatchDelete() {
-  // TODO: 批量删除
-  const ids = selectedRows.value.map(item => item.member_id);
-  memberList.value = memberList.value.filter(item => !ids.includes(item.member_id));
-  ElMessage.success('批量删除成功');
-  selectedRows.value = [];
-  fetchMemberList();
-}
-
-function toggleStatus(member: any) {
-  // TODO: 切换会员状态
-  member.status = member.status === 1 ? 0 : 1;
-  ElMessage.success('状态已切换');
-}
-
-function openEditModal(member?: any) {
-  showEditModal.value = true;
-  if (member) {
-    Object.keys(member).forEach(key => {
-      editForm[key] = member[key];
-    });
-  } else {
-    editForm.member_id = '';
-    editForm.member_no = '';
-    editForm.phone = '';
-    editForm.name = '';
-    editForm.birthday = '';
-    editForm.status = 1;
-    editForm.referrer_id = '';
+const showBalanceDialog = ref(false);
+const balanceForm = ref({
+  recharge_amount: 0,
+  give_amount: 0,
+  payment_id: 1,
+  operator_id: ''
+});
+let currentMemberId: number | null = null;
+const openBalanceDialog = (row: Member) => {
+  currentMemberId = row.member_id;
+  balanceForm.value = {
+    recharge_amount: 0,
+    give_amount: 0,
+    payment_id: 1,
+    operator_id: ''
+  };
+  showBalanceDialog.value = true;
+};
+const handleBalance = () => {
+  if (!currentMemberId || !balanceForm.value.recharge_amount) {
+    ElMessage.warning('请填写充值金额');
+    return;
   }
-}
+  // 此处可扩展为储值记录写入
+  showBalanceDialog.value = false;
+  ElMessage.success('储值成功');
+};
 
-function closeEditModal() {
-  showEditModal.value = false;
-  Object.keys(editForm).forEach(k => editForm[k] = '');
-}
+const openEditDialog = (row: Member) => {
+  editForm.value = {
+    member_id: row.member_id,
+    phone: row.phone,
+    name: row.name ?? '',
+    birthday: row.birthday ?? '',
+    referrer_id: typeof row.referrer_id === 'number' ? row.referrer_id : undefined
+  };
+  showEditMember.value = true;
+};
+const handleEditMember = () => {
+  const idx = memberList.value.findIndex(m => m.member_id === editForm.value.member_id);
+  if (idx !== -1) {
+    memberList.value[idx] = {
+      ...memberList.value[idx],
+      phone: editForm.value.phone,
+      name: editForm.value.name,
+      birthday: editForm.value.birthday,
+      referrer_id: editForm.value.referrer_id
+    };
+    ElMessage.success('会员信息已更新');
+    showEditMember.value = false;
+  }
+};
 
-function handleSelectionChange(val: any[]) {
-  selectedRows.value = val;
-}
-
-function handleSizeChange(val: number) {
+const toggleStatus = (row: Member) => {
+  row.status = row.status === 1 ? 0 : 1;
+  ElMessage.success(row.status === 1 ? '已解冻' : '已冻结');
+};
+const getReferrerName = (id?: number | null) => {
+  if (!id) return '-';
+  const ref = memberList.value.find(m => m.member_id === id);
+  return ref?.name || '-';
+};
+const handleQuery = () => {};
+const handleReset = () => {
+  searchPhone.value = '';
+  searchName.value = '';
+  searchStatus.value = '';
+  searchRegister.value = null;
+};
+const handleSizeChange = (val: number) => {
   pageSize.value = val;
-  fetchMemberList();
-}
-function handlePageChange(val: number) {
-  pageIndex.value = val;
-  fetchMemberList();
-}
-
-function formatReferrer(row: any) {
-  return row.referrer_id ? `ID:${row.referrer_id}` : '--';
-}
-
-onMounted(() => {
-  fetchMemberList();
-});
+};
+const handlePageChange = (val: number) => {
+  currentPage.value = val;
+};
 </script>
 
 <style scoped>
@@ -232,40 +323,56 @@ onMounted(() => {
   background-color: #F5F7FA;
   min-height: 100%;
 }
-.page-header {
-  margin-bottom: 24px;
-}
-.operation-bar {
+.filter-bar {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   flex-wrap: wrap;
   gap: 16px;
-}
-.filter-group {
-  display: flex;
   align-items: center;
-  gap: 12px;
+  margin-bottom: 18px;
 }
-.search-input {
-  width: 220px;
-}
-.action-buttons {
-  display: flex;
-  gap: 10px;
-}
-.member-table-view {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  padding: 0 0 16px 0;
+.empty-row {
+  width: 100%;
+  text-align: center;
+  padding: 40px 0;
 }
 .pagination-bar {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 12px;
-  padding: 12px 16px 0 0;
-  font-size: 14px;
+  gap: 16px;
+  padding: 18px 24px 0 0;
+  font-size: 15px;
+}
+.Btn-Save {
+  background-color: #22a2b6;
+  border-color: #22a2b6;
+  color: #fff;
+  min-width: 90px;
+  height: 36px;
+}
+.cancel-btn {
+  background-color: #fff;
+  border-color: #6b5d5d;
+  color: #000;
+  min-width: 90px;
+  height: 36px;
+  margin-right: 12px;
+}
+.custom-table >>> .el-table__body tr:hover {
+  background: #e6f7fa !important;
+}
+.table-btn-balance {
+  color: #22a2b6 !important;
+  font-weight: 500;
+  margin-right: 8px;
+}
+.table-btn-edit {
+  color: #67c23a !important;
+  font-weight: 500;
+  margin-right: 8px;
+}
+.table-btn-status {
+  color: #f56c6c !important;
+  font-weight: 500;
 }
 </style>

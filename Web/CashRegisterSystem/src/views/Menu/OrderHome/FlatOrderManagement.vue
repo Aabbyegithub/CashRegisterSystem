@@ -122,6 +122,7 @@ const getOrderList = async () => {
   ).then((res:any) => {
     if (res.start === 200) {
       orderList.value = res.response.map((item: any) => ({
+        order_id: item.order_id,
         order_no: item.order_no,
         tableNo: item.table?.table_no,
         status: '待支付',
@@ -166,8 +167,8 @@ const handleReset = () => {
 const handleSizeChange = (val: number) => { pageSize.value = val; getOrderList(); };
 const handlePageChange = (val: number) => { currentPage.value = val; getOrderList(); };
 const handleModify = (order: Order) => { 
+ console.log('修改订单', order);
   router.push({ path: '/Layout/OrderDetail', query: { order_id: order.order_id } });
-  console.log('修改订单', order);
 };
 const handleDelete = (order: Order) => { console.log('删除订单', order); };
 
