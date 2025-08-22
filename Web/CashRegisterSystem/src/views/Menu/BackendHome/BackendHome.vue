@@ -42,20 +42,25 @@
 
     <!-- 右侧内容区域（路由视图） -->
     <main class="backend-content" :class="{ 'expanded': isCollapsed }">
-      <div class="content-header">
-        <h2 class="page-title">
-          {{ getPageTitle() }}
-        </h2>
-      </div>
       <div class="content-body">
-        <router-view />
+        <el-tabs v-model="activeTab" type="card" @tab-remove="removeTab" @tab-click="handleTabClick" closable>
+          <el-tab-pane
+            v-for="tab in tabs"
+            :key="tab.name"
+            :label="tab.title"
+            :name="tab.name"
+            :closable="tab.name !== 'DashboardIndex'"
+          >
+            <component :is="tab.component" />
+          </el-tab-pane>
+        </el-tabs>
       </div>
     </main>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, shallowRef, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { getMenuList } from '../../../api/login';
 
@@ -203,6 +208,8 @@ const route = useRoute();
 const isCollapsed = ref(false);
 const groupCollapsed = ref<Record<string, boolean>>({});
 const menuGroups = ref<any[]>([]);
+const activeTab = ref('DashboardIndex');
+const tabs = ref<any[]>([]);
 
 const toggleCollapse = () => {
   isCollapsed.value = !isCollapsed.value;
@@ -238,6 +245,44 @@ const getPageTitle = () => {
   return '后台管理';
 };
 
+function addTab(routeName: string) {
+  // 查找菜单项
+  let tabTitle = '后台管理';
+  let tabComponent = shallowRef('router-view');
+  for (const group of menuGroups.value) {
+    const item = group.children.find((c: any) => c.name === routeName);
+    if (item) {
+      tabTitle = item.title;
+      break;
+    }
+  }
+  // 判断是否已存在
+  if (!tabs.value.find(t => t.name === routeName)) {
+    tabs.value.push({ name: routeName, title: tabTitle, component: shallowRef('router-view') });
+  }
+  activeTab.value = routeName;
+}
+function removeTab(name: string) {
+  const idx = tabs.value.findIndex(t => t.name === name);
+  if (idx !== -1) {
+    tabs.value.splice(idx, 1);
+    // 切换到最后一个标签
+    if (tabs.value.length) {
+      activeTab.value = tabs.value[tabs.value.length - 1].name;
+       router.push({ path: `/Layout/Backendhome/${activeTab.value}` });
+    }
+  }
+}
+function handleTabClick(tab: any) {
+  console.log('点击了标签:', tab.paneName);
+   router.push({ path: `/Layout/Backendhome/${ tab.paneName}` });
+}
+watch(() => route.name, (newName) => {
+  if (typeof newName === 'string') {
+    addTab(newName);
+  }
+});
+
 onMounted(async () => {
   // 获取菜单数据
   const data = await fetchMenuData();
@@ -250,6 +295,7 @@ onMounted(async () => {
   if (route.path === '/Layout/Backendhome') {
     router.push({ path: `/Layout/Backendhome/DashboardIndex` });
   }
+  addTab(route.path.replace('/Layout/Backendhome/', ''));
 });
 </script>
 

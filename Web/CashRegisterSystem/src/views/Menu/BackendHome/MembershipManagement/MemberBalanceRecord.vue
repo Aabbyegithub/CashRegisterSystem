@@ -18,7 +18,7 @@
     </el-form>
 
     <!-- 储值记录列表 -->
-    <el-table :data="filteredRecords" border style="width:100%" :header-cell-style="{ background: '#f8f9fa', color: '#606266' }" class="custom-table">
+    <el-table :data="filteredRecords" border style="width:100%;height: 68vh;" :header-cell-style="{ background: '#f8f9fa', color: '#606266' }" class="custom-table">
       <el-table-column type="index" label="序号" width="60" align="center" />
       <el-table-column prop="member_no" label="会员编号" align="center" />
       <el-table-column prop="name" label="姓名" align="center" />
@@ -139,7 +139,7 @@ const handlePageChange = (val: number) => {
 <style scoped>
 .member-balance-record-container {
   padding: 20px;
-  background-color: #F5F7FA;
+  background: #fff;
   min-height: 100%;
 }
 .filter-bar {
@@ -147,7 +147,7 @@ const handlePageChange = (val: number) => {
   flex-wrap: wrap;
   gap: 16px;
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 .empty-row {
   width: 100%;

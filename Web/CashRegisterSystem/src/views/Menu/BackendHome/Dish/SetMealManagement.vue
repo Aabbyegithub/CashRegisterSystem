@@ -1,26 +1,30 @@
 <template>
   <div class="set-meal-container">
-    <!-- 筛选区域 -->
-    <div class="filter-bar">
-      <label>套餐名称：</label>
-      <el-input v-model="mealName" placeholder="请输入套餐名称" class="filter-item" clearable />
-      <label style="margin-left:16px;">状态：</label>
-      <el-select v-model="status" placeholder="请选择状态" class="filter-item" style="min-width:120px;">
-        <el-option value="" label="全部" />
-        <el-option value="1" label="在售" />
-        <el-option value="0" label="下架" />
-      </el-select>
-      <el-button @click="handleReset" style="margin-left: auto;">重置</el-button>
-      <el-button type="primary" @click="handleQuery" style="background-color: #22A2B6;">查询</el-button>
-      <el-button type="primary" @click="openAddDialog">新增套餐</el-button>
-    </div>
+    <!-- 筛选区域表单化 -->
+    <el-form class="filter-bar" :inline="true">
+      <el-form-item label="套餐名称：">
+        <el-input v-model="mealName" placeholder="请输入套餐名称" class="filter-item" clearable />
+      </el-form-item>
+      <el-form-item label="状态：">
+        <el-select v-model="status" placeholder="请选择状态" class="filter-item" style="min-width:120px;">
+          <el-option value="" label="全部" />
+          <el-option value="1" label="在售" />
+          <el-option value="0" label="下架" />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="handleReset" class="cancel-btn">重置</el-button>
+        <el-button type="primary" @click="handleQuery" style="background-color: #22A2B6;">查询</el-button>
+        <el-button type="primary" @click="openAddDialog" class="Btn-Save">新增套餐</el-button>
+      </el-form-item>
+    </el-form>
 
     <!-- 套餐列表区域 -->
     <div class="meal-list">
       <el-table
         :data="mealList"
         border
-        style="width: 100%"
+        style="width: 100%; height: 65vh;"
         :header-cell-style="{ background: '#f8f9fa', color: '#606266' }"
       >
         <el-table-column type="selection" width="55" />
@@ -293,22 +297,23 @@ handleQuery();
 <style scoped>
 .set-meal-container {
   padding: 20px;
-  background-color: #F5F7FA;
+  background: #fff;
   min-height: 100%;
 }
 .filter-bar {
-  display: flex;
-  align-items: center;
-  gap: 16px;
   margin-bottom: 18px;
 }
-.filter-item {
-  min-width: 140px;
+.cancel-btn {
+  margin-right: 8px;
+}
+.Btn-Save {
+  background: #22A2B6;
+  color: #fff;
 }
 .meal-list {
   background: #fff;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  /* box-shadow: 0 2px 8px rgba(0,0,0,0.08); */
   margin-bottom: 18px;
 }
 .pagination-bar {

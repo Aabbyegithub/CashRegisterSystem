@@ -61,7 +61,7 @@
           <el-button v-if="order.status === 1" type="primary" size="small" @click="startCooking(order)">开始制作</el-button>
           <el-button v-if="order.status === 2" type="success" size="small" @click="finishCooking(order)">完成</el-button>
           <el-button v-if="order.status === 3" type="info" size="small" @click="pickOrder(order)">取餐</el-button>
-          <el-button v-if="order.status < 4" type="danger" size="small" @click="cancelOrder(order)">退菜</el-button>
+          <!-- <el-button v-if="order.status < 4" type="danger" size="small" @click="cancelOrder(order)">退菜</el-button> -->
         </div>
       </div>
       <div v-if="filteredOrders.length === 0" class="empty-row">

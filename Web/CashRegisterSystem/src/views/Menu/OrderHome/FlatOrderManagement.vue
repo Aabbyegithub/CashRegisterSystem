@@ -93,9 +93,9 @@ const selectedType = ref<string>('全部');
 const selectedCode = ref<string>('全部');
 const orderNo = ref<string>('');
 
-const codeOptions: Options[] = [
+const codeOptions = ref<Options[]>( [
   { label: '全部', value: '全部' },
-];
+]);
 
 interface Order {
   order_id: number;
@@ -143,20 +143,16 @@ const getOrderList = async () => {
 
 async function gettableList() {
   await getTableList().then((res: any) => {
-    if (res.start === 200) {
-      codeOptions.push(...res.response.map((item: any) => ({
+      codeOptions.value.push(...res.response.map((item: any) => ({
         label: item.name,
         value: item.id
       })));
-    } else {
-      ElMessage.error(res.msg);
-    }
   }).catch((error) => {
     ElMessage.error('获取桌台列表失败，请稍后重试');
     console.error(error);
   });
 }
-onMounted(() => { getOrderList(); gettableList(); });
+onMounted(async () => {await gettableList();await getOrderList();  });
 const handleQuery = () => { currentPage.value = 1; getOrderList(); };
 const handleReset = () => {
   selectedType.value = '全部';

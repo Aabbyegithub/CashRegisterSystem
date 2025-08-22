@@ -43,7 +43,7 @@ namespace WebProjectTest.Controllers.SystemController
         [AllowAnonymous]
         public async Task<ApiResponse<List<sys_store>>> GetAllStoreListAsync()
         {
-            return await _StoreServices.GetStoreListAsync();
+            return await _StoreServices.GetStoreListAsync(OrgId);
         }
 
         /// <summary>

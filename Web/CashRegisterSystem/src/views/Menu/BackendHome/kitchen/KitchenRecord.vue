@@ -36,7 +36,7 @@
     </el-form>
 
     <!-- 出餐记录列表 -->
-    <el-table :data="filteredOrders" border style="width:100%" :header-cell-style="{ background: '#f8f9fa', color: '#606266' }">
+    <el-table :data="filteredOrders" border style="width:100%;height: 68vh;" :header-cell-style="{ background: '#f8f9fa', color: '#606266' }">
       <el-table-column type="index" label="序号" width="60" align="center" />
       <el-table-column prop="table_no" label="桌台" align="center" />
       <el-table-column prop="dish_name" label="菜品名称" align="center" />
@@ -176,7 +176,7 @@ const statusTagType = (status: number) => {
 <style scoped>
 .kitchen-record-container {
   padding: 20px;
-  background-color: #F5F7FA;
+  background: #fff;
   min-height: 100%;
 }
 .filter-bar {

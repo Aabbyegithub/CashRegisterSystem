@@ -83,6 +83,11 @@ const routes = [
             name: 'OutMealRecord',
             component: () => import('../views/Menu/BackendHome/kitchen/KitchenRecord.vue')
           },
+          {
+            path: 'KitchenManagement',
+            name: 'KitchenManagement',
+            component: () => import('../views/Menu/BackendHome/kitchen/KitchenManage.vue')
+          },
           { 
             path: 'StaffManagement', 
             name: 'StaffManagement',
@@ -102,6 +107,36 @@ const routes = [
             path: 'DataBackup', 
             name: 'DataBackup',
             component: () => import('../views/Menu/BackendHome/System/DataBackupManagement.vue') 
+          },
+                    { 
+            path: 'MaterialList', 
+            name: 'MaterialList',
+            component: () => import('../views/Menu/BackendHome/inventoryManagement/RawMaterialList.vue') 
+          },
+                    { 
+            path: 'LossRecord', 
+            name: 'LossRecord',
+            component: () => import('../views/Menu/BackendHome/inventoryManagement/LossRecord.vue') 
+          },
+                    { 
+            path: 'PurchaseOrder', 
+            name: 'PurchaseOrder',
+            component: () => import('../views/Menu/BackendHome/inventoryManagement/PurchaseOrderList.vue') 
+          },
+                    { 
+            path: 'StockWarning', 
+            name: 'StockWarning',
+            component: () => import('../views/Menu/BackendHome/inventoryManagement/InventoryWarning.vue') 
+          },
+                    { 
+            path: 'CouponManagement', 
+            name: 'CouponManagement',
+            component: () => import('../views/Menu/BackendHome/Promotion/CouponManagement.vue') 
+          },
+                    { 
+            path: 'PromotionList', 
+            name: 'PromotionList',
+            component: () => import('../views/Menu/BackendHome/Promotion/PromotionList.vue') 
           },
         ]
        },
