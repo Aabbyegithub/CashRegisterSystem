@@ -1,370 +1,237 @@
+
 <template>
-  <div class="queue-list-container">
-    <!-- 页面标题和操作区 -->
-    <div class="page-header">      
-      <div class="header-controls">
-        <!-- 筛选器 -->
-        <div class="filter-bar">
-          <div class="filter-item">
-            <label class="filter-label">门店:</label>
-            <select v-model="selectedStore" class="filter-select" @change="loadQueueData">
-              <option value="">全部门店</option>
-              <option v-for="store in storeList" :key="store.id" :value="store.id">{{ store.name }}</option>
-            </select>
-          </div>
-          
-          <div class="filter-item">
-            <label class="filter-label">状态:</label>
-            <select v-model="queueStatus" class="filter-select" @change="loadQueueData">
-              <option value="all">全部状态</option>
-              <option value="waiting">等待中</option>
-              <option value="called">已叫号</option>
-              <option value="seated">已入座</option>
-              <option value="skipped">已过号</option>
-              <option value="cancelled">已取消</option>
-            </select>
-          </div>
-          
-          <div class="filter-item">
-            <label class="filter-label">人数:</label>
-            <select v-model="partySize" class="filter-select" @change="loadQueueData">
-              <option value="">不限</option>
-              <option value="1-2">1-2人</option>
-              <option value="3-4">3-4人</option>
-              <option value="5-6">5-6人</option>
-              <option value="7+">7人以上</option>
-            </select>
-          </div>
-          
-          <div class="search-box">
-            <input 
-              type="text" 
-              v-model="searchKeyword" 
-              placeholder="搜索手机号/姓名..." 
-              class="search-input"
-              @keyup.enter="loadQueueData"
-            >
-            <button class="search-btn" @click="loadQueueData">
-              <i class="fa fa-search"></i>
-            </button>
-          </div>
-        </div>
-        
-        <!-- 操作按钮 -->
-        <div class="action-buttons">
-          <button class="btn primary-btn" @click="showAddQueueModal = true">
-            <i class="fa fa-plus"></i> 新增排队
-          </button>
-          <button class="btn refresh-btn" @click="loadQueueData">
-            <i class="fa fa-refresh"></i> 刷新
-          </button>
-        </div>
-      </div>
-    </div>
-    
-    <!-- 排队统计 -->
+  <div class="table-management-container">
+    <!-- 筛选区域 -->
+    <el-form class="filter-bar" :inline="true" @submit.prevent>
+      <el-form-item label="门店：">
+        <el-select v-model="selectedStore" placeholder="请选择门店" style="min-width:140px;" @change="loadQueueData">
+          <el-option value="">全部门店</el-option>
+          <el-option v-for="store in storeList" :key="store.id" :label="store.name" :value="store.id" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="状态：">
+        <el-select v-model="queueStatus" placeholder="请选择状态" style="min-width:140px;" @change="loadQueueData">
+          <el-option value="all">全部状态</el-option>
+          <el-option value="waiting">等待中</el-option>
+          <el-option value="called">已叫号</el-option>
+          <el-option value="seated">已入座</el-option>
+          <el-option value="skipped">已过号</el-option>
+          <el-option value="cancelled">已取消</el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="人数：">
+        <el-select v-model="partySize" placeholder="请选择人数" style="min-width:140px;" @change="loadQueueData">
+          <el-option value="">不限</el-option>
+          <el-option value="1-2">1-2人</el-option>
+          <el-option value="3-4">3-4人</el-option>
+          <el-option value="5-6">5-6人</el-option>
+          <el-option value="7+">7人以上</el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="searchKeyword" placeholder="搜索手机号/姓名..." clearable @keyup.enter="loadQueueData" style="width:200px;" />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="loadQueueData">查询</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="handleReset">重置</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="showAddQueueModal = true">新增排队</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="loadQueueData">刷新</el-button>
+      </el-form-item>
+    </el-form>
+
+    <!-- 统计卡片区 -->
     <div class="stats-container">
       <div class="stat-card">
         <div class="stat-label">当前等待</div>
         <div class="stat-value waiting">{{ stats.waitingCount }}</div>
         <div class="stat-desc">桌台不足，建议分流</div>
       </div>
-      
       <div class="stat-card">
         <div class="stat-label">平均等待时间</div>
         <div class="stat-value time">{{ stats.averageWaitTime }}分钟</div>
       </div>
-      
       <div class="stat-card">
         <div class="stat-label">今日累计排队</div>
         <div class="stat-value total">{{ stats.totalToday }}</div>
       </div>
-      
       <div class="stat-card">
         <div class="stat-label">过号率</div>
         <div class="stat-value rate">{{ stats.skippedRate }}%</div>
       </div>
     </div>
-    
-    <!-- 排队列表 -->
-    <div class="queue-table-container">
-      <table class="queue-table">
-        <thead>
-          <tr>
-            <th class="table-header">序号</th>
-            <th class="table-header">排队号</th>
-            <th class="table-header">姓名</th>
-            <th class="table-header">手机号</th>
-            <th class="table-header">人数</th>
-            <th class="table-header">排队时间</th>
-            <th class="table-header">等待时长</th>
-            <th class="table-header">备注</th>
-            <th class="table-header">状态</th>
-            <th class="table-header">操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in queueList" :key="item.id" :class="['queue-item', item.status]">
-            <td class="table-cell">{{ index + 1 }}</td>
-            <td class="table-cell">
-              <div class="queue-number">{{ item.queueNumber }}</div>
-            </td>
-            <td class="table-cell">{{ item.customerName }}</td>
-            <td class="table-cell">{{ formatPhone(item.phone) }}</td>
-            <td class="table-cell">
-              <span class="people-count">{{ item.partySize }}</span>
-            </td>
-            <td class="table-cell">{{ formatDateTime(item.createTime) }}</td>
-            <td class="table-cell">
-              <span :class="{'overtime': item.waitTime > 30}">{{ item.waitTime }}分钟</span>
-            </td>
-            <td class="table-cell">{{ item.notes || '-' }}</td>
-            <td class="table-cell">
-              <span :class="['status-tag', item.status]">
-                {{ statusMap[item.status] }}
-              </span>
-            </td>
-            <td class="table-cell">
-              <div class="operation-buttons">
-                <button 
-                  class="btn action-btn call-btn" 
-                  @click="callQueue(item)"
-                  :disabled="item.status !== 'waiting'"
-                >
-                  叫号
-                </button>
-                
-                <button 
-                  class="btn action-btn assign-btn" 
-                  @click="assignTable(item)"
-                  :disabled="!['waiting', 'called'].includes(item.status)"
-                >
-                  安排桌台
-                </button>
-                
-                <button 
-                  class="btn action-btn skip-btn" 
-                  @click="skipQueue(item)"
-                  :disabled="!['waiting', 'called'].includes(item.status)"
-                >
-                  过号
-                </button>
-                
-                <button 
-                  class="btn action-btn cancel-btn" 
-                  @click="cancelQueue(item)"
-                  :disabled="!['waiting', 'called'].includes(item.status)"
-                >
-                  取消
-                </button>
-              </div>
-            </td>
-          </tr>
-          
-          <tr v-if="queueList.length === 0" class="empty-row">
-            <td colspan="10" class="empty-cell">
-              <div class="empty-state">
-                <i class="fa fa-inbox"></i>
-                <div class="empty-text">当前没有排队记录</div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    
-    <!-- 分页 -->
-    <div class="pagination" v-if="total > 0">
-      <div class="pagination-info">
-        共 {{ total }} 条记录，当前第 {{ currentPage }} / {{ totalPages }} 页
-      </div>
-      <div class="pagination-controls">
-        <button 
-          class="page-btn" 
-          @click="currentPage = 1" 
-          :disabled="currentPage === 1"
-        >
-          首页
-        </button>
-        <button 
-          class="page-btn" 
-          @click="currentPage--" 
-          :disabled="currentPage === 1"
-        >
-          上一页
-        </button>
-        <button 
-          class="page-btn" 
-          @click="currentPage++" 
-          :disabled="currentPage === totalPages"
-        >
-          下一页
-        </button>
-        <button 
-          class="page-btn" 
-          @click="currentPage = totalPages" 
-          :disabled="currentPage === totalPages"
-        >
-          末页
-        </button>
+
+    <!-- 排队列表区域 -->
+    <div class="table-list">
+      <el-table :data="queueList" border style="width: 100%;height: 57vh;" :header-cell-style="{ background: '#f8f9fa', color: '#606266' }">
+        <el-table-column type="index" label="序号" width="60" align="center" />
+        <el-table-column prop="queueNumber" label="排队号" align="center">
+          <template #default="scope">
+            <el-tag type="primary">{{ scope.row.queueNumber }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="customerName" label="姓名" align="center" />
+        <el-table-column prop="phone" label="手机号" align="center">
+          <template #default="scope">
+            {{ formatPhone(scope.row.phone) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="partySize" label="人数" align="center">
+          <template #default="scope">
+            <el-tag>{{ scope.row.partySize }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="createTime" label="排队时间" align="center">
+          <template #default="scope">
+            {{ formatDateTime(scope.row.createTime) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="waitTime" label="等待时长" align="center">
+          <template #default="scope">
+            <span :style="{ color: scope.row.waitTime > 30 ? '#FF4D4F' : '' }">{{ scope.row.waitTime }}分钟</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="notes" label="备注" align="center">
+          <template #default="scope">
+            {{ scope.row.notes || '-' }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="status" label="状态" align="center">
+          <template #default="scope">
+            <el-tag :type="
+              scope.row.status === 'waiting' ? 'success' :
+              scope.row.status === 'called' ? 'warning' :
+              scope.row.status === 'seated' ? 'info' :
+              scope.row.status === 'skipped' ? 'danger' :
+              scope.row.status === 'cancelled' ? 'danger' : undefined
+            ">
+              {{ statusMap[scope.row.status] }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" width="220">
+          <template #default="scope">
+            <el-button type="primary" size="small" @click="callQueue(scope.row)" :disabled="scope.row.status !== 'waiting'">叫号</el-button>
+            <el-button type="success" size="small" @click="assignTable(scope.row)" :disabled="!['waiting', 'called'].includes(scope.row.status)">安排桌台</el-button>
+            <el-button type="info" size="small" @click="skipQueue(scope.row)" :disabled="!['waiting', 'called'].includes(scope.row.status)">过号</el-button>
+            <el-button type="danger" size="small" @click="cancelQueue(scope.row)" :disabled="!['waiting', 'called'].includes(scope.row.status)">取消</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div v-if="queueList.length === 0" class="empty-row">
+        <el-empty description="当前没有排队记录" />
       </div>
     </div>
-    
+
+    <!-- 分页区域 -->
+    <div class="pagination-bar">
+      <el-pagination
+        layout="prev, pager, next, ->, sizes, jumper"
+        :total="total"
+        :page-size="pageSize"
+        :current-page="currentPage"
+        :page-sizes="[10, 20, 30, 40, 50]"
+        @size-change="handleSizeChange"
+        @current-change="handlePageChange"
+      />
+    </div>
+
     <!-- 新增排队弹窗 -->
-    <div class="modal-backdrop" v-if="showAddQueueModal">
-      <div class="modal-dialog">
-        <div class="modal-header">
-          <h3 class="modal-title">新增排队</h3>
-          <button class="modal-close" @click="showAddQueueModal = false">
-            <i class="fa fa-times"></i>
-          </button>
-        </div>
-        
-        <div class="modal-body">
-          <div class="form-group">
-            <label class="form-label">门店 <span class="required">*</span></label>
-            <select v-model="newQueue.storeId" class="form-control" required>
-              <option value="">请选择门店</option>
-              <option v-for="store in storeList" :key="store.id" :value="store.id">{{ store.name }}</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label">姓名 <span class="required">*</span></label>
-            <input 
-              type="text" 
-              v-model="newQueue.customerName" 
-              class="form-control" 
-              placeholder="请输入顾客姓名"
-              required
-            >
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label">手机号 <span class="required">*</span></label>
-            <input 
-              type="tel" 
-              v-model="newQueue.phone" 
-              class="form-control" 
-              placeholder="请输入顾客手机号"
-              required
-            >
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label">用餐人数 <span class="required">*</span></label>
-            <select v-model="newQueue.partySize" class="form-control" required>
-              <option value="">请选择人数</option>
-              <option value="1">1人</option>
-              <option value="2">2人</option>
-              <option value="3">3人</option>
-              <option value="4">4人</option>
-              <option value="5">5人</option>
-              <option value="6">6人</option>
-              <option value="7">7人</option>
-              <option value="8">8人以上</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label">是否会员</label>
-            <div class="radio-group">
-              <label class="radio-item">
-                <input type="radio" v-model="newQueue.isMember" value="1"> 是
-              </label>
-              <label class="radio-item">
-                <input type="radio" v-model="newQueue.isMember" value="0" checked> 否
-              </label>
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label">备注</label>
-            <textarea 
-              v-model="newQueue.notes" 
-              class="form-control" 
-              placeholder="请输入特殊需求（如靠窗、不要辣等）"
-              rows="3"
-            ></textarea>
-          </div>
-        </div>
-        
-        <div class="modal-footer">
-          <button class="btn modal-btn cancel-btn" @click="showAddQueueModal = false">取消</button>
-          <button class="btn modal-btn confirm-btn" @click="saveNewQueue">确认添加</button>
-        </div>
-      </div>
-    </div>
-    
+    <el-dialog v-model="showAddQueueModal" width="500" title="新增排队">
+      <el-form :model="newQueue" label-width="120px">
+        <el-form-item label="门店">
+          <el-select v-model="newQueue.storeId" placeholder="请选择门店">
+            <el-option value="">请选择门店</el-option>
+            <el-option v-for="store in storeList" :key="store.id" :value="store.id" :label="store.name" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="姓名">
+          <el-input v-model="newQueue.customerName" placeholder="请输入顾客姓名" />
+        </el-form-item>
+        <el-form-item label="手机号">
+          <el-input v-model="newQueue.phone" placeholder="请输入顾客手机号" />
+        </el-form-item>
+        <el-form-item label="用餐人数">
+          <el-select v-model="newQueue.partySize" placeholder="请选择人数">
+            <el-option value="">请选择人数</el-option>
+            <el-option value="1">1人</el-option>
+            <el-option value="2">2人</el-option>
+            <el-option value="3">3人</el-option>
+            <el-option value="4">4人</el-option>
+            <el-option value="5">5人</el-option>
+            <el-option value="6">6人</el-option>
+            <el-option value="7">7人</el-option>
+            <el-option value="8">8人以上</el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="是否会员">
+          <el-radio-group v-model="newQueue.isMember">
+            <el-radio :label="'1'">是</el-radio>
+            <el-radio :label="'0'">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input type="textarea" v-model="newQueue.notes" placeholder="请输入特殊需求（如靠窗、不要辣等）" :rows="3" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="showAddQueueModal = false">取消</el-button>
+        <el-button type="primary" @click="saveNewQueue">确认添加</el-button>
+      </template>
+    </el-dialog>
+
     <!-- 安排桌台弹窗 -->
-    <div class="modal-backdrop" v-if="showAssignTableModal">
-      <div class="modal-dialog">
-        <div class="modal-header">
-          <h3 class="modal-title">安排桌台 - {{ currentQueue?.queueNumber }}</h3>
-          <button class="modal-close" @click="showAssignTableModal = false">
-            <i class="fa fa-times"></i>
-          </button>
+    <el-dialog v-model="showAssignTableModal" width="500" :title="`安排桌台 - ${currentQueue?.queueNumber}`">
+      <div class="queue-info">
+        <div class="info-item">
+          <span class="info-label">顾客：</span>
+          <span class="info-value">{{ currentQueue?.customerName }} ({{ formatPhone(currentQueue?.phone) }})</span>
         </div>
-        
-        <div class="modal-body">
-          <div class="queue-info">
-            <div class="info-item">
-              <span class="info-label">顾客：</span>
-              <span class="info-value">{{ currentQueue?.customerName }} ({{ formatPhone(currentQueue?.phone) }})</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">人数：</span>
-              <span class="info-value">{{ currentQueue?.partySize }}人</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">等待时间：</span>
-              <span class="info-value">{{ currentQueue?.waitTime }}分钟</span>
-            </div>
-          </div>
-          
-          <div class="available-tables">
-            <h4 class="section-title">可选桌台（空闲状态）</h4>
-            <div class="table-selector">
-              <label class="table-option" v-for="table in availableTables" :key="table.id">
-                <input 
-                  type="radio" 
-                  v-model="selectedTableId" 
-                  :value="table.id"
-                  :disabled="table.capacity < currentQueue.partySize"
-                >
-                <div class="table-info">
-                  <div class="table-name">{{ table.number }}</div>
-                  <div class="table-desc">
-                    {{ table.shape === 'round' ? '圆桌' : table.shape === 'square' ? '方桌' : '长桌' }}，
-                    {{ table.capacity }}人，{{ table.areaName }}
-                  </div>
-                </div>
-              </label>
-            </div>
-            
-            <div class="no-tables" v-if="availableTables.length === 0">
-              当前没有可用桌台，请稍后再试
-            </div>
-          </div>
+        <div class="info-item">
+          <span class="info-label">人数：</span>
+          <span class="info-value">{{ currentQueue?.partySize }}人</span>
         </div>
-        
-        <div class="modal-footer">
-          <button class="btn modal-btn-btn" @click="showAssignTableModal = false">取消</button>
-          <button 
-            class="btn confirm-btn" 
-            @click="confirmAssignTable"
-            :disabled="!selectedTableId"
-          >
-            确认安排
-          </button>
+        <div class="info-item">
+          <span class="info-label">等待时间：</span>
+          <span class="info-value">{{ currentQueue?.waitTime }}分钟</span>
         </div>
       </div>
-    </div>
+      <div class="available-tables">
+        <h4 class="section-title">可选桌台（空闲状态）</h4>
+        <el-radio-group v-model="selectedTableId">
+          <el-radio v-for="table in availableTables" :key="table.id" :label="table.id" :disabled="table.capacity < (currentQueue?.partySize ?? 0)">
+            <div class="table-info">
+              <div class="table-name">{{ table.number }}</div>
+              <div class="table-desc">
+                {{ table.shape === 'round' ? '圆桌' : table.shape === 'square' ? '方桌' : '长桌' }}，
+                {{ table.capacity }}人，{{ table.areaName }}
+              </div>
+            </div>
+          </el-radio>
+        </el-radio-group>
+        <div class="no-tables" v-if="availableTables.length === 0">
+          当前没有可用桌台，请稍后再试
+        </div>
+      </div>
+      <template #footer>
+        <el-button @click="showAssignTableModal = false">取消</el-button>
+        <el-button type="primary" @click="confirmAssignTable" :disabled="!selectedTableId">确认安排</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, onMounted, watch } from 'vue';
+import {
+  ElSelect, ElOption, ElInput, ElButton, ElTable, ElTableColumn,
+  ElPagination, ElTag, ElDialog, ElForm, ElFormItem, ElRadioGroup, ElRadio, ElEmpty, ElMessage
+} from 'element-plus';
 // import { formatDateTime as formatDateTimeUtil } from '@/utils/format';
 // 引入API请求函数
 // import { 
@@ -377,17 +244,41 @@ import { ref, computed, onMounted, watch } from 'vue';
 // import { fetchStoreList } from '@/api/store';
 // import { fetchAvailableTables } from '@/api/table';
 
-// 状态映射
-const statusMap = {
-  'waiting': '等待中',
-  'called': '已叫号',
-  'seated': '已入座',
-  'skipped': '已过号',
-  'cancelled': '已取消'
+// 状态映射，类型安全
+const statusMap: Record<QueueItem['status'], string> = {
+  waiting: '等待中',
+  called: '已叫号',
+  seated: '已入座',
+  skipped: '已过号',
+  cancelled: '已取消'
 };
 
 // 门店列表
-const storeList = ref([]);
+
+interface Store {
+  id: string;
+  name: string;
+}
+interface QueueItem {
+  id: string;
+  queueNumber: string;
+  customerName: string;
+  phone: string;
+  partySize:  number;
+  createTime: string;
+  waitTime: number;
+  notes?: string;
+  status: string;
+}
+interface Table {
+  id: string;
+  number: string;
+  shape: string;
+  capacity: number;
+  areaName: string;
+}
+
+const storeList = ref<Store[]>([]);
 const selectedStore = ref('');
 const queueStatus = ref('all');
 const partySize = ref('');
@@ -397,10 +288,9 @@ const searchKeyword = ref('');
 const currentPage = ref(1);
 const pageSize = ref(10);
 const total = ref(0);
-const totalPages = computed(() => Math.ceil(total.value / pageSize.value));
 
 // 排队列表数据
-const queueList = ref([]);
+const queueList = ref<QueueItem[]>([]);
 const stats = ref({
   waitingCount: 0,
   averageWaitTime: 0,
@@ -411,8 +301,8 @@ const stats = ref({
 // 弹窗状态
 const showAddQueueModal = ref(false);
 const showAssignTableModal = ref(false);
-const currentQueue = ref();
-const availableTables = ref([]);
+const currentQueue = ref<QueueItem | null>(null);
+const availableTables = ref<any[]>([]);
 const selectedTableId = ref('');
 
 // 新增排队表单数据
@@ -425,31 +315,52 @@ const newQueue = ref({
   notes: ''
 });
 
-// 加载排队数据
+
+// 加载排队数据（模拟）
 const loadQueueData = async () => {
-//   try {
-//     const params = {
-//       storeId: selectedStore.value,
-//       status: queueStatus.value !== 'all' ? queueStatus.value : '',
-//       partySize: partySize.value,
-//       keyword: searchKeyword.value,
-//       page: currentPage.value,
-//       pageSize: pageSize.value
-//     };
-    
-//     const response = await fetchQueueList(params);
-//     queueList.value = response.list || [];
-//     total.value = response.total || 0;
-    
-//     // 加载统计数据
-//     if (selectedStore.value) {
-//       const statsData = await fetchQueueStats({ storeId: selectedStore.value });
-//       stats.value = statsData;
-//     }
-//   } catch (error) {
-//     console.error('加载排队列表失败:', error);
-//     alert('加载排队列表失败，请重试');
-//   }
+  // TODO: 替换为真实接口
+  queueList.value = [
+    {
+      id: '1', queueNumber: 'A001', customerName: '张三', phone: '13812345678', partySize: 3, createTime: '2025-08-22 12:00', waitTime: 15, notes: '靠窗', status: 'waiting'
+    },
+    {
+      id: '2', queueNumber: 'A002', customerName: '李四', phone: '13987654321', partySize: 2, createTime: '2025-08-22 12:10', waitTime: 35, notes: '', status: 'called'
+    }
+  ];
+  total.value = queueList.value.length;
+  stats.value = {
+    waitingCount: 1,
+    averageWaitTime: 25,
+    totalToday: 2,
+    skippedRate: 0
+  };
+};
+
+// 加载门店列表（模拟）
+
+// 加载门店列表（模拟）
+storeList.value = [
+  { id: '1', name: '旗舰店' },
+  { id: '2', name: '分店A' }
+];
+
+// 重置筛选条件
+const handleReset = () => {
+  selectedStore.value = '';
+  queueStatus.value = 'all';
+  partySize.value = '';
+  searchKeyword.value = '';
+  loadQueueData();
+};
+
+// 分页相关
+const handleSizeChange = (val: number) => {
+  pageSize.value = val;
+  loadQueueData();
+};
+const handlePageChange = (val: number) => {
+  currentPage.value = val;
+  loadQueueData();
 };
 
 // 加载门店列表
@@ -464,146 +375,79 @@ const loadStores = async () => {
 };
 
 // 叫号操作
-const callQueue = async (queue:any) => {
-//   if (confirm(`确定要呼叫 ${queue.queueNumber} 号 ${queue.customerName} 吗？`)) {
-//     try {
-//       await updateQueueStatus({
-//         id: queue.id,
-//         status: 'called',
-//         operatorId: localStorage.getItem('userId') || ''
-//       });
-//       loadQueueData();
-//       // 可以在这里添加语音叫号功能
-//       alert(`已呼叫 ${queue.queueNumber} 号，请顾客到前台`);
-//     } catch (error) {
-//       console.error('叫号操作失败:', error);
-//       alert('叫号操作失败，请重试');
-//     }
-//   }
+const callQueue = async (queue: QueueItem) => {
+  ElMessage.success(`已呼叫 ${queue.queueNumber} 号，请顾客到前台`);
 };
 
 // 安排桌台
-const assignTable = async (queue:any) => {
+const assignTable = async (queue: QueueItem) => {
   currentQueue.value = queue;
   selectedTableId.value = '';
-  
-//   try {
-//     // 加载可用桌台（空闲状态且容量大于等于排队人数）
-//     const tables = await fetchAvailableTables({
-//       storeId: queue.storeId,
-//       minCapacity: queue.partySize
-//     });
-//     availableTables.value = tables || [];
-//     showAssignTableModal.value = true;
-//   } catch (error) {
-//     console.error('加载可用桌台失败:', error);
-//     alert('加载可用桌台失败，请重试');
-//   }
+  // 模拟可用桌台
+  availableTables.value = [
+    { id: 'T01', number: 'T01', shape: 'round', capacity: 4, areaName: '大厅' },
+    { id: 'T02', number: 'T02', shape: 'square', capacity: 2, areaName: '包间' }
+  ];
+  showAssignTableModal.value = true;
 };
 
 // 确认安排桌台
 const confirmAssignTable = async () => {
   if (!selectedTableId.value || !currentQueue.value) return;
-  
-//   try {
-//     await assignTableApi({
-//       queueId: currentQueue.value.id,
-//       tableId: selectedTableId.value,
-//       operatorId: localStorage.getItem('userId') || ''
-//     });
-//     showAssignTableModal.value = false;
-//     loadQueueData();
-//     alert(`已为 ${currentQueue.value.queueNumber} 号安排桌台`);
-//   } catch (error) {
-//     console.error('安排桌台失败:', error);
-//     alert('安排桌台失败，请重试');
-//   }
+  showAssignTableModal.value = false;
+  ElMessage.success(`已为 ${currentQueue.value.queueNumber} 号安排桌台`);
 };
 
 // 过号操作
-const skipQueue = async (queue:any) => {
-//   if (confirm(`确定要将 ${queue.queueNumber} 号标记为过号吗？`)) {
-//     try {
-//       await updateQueueStatus({
-//         id: queue.id,
-//         status: 'skipped',
-//         reason: '过号未到',
-//         operatorId: localStorage.getItem('userId') || ''
-//       });
-//       loadQueueData();
-//     } catch (error) {
-//       console.error('过号操作失败:', error);
-//       alert('过号操作失败，请重试');
-//     }
-//   }
+const skipQueue = async (queue: QueueItem) => {
+  ElMessage.info(`已将 ${queue.queueNumber} 号标记为过号`);
 };
 
 // 取消排队
-const cancelQueue = async (queue:any) => {
-//   if (confirm(`确定要取消 ${queue.queueNumber} 号的排队吗？`)) {
-//     try {
-//       await updateQueueStatus({
-//         id: queue.id,
-//         status: 'cancelled',
-//         reason: '顾客取消',
-//         operatorId: localStorage.getItem('userId') || ''
-//       });
-//       loadQueueData();
-//     } catch (error) {
-//       console.error('取消排队失败:', error);
-//       alert('取消排队失败，请重试');
-//     }
-//   }
+const cancelQueue = async (queue: QueueItem) => {
+  ElMessage.error(`已取消 ${queue.queueNumber} 号的排队`);
 };
 
 // 保存新增排队
 const saveNewQueue = async () => {
-  // 表单验证
   if (!newQueue.value.storeId || !newQueue.value.customerName || !newQueue.value.phone || !newQueue.value.partySize) {
-    alert('请填写必填字段');
+    ElMessage.warning('请填写必填字段');
     return;
   }
-  
-//   try {
-//     await createQueue({
-//       ...newQueue.value,
-//       operatorId: localStorage.getItem('userId') || ''
-//     });
-//     showAddQueueModal.value = false;
-//     // 重置表单
-//     newQueue.value = {
-//       storeId: '',
-//       customerName: '',
-//       phone: '',
-//       partySize: '',
-//       isMember: '0',
-//       notes: ''
-//     };
-//     loadQueueData();
-//     alert('新增排队成功');
-//   } catch (error) {
-//     console.error('新增排队失败:', error);
-//     alert('新增排队失败，请重试');
-//   }
+  showAddQueueModal.value = false;
+  ElMessage.success('新增排队成功（模拟）');
+  // 重置表单
+  newQueue.value = {
+    storeId: '',
+    customerName: '',
+    phone: '',
+    partySize: '',
+    isMember: '0',
+    notes: ''
+  };
+  loadQueueData();
 };
 
+
 // 格式化手机号
-const formatPhone = (phone:string) => {
+const formatPhone = (phone?: string) => {
   if (!phone) return '';
   return phone.replace(/(\d{3})(\d{4})(\d{4})/, '$1****$3');
 };
-
 // 格式化日期时间
-const formatDateTime = (dateStr:string) => {
-//   return formatDateTimeUtil(dateStr);
+const formatDateTime = (dateStr?: string) => {
+  if (!dateStr) return '';
+  return dateStr.replace(' ', '\n');
 };
 
 // 监听分页变化
+
 watch(currentPage, loadQueueData);
 
 // 页面加载时初始化
 onMounted(() => {
   loadStores();
+  loadQueueData();
 });
 </script>
 
@@ -1192,6 +1036,59 @@ onMounted(() => {
   .operation-buttons {
     flex-wrap: wrap;
   }
+}
+
+/* Element Plus 表格美化 */
+.el-table th {
+  text-align: center !important;
+  font-size: 15px;
+  font-weight: 500;
+}
+.el-table td {
+  text-align: center !important;
+  font-size: 14px;
+}
+.el-tag {
+  border-radius: 8px !important;
+  font-size: 15px !important;
+  padding: 4px 14px !important;
+}
+.el-button {
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  padding: 4px 16px !important;
+  margin-right: 6px;
+}
+.pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 18px 24px 0 0;
+  font-size: 15px;
+}
+.el-dialog__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 18px;
+}
+.el-form-item {
+  margin-bottom: 22px !important;
+}
+.table-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 0 0 0;
+}
+.table-name {
+  font-weight: 600;
+  margin-bottom: 2px;
+  font-size: 15px;
+}
+.table-desc {
+  font-size: 13px;
+  color: #4E5969;
 }
 
 @media (max-width: 992px) {

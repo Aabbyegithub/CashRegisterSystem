@@ -93,9 +93,9 @@ const selectedType = ref<string>('全部');
 const selectedCode = ref<string>('全部');
 const orderNo = ref<string>('');
 
-const codeOptions: Options[] = [
+const codeOptions = ref<Options[]>( [
   { label: '全部', value: '全部' },
-];
+]);
 
 interface Order {
   order_id: number;
@@ -122,6 +122,7 @@ const getOrderList = async () => {
   ).then((res:any) => {
     if (res.start === 200) {
       orderList.value = res.response.map((item: any) => ({
+        order_id: item.order_id,
         order_no: item.order_no,
         tableNo: item.table?.table_no,
         status: '待支付',
@@ -142,20 +143,16 @@ const getOrderList = async () => {
 
 async function gettableList() {
   await getTableList().then((res: any) => {
-    if (res.start === 200) {
-      codeOptions.push(...res.response.map((item: any) => ({
+      codeOptions.value.push(...res.response.map((item: any) => ({
         label: item.name,
         value: item.id
       })));
-    } else {
-      ElMessage.error(res.msg);
-    }
   }).catch((error) => {
     ElMessage.error('获取桌台列表失败，请稍后重试');
     console.error(error);
   });
 }
-onMounted(() => { getOrderList(); gettableList(); });
+onMounted(async () => {await gettableList();await getOrderList();  });
 const handleQuery = () => { currentPage.value = 1; getOrderList(); };
 const handleReset = () => {
   selectedType.value = '全部';
@@ -166,8 +163,8 @@ const handleReset = () => {
 const handleSizeChange = (val: number) => { pageSize.value = val; getOrderList(); };
 const handlePageChange = (val: number) => { currentPage.value = val; getOrderList(); };
 const handleModify = (order: Order) => { 
+ console.log('修改订单', order);
   router.push({ path: '/Layout/OrderDetail', query: { order_id: order.order_id } });
-  console.log('修改订单', order);
 };
 const handleDelete = (order: Order) => { console.log('删除订单', order); };
 

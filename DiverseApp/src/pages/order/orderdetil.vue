@@ -91,23 +91,11 @@ const mergedTable = ref('')
 const changeTable = ref('')
 const showMergeDialog = ref(false)
 const showChangeDialog = ref(false)
-const mergeTables = ref([
- { id: 1, name: 'A1', status:1 , people: 0, max: 5 },
-])
-const changeTables = ref([
-   { id: 1, name: 'A1', status:1 , people: 0, max: 5 },
-])
+const mergeTables = ref<any[]>([])
+const changeTables = ref<any[]>([])
 const mergeSelect = ref(0)
 const changeSelect = ref(0)
-const orderList = ref([
-  { id: 1, name: '麻婆豆腐', spec: '微辣*1', price: 18 },
-  { id: 2, name: '小炒黄牛肉', spec: '中辣、不加葱*1', price: 48 },
-  { id: 3, name: '清蒸鲈鱼', spec: '味淡*1', price: 16 },
-  { id: 4, name: '小炒黄牛肉', spec: '中辣、不加葱*1', price: 12 },
-  { id: 5, name: '清蒸鲈鱼', spec: '味淡*1', price: 16 },
-  { id: 6, name: '小炒黄牛肉', spec: '中辣、不加葱*1', price: 12 },
-  { id: 7, name: '清蒸鲈鱼', spec: '味淡*1', price: 16 },
-])
+const orderList = ref<any[]>([])
 const orderId = ref("0")
 const orderstatus = ref()
 const total = ref(71)

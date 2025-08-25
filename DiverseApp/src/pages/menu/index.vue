@@ -183,22 +183,8 @@ import CustomHeader from '@/components/CustomHeader.vue'
 import { request } from '@/utitl/request'
 
 const searchValue = ref('')
-const categories = ref([
-  { id: 1, name: '招牌推荐', active: true },
-  { id: 2, name: '一人套餐', active: false },
-  { id: 3, name: '家常小炒', active: false },
-  { id: 4, name: '爽口凉菜', active: false },
-  { id: 5, name: '主食', active: false },
-  { id: 6, name: '汤', active: false },
-  { id: 7, name: '酒水饮料', active: false }
-])
-const dishes = ref([
-  { id: 1, name: '糖醋里脊', desc: '招牌特色菜', price: 28,spece:0,dishCategoryType:1, img: 'https://vcg02.cfp.cn/creative/vcg/nowater800/new/VCG211430891214.jpg?x-oss-process=image/format,webp' },
-  { id: 2, name: '麻婆豆腐', desc: '100+热销家常菜', price: 18,spece:0,dishCategoryType:1,  img: 'https://vcg02.cfp.cn/creative/vcg/nowater800/new/VCG211430891214.jpg?x-oss-process=image/format,webp' },
-  { id: 3, name: '小炒黄牛肉', desc: '99%好评 老价位回归', price: 58,spece:1,dishCategoryType:1,  img: 'https://vcg02.cfp.cn/creative/vcg/nowater800/new/VCG211430891214.jpg?x-oss-process=image/format,webp' },
-  { id: 4, name: '孜然肉片', desc: '香辣孜然，嫩滑', price: 28,spece:0 ,dishCategoryType:1,img: 'https://vcg02.cfp.cn/creative/vcg/nowater800/new/VCG211430891214.jpg?x-oss-process=image/format,webp' },
-  { id: 5, name: '手撕包菜', desc: '99%好评 老价位回归', price: 18,spece:1,dishCategoryType:1,  img: 'https://vcg02.cfp.cn/creative/vcg/nowater800/new/VCG211430891214.jpg?x-oss-process=image/format,webp' }
-])
+const categories = ref<any[]>([])
+const dishes = ref<any[]>([])
 
 function selectCategory(id: number) {
   categories.value.forEach(item => item.active = item.id === id)

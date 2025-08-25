@@ -66,7 +66,7 @@ namespace WebServiceClass.Services.SystemService
                     title = b.permission_name,
                     icon = b.permission_icon,
                     parent_id = b.parent_id.ToString(),
-                     isselect =a.isSelect, 
+                     isselect =b.isSelect, 
                 }).ToList()
             }).ToList();
         }

@@ -209,6 +209,33 @@
             修改订单
             </summary>
         </member>
+        <!-- Badly formed XML comment ignored for member "M:WebProjectTest.Controllers.OrderController.OrderController.GetOrderDetailsAsync(System.Int32)" -->
+        <member name="M:WebProjectTest.Controllers.OrderController.OrderController.ChangeTableAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            换桌
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.OrderController.OrderController.MergeTableAsync(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            并桌
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.OrderController.OrderController.OrderItemRefundAsync(System.Int32)">
+            <summary>
+            订单子项退款    
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.OrderController.OrderController.OrderRefundAsync(System.Int32)">
+            <summary>
+            订单退款
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.OrderController.OrderController.OrderRedoAsync(System.Int32)">
+            <summary>
+            订单重做
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:WebProjectTest.Controllers.OrderController.OrderController.OrderCheckoutAsync(System.Int32,System.Nullable{System.Int32},System.String)" -->
         <member name="T:WebProjectTest.Controllers.SystemController.AutherController">
             <summary>
             获取服务器和人员信息
