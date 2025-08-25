@@ -205,11 +205,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, nextTick } from 'vue';
 import { Chart, registerables } from 'chart.js';
 
-// 注册Chart.js组件
 Chart.register(...registerables);
+
+let revenueChartInstance: Chart | null = null;
+let ordersCustomersChartInstance: Chart | null = null;
+let topDishesChartInstance: Chart | null = null;
+let paymentMethodChartInstance: Chart | null = null;
 
 // 时间范围选择
 const selectedTimeRange = ref('month');
@@ -326,208 +330,235 @@ const refreshData = () => {
 };
 
 // 初始化图表
-const initCharts = () => {
+const initCharts = async () => {
+  await nextTick(); // 确保 DOM 已渲染
+  // 销毁旧图表实例，避免重复创建导致 Canvas is already in use
+  if (revenueChartInstance) {
+    revenueChartInstance.destroy();
+    revenueChartInstance = null;
+  }
+  if (ordersCustomersChartInstance) {
+    ordersCustomersChartInstance.destroy();
+    ordersCustomersChartInstance = null;
+  }
+  if (topDishesChartInstance) {
+    topDishesChartInstance.destroy();
+    topDishesChartInstance = null;
+  }
+  if (paymentMethodChartInstance) {
+    paymentMethodChartInstance.destroy();
+    paymentMethodChartInstance = null;
+  }
+
   // 营业额趋势图
   const revenueCtx = document.getElementById('revenueChart') as HTMLCanvasElement;
-  new Chart(revenueCtx, {
-    type: 'line',
-    data: {
-      labels: ['1日', '5日', '10日', '15日', '20日', '25日', '30日'],
-      datasets: [
-        {
-          label: '本月营业额',
-          data: [4200, 5100, 4800, 6500, 7200, 6800, 5900],
-          borderColor: '#165DFF',
-          backgroundColor: 'rgba(22, 93, 255, 0.1)',
-          tension: 0.4,
-          fill: true
-        },
-        {
-          label: '上月营业额',
-          data: [3800, 4500, 5000, 5800, 6200, 5500, 5200],
-          borderColor: '#C9CDD4',
-          borderDash: [5, 5],
-          backgroundColor: 'transparent',
-          tension: 0.4,
-          fill: false
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: {
-        mode: 'index',
-        intersect: false,
+  if (revenueCtx) {
+    revenueChartInstance = new Chart(revenueCtx.getContext('2d')!, {
+      type: 'line',
+      data: {
+        labels: ['1日', '5日', '10日', '15日', '20日', '25日', '30日'],
+        datasets: [
+          {
+            label: '本月营业额',
+            data: [4200, 5100, 4800, 6500, 7200, 6800, 5900],
+            borderColor: '#165DFF',
+            backgroundColor: 'rgba(22, 93, 255, 0.1)',
+            tension: 0.4,
+            fill: true
+          },
+          {
+            label: '上月营业额',
+            data: [3800, 4500, 5000, 5800, 6200, 5500, 5200],
+            borderColor: '#C9CDD4',
+            borderDash: [5, 5],
+            backgroundColor: 'transparent',
+            tension: 0.4,
+            fill: false
+          }
+        ]
       },
-      plugins: {
-        legend: {
-          position: 'top',
-          align: 'end',
-          labels: {
-            boxWidth: 10,
-            usePointStyle: true,
-            pointStyle: 'circle'
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
+        plugins: {
+          legend: {
+            position: 'top',
+            align: 'end',
+            labels: {
+              boxWidth: 10,
+              usePointStyle: true,
+              pointStyle: 'circle'
+            }
+          },
+          tooltip: {
+            padding: 10,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)'
           }
         },
-        tooltip: {
-          padding: 10,
-          backgroundColor: 'rgba(0, 0, 0, 0.7)'
-        }
-      },
-      scales: {
-        x: {
-          grid: {
-            display: false
-          }
-        },
-        y: {
-          beginAtZero: true,
-          ticks: {
-            callback: function(value) {
-              return '¥' + value;
+        scales: {
+          x: {
+            grid: {
+              display: false
+            }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) {
+                return '¥' + value;
+              }
             }
           }
+        },
+        animation: {
+          duration: 1500,
+          easing: 'easeOutQuart'
         }
-      },
-      animation: {
-        duration: 1500,
-        easing: 'easeOutQuart'
       }
-    }
-  });
-  
+    });
+  }
+
   // 订单与客流对比图
   const ordersCustomersCtx = document.getElementById('ordersCustomersChart') as HTMLCanvasElement;
-  new Chart(ordersCustomersCtx, {
-    type: 'bar',
-    data: {
-      labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
-      datasets: [
-        {
-          label: '订单数',
-          data: [320, 280, 350, 420, 580, 650, 520],
-          backgroundColor: '#165DFF',
-          borderRadius: 4
-        },
-        {
-          label: '客流量',
-          data: [850, 750, 920, 1100, 1500, 1700, 1350],
-          backgroundColor: '#36CFC9',
-          borderRadius: 4
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'top',
-          align: 'end',
-          labels: {
-            boxWidth: 10,
-            usePointStyle: true
+  if (ordersCustomersCtx) {
+    ordersCustomersChartInstance = new Chart(ordersCustomersCtx.getContext('2d')!, {
+      type: 'bar',
+      data: {
+        labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        datasets: [
+          {
+            label: '订单数',
+            data: [320, 280, 350, 420, 580, 650, 520],
+            backgroundColor: '#165DFF',
+            borderRadius: 4
+          },
+          {
+            label: '客流量',
+            data: [850, 750, 920, 1100, 1500, 1700, 1350],
+            backgroundColor: '#36CFC9',
+            borderRadius: 4
           }
-        }
+        ]
       },
-      scales: {
-        x: {
-          grid: {
-            display: false
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            align: 'end',
+            labels: {
+              boxWidth: 10,
+              usePointStyle: true
+            }
           }
         },
-        y: {
-          beginAtZero: true
+        scales: {
+          x: {
+            grid: {
+              display: false
+            }
+          },
+          y: {
+            beginAtZero: true
+          }
+        },
+        animation: {
+          duration: 1500
         }
-      },
-      animation: {
-        duration: 1500
       }
-    }
-  });
-  
+    });
+  }
+
   // 热销菜品排行图
   const topDishesCtx = document.getElementById('topDishesChart') as HTMLCanvasElement;
-  new Chart(topDishesCtx, {
-    type: 'bar',
-    data: {
-      labels: ['招牌烤鸭', '麻辣香锅', '海鲜炒饭', '水果沙拉', '珍珠奶茶', '水煮鱼', '宫保鸡丁'],
-      datasets: [
-        {
-          label: '销量',
-          data: [1258, 986, 842, 756, 1125, 689, 542],
-          backgroundColor: '#165DFF',
-          borderRadius: 4
-        }
-      ]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false
-        }
+  if (topDishesCtx) {
+    topDishesChartInstance = new Chart(topDishesCtx.getContext('2d')!, {
+      type: 'bar',
+      data: {
+        labels: ['招牌烤鸭', '麻辣香锅', '海鲜炒饭', '水果沙拉', '珍珠奶茶', '水煮鱼', '宫保鸡丁'],
+        datasets: [
+          {
+            label: '销量',
+            data: [1258, 986, 842, 756, 1125, 689, 542],
+            backgroundColor: '#165DFF',
+            borderRadius: 4
+          }
+        ]
       },
-      scales: {
-        x: {
-          beginAtZero: true
-        },
-        y: {
-          grid: {
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
             display: false
           }
+        },
+        scales: {
+          x: {
+            beginAtZero: true
+          },
+          y: {
+            grid: {
+              display: false
+            }
+          }
+        },
+        animation: {
+          duration: 1500
         }
-      },
-      animation: {
-        duration: 1500
       }
-    }
-  });
-  
+    });
+  }
+
   // 支付方式分布图
   const paymentMethodCtx = document.getElementById('paymentMethodChart') as HTMLCanvasElement;
-  new Chart(paymentMethodCtx, {
-    type: 'doughnut',
-    data: {
-      labels: ['微信支付', '支付宝', '现金', '会员支付'],
-      datasets: [
-        {
-          data: [45, 35, 12, 8],
-          backgroundColor: [
-            '#165DFF',
-            '#36CFC9',
-            '#FAAD14',
-            '#722ED1'
-          ],
-          borderWidth: 0,
-          hoverOffset: 5
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      cutout: '70%',
-      plugins: {
-        legend: {
-          position: 'bottom',
-          labels: {
-            padding: 15,
-            boxWidth: 10,
-            usePointStyle: true
+  if (paymentMethodCtx) {
+    paymentMethodChartInstance = new Chart(paymentMethodCtx.getContext('2d')!, {
+      type: 'doughnut',
+      data: {
+        labels: ['微信支付', '支付宝', '现金', '会员支付'],
+        datasets: [
+          {
+            data: [45, 35, 12, 8],
+            backgroundColor: [
+              '#165DFF',
+              '#36CFC9',
+              '#FAAD14',
+              '#722ED1'
+            ],
+            borderWidth: 0,
+            hoverOffset: 5
           }
-        }
+        ]
       },
-      animation: {
-        animateRotate: true,
-        animateScale: true,
-        duration: 1500
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '70%',
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 15,
+              boxWidth: 10,
+              usePointStyle: true
+            }
+          }
+        },
+        animation: {
+          animateRotate: true,
+          animateScale: true,
+          duration: 1500
+        }
       }
-    }
-  });
+    });
+  }
 };
 
 // 监听时间粒度变化，更新图表

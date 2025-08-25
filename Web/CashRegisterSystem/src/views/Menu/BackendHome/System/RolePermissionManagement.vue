@@ -92,6 +92,7 @@
         :default-checked-keys="checkedPermissionIds"
         :props="treeProps"
         ref="permissionTreeRef"
+        check-strictly="true"
         style="max-height: 400px; overflow: auto;"
       />
       <template #footer>
@@ -219,7 +220,6 @@ const currentRole = ref<any>(null)
 const treeProps = { label: 'permission_name', children: 'children' }
 async function assignPermissions(row: any) {
   currentRole.value = row
-  // TODO: 获取当前角色已分配权限
   checkedPermissionIds.value = []
   showPermissionDialog.value = true
   await getAllPermissions(currentRole.value.role_id).then((res: any) => {
@@ -238,9 +238,13 @@ async function assignPermissions(row: any) {
           isselect :item1.isselect, 
         })) || []
       }));
-      checkedPermissionIds.value =getCheckedPermissionIds(permissionTree.value)
+      checkedPermissionIds.value = getCheckedPermissionIds(permissionTree.value)
     }
   });
+  await nextTick();
+  if (permissionTreeRef.value) {
+    permissionTreeRef.value.setCheckedKeys(checkedPermissionIds.value, false);
+  }
 }
 
 function getCheckedPermissionIds(tree:any[]) {
@@ -255,6 +259,7 @@ function getCheckedPermissionIds(tree:any[]) {
       result = result.concat(getCheckedPermissionIds(item.children));
     }
   });
+  console.log('Checked Permission IDs:', result);
   return result;
 }
 async function savePermissions() {

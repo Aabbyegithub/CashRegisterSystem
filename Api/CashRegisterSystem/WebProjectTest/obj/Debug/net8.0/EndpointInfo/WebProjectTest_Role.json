@@ -105,6 +105,36 @@
         }
       }
     },
+    "/api/Role/GetAllRoleList": {
+      "get": {
+        "tags": [
+          "Role"
+        ],
+        "summary": "获取所有角色",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/sys_roleListApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sys_roleListApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sys_roleListApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Role/GetUserPermissions": {
       "get": {
         "tags": [
@@ -474,6 +504,30 @@
           "count": {
             "type": "integer",
             "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "sys_roleListApiResponse": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "response": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/sys_role"
+            },
             "nullable": true
           }
         },

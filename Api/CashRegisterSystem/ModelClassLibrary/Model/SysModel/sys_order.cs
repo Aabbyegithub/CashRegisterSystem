@@ -66,7 +66,7 @@ namespace MyNamespace
            public byte source_type {get;set;}
 
            /// <summary>
-           /// Desc:状态（1-待支付；2-已下单；3-已完成；4-已取消；5-挂单；6-预订；7-已并如其他订单）
+           /// Desc:状态（1-待支付；2-已下单；3-已完成；4-已取消；5-挂单；6-预订；7-已并如其他订单,8-退款）
            /// Default:
            /// Nullable:False
            /// </summary>           
@@ -176,6 +176,13 @@ namespace MyNamespace
         /// Nullable:False
         /// </summary>   
         public int? reservation_id {get;set;}
+
+        /// <summary>
+        /// Desc:支付方式
+        /// Default:CURRENT_TIMESTAMP
+        /// Nullable:False
+        /// </summary>   
+        public string paymeth {get;set;}
 
 
         [Navigate(NavigateType.OneToOne, nameof(reservation_id), nameof(sys_reservation.reservation_id))]//一对一 

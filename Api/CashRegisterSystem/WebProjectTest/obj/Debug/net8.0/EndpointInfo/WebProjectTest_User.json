@@ -585,6 +585,10 @@
           },
           "store": {
             "$ref": "#/components/schemas/sys_store"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int64"
           }
         },
         "additionalProperties": false

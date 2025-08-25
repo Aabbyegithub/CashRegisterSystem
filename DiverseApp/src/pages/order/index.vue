@@ -106,53 +106,7 @@ if (!UserInfo) {
  const { tableId, storeId,people } = uni.getStorageSync('TableInfo') || {}
 
 // 订单数据
-const orders = ref([
-  {
-    id: 1,
-    tableNumber: 'A01',
-    peopleCount: 6,
-    orderTime: '13:20:10',
-    amount: 376,
-    diningTime: '00:40:05',
-    status: '待支付'
-  },
-  {
-    id: 2,
-    tableNumber: 'A02',
-    peopleCount: 6,
-    orderTime: '12:15:30',
-    amount: 376,
-    diningTime: '00:30:20',
-    status: '已结清'
-  },
-  {
-    id: 3,
-    tableNumber: 'A03',
-    peopleCount: 6,
-    orderTime: '12:15:30',
-    amount: 376,
-    diningTime: '00:30:20',
-    status: '待支付'
-  },
-  {
-    id: 4,
-    tableNumber: '10',
-    peopleCount: 6,
-    orderTime: '12:15:30',
-    amount: 376,
-    diningTime: '00:30:20',
-    status: '待支付'
-  },
-  {
-    id: 5,
-    tableNumber: '12',
-    peopleCount: 6,
-    orderTime: '12:15:30',
-    amount: 376,
-    diningTime: '00:30:20',
-    status: '已结清'
-  }
-])
+const orders = ref<any[]>([])
 
 // 订单操作函数
 const urgeOrder = async (id: number) => {

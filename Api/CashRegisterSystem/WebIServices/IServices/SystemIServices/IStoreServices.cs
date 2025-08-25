@@ -17,7 +17,7 @@ namespace WebIServices.IServices.SystemIServices
         /// </summary>
         /// <returns></returns>
         Task<ApiPageResponse<List<sys_store>>> GetStoreListAsync(string StoreName,string phone,string address, int page, int size, RefAsync<int> count);
-        Task<ApiResponse<List<sys_store>>> GetStoreListAsync();
+        Task<ApiResponse<List<sys_store>>> GetStoreListAsync(int orgId);
         /// <summary>
         /// 添加商店
         /// </summary>

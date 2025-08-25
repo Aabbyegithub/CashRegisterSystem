@@ -71,11 +71,12 @@ namespace WebServiceClass.Services.SystemService
             }
         }
 
-        public async Task<ApiResponse<List<sys_store>>> GetStoreListAsync()
+        public async Task<ApiResponse<List<sys_store>>> GetStoreListAsync(int orgId)
         {
             try
             {
                 var res = await _dal.Db.Queryable<sys_store>()
+                    .WhereIF(orgId != 1,a=>a.store_id == orgId)
                     .ToListAsync();
                 return Success(res,  "商店列表获取成功");
             }
