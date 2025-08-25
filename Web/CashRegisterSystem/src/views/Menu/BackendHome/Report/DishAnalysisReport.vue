@@ -1,8 +1,8 @@
 <template>
   <div class="dish-analysis-container">
-    <div class="page-header">
+    <!-- <div class="page-header">
       <h2 class="page-title">菜品分析报表</h2>
-    </div>
+    </div> -->
     <el-row :gutter="24" class="report-row">
       <!-- 畅销菜品 TOP10 -->
       <el-col :span="12">

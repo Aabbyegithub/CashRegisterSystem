@@ -138,6 +138,21 @@ const routes = [
             name: 'PromotionList',
             component: () => import('../views/Menu/BackendHome/Promotion/PromotionList.vue') 
           },
+                    { 
+            path: 'CoreKPIReport', 
+            name: 'CoreKPIReport',
+            component: () => import('../views/Menu/BackendHome/Report/CoreKPIReport.vue') 
+          },
+                    { 
+            path: 'DishAnalysisReport', 
+            name: 'DishAnalysisReport',
+            component: () => import('../views/Menu/BackendHome/Report/DishAnalysisReport.vue') 
+          },
+                    { 
+            path: 'OperationDecisionReport', 
+            name: 'OperationDecisionReport',
+            component: () => import('../views/Menu/BackendHome/Report/OperationDecisionReport.vue') 
+          },
         ]
        },
     ]

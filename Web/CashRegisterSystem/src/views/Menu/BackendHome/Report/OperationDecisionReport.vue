@@ -1,8 +1,8 @@
 <template>
   <div class="operation-report-container">
-    <div class="page-header">
+    <!-- <div class="page-header">
       <h2 class="page-title">运营决策报表</h2>
-    </div>
+    </div> -->
     <el-row :gutter="24" class="report-row">
       <!-- 服务员绩效 -->
       <el-col :span="8">
