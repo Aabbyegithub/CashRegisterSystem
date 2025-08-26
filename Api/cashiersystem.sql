@@ -11,7 +11,7 @@
  Target Server Version : 80036 (8.0.36)
  File Encoding         : 65001
 
- Date: 20/08/2025 17:26:33
+ Date: 27/08/2025 17:11:05
 */
 
 SET NAMES utf8mb4;
@@ -44,7 +44,7 @@ CREATE TABLE `sys_bill`  (
   INDEX `idx_bill_close_time`(`close_time` ASC) USING BTREE,
   INDEX `idx_bill_invoice`(`invoice_status` ASC) USING BTREE,
   CONSTRAINT `fk_bill_order` FOREIGN KEY (`order_id`) REFERENCES `sys_order` (`order_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '账单表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '账单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_bill
@@ -152,7 +152,7 @@ CREATE TABLE `sys_dish_formula`  (
   CONSTRAINT `fk_formula_dish` FOREIGN KEY (`dish_id`) REFERENCES `sys_dish` (`dish_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `fk_formula_material` FOREIGN KEY (`material_id`) REFERENCES `sys_raw_material` (`material_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_formula_spec` FOREIGN KEY (`spec_id`) REFERENCES `sys_dish_spec` (`spec_id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜品配方表（原材料消耗规则）' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜品配方表（原材料消耗规则）' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_dish_formula
@@ -172,7 +172,7 @@ CREATE TABLE `sys_dish_spec`  (
   PRIMARY KEY (`spec_id`) USING BTREE,
   INDEX `idx_spec_dish`(`dish_id` ASC) USING BTREE,
   CONSTRAINT `fk_spec_dish` FOREIGN KEY (`dish_id`) REFERENCES `sys_dish` (`dish_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜品规格表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜品规格表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_dish_spec
@@ -240,6 +240,23 @@ CREATE TABLE `sys_inventory_loss`  (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for sys_kitchen
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_kitchen`;
+CREATE TABLE `sys_kitchen`  (
+  `id` int NOT NULL,
+  `kitchen_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '厨房名称',
+  `kitchen_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '厨房类型',
+  `kitchen_description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '描述',
+  `store_id` bigint NOT NULL COMMENT '所属门店',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '厨房管理表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_kitchen
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_kitchen_order
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_kitchen_order`;
@@ -253,7 +270,7 @@ CREATE TABLE `sys_kitchen_order`  (
   `quantity` int NOT NULL DEFAULT 1 COMMENT '数量',
   `cooking_require` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '烹饪要求',
   `kitchen_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '目标厨房（热菜/凉菜/饮品）',
-  `status` tinyint NOT NULL DEFAULT 1 COMMENT '状态（1-待制作；2-制作中；3-已完成；4-已取餐）',
+  `status` tinyint NOT NULL DEFAULT 1 COMMENT '状态（1-待制作；2-制作中；3-已完成；4-已取餐；5-已退菜）',
   `create_time` datetime NOT NULL COMMENT '派单时间',
   `finish_time` datetime NULL DEFAULT NULL COMMENT '完成时间',
   `pick_time` datetime NULL DEFAULT NULL COMMENT '取餐时间',
@@ -350,7 +367,7 @@ CREATE TABLE `sys_operationlog`  (
   `UpTime` datetime NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`Id`) USING BTREE,
   INDEX `index`(`UserId` ASC, `ActionType` ASC, `ModuleName` ASC, `OrgId` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 565 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统操作日志' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 896 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统操作日志' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_operationlog
@@ -919,6 +936,337 @@ INSERT INTO `sys_operationlog` VALUES (561, 2, 11, '账号登出', '人员退出
 INSERT INTO `sys_operationlog` VALUES (562, 6, 10, '系统登陆', '人员登陆', '2025-08-20 16:20:02', '账号：lq,员工姓名：lq', 2, 6, '2025-08-20 16:20:02', 6, '2025-08-20 16:20:02');
 INSERT INTO `sys_operationlog` VALUES (563, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-20 16:21:05', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-20 16:21:05', 6, '2025-08-20 16:21:05');
 INSERT INTO `sys_operationlog` VALUES (564, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-20 16:21:12', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-20 16:21:12', 6, '2025-08-20 16:21:12');
+INSERT INTO `sys_operationlog` VALUES (565, 6, 10, '系统登陆', '人员登陆', '2025-08-21 09:48:45', '账号：lq,员工姓名：lq', 2, 6, '2025-08-21 09:48:45', 6, '2025-08-21 09:48:45');
+INSERT INTO `sys_operationlog` VALUES (566, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 09:48:48', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 09:48:48', 6, '2025-08-21 09:48:48');
+INSERT INTO `sys_operationlog` VALUES (567, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 09:49:20', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 09:49:20', 6, '2025-08-21 09:49:20');
+INSERT INTO `sys_operationlog` VALUES (568, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 09:49:51', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 09:49:51', 6, '2025-08-21 09:49:51');
+INSERT INTO `sys_operationlog` VALUES (569, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 09:49:55', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 09:49:55', 6, '2025-08-21 09:49:55');
+INSERT INTO `sys_operationlog` VALUES (570, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 09:50:21', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 09:50:21', 6, '2025-08-21 09:50:21');
+INSERT INTO `sys_operationlog` VALUES (571, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 09:50:24', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 09:50:24', 6, '2025-08-21 09:50:24');
+INSERT INTO `sys_operationlog` VALUES (572, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 09:51:27', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 09:51:27', 6, '2025-08-21 09:51:27');
+INSERT INTO `sys_operationlog` VALUES (573, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 09:54:52', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 09:54:52', 6, '2025-08-21 09:54:52');
+INSERT INTO `sys_operationlog` VALUES (574, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 09:55:12', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 09:55:12', 6, '2025-08-21 09:55:12');
+INSERT INTO `sys_operationlog` VALUES (575, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 09:55:18', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 09:55:18', 6, '2025-08-21 09:55:18');
+INSERT INTO `sys_operationlog` VALUES (576, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 09:55:25', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 09:55:25', 6, '2025-08-21 09:55:25');
+INSERT INTO `sys_operationlog` VALUES (577, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 09:55:53', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 09:55:53', 6, '2025-08-21 09:55:53');
+INSERT INTO `sys_operationlog` VALUES (578, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 09:55:59', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 09:55:59', 6, '2025-08-21 09:55:59');
+INSERT INTO `sys_operationlog` VALUES (579, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 09:56:36', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 09:56:36', 6, '2025-08-21 09:56:36');
+INSERT INTO `sys_operationlog` VALUES (580, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 10:07:34', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:07:34', 6, '2025-08-21 10:07:34');
+INSERT INTO `sys_operationlog` VALUES (581, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 10:07:42', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:07:42', 6, '2025-08-21 10:07:42');
+INSERT INTO `sys_operationlog` VALUES (582, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 10:07:46', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:07:46', 6, '2025-08-21 10:07:46');
+INSERT INTO `sys_operationlog` VALUES (583, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 10:07:49', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:07:49', 6, '2025-08-21 10:07:49');
+INSERT INTO `sys_operationlog` VALUES (584, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 10:10:27', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:10:27', 6, '2025-08-21 10:10:27');
+INSERT INTO `sys_operationlog` VALUES (585, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-21 10:11:07', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:11:07', 6, '2025-08-21 10:11:07');
+INSERT INTO `sys_operationlog` VALUES (586, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-21 10:14:22', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:14:22', 6, '2025-08-21 10:14:22');
+INSERT INTO `sys_operationlog` VALUES (587, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-21 10:14:43', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:14:43', 6, '2025-08-21 10:14:43');
+INSERT INTO `sys_operationlog` VALUES (588, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-21 10:14:58', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:14:58', 6, '2025-08-21 10:14:58');
+INSERT INTO `sys_operationlog` VALUES (589, 6, 1, '系统设置>角色管理', '修改桌台', '2025-08-21 10:16:34', '{\"sys_Table\":{\"table_id\":1,\"store_id\":2,\"table_no\":\"A01\",\"capacity\":4,\"table_type\":null,\"status\":1,\"min_consumption\":0.0,\"created_at\":\"0001-01-01T00:00:00\",\"updated_at\":\"0001-01-01T00:00:00\",\"order_id\":null,\"order\":null,\"desc\":\"四人桌（一楼大厅）\"}}', 2, 6, '2025-08-21 10:16:34', 6, '2025-08-21 10:16:34');
+INSERT INTO `sys_operationlog` VALUES (590, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-21 10:16:34', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:16:34', 6, '2025-08-21 10:16:34');
+INSERT INTO `sys_operationlog` VALUES (591, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-21 10:16:37', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:16:37', 6, '2025-08-21 10:16:37');
+INSERT INTO `sys_operationlog` VALUES (592, 6, 1, '系统设置>角色管理', '修改桌台', '2025-08-21 10:17:19', '{\"sys_Table\":{\"table_id\":1,\"store_id\":2,\"table_no\":\"A01\",\"capacity\":4,\"table_type\":null,\"status\":1,\"min_consumption\":0.0,\"created_at\":\"0001-01-01T00:00:00\",\"updated_at\":\"0001-01-01T00:00:00\",\"order_id\":null,\"order\":null,\"desc\":\"四人桌（一楼大厅）\"}}', 2, 6, '2025-08-21 10:17:19', 6, '2025-08-21 10:17:19');
+INSERT INTO `sys_operationlog` VALUES (593, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-21 10:17:19', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:17:19', 6, '2025-08-21 10:17:19');
+INSERT INTO `sys_operationlog` VALUES (594, 6, 1, '系统设置>角色管理', '修改桌台', '2025-08-21 10:18:23', '{\"sys_Table\":{\"table_id\":1,\"store_id\":2,\"table_no\":\"A01\",\"capacity\":4,\"table_type\":null,\"status\":1,\"min_consumption\":0.0,\"created_at\":\"0001-01-01T00:00:00\",\"updated_at\":\"0001-01-01T00:00:00\",\"order_id\":null,\"order\":null,\"desc\":\"四人桌（一楼大厅）\"}}', 2, 6, '2025-08-21 10:18:23', 6, '2025-08-21 10:18:23');
+INSERT INTO `sys_operationlog` VALUES (595, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-21 10:18:23', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:18:23', 6, '2025-08-21 10:18:23');
+INSERT INTO `sys_operationlog` VALUES (596, 6, 10, '系统登陆', '人员登陆', '2025-08-21 10:18:59', '账号：lq,员工姓名：lq', 2, 6, '2025-08-21 10:18:59', 6, '2025-08-21 10:18:59');
+INSERT INTO `sys_operationlog` VALUES (597, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 10:19:02', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:19:02', 6, '2025-08-21 10:19:02');
+INSERT INTO `sys_operationlog` VALUES (598, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-21 10:19:06', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:19:06', 6, '2025-08-21 10:19:06');
+INSERT INTO `sys_operationlog` VALUES (599, 6, 1, '系统设置>角色管理', '修改桌台', '2025-08-21 10:19:11', '{\"sys_Table\":{\"table_id\":1,\"store_id\":2,\"table_no\":\"A01\",\"capacity\":4,\"table_type\":null,\"status\":1,\"min_consumption\":0.0,\"created_at\":\"0001-01-01T00:00:00\",\"updated_at\":\"0001-01-01T00:00:00\",\"order_id\":null,\"desc\":\"四人桌（一楼大厅）\",\"order\":null}}', 2, 6, '2025-08-21 10:19:11', 6, '2025-08-21 10:19:11');
+INSERT INTO `sys_operationlog` VALUES (600, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-21 10:19:12', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:19:12', 6, '2025-08-21 10:19:12');
+INSERT INTO `sys_operationlog` VALUES (601, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-21 10:19:14', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:19:14', 6, '2025-08-21 10:19:14');
+INSERT INTO `sys_operationlog` VALUES (602, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-21 10:19:14', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:19:14', 6, '2025-08-21 10:19:14');
+INSERT INTO `sys_operationlog` VALUES (603, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-21 10:19:15', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:19:15', 6, '2025-08-21 10:19:15');
+INSERT INTO `sys_operationlog` VALUES (604, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 10:19:18', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:19:18', 6, '2025-08-21 10:19:18');
+INSERT INTO `sys_operationlog` VALUES (605, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-21 10:19:18', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:19:18', 6, '2025-08-21 10:19:18');
+INSERT INTO `sys_operationlog` VALUES (606, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-21 10:19:22', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:19:22', 6, '2025-08-21 10:19:22');
+INSERT INTO `sys_operationlog` VALUES (607, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 10:19:34', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 10:19:34', 6, '2025-08-21 10:19:34');
+INSERT INTO `sys_operationlog` VALUES (608, 6, 10, '系统登陆', '人员登陆', '2025-08-21 11:14:47', '账号：lq,员工姓名：lq', 2, 6, '2025-08-21 11:14:47', 6, '2025-08-21 11:14:47');
+INSERT INTO `sys_operationlog` VALUES (609, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-21 11:14:50', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 11:14:50', 6, '2025-08-21 11:14:50');
+INSERT INTO `sys_operationlog` VALUES (610, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-21 11:42:00', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-21 11:42:00', 6, '2025-08-21 11:42:00');
+INSERT INTO `sys_operationlog` VALUES (611, 6, 10, '系统登陆', '人员登陆', '2025-08-22 09:12:08', '账号：lq,员工姓名：lq', 2, 6, '2025-08-22 09:12:08', 6, '2025-08-22 09:12:08');
+INSERT INTO `sys_operationlog` VALUES (612, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 09:12:11', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 09:12:11', 6, '2025-08-22 09:12:11');
+INSERT INTO `sys_operationlog` VALUES (613, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 09:12:51', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 09:12:51', 6, '2025-08-22 09:12:51');
+INSERT INTO `sys_operationlog` VALUES (614, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 09:14:21', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 09:14:21', 6, '2025-08-22 09:14:21');
+INSERT INTO `sys_operationlog` VALUES (615, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 09:15:48', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 09:15:48', 6, '2025-08-22 09:15:48');
+INSERT INTO `sys_operationlog` VALUES (616, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 09:16:10', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 09:16:10', 6, '2025-08-22 09:16:10');
+INSERT INTO `sys_operationlog` VALUES (617, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 09:24:12', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 09:24:12', 6, '2025-08-22 09:24:12');
+INSERT INTO `sys_operationlog` VALUES (618, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 09:25:22', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 09:25:22', 6, '2025-08-22 09:25:22');
+INSERT INTO `sys_operationlog` VALUES (619, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 09:26:28', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 09:26:28', 6, '2025-08-22 09:26:28');
+INSERT INTO `sys_operationlog` VALUES (620, 6, 10, '系统登陆', '人员登陆', '2025-08-22 11:14:34', '账号：lq,员工姓名：lq', 2, 6, '2025-08-22 11:14:34', 6, '2025-08-22 11:14:34');
+INSERT INTO `sys_operationlog` VALUES (621, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 11:14:37', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 11:14:37', 6, '2025-08-22 11:14:37');
+INSERT INTO `sys_operationlog` VALUES (622, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 11:31:12', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 11:31:12', 6, '2025-08-22 11:31:12');
+INSERT INTO `sys_operationlog` VALUES (623, 6, 4, '订单管理', '获取订单明细', '2025-08-22 11:31:36', '{\"orderId\":5}', 2, 6, '2025-08-22 11:31:36', 6, '2025-08-22 11:31:36');
+INSERT INTO `sys_operationlog` VALUES (624, 6, 4, '订单管理', '获取订单明细', '2025-08-22 11:31:55', '{\"orderId\":5}', 2, 6, '2025-08-22 11:31:55', 6, '2025-08-22 11:31:55');
+INSERT INTO `sys_operationlog` VALUES (625, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 11:31:55', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 11:31:55', 6, '2025-08-22 11:31:55');
+INSERT INTO `sys_operationlog` VALUES (626, 6, 4, '订单管理', '获取订单明细', '2025-08-22 11:31:57', '{\"orderId\":5}', 2, 6, '2025-08-22 11:31:57', 6, '2025-08-22 11:31:57');
+INSERT INTO `sys_operationlog` VALUES (627, 6, 4, '订单管理', '获取订单明细', '2025-08-22 11:34:20', '{\"orderId\":5}', 2, 6, '2025-08-22 11:34:20', 6, '2025-08-22 11:34:20');
+INSERT INTO `sys_operationlog` VALUES (628, 6, 4, '订单管理', '获取订单明细', '2025-08-22 11:34:55', '{\"orderId\":5}', 2, 6, '2025-08-22 11:34:55', 6, '2025-08-22 11:34:55');
+INSERT INTO `sys_operationlog` VALUES (629, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-22 11:35:08', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 11:35:08', 6, '2025-08-22 11:35:08');
+INSERT INTO `sys_operationlog` VALUES (630, 6, 1, '系统设置>角色管理', '修改桌台', '2025-08-22 11:35:18', '{\"sys_Table\":{\"table_id\":3,\"store_id\":2,\"table_no\":\"B01\",\"capacity\":6,\"table_type\":null,\"status\":2,\"min_consumption\":0.0,\"created_at\":\"0001-01-01T00:00:00\",\"updated_at\":\"0001-01-01T00:00:00\",\"order_id\":null,\"desc\":\"四人桌（一楼大厅）\",\"order\":null}}', 2, 6, '2025-08-22 11:35:18', 6, '2025-08-22 11:35:18');
+INSERT INTO `sys_operationlog` VALUES (631, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-22 11:35:18', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 11:35:18', 6, '2025-08-22 11:35:18');
+INSERT INTO `sys_operationlog` VALUES (632, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 11:35:20', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 11:35:20', 6, '2025-08-22 11:35:20');
+INSERT INTO `sys_operationlog` VALUES (633, 6, 4, '订单管理', '获取订单明细', '2025-08-22 11:35:21', '{\"orderId\":5}', 2, 6, '2025-08-22 11:35:21', 6, '2025-08-22 11:35:21');
+INSERT INTO `sys_operationlog` VALUES (634, 6, 4, '订单管理', '获取订单明细', '2025-08-22 11:41:42', '{\"orderId\":5}', 2, 6, '2025-08-22 11:41:42', 6, '2025-08-22 11:41:42');
+INSERT INTO `sys_operationlog` VALUES (635, 6, 4, '订单管理', '获取订单明细', '2025-08-22 11:42:12', '{\"orderId\":5}', 2, 6, '2025-08-22 11:42:12', 6, '2025-08-22 11:42:12');
+INSERT INTO `sys_operationlog` VALUES (636, 6, 4, '订单管理', '获取订单明细', '2025-08-22 11:42:21', '{\"orderId\":5}', 2, 6, '2025-08-22 11:42:21', 6, '2025-08-22 11:42:21');
+INSERT INTO `sys_operationlog` VALUES (637, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 11:42:21', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 11:42:21', 6, '2025-08-22 11:42:21');
+INSERT INTO `sys_operationlog` VALUES (638, 6, 4, '订单管理', '获取订单明细', '2025-08-22 11:42:22', '{\"orderId\":5}', 2, 6, '2025-08-22 11:42:22', 6, '2025-08-22 11:42:22');
+INSERT INTO `sys_operationlog` VALUES (639, 6, 4, '订单管理', '获取订单明细', '2025-08-22 11:42:42', '{\"orderId\":5}', 2, 6, '2025-08-22 11:42:42', 6, '2025-08-22 11:42:42');
+INSERT INTO `sys_operationlog` VALUES (640, 6, 4, '订单管理', '获取订单明细', '2025-08-22 11:44:41', '{\"orderId\":5}', 2, 6, '2025-08-22 11:44:41', 6, '2025-08-22 11:44:41');
+INSERT INTO `sys_operationlog` VALUES (641, 6, 4, '订单管理', '获取订单明细', '2025-08-22 11:47:55', '{\"orderId\":5}', 2, 6, '2025-08-22 11:47:55', 6, '2025-08-22 11:47:55');
+INSERT INTO `sys_operationlog` VALUES (642, 6, 4, '订单管理', '获取订单明细', '2025-08-22 11:49:27', '{\"orderId\":5}', 2, 6, '2025-08-22 11:49:27', 6, '2025-08-22 11:49:27');
+INSERT INTO `sys_operationlog` VALUES (643, 6, 10, '系统登陆', '人员登陆', '2025-08-22 11:52:19', '账号：lq,员工姓名：lq', 2, 6, '2025-08-22 11:52:19', 6, '2025-08-22 11:52:19');
+INSERT INTO `sys_operationlog` VALUES (644, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 11:52:22', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 11:52:22', 6, '2025-08-22 11:52:22');
+INSERT INTO `sys_operationlog` VALUES (645, 6, 4, '订单管理', '获取订单明细', '2025-08-22 11:52:23', '{\"orderId\":5}', 2, 6, '2025-08-22 11:52:23', 6, '2025-08-22 11:52:23');
+INSERT INTO `sys_operationlog` VALUES (646, 6, 4, '订单管理', '获取订单明细', '2025-08-22 11:53:11', '{\"orderId\":5}', 2, 6, '2025-08-22 11:53:11', 6, '2025-08-22 11:53:11');
+INSERT INTO `sys_operationlog` VALUES (647, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-22 11:54:35', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 11:54:35', 6, '2025-08-22 11:54:35');
+INSERT INTO `sys_operationlog` VALUES (648, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-22 11:54:46', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 11:54:46', 6, '2025-08-22 11:54:46');
+INSERT INTO `sys_operationlog` VALUES (649, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 13:54:02', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 13:54:02', 6, '2025-08-22 13:54:02');
+INSERT INTO `sys_operationlog` VALUES (650, 6, 4, '订单管理', '获取订单明细', '2025-08-22 13:54:04', '{\"orderId\":5}', 2, 6, '2025-08-22 13:54:04', 6, '2025-08-22 13:54:04');
+INSERT INTO `sys_operationlog` VALUES (651, 6, 10, '系统登陆', '人员登陆', '2025-08-22 14:14:17', '账号：lq,员工姓名：lq', 2, 6, '2025-08-22 14:14:17', 6, '2025-08-22 14:14:17');
+INSERT INTO `sys_operationlog` VALUES (652, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 14:14:17', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 14:14:17', 6, '2025-08-22 14:14:17');
+INSERT INTO `sys_operationlog` VALUES (653, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:16:52', '{\"orderId\":5}', 2, 6, '2025-08-22 14:16:52', 6, '2025-08-22 14:16:52');
+INSERT INTO `sys_operationlog` VALUES (654, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:16:56', '{\"orderId\":5}', 2, 6, '2025-08-22 14:16:56', 6, '2025-08-22 14:16:56');
+INSERT INTO `sys_operationlog` VALUES (655, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 14:16:56', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 14:16:56', 6, '2025-08-22 14:16:56');
+INSERT INTO `sys_operationlog` VALUES (656, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:16:58', '{\"orderId\":5}', 2, 6, '2025-08-22 14:16:58', 6, '2025-08-22 14:16:58');
+INSERT INTO `sys_operationlog` VALUES (657, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:17:49', '{\"orderId\":5}', 2, 6, '2025-08-22 14:17:49', 6, '2025-08-22 14:17:49');
+INSERT INTO `sys_operationlog` VALUES (658, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 14:17:49', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 14:17:49', 6, '2025-08-22 14:17:49');
+INSERT INTO `sys_operationlog` VALUES (659, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:17:50', '{\"orderId\":5}', 2, 6, '2025-08-22 14:17:50', 6, '2025-08-22 14:17:50');
+INSERT INTO `sys_operationlog` VALUES (660, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:18:10', '{\"orderId\":5}', 2, 6, '2025-08-22 14:18:10', 6, '2025-08-22 14:18:10');
+INSERT INTO `sys_operationlog` VALUES (661, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 14:18:10', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 14:18:10', 6, '2025-08-22 14:18:10');
+INSERT INTO `sys_operationlog` VALUES (662, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:18:11', '{\"orderId\":5}', 2, 6, '2025-08-22 14:18:11', 6, '2025-08-22 14:18:11');
+INSERT INTO `sys_operationlog` VALUES (663, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:19:12', '{\"orderId\":5}', 2, 6, '2025-08-22 14:19:12', 6, '2025-08-22 14:19:12');
+INSERT INTO `sys_operationlog` VALUES (664, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:19:18', '{\"orderId\":5}', 2, 6, '2025-08-22 14:19:18', 6, '2025-08-22 14:19:18');
+INSERT INTO `sys_operationlog` VALUES (665, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 14:19:18', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 14:19:18', 6, '2025-08-22 14:19:18');
+INSERT INTO `sys_operationlog` VALUES (666, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:19:19', '{\"orderId\":5}', 2, 6, '2025-08-22 14:19:19', 6, '2025-08-22 14:19:19');
+INSERT INTO `sys_operationlog` VALUES (667, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:19:36', '{\"orderId\":5}', 2, 6, '2025-08-22 14:19:36', 6, '2025-08-22 14:19:36');
+INSERT INTO `sys_operationlog` VALUES (668, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 14:19:36', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 14:19:36', 6, '2025-08-22 14:19:36');
+INSERT INTO `sys_operationlog` VALUES (669, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:19:37', '{\"orderId\":5}', 2, 6, '2025-08-22 14:19:37', 6, '2025-08-22 14:19:37');
+INSERT INTO `sys_operationlog` VALUES (670, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:20:54', '{\"orderId\":5}', 2, 6, '2025-08-22 14:20:54', 6, '2025-08-22 14:20:54');
+INSERT INTO `sys_operationlog` VALUES (671, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:21:09', '{\"orderId\":5}', 2, 6, '2025-08-22 14:21:09', 6, '2025-08-22 14:21:09');
+INSERT INTO `sys_operationlog` VALUES (672, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 14:21:09', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 14:21:09', 6, '2025-08-22 14:21:09');
+INSERT INTO `sys_operationlog` VALUES (673, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:21:09', '{\"orderId\":5}', 2, 6, '2025-08-22 14:21:09', 6, '2025-08-22 14:21:09');
+INSERT INTO `sys_operationlog` VALUES (674, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:21:45', '{\"orderId\":5}', 2, 6, '2025-08-22 14:21:45', 6, '2025-08-22 14:21:45');
+INSERT INTO `sys_operationlog` VALUES (675, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:22:11', '{\"orderId\":5}', 2, 6, '2025-08-22 14:22:11', 6, '2025-08-22 14:22:11');
+INSERT INTO `sys_operationlog` VALUES (676, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:22:34', '{\"orderId\":5}', 2, 6, '2025-08-22 14:22:34', 6, '2025-08-22 14:22:34');
+INSERT INTO `sys_operationlog` VALUES (677, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 14:22:34', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 14:22:34', 6, '2025-08-22 14:22:34');
+INSERT INTO `sys_operationlog` VALUES (678, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 14:22:49', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 14:22:49', 6, '2025-08-22 14:22:49');
+INSERT INTO `sys_operationlog` VALUES (679, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:22:53', '{\"orderId\":5}', 2, 6, '2025-08-22 14:22:53', 6, '2025-08-22 14:22:53');
+INSERT INTO `sys_operationlog` VALUES (680, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:23:24', '{\"orderId\":5}', 2, 6, '2025-08-22 14:23:24', 6, '2025-08-22 14:23:24');
+INSERT INTO `sys_operationlog` VALUES (681, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:23:27', '{\"orderId\":5}', 2, 6, '2025-08-22 14:23:27', 6, '2025-08-22 14:23:27');
+INSERT INTO `sys_operationlog` VALUES (682, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 14:23:28', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 14:23:28', 6, '2025-08-22 14:23:28');
+INSERT INTO `sys_operationlog` VALUES (683, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:23:30', '{\"orderId\":5}', 2, 6, '2025-08-22 14:23:30', 6, '2025-08-22 14:23:30');
+INSERT INTO `sys_operationlog` VALUES (684, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:23:44', '{\"orderId\":5}', 2, 6, '2025-08-22 14:23:44', 6, '2025-08-22 14:23:44');
+INSERT INTO `sys_operationlog` VALUES (685, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 14:23:45', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 14:23:45', 6, '2025-08-22 14:23:45');
+INSERT INTO `sys_operationlog` VALUES (686, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:23:46', '{\"orderId\":5}', 2, 6, '2025-08-22 14:23:46', 6, '2025-08-22 14:23:46');
+INSERT INTO `sys_operationlog` VALUES (687, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-22 14:24:18', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 14:24:18', 6, '2025-08-22 14:24:18');
+INSERT INTO `sys_operationlog` VALUES (688, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 14:39:52', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 14:39:52', 6, '2025-08-22 14:39:52');
+INSERT INTO `sys_operationlog` VALUES (689, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:39:53', '{\"orderId\":5}', 2, 6, '2025-08-22 14:39:53', 6, '2025-08-22 14:39:53');
+INSERT INTO `sys_operationlog` VALUES (690, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 14:47:11', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 14:47:11', 6, '2025-08-22 14:47:11');
+INSERT INTO `sys_operationlog` VALUES (691, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:47:14', '{\"orderId\":5}', 2, 6, '2025-08-22 14:47:14', 6, '2025-08-22 14:47:14');
+INSERT INTO `sys_operationlog` VALUES (692, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:49:09', '{\"orderId\":5}', 2, 6, '2025-08-22 14:49:09', 6, '2025-08-22 14:49:09');
+INSERT INTO `sys_operationlog` VALUES (693, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:49:34', '{\"orderId\":5}', 2, 6, '2025-08-22 14:49:34', 6, '2025-08-22 14:49:34');
+INSERT INTO `sys_operationlog` VALUES (694, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:49:48', '{\"orderId\":5}', 2, 6, '2025-08-22 14:49:48', 6, '2025-08-22 14:49:48');
+INSERT INTO `sys_operationlog` VALUES (695, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:50:33', '{\"orderId\":5}', 2, 6, '2025-08-22 14:50:33', 6, '2025-08-22 14:50:33');
+INSERT INTO `sys_operationlog` VALUES (696, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:52:05', '{\"orderId\":5}', 2, 6, '2025-08-22 14:52:05', 6, '2025-08-22 14:52:05');
+INSERT INTO `sys_operationlog` VALUES (697, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:53:12', '{\"orderId\":5}', 2, 6, '2025-08-22 14:53:12', 6, '2025-08-22 14:53:12');
+INSERT INTO `sys_operationlog` VALUES (698, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:53:54', '{\"orderId\":5}', 2, 6, '2025-08-22 14:53:54', 6, '2025-08-22 14:53:54');
+INSERT INTO `sys_operationlog` VALUES (699, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 14:54:36', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 14:54:36', 6, '2025-08-22 14:54:36');
+INSERT INTO `sys_operationlog` VALUES (700, 6, 4, '订单管理', '获取订单明细', '2025-08-22 14:54:38', '{\"orderId\":5}', 2, 6, '2025-08-22 14:54:38', 6, '2025-08-22 14:54:38');
+INSERT INTO `sys_operationlog` VALUES (701, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 14:54:39', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 14:54:39', 6, '2025-08-22 14:54:39');
+INSERT INTO `sys_operationlog` VALUES (702, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 15:04:09', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 15:04:09', 6, '2025-08-22 15:04:09');
+INSERT INTO `sys_operationlog` VALUES (703, 6, 4, '订单管理', '获取订单明细', '2025-08-22 15:04:10', '{\"orderId\":5}', 2, 6, '2025-08-22 15:04:10', 6, '2025-08-22 15:04:10');
+INSERT INTO `sys_operationlog` VALUES (704, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 15:27:47', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 15:27:47', 6, '2025-08-22 15:27:47');
+INSERT INTO `sys_operationlog` VALUES (705, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 15:29:14', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 15:29:14', 6, '2025-08-22 15:29:14');
+INSERT INTO `sys_operationlog` VALUES (706, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-22 15:31:52', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 15:31:52', 6, '2025-08-22 15:31:52');
+INSERT INTO `sys_operationlog` VALUES (707, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-22 15:37:36', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 15:37:36', 6, '2025-08-22 15:37:36');
+INSERT INTO `sys_operationlog` VALUES (708, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-22 15:38:55', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 15:38:55', 6, '2025-08-22 15:38:55');
+INSERT INTO `sys_operationlog` VALUES (709, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-22 15:48:14', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 15:48:14', 6, '2025-08-22 15:48:14');
+INSERT INTO `sys_operationlog` VALUES (710, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 15:52:34', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 15:52:34', 6, '2025-08-22 15:52:34');
+INSERT INTO `sys_operationlog` VALUES (711, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 15:52:45', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 15:52:45', 6, '2025-08-22 15:52:45');
+INSERT INTO `sys_operationlog` VALUES (712, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 15:55:36', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 15:55:36', 6, '2025-08-22 15:55:36');
+INSERT INTO `sys_operationlog` VALUES (713, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 15:55:52', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 15:55:52', 6, '2025-08-22 15:55:52');
+INSERT INTO `sys_operationlog` VALUES (714, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 15:56:01', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 15:56:01', 6, '2025-08-22 15:56:01');
+INSERT INTO `sys_operationlog` VALUES (715, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 15:57:38', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 15:57:38', 6, '2025-08-22 15:57:38');
+INSERT INTO `sys_operationlog` VALUES (716, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 15:57:40', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 15:57:40', 6, '2025-08-22 15:57:40');
+INSERT INTO `sys_operationlog` VALUES (717, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 15:58:23', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 15:58:23', 6, '2025-08-22 15:58:23');
+INSERT INTO `sys_operationlog` VALUES (718, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 15:58:27', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 15:58:27', 6, '2025-08-22 15:58:27');
+INSERT INTO `sys_operationlog` VALUES (719, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 15:58:31', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 15:58:31', 6, '2025-08-22 15:58:31');
+INSERT INTO `sys_operationlog` VALUES (720, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 16:00:19', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 16:00:19', 6, '2025-08-22 16:00:19');
+INSERT INTO `sys_operationlog` VALUES (721, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 16:00:39', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 16:00:39', 6, '2025-08-22 16:00:39');
+INSERT INTO `sys_operationlog` VALUES (722, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 16:01:09', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 16:01:09', 6, '2025-08-22 16:01:09');
+INSERT INTO `sys_operationlog` VALUES (723, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 16:01:14', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 16:01:14', 6, '2025-08-22 16:01:14');
+INSERT INTO `sys_operationlog` VALUES (724, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-22 16:01:26', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 16:01:26', 6, '2025-08-22 16:01:26');
+INSERT INTO `sys_operationlog` VALUES (725, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-22 16:01:28', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 16:01:28', 6, '2025-08-22 16:01:28');
+INSERT INTO `sys_operationlog` VALUES (726, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-22 16:01:28', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 16:01:28', 6, '2025-08-22 16:01:28');
+INSERT INTO `sys_operationlog` VALUES (727, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-22 16:01:29', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 16:01:29', 6, '2025-08-22 16:01:29');
+INSERT INTO `sys_operationlog` VALUES (728, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-22 16:01:35', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 16:01:35', 6, '2025-08-22 16:01:35');
+INSERT INTO `sys_operationlog` VALUES (729, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-22 16:01:45', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 16:01:45', 6, '2025-08-22 16:01:45');
+INSERT INTO `sys_operationlog` VALUES (730, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 16:13:59', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 16:13:59', 6, '2025-08-22 16:13:59');
+INSERT INTO `sys_operationlog` VALUES (731, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 16:22:43', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 16:22:43', 6, '2025-08-22 16:22:43');
+INSERT INTO `sys_operationlog` VALUES (732, 6, 4, '订单管理', '获取订单明细', '2025-08-22 16:22:45', '{\"orderId\":5}', 2, 6, '2025-08-22 16:22:45', 6, '2025-08-22 16:22:45');
+INSERT INTO `sys_operationlog` VALUES (733, 6, 4, '系统设置>角色管理', '菜品分类管理查询', '2025-08-22 16:45:47', '{\"name\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 16:45:47', 6, '2025-08-22 16:45:47');
+INSERT INTO `sys_operationlog` VALUES (734, 6, 10, '系统登陆', '人员登陆', '2025-08-22 17:04:17', '账号：lq,员工姓名：lq', 2, 6, '2025-08-22 17:04:17', 6, '2025-08-22 17:04:17');
+INSERT INTO `sys_operationlog` VALUES (735, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 17:04:17', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 17:04:17', 6, '2025-08-22 17:04:17');
+INSERT INTO `sys_operationlog` VALUES (736, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-22 17:04:21', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 17:04:21', 6, '2025-08-22 17:04:21');
+INSERT INTO `sys_operationlog` VALUES (737, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-22 17:22:40', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 17:22:40', 6, '2025-08-22 17:22:40');
+INSERT INTO `sys_operationlog` VALUES (738, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-22 17:28:25', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-22 17:28:25', 6, '2025-08-22 17:28:25');
+INSERT INTO `sys_operationlog` VALUES (739, 6, 10, '系统登陆', '人员登陆', '2025-08-25 08:51:34', '账号：lq,员工姓名：lq', 2, 6, '2025-08-25 08:51:34', 6, '2025-08-25 08:51:34');
+INSERT INTO `sys_operationlog` VALUES (740, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 08:51:37', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 08:51:37', 6, '2025-08-25 08:51:37');
+INSERT INTO `sys_operationlog` VALUES (741, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 08:51:44', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 08:51:44', 6, '2025-08-25 08:51:44');
+INSERT INTO `sys_operationlog` VALUES (742, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 08:53:31', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 2, 6, '2025-08-25 08:53:31', 6, '2025-08-25 08:53:31');
+INSERT INTO `sys_operationlog` VALUES (743, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 08:54:15', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 2, 6, '2025-08-25 08:54:15', 6, '2025-08-25 08:54:15');
+INSERT INTO `sys_operationlog` VALUES (744, 6, 4, '系统设置>角色管理', '菜品分类管理查询', '2025-08-25 08:54:17', '{\"name\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 08:54:17', 6, '2025-08-25 08:54:17');
+INSERT INTO `sys_operationlog` VALUES (745, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 09:19:55', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 2, 6, '2025-08-25 09:19:55', 6, '2025-08-25 09:19:55');
+INSERT INTO `sys_operationlog` VALUES (746, 6, 4, '系统设置>角色管理', '菜品分类管理查询', '2025-08-25 09:20:06', '{\"name\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 09:20:06', 6, '2025-08-25 09:20:06');
+INSERT INTO `sys_operationlog` VALUES (747, 6, 4, '系统设置>角色管理', '菜品分类管理查询', '2025-08-25 09:23:38', '{\"name\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 09:23:38', 6, '2025-08-25 09:23:38');
+INSERT INTO `sys_operationlog` VALUES (748, 2, 10, '系统登陆', '人员登陆', '2025-08-25 10:03:11', '账号：admin,员工姓名：管理员', 1, 2, '2025-08-25 10:03:11', 2, '2025-08-25 10:03:11');
+INSERT INTO `sys_operationlog` VALUES (749, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 10:03:18', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 10:03:18', 2, '2025-08-25 10:03:18');
+INSERT INTO `sys_operationlog` VALUES (750, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 10:03:48', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 10:03:48', 2, '2025-08-25 10:03:48');
+INSERT INTO `sys_operationlog` VALUES (751, 2, 1, '系统设置>角色管理', '修改角色权限', '2025-08-25 10:04:01', '{\"roleId\":3,\"permissionIds\":[1,13,2,14,15,16,3,18,19,4,20,21,22,23,5,24,25,26,27,6,28,29,52,7,30,31,32,33,8,34,35,36,37,9,38,39,40,10,41,42,43,11,44,45,46,47]}', 1, 2, '2025-08-25 10:04:01', 2, '2025-08-25 10:04:01');
+INSERT INTO `sys_operationlog` VALUES (752, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 10:04:05', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 10:04:05', 2, '2025-08-25 10:04:05');
+INSERT INTO `sys_operationlog` VALUES (753, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 10:04:15', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 10:04:15', 2, '2025-08-25 10:04:15');
+INSERT INTO `sys_operationlog` VALUES (754, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 10:14:18', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 10:14:18', 2, '2025-08-25 10:14:18');
+INSERT INTO `sys_operationlog` VALUES (755, 2, 1, '系统设置>角色管理', '修改角色权限', '2025-08-25 10:16:25', '{\"roleId\":1,\"permissionIds\":[1,13,2,14,15,16,3,18,19,4,20,21,22,23,5,24,25,26,27,6,28,29,52,7,30,31,32,33,8,34,35,36,37,9,38,39,40,10,41,42,43,11,44,45,46,47,12,48,49,50,51]}', 1, 2, '2025-08-25 10:16:25', 2, '2025-08-25 10:16:25');
+INSERT INTO `sys_operationlog` VALUES (756, 2, 1, '系统设置>角色管理', '修改角色权限', '2025-08-25 10:16:31', '{\"roleId\":3,\"permissionIds\":[1,13,2,14,15,16,3,18,19,4,20,21,22,23,5,24,25,26,27,28,29,7,30,31,32,33,8,34,35,36,37,9,38,39,40,10,41,42,43,11,44,45,46,47,12,48,49,50,51,6]}', 1, 2, '2025-08-25 10:16:31', 2, '2025-08-25 10:16:31');
+INSERT INTO `sys_operationlog` VALUES (757, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 10:16:44', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 10:16:44', 2, '2025-08-25 10:16:44');
+INSERT INTO `sys_operationlog` VALUES (758, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 10:16:49', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 10:16:49', 2, '2025-08-25 10:16:49');
+INSERT INTO `sys_operationlog` VALUES (759, 2, 10, '系统登陆', '人员登陆', '2025-08-25 10:30:27', '账号：admin,员工姓名：管理员', 1, 2, '2025-08-25 10:30:27', 2, '2025-08-25 10:30:27');
+INSERT INTO `sys_operationlog` VALUES (760, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 10:30:40', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 10:30:40', 2, '2025-08-25 10:30:40');
+INSERT INTO `sys_operationlog` VALUES (761, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 10:31:19', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 10:31:19', 2, '2025-08-25 10:31:19');
+INSERT INTO `sys_operationlog` VALUES (762, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 10:35:11', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 10:35:11', 2, '2025-08-25 10:35:11');
+INSERT INTO `sys_operationlog` VALUES (763, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 10:36:33', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 10:36:33', 2, '2025-08-25 10:36:33');
+INSERT INTO `sys_operationlog` VALUES (764, 2, 10, '系统登陆', '人员登陆', '2025-08-25 10:39:24', '账号：admin,员工姓名：管理员', 1, 2, '2025-08-25 10:39:24', 2, '2025-08-25 10:39:24');
+INSERT INTO `sys_operationlog` VALUES (765, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 10:39:28', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 10:39:28', 2, '2025-08-25 10:39:28');
+INSERT INTO `sys_operationlog` VALUES (766, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 10:41:53', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 10:41:53', 2, '2025-08-25 10:41:53');
+INSERT INTO `sys_operationlog` VALUES (767, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 10:55:34', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 10:55:34', 2, '2025-08-25 10:55:34');
+INSERT INTO `sys_operationlog` VALUES (768, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 10:56:05', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 10:56:05', 2, '2025-08-25 10:56:05');
+INSERT INTO `sys_operationlog` VALUES (769, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 10:56:09', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 10:56:09', 2, '2025-08-25 10:56:09');
+INSERT INTO `sys_operationlog` VALUES (770, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 10:57:15', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 10:57:15', 2, '2025-08-25 10:57:15');
+INSERT INTO `sys_operationlog` VALUES (771, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 10:59:48', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 10:59:48', 2, '2025-08-25 10:59:48');
+INSERT INTO `sys_operationlog` VALUES (772, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 10:59:58', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 10:59:58', 2, '2025-08-25 10:59:58');
+INSERT INTO `sys_operationlog` VALUES (773, 2, 10, '系统登陆', '人员登陆', '2025-08-25 11:00:25', '账号：admin,员工姓名：管理员', 1, 2, '2025-08-25 11:00:25', 2, '2025-08-25 11:00:25');
+INSERT INTO `sys_operationlog` VALUES (774, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 11:00:30', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 11:00:30', 2, '2025-08-25 11:00:30');
+INSERT INTO `sys_operationlog` VALUES (775, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 11:02:13', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 11:02:13', 2, '2025-08-25 11:02:13');
+INSERT INTO `sys_operationlog` VALUES (776, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 11:15:09', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 11:15:09', 2, '2025-08-25 11:15:09');
+INSERT INTO `sys_operationlog` VALUES (777, 2, 1, '系统设置>角色管理', '修改角色权限', '2025-08-25 11:19:24', '{\"roleId\":1,\"permissionIds\":[1,13,2,14,15,16,3,18,19,4,20,21,22,23,5,24,25,26,27,6,28,29,52,7,30,31,32,33,8,34,35,36,37,9,38,39,40,10,41,42,43,11,44,45,46,47,12,48,49,50,51]}', 1, 2, '2025-08-25 11:19:24', 2, '2025-08-25 11:19:24');
+INSERT INTO `sys_operationlog` VALUES (778, 2, 1, '系统设置>角色管理', '修改角色权限', '2025-08-25 11:19:32', '{\"roleId\":3,\"permissionIds\":[1,13,2,14,15,16,3,18,19,4,20,21,22,23,5,24,25,26,27,6,28,29,52,7,30,31,32,33,8,34,35,36,37,9,38,39,40,10,41,42,43,11,44,45,46,47,48,49,50,51]}', 1, 2, '2025-08-25 11:19:32', 2, '2025-08-25 11:19:32');
+INSERT INTO `sys_operationlog` VALUES (779, 2, 11, '账号登出', '人员退出系统', '2025-08-25 11:19:39', '{}', 1, 2, '2025-08-25 11:19:39', 2, '2025-08-25 11:19:39');
+INSERT INTO `sys_operationlog` VALUES (780, 6, 10, '系统登陆', '人员登陆', '2025-08-25 11:19:44', '账号：lq,员工姓名：lq', 2, 6, '2025-08-25 11:19:44', 6, '2025-08-25 11:19:44');
+INSERT INTO `sys_operationlog` VALUES (781, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 11:19:45', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 11:19:45', 6, '2025-08-25 11:19:45');
+INSERT INTO `sys_operationlog` VALUES (782, 6, 10, '系统登陆', '人员登陆', '2025-08-25 11:56:36', '账号：lq,员工姓名：lq', 2, 6, '2025-08-25 11:56:36', 6, '2025-08-25 11:56:36');
+INSERT INTO `sys_operationlog` VALUES (783, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 11:56:39', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 11:56:39', 6, '2025-08-25 11:56:39');
+INSERT INTO `sys_operationlog` VALUES (784, 6, 10, '系统登陆', '人员登陆', '2025-08-25 13:36:40', '账号：lq,员工姓名：lq', 2, 6, '2025-08-25 13:36:40', 6, '2025-08-25 13:36:40');
+INSERT INTO `sys_operationlog` VALUES (785, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 13:36:42', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 13:36:42', 6, '2025-08-25 13:36:42');
+INSERT INTO `sys_operationlog` VALUES (786, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 13:40:59', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 2, 6, '2025-08-25 13:40:59', 6, '2025-08-25 13:40:59');
+INSERT INTO `sys_operationlog` VALUES (787, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 15:16:11', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 15:16:11', 6, '2025-08-25 15:16:11');
+INSERT INTO `sys_operationlog` VALUES (788, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 15:39:11', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 15:39:11', 6, '2025-08-25 15:39:11');
+INSERT INTO `sys_operationlog` VALUES (789, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 15:40:19', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 15:40:19', 6, '2025-08-25 15:40:19');
+INSERT INTO `sys_operationlog` VALUES (790, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 15:40:26', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 2, 6, '2025-08-25 15:40:26', 6, '2025-08-25 15:40:26');
+INSERT INTO `sys_operationlog` VALUES (791, 6, 4, '系统设置>角色管理', '菜品分类管理查询', '2025-08-25 15:40:27', '{\"name\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 15:40:27', 6, '2025-08-25 15:40:27');
+INSERT INTO `sys_operationlog` VALUES (792, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 15:43:16', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 2, 6, '2025-08-25 15:43:16', 6, '2025-08-25 15:43:16');
+INSERT INTO `sys_operationlog` VALUES (793, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 15:43:22', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 15:43:22', 6, '2025-08-25 15:43:22');
+INSERT INTO `sys_operationlog` VALUES (794, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 15:43:30', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 2, 6, '2025-08-25 15:43:30', 6, '2025-08-25 15:43:30');
+INSERT INTO `sys_operationlog` VALUES (795, 6, 4, '系统设置>角色管理', '菜品分类管理查询', '2025-08-25 15:43:32', '{\"name\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 15:43:32', 6, '2025-08-25 15:43:32');
+INSERT INTO `sys_operationlog` VALUES (796, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 15:46:53', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 2, 6, '2025-08-25 15:46:53', 6, '2025-08-25 15:46:53');
+INSERT INTO `sys_operationlog` VALUES (797, 6, 4, '系统设置>角色管理', '菜品分类管理查询', '2025-08-25 15:46:54', '{\"name\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 15:46:54', 6, '2025-08-25 15:46:54');
+INSERT INTO `sys_operationlog` VALUES (798, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 15:51:35', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 2, 6, '2025-08-25 15:51:35', 6, '2025-08-25 15:51:35');
+INSERT INTO `sys_operationlog` VALUES (799, 6, 4, '系统设置>角色管理', '菜品分类管理查询', '2025-08-25 15:51:36', '{\"name\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 15:51:36', 6, '2025-08-25 15:51:36');
+INSERT INTO `sys_operationlog` VALUES (800, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 15:56:21', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 15:56:21', 6, '2025-08-25 15:56:21');
+INSERT INTO `sys_operationlog` VALUES (801, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 15:56:21', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 15:56:21', 6, '2025-08-25 15:56:21');
+INSERT INTO `sys_operationlog` VALUES (802, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 15:56:33', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 15:56:33', 6, '2025-08-25 15:56:33');
+INSERT INTO `sys_operationlog` VALUES (803, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 15:56:46', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 15:56:46', 6, '2025-08-25 15:56:46');
+INSERT INTO `sys_operationlog` VALUES (804, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 15:56:46', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 15:56:46', 6, '2025-08-25 15:56:46');
+INSERT INTO `sys_operationlog` VALUES (805, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 15:58:15', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 15:58:15', 6, '2025-08-25 15:58:15');
+INSERT INTO `sys_operationlog` VALUES (806, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 15:58:15', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 15:58:15', 6, '2025-08-25 15:58:15');
+INSERT INTO `sys_operationlog` VALUES (807, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 15:58:43', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 15:58:43', 6, '2025-08-25 15:58:43');
+INSERT INTO `sys_operationlog` VALUES (808, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:00:41', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:00:41', 6, '2025-08-25 16:00:41');
+INSERT INTO `sys_operationlog` VALUES (809, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:00:41', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:00:41', 6, '2025-08-25 16:00:41');
+INSERT INTO `sys_operationlog` VALUES (810, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:01:22', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:01:22', 6, '2025-08-25 16:01:22');
+INSERT INTO `sys_operationlog` VALUES (811, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:01:31', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:01:31', 6, '2025-08-25 16:01:31');
+INSERT INTO `sys_operationlog` VALUES (812, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:01:31', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:01:31', 6, '2025-08-25 16:01:31');
+INSERT INTO `sys_operationlog` VALUES (813, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:01:45', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:01:45', 6, '2025-08-25 16:01:45');
+INSERT INTO `sys_operationlog` VALUES (814, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:01:52', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:01:52', 6, '2025-08-25 16:01:52');
+INSERT INTO `sys_operationlog` VALUES (815, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:01:52', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:01:52', 6, '2025-08-25 16:01:52');
+INSERT INTO `sys_operationlog` VALUES (816, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:02:24', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:02:24', 6, '2025-08-25 16:02:24');
+INSERT INTO `sys_operationlog` VALUES (817, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:02:43', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:02:43', 6, '2025-08-25 16:02:43');
+INSERT INTO `sys_operationlog` VALUES (818, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:02:46', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:02:46', 6, '2025-08-25 16:02:46');
+INSERT INTO `sys_operationlog` VALUES (819, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:02:51', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:02:51', 6, '2025-08-25 16:02:51');
+INSERT INTO `sys_operationlog` VALUES (820, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:02:51', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:02:51', 6, '2025-08-25 16:02:51');
+INSERT INTO `sys_operationlog` VALUES (821, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:03:41', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:03:41', 6, '2025-08-25 16:03:41');
+INSERT INTO `sys_operationlog` VALUES (822, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:04:38', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:04:38', 6, '2025-08-25 16:04:38');
+INSERT INTO `sys_operationlog` VALUES (823, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:05:05', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:05:05', 6, '2025-08-25 16:05:05');
+INSERT INTO `sys_operationlog` VALUES (824, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:05:15', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:05:15', 6, '2025-08-25 16:05:15');
+INSERT INTO `sys_operationlog` VALUES (825, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:05:15', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:05:15', 6, '2025-08-25 16:05:15');
+INSERT INTO `sys_operationlog` VALUES (826, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:05:28', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:05:28', 6, '2025-08-25 16:05:28');
+INSERT INTO `sys_operationlog` VALUES (827, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:05:28', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:05:28', 6, '2025-08-25 16:05:28');
+INSERT INTO `sys_operationlog` VALUES (828, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:16:01', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:16:01', 6, '2025-08-25 16:16:01');
+INSERT INTO `sys_operationlog` VALUES (829, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:16:01', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:16:01', 6, '2025-08-25 16:16:01');
+INSERT INTO `sys_operationlog` VALUES (830, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:18:34', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:18:34', 6, '2025-08-25 16:18:34');
+INSERT INTO `sys_operationlog` VALUES (831, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:18:40', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:18:40', 6, '2025-08-25 16:18:40');
+INSERT INTO `sys_operationlog` VALUES (832, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:18:40', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:18:40', 6, '2025-08-25 16:18:40');
+INSERT INTO `sys_operationlog` VALUES (833, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:18:42', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:18:42', 6, '2025-08-25 16:18:42');
+INSERT INTO `sys_operationlog` VALUES (834, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:18:42', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:18:42', 6, '2025-08-25 16:18:42');
+INSERT INTO `sys_operationlog` VALUES (835, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:18:42', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:18:42', 6, '2025-08-25 16:18:42');
+INSERT INTO `sys_operationlog` VALUES (836, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:18:44', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:18:44', 6, '2025-08-25 16:18:44');
+INSERT INTO `sys_operationlog` VALUES (837, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:18:44', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:18:44', 6, '2025-08-25 16:18:44');
+INSERT INTO `sys_operationlog` VALUES (838, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:18:44', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:18:44', 6, '2025-08-25 16:18:44');
+INSERT INTO `sys_operationlog` VALUES (839, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:18:46', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:18:46', 6, '2025-08-25 16:18:46');
+INSERT INTO `sys_operationlog` VALUES (840, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:18:46', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:18:46', 6, '2025-08-25 16:18:46');
+INSERT INTO `sys_operationlog` VALUES (841, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:18:46', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:18:46', 6, '2025-08-25 16:18:46');
+INSERT INTO `sys_operationlog` VALUES (842, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:18:53', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:18:53', 6, '2025-08-25 16:18:53');
+INSERT INTO `sys_operationlog` VALUES (843, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:18:53', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:18:53', 6, '2025-08-25 16:18:53');
+INSERT INTO `sys_operationlog` VALUES (844, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:18:53', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:18:53', 6, '2025-08-25 16:18:53');
+INSERT INTO `sys_operationlog` VALUES (845, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:19:01', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:19:01', 6, '2025-08-25 16:19:01');
+INSERT INTO `sys_operationlog` VALUES (846, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:19:01', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:19:01', 6, '2025-08-25 16:19:01');
+INSERT INTO `sys_operationlog` VALUES (847, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:19:01', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:19:01', 6, '2025-08-25 16:19:01');
+INSERT INTO `sys_operationlog` VALUES (848, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:19:37', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:19:37', 6, '2025-08-25 16:19:37');
+INSERT INTO `sys_operationlog` VALUES (849, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:19:37', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:19:37', 6, '2025-08-25 16:19:37');
+INSERT INTO `sys_operationlog` VALUES (850, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:24:25', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:24:25', 6, '2025-08-25 16:24:25');
+INSERT INTO `sys_operationlog` VALUES (851, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:24:25', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:24:25', 6, '2025-08-25 16:24:25');
+INSERT INTO `sys_operationlog` VALUES (852, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:24:29', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:24:29', 6, '2025-08-25 16:24:29');
+INSERT INTO `sys_operationlog` VALUES (853, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:24:29', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:24:29', 6, '2025-08-25 16:24:29');
+INSERT INTO `sys_operationlog` VALUES (854, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:24:29', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:24:29', 6, '2025-08-25 16:24:29');
+INSERT INTO `sys_operationlog` VALUES (855, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:24:31', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:24:31', 6, '2025-08-25 16:24:31');
+INSERT INTO `sys_operationlog` VALUES (856, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:25:18', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:25:18', 6, '2025-08-25 16:25:18');
+INSERT INTO `sys_operationlog` VALUES (857, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:25:18', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:25:18', 6, '2025-08-25 16:25:18');
+INSERT INTO `sys_operationlog` VALUES (858, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:26:30', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:26:30', 6, '2025-08-25 16:26:30');
+INSERT INTO `sys_operationlog` VALUES (859, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:26:30', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:26:30', 6, '2025-08-25 16:26:30');
+INSERT INTO `sys_operationlog` VALUES (860, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:26:40', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:26:40', 6, '2025-08-25 16:26:40');
+INSERT INTO `sys_operationlog` VALUES (861, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:26:40', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:26:40', 6, '2025-08-25 16:26:40');
+INSERT INTO `sys_operationlog` VALUES (862, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:26:40', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:26:40', 6, '2025-08-25 16:26:40');
+INSERT INTO `sys_operationlog` VALUES (863, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:27:32', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:27:32', 6, '2025-08-25 16:27:32');
+INSERT INTO `sys_operationlog` VALUES (864, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:27:32', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:27:32', 6, '2025-08-25 16:27:32');
+INSERT INTO `sys_operationlog` VALUES (865, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:31:39', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:31:39', 6, '2025-08-25 16:31:39');
+INSERT INTO `sys_operationlog` VALUES (866, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:31:39', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:31:39', 6, '2025-08-25 16:31:39');
+INSERT INTO `sys_operationlog` VALUES (867, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:31:52', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:31:52', 6, '2025-08-25 16:31:52');
+INSERT INTO `sys_operationlog` VALUES (868, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 16:31:52', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:31:52', 6, '2025-08-25 16:31:52');
+INSERT INTO `sys_operationlog` VALUES (869, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 16:32:01', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:32:01', 6, '2025-08-25 16:32:01');
+INSERT INTO `sys_operationlog` VALUES (870, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 16:32:03', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:32:03', 6, '2025-08-25 16:32:03');
+INSERT INTO `sys_operationlog` VALUES (871, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 16:32:55', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:32:55', 6, '2025-08-25 16:32:55');
+INSERT INTO `sys_operationlog` VALUES (872, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 16:33:29', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:33:29', 6, '2025-08-25 16:33:29');
+INSERT INTO `sys_operationlog` VALUES (873, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 16:33:34', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:33:34', 6, '2025-08-25 16:33:34');
+INSERT INTO `sys_operationlog` VALUES (874, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 16:33:39', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:33:39', 6, '2025-08-25 16:33:39');
+INSERT INTO `sys_operationlog` VALUES (875, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 16:33:48', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:33:48', 6, '2025-08-25 16:33:48');
+INSERT INTO `sys_operationlog` VALUES (876, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 16:33:54', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:33:54', 6, '2025-08-25 16:33:54');
+INSERT INTO `sys_operationlog` VALUES (877, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 16:34:27', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:34:27', 6, '2025-08-25 16:34:27');
+INSERT INTO `sys_operationlog` VALUES (878, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 16:34:31', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:34:31', 6, '2025-08-25 16:34:31');
+INSERT INTO `sys_operationlog` VALUES (879, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 16:35:03', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:35:03', 6, '2025-08-25 16:35:03');
+INSERT INTO `sys_operationlog` VALUES (880, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 16:35:58', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:35:58', 6, '2025-08-25 16:35:58');
+INSERT INTO `sys_operationlog` VALUES (881, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 16:36:02', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:36:02', 6, '2025-08-25 16:36:02');
+INSERT INTO `sys_operationlog` VALUES (882, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 16:36:16', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:36:16', 6, '2025-08-25 16:36:16');
+INSERT INTO `sys_operationlog` VALUES (883, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 16:36:20', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:36:20', 6, '2025-08-25 16:36:20');
+INSERT INTO `sys_operationlog` VALUES (884, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 16:36:23', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:36:23', 6, '2025-08-25 16:36:23');
+INSERT INTO `sys_operationlog` VALUES (885, 6, 4, '订单管理', '查询未结算订单列表', '2025-08-25 16:36:28', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-08-25 16:36:28', 6, '2025-08-25 16:36:28');
+INSERT INTO `sys_operationlog` VALUES (886, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 17:00:27', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 2, 6, '2025-08-25 17:00:27', 6, '2025-08-25 17:00:27');
+INSERT INTO `sys_operationlog` VALUES (887, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 17:00:27', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 2, 6, '2025-08-25 17:00:27', 6, '2025-08-25 17:00:27');
+INSERT INTO `sys_operationlog` VALUES (888, 6, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-25 17:01:33', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 2, 6, '2025-08-25 17:01:33', 6, '2025-08-25 17:01:33');
+INSERT INTO `sys_operationlog` VALUES (889, 6, 11, '账号登出', '人员退出系统', '2025-08-25 17:06:20', '{}', 2, 6, '2025-08-25 17:06:20', 6, '2025-08-25 17:06:20');
+INSERT INTO `sys_operationlog` VALUES (890, 2, 10, '系统登陆', '人员登陆', '2025-08-25 17:06:26', '账号：admin,员工姓名：管理员', 1, 2, '2025-08-25 17:06:26', 2, '2025-08-25 17:06:26');
+INSERT INTO `sys_operationlog` VALUES (891, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 17:06:31', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 17:06:31', 2, '2025-08-25 17:06:31');
+INSERT INTO `sys_operationlog` VALUES (892, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 17:06:31', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 17:06:31', 2, '2025-08-25 17:06:31');
+INSERT INTO `sys_operationlog` VALUES (893, 2, 1, '系统设置>角色管理', '修改角色权限', '2025-08-25 17:06:38', '{\"roleId\":1,\"permissionIds\":[1,13,2,14,15,16,3,18,19,4,20,21,22,23,5,24,25,26,27,6,28,29,52,7,30,31,32,33,8,34,35,36,37,9,38,40,10,41,42,43,11,44,45,46,47,12,48,49,50,51]}', 1, 2, '2025-08-25 17:06:38', 2, '2025-08-25 17:06:38');
+INSERT INTO `sys_operationlog` VALUES (894, 2, 1, '系统设置>角色管理', '修改角色权限', '2025-08-25 17:06:54', '{\"roleId\":3,\"permissionIds\":[1,13,2,14,15,16,3,18,19,4,20,21,22,23,5,24,25,26,27,6,28,29,52,7,30,31,32,33,8,34,35,36,37,9,38,40,10,41,42,43,11,44,45,46,47,48,49,50,51]}', 1, 2, '2025-08-25 17:06:54', 2, '2025-08-25 17:06:54');
+INSERT INTO `sys_operationlog` VALUES (895, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 17:07:07', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 17:07:07', 2, '2025-08-25 17:07:07');
 
 -- ----------------------------
 -- Table structure for sys_order
@@ -932,7 +1280,7 @@ CREATE TABLE `sys_order`  (
   `member_id` bigint NULL DEFAULT NULL COMMENT '会员ID（可空）',
   `order_type` tinyint NOT NULL COMMENT '类型（1-堂食；2-外卖；3-自提）',
   `source_type` tinyint NOT NULL COMMENT '下单方式（1-服务员端；2-扫码点餐；3-触屏点餐；4-外卖平台）',
-  `status` tinyint NOT NULL COMMENT '状态（1-待支付；2-已下单；3-已完成；4-已取消；5-挂单;6-预定；7-已并如其他订单）',
+  `status` tinyint NOT NULL COMMENT '状态（1-待支付；2-已下单；3-已完成；4-已取消；5-挂单;6-预定；7-已并如其他订单，8-退款）',
   `total_amount` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '订单总金额',
   `discount_amount` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '优惠金额',
   `service_fee` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '服务费',
@@ -948,6 +1296,7 @@ CREATE TABLE `sys_order`  (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `table_capacity` int NULL DEFAULT NULL COMMENT '用餐人数',
   `reservation_id` int NULL DEFAULT NULL COMMENT '预订id',
+  `paymeth` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '支付方式',
   PRIMARY KEY (`order_id`) USING BTREE,
   UNIQUE INDEX `uk_order_no`(`order_no` ASC) USING BTREE,
   INDEX `idx_order_store`(`store_id` ASC) USING BTREE,
@@ -966,7 +1315,7 @@ CREATE TABLE `sys_order`  (
 -- ----------------------------
 -- Records of sys_order
 -- ----------------------------
-INSERT INTO `sys_order` VALUES (5, 2, 3, '202508191429032501685', NULL, 1, 1, 2, 55.00, 0.00, 0.00, 55.00, 0.00, '2025-08-19 14:29:03', NULL, NULL, NULL, 0, 0, '1900-01-01 00:00:00', '2025-08-20 10:47:19', 2, NULL);
+INSERT INTO `sys_order` VALUES (5, 2, 3, '202508191429032501685', NULL, 1, 1, 2, 55.00, 0.00, 0.00, 55.00, 0.00, '2025-08-19 14:29:03', NULL, NULL, NULL, 0, 0, '1900-01-01 00:00:00', '2025-08-20 10:47:19', 2, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_order_item
@@ -1032,7 +1381,7 @@ CREATE TABLE `sys_payment`  (
   INDEX `idx_payment_time`(`pay_time` ASC) USING BTREE,
   INDEX `idx_payment_account`(`store_account_id` ASC) USING BTREE,
   CONSTRAINT `fk_payment_order` FOREIGN KEY (`order_id`) REFERENCES `sys_order` (`order_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付记录表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_payment
@@ -1052,7 +1401,7 @@ CREATE TABLE `sys_permission`  (
   PRIMARY KEY (`permission_id`) USING BTREE,
   UNIQUE INDEX `uk_permission_key`(`permission_key` ASC) USING BTREE,
   INDEX `idx_permission_parent`(`parent_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 52 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 53 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_permission
@@ -1094,7 +1443,6 @@ INSERT INTO `sys_permission` VALUES (35, '储值记录', 'RechargeRecord', 'rech
 INSERT INTO `sys_permission` VALUES (36, '会员权益配置', 'MemberRights', 'member-rights', 8, '/src/assets/会员权益.png');
 INSERT INTO `sys_permission` VALUES (37, '积分商城', 'PointsMall', 'points-mall', 8, '/src/assets/积分商城.png');
 INSERT INTO `sys_permission` VALUES (38, '促销活动列表', 'PromotionList', 'promotion-list', 9, '/src/assets/促销列表.png');
-INSERT INTO `sys_permission` VALUES (39, '创建促销活动', 'CreatePromotion', 'create-promotion', 9, '/src/assets/创建促销.png');
 INSERT INTO `sys_permission` VALUES (40, '优惠券管理', 'CouponManagement', 'coupon-management', 9, '/src/assets/优惠卷管理.png');
 INSERT INTO `sys_permission` VALUES (41, '支付记录', 'PaymentRecord', 'payment-record', 10, '/src/assets/支付记录.png');
 INSERT INTO `sys_permission` VALUES (42, '发票管理', 'InvoiceManagement', 'invoice-management', 10, '/src/assets/发票管理.png');
@@ -1107,6 +1455,7 @@ INSERT INTO `sys_permission` VALUES (48, '员工管理', 'StaffManagement', 'sta
 INSERT INTO `sys_permission` VALUES (49, '角色权限', 'RolePermission', 'role-permission', 12, '/src/assets/角色权限.png');
 INSERT INTO `sys_permission` VALUES (50, '门店设置', 'StoreSetting', 'store-setting', 12, '/src/assets/门店设置.png');
 INSERT INTO `sys_permission` VALUES (51, '数据备份', 'DataBackup', 'data-backup', 12, '/src/assets/数据备份.png');
+INSERT INTO `sys_permission` VALUES (52, '厨房管理', 'KitchenManagement', 'Kitchen-list', 6, '/src/assets/菜品规格.png');
 
 -- ----------------------------
 -- Table structure for sys_promotion
@@ -1159,7 +1508,7 @@ CREATE TABLE `sys_purchase_order`  (
   INDEX `idx_po_status`(`status` ASC) USING BTREE,
   CONSTRAINT `fk_po_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_po_supplier` FOREIGN KEY (`supplier_id`) REFERENCES `sys_supplier` (`supplier_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '采购单表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '采购单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_purchase_order
@@ -1191,7 +1540,7 @@ CREATE TABLE `sys_queue`  (
   INDEX `fk_queue_table`(`table_id` ASC) USING BTREE,
   CONSTRAINT `fk_queue_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_queue_table` FOREIGN KEY (`table_id`) REFERENCES `sys_restaurant_table` (`table_id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '排队叫号表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '排队叫号表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_queue
@@ -1246,7 +1595,7 @@ CREATE TABLE `sys_reservation`  (
   INDEX `idx_reservation_status`(`status` ASC) USING BTREE,
   CONSTRAINT `fk_reservation_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_reservation_table` FOREIGN KEY (`table_id`) REFERENCES `sys_restaurant_table` (`table_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '预订信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '预订信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_reservation
@@ -1267,6 +1616,7 @@ CREATE TABLE `sys_restaurant_table`  (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `order_id` int NULL DEFAULT NULL COMMENT '订单id',
+  `desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '桌台描述',
   PRIMARY KEY (`table_id`) USING BTREE,
   INDEX `idx_table_store`(`store_id` ASC) USING BTREE,
   INDEX `idx_table_status`(`status` ASC) USING BTREE,
@@ -1277,9 +1627,9 @@ CREATE TABLE `sys_restaurant_table`  (
 -- ----------------------------
 -- Records of sys_restaurant_table
 -- ----------------------------
-INSERT INTO `sys_restaurant_table` VALUES (1, 2, 'A01', 4, NULL, 1, 0.00, '1900-01-01 00:00:00', '2025-08-20 10:47:19', NULL);
-INSERT INTO `sys_restaurant_table` VALUES (2, 2, 'A02', 2, NULL, 1, 0.00, '1900-01-01 00:00:00', '1900-01-01 00:00:00', NULL);
-INSERT INTO `sys_restaurant_table` VALUES (3, 2, 'B01', 6, NULL, 2, 0.00, '1900-01-01 00:00:00', '2025-08-20 10:47:19', 5);
+INSERT INTO `sys_restaurant_table` VALUES (1, 2, 'A01', 4, NULL, 1, 0.00, '1900-01-01 00:00:00', '1900-01-01 00:00:00', NULL, '四人桌（一楼大厅）');
+INSERT INTO `sys_restaurant_table` VALUES (2, 2, 'A02', 2, NULL, 1, 0.00, '1900-01-01 00:00:00', '1900-01-01 00:00:00', NULL, NULL);
+INSERT INTO `sys_restaurant_table` VALUES (3, 2, 'B01', 6, NULL, 2, 0.00, '1900-01-01 00:00:00', '1900-01-01 00:00:00', NULL, '四人桌（一楼大厅）');
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -1312,106 +1662,110 @@ CREATE TABLE `sys_role_permission`  (
   INDEX `idx_role_permission_permission`(`permission_id` ASC) USING BTREE,
   CONSTRAINT `fk_role_permission_permission` FOREIGN KEY (`permission_id`) REFERENCES `sys_permission` (`permission_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_role_permission_role` FOREIGN KEY (`role_id`) REFERENCES `sys_role` (`role_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 355 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色权限关联表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 702 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色权限关联表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role_permission
 -- ----------------------------
-INSERT INTO `sys_role_permission` VALUES (260, 1, 1);
-INSERT INTO `sys_role_permission` VALUES (261, 1, 13);
-INSERT INTO `sys_role_permission` VALUES (262, 1, 2);
-INSERT INTO `sys_role_permission` VALUES (263, 1, 14);
-INSERT INTO `sys_role_permission` VALUES (264, 1, 15);
-INSERT INTO `sys_role_permission` VALUES (265, 1, 16);
-INSERT INTO `sys_role_permission` VALUES (266, 1, 3);
-INSERT INTO `sys_role_permission` VALUES (267, 1, 18);
-INSERT INTO `sys_role_permission` VALUES (268, 1, 19);
-INSERT INTO `sys_role_permission` VALUES (269, 1, 4);
-INSERT INTO `sys_role_permission` VALUES (270, 1, 20);
-INSERT INTO `sys_role_permission` VALUES (271, 1, 21);
-INSERT INTO `sys_role_permission` VALUES (272, 1, 22);
-INSERT INTO `sys_role_permission` VALUES (273, 1, 23);
-INSERT INTO `sys_role_permission` VALUES (274, 1, 5);
-INSERT INTO `sys_role_permission` VALUES (275, 1, 24);
-INSERT INTO `sys_role_permission` VALUES (276, 1, 25);
-INSERT INTO `sys_role_permission` VALUES (277, 1, 26);
-INSERT INTO `sys_role_permission` VALUES (278, 1, 27);
-INSERT INTO `sys_role_permission` VALUES (279, 1, 6);
-INSERT INTO `sys_role_permission` VALUES (280, 1, 28);
-INSERT INTO `sys_role_permission` VALUES (281, 1, 29);
-INSERT INTO `sys_role_permission` VALUES (282, 1, 7);
-INSERT INTO `sys_role_permission` VALUES (283, 1, 30);
-INSERT INTO `sys_role_permission` VALUES (284, 1, 31);
-INSERT INTO `sys_role_permission` VALUES (285, 1, 32);
-INSERT INTO `sys_role_permission` VALUES (286, 1, 33);
-INSERT INTO `sys_role_permission` VALUES (287, 1, 8);
-INSERT INTO `sys_role_permission` VALUES (288, 1, 34);
-INSERT INTO `sys_role_permission` VALUES (289, 1, 35);
-INSERT INTO `sys_role_permission` VALUES (290, 1, 36);
-INSERT INTO `sys_role_permission` VALUES (291, 1, 37);
-INSERT INTO `sys_role_permission` VALUES (292, 1, 9);
-INSERT INTO `sys_role_permission` VALUES (293, 1, 38);
-INSERT INTO `sys_role_permission` VALUES (294, 1, 39);
-INSERT INTO `sys_role_permission` VALUES (295, 1, 40);
-INSERT INTO `sys_role_permission` VALUES (296, 1, 10);
-INSERT INTO `sys_role_permission` VALUES (297, 1, 41);
-INSERT INTO `sys_role_permission` VALUES (298, 1, 42);
-INSERT INTO `sys_role_permission` VALUES (299, 1, 43);
-INSERT INTO `sys_role_permission` VALUES (300, 1, 11);
-INSERT INTO `sys_role_permission` VALUES (301, 1, 44);
-INSERT INTO `sys_role_permission` VALUES (302, 1, 45);
-INSERT INTO `sys_role_permission` VALUES (303, 1, 46);
-INSERT INTO `sys_role_permission` VALUES (304, 1, 47);
-INSERT INTO `sys_role_permission` VALUES (305, 1, 12);
-INSERT INTO `sys_role_permission` VALUES (306, 1, 48);
-INSERT INTO `sys_role_permission` VALUES (307, 1, 49);
-INSERT INTO `sys_role_permission` VALUES (308, 1, 50);
-INSERT INTO `sys_role_permission` VALUES (309, 1, 51);
-INSERT INTO `sys_role_permission` VALUES (310, 3, 1);
-INSERT INTO `sys_role_permission` VALUES (311, 3, 13);
-INSERT INTO `sys_role_permission` VALUES (312, 3, 2);
-INSERT INTO `sys_role_permission` VALUES (313, 3, 14);
-INSERT INTO `sys_role_permission` VALUES (314, 3, 15);
-INSERT INTO `sys_role_permission` VALUES (315, 3, 16);
-INSERT INTO `sys_role_permission` VALUES (316, 3, 3);
-INSERT INTO `sys_role_permission` VALUES (317, 3, 18);
-INSERT INTO `sys_role_permission` VALUES (318, 3, 19);
-INSERT INTO `sys_role_permission` VALUES (319, 3, 4);
-INSERT INTO `sys_role_permission` VALUES (320, 3, 20);
-INSERT INTO `sys_role_permission` VALUES (321, 3, 21);
-INSERT INTO `sys_role_permission` VALUES (322, 3, 22);
-INSERT INTO `sys_role_permission` VALUES (323, 3, 23);
-INSERT INTO `sys_role_permission` VALUES (324, 3, 5);
-INSERT INTO `sys_role_permission` VALUES (325, 3, 24);
-INSERT INTO `sys_role_permission` VALUES (326, 3, 25);
-INSERT INTO `sys_role_permission` VALUES (327, 3, 26);
-INSERT INTO `sys_role_permission` VALUES (328, 3, 27);
-INSERT INTO `sys_role_permission` VALUES (329, 3, 6);
-INSERT INTO `sys_role_permission` VALUES (330, 3, 28);
-INSERT INTO `sys_role_permission` VALUES (331, 3, 29);
-INSERT INTO `sys_role_permission` VALUES (332, 3, 7);
-INSERT INTO `sys_role_permission` VALUES (333, 3, 30);
-INSERT INTO `sys_role_permission` VALUES (334, 3, 31);
-INSERT INTO `sys_role_permission` VALUES (335, 3, 32);
-INSERT INTO `sys_role_permission` VALUES (336, 3, 33);
-INSERT INTO `sys_role_permission` VALUES (337, 3, 8);
-INSERT INTO `sys_role_permission` VALUES (338, 3, 34);
-INSERT INTO `sys_role_permission` VALUES (339, 3, 35);
-INSERT INTO `sys_role_permission` VALUES (340, 3, 36);
-INSERT INTO `sys_role_permission` VALUES (341, 3, 37);
-INSERT INTO `sys_role_permission` VALUES (342, 3, 9);
-INSERT INTO `sys_role_permission` VALUES (343, 3, 38);
-INSERT INTO `sys_role_permission` VALUES (344, 3, 39);
-INSERT INTO `sys_role_permission` VALUES (345, 3, 40);
-INSERT INTO `sys_role_permission` VALUES (346, 3, 10);
-INSERT INTO `sys_role_permission` VALUES (347, 3, 41);
-INSERT INTO `sys_role_permission` VALUES (348, 3, 42);
-INSERT INTO `sys_role_permission` VALUES (349, 3, 43);
-INSERT INTO `sys_role_permission` VALUES (350, 3, 11);
-INSERT INTO `sys_role_permission` VALUES (351, 3, 44);
-INSERT INTO `sys_role_permission` VALUES (352, 3, 45);
-INSERT INTO `sys_role_permission` VALUES (353, 3, 46);
-INSERT INTO `sys_role_permission` VALUES (354, 3, 47);
+INSERT INTO `sys_role_permission` VALUES (603, 1, 1);
+INSERT INTO `sys_role_permission` VALUES (604, 1, 13);
+INSERT INTO `sys_role_permission` VALUES (605, 1, 2);
+INSERT INTO `sys_role_permission` VALUES (606, 1, 14);
+INSERT INTO `sys_role_permission` VALUES (607, 1, 15);
+INSERT INTO `sys_role_permission` VALUES (608, 1, 16);
+INSERT INTO `sys_role_permission` VALUES (609, 1, 3);
+INSERT INTO `sys_role_permission` VALUES (610, 1, 18);
+INSERT INTO `sys_role_permission` VALUES (611, 1, 19);
+INSERT INTO `sys_role_permission` VALUES (612, 1, 4);
+INSERT INTO `sys_role_permission` VALUES (613, 1, 20);
+INSERT INTO `sys_role_permission` VALUES (614, 1, 21);
+INSERT INTO `sys_role_permission` VALUES (615, 1, 22);
+INSERT INTO `sys_role_permission` VALUES (616, 1, 23);
+INSERT INTO `sys_role_permission` VALUES (617, 1, 5);
+INSERT INTO `sys_role_permission` VALUES (618, 1, 24);
+INSERT INTO `sys_role_permission` VALUES (619, 1, 25);
+INSERT INTO `sys_role_permission` VALUES (620, 1, 26);
+INSERT INTO `sys_role_permission` VALUES (621, 1, 27);
+INSERT INTO `sys_role_permission` VALUES (622, 1, 6);
+INSERT INTO `sys_role_permission` VALUES (623, 1, 28);
+INSERT INTO `sys_role_permission` VALUES (624, 1, 29);
+INSERT INTO `sys_role_permission` VALUES (625, 1, 52);
+INSERT INTO `sys_role_permission` VALUES (626, 1, 7);
+INSERT INTO `sys_role_permission` VALUES (627, 1, 30);
+INSERT INTO `sys_role_permission` VALUES (628, 1, 31);
+INSERT INTO `sys_role_permission` VALUES (629, 1, 32);
+INSERT INTO `sys_role_permission` VALUES (630, 1, 33);
+INSERT INTO `sys_role_permission` VALUES (631, 1, 8);
+INSERT INTO `sys_role_permission` VALUES (632, 1, 34);
+INSERT INTO `sys_role_permission` VALUES (633, 1, 35);
+INSERT INTO `sys_role_permission` VALUES (634, 1, 36);
+INSERT INTO `sys_role_permission` VALUES (635, 1, 37);
+INSERT INTO `sys_role_permission` VALUES (636, 1, 9);
+INSERT INTO `sys_role_permission` VALUES (637, 1, 38);
+INSERT INTO `sys_role_permission` VALUES (638, 1, 40);
+INSERT INTO `sys_role_permission` VALUES (639, 1, 10);
+INSERT INTO `sys_role_permission` VALUES (640, 1, 41);
+INSERT INTO `sys_role_permission` VALUES (641, 1, 42);
+INSERT INTO `sys_role_permission` VALUES (642, 1, 43);
+INSERT INTO `sys_role_permission` VALUES (643, 1, 11);
+INSERT INTO `sys_role_permission` VALUES (644, 1, 44);
+INSERT INTO `sys_role_permission` VALUES (645, 1, 45);
+INSERT INTO `sys_role_permission` VALUES (646, 1, 46);
+INSERT INTO `sys_role_permission` VALUES (647, 1, 47);
+INSERT INTO `sys_role_permission` VALUES (648, 1, 12);
+INSERT INTO `sys_role_permission` VALUES (649, 1, 48);
+INSERT INTO `sys_role_permission` VALUES (650, 1, 49);
+INSERT INTO `sys_role_permission` VALUES (651, 1, 50);
+INSERT INTO `sys_role_permission` VALUES (652, 1, 51);
+INSERT INTO `sys_role_permission` VALUES (653, 3, 1);
+INSERT INTO `sys_role_permission` VALUES (654, 3, 13);
+INSERT INTO `sys_role_permission` VALUES (655, 3, 2);
+INSERT INTO `sys_role_permission` VALUES (656, 3, 14);
+INSERT INTO `sys_role_permission` VALUES (657, 3, 15);
+INSERT INTO `sys_role_permission` VALUES (658, 3, 16);
+INSERT INTO `sys_role_permission` VALUES (659, 3, 3);
+INSERT INTO `sys_role_permission` VALUES (660, 3, 18);
+INSERT INTO `sys_role_permission` VALUES (661, 3, 19);
+INSERT INTO `sys_role_permission` VALUES (662, 3, 4);
+INSERT INTO `sys_role_permission` VALUES (663, 3, 20);
+INSERT INTO `sys_role_permission` VALUES (664, 3, 21);
+INSERT INTO `sys_role_permission` VALUES (665, 3, 22);
+INSERT INTO `sys_role_permission` VALUES (666, 3, 23);
+INSERT INTO `sys_role_permission` VALUES (667, 3, 5);
+INSERT INTO `sys_role_permission` VALUES (668, 3, 24);
+INSERT INTO `sys_role_permission` VALUES (669, 3, 25);
+INSERT INTO `sys_role_permission` VALUES (670, 3, 26);
+INSERT INTO `sys_role_permission` VALUES (671, 3, 27);
+INSERT INTO `sys_role_permission` VALUES (672, 3, 6);
+INSERT INTO `sys_role_permission` VALUES (673, 3, 28);
+INSERT INTO `sys_role_permission` VALUES (674, 3, 29);
+INSERT INTO `sys_role_permission` VALUES (675, 3, 52);
+INSERT INTO `sys_role_permission` VALUES (676, 3, 7);
+INSERT INTO `sys_role_permission` VALUES (677, 3, 30);
+INSERT INTO `sys_role_permission` VALUES (678, 3, 31);
+INSERT INTO `sys_role_permission` VALUES (679, 3, 32);
+INSERT INTO `sys_role_permission` VALUES (680, 3, 33);
+INSERT INTO `sys_role_permission` VALUES (681, 3, 8);
+INSERT INTO `sys_role_permission` VALUES (682, 3, 34);
+INSERT INTO `sys_role_permission` VALUES (683, 3, 35);
+INSERT INTO `sys_role_permission` VALUES (684, 3, 36);
+INSERT INTO `sys_role_permission` VALUES (685, 3, 37);
+INSERT INTO `sys_role_permission` VALUES (686, 3, 9);
+INSERT INTO `sys_role_permission` VALUES (687, 3, 38);
+INSERT INTO `sys_role_permission` VALUES (688, 3, 40);
+INSERT INTO `sys_role_permission` VALUES (689, 3, 10);
+INSERT INTO `sys_role_permission` VALUES (690, 3, 41);
+INSERT INTO `sys_role_permission` VALUES (691, 3, 42);
+INSERT INTO `sys_role_permission` VALUES (692, 3, 43);
+INSERT INTO `sys_role_permission` VALUES (693, 3, 11);
+INSERT INTO `sys_role_permission` VALUES (694, 3, 44);
+INSERT INTO `sys_role_permission` VALUES (695, 3, 45);
+INSERT INTO `sys_role_permission` VALUES (696, 3, 46);
+INSERT INTO `sys_role_permission` VALUES (697, 3, 47);
+INSERT INTO `sys_role_permission` VALUES (698, 3, 48);
+INSERT INTO `sys_role_permission` VALUES (699, 3, 49);
+INSERT INTO `sys_role_permission` VALUES (700, 3, 50);
+INSERT INTO `sys_role_permission` VALUES (701, 3, 51);
 
 -- ----------------------------
 -- Table structure for sys_set_meal
@@ -1493,8 +1847,8 @@ CREATE TABLE `sys_staff`  (
 -- ----------------------------
 -- Records of sys_staff
 -- ----------------------------
-INSERT INTO `sys_staff` VALUES (2, 1, 'admin', '8pgVn7BnedAGOKthCSdIUifitpQsAWfKSDDFoz5R8oM=', '管理员', '18433646699', '店长', 1, '2025-08-20 16:20:00', 'SOMMsmOVbHI38x1hUkWfiQ==', 1);
-INSERT INTO `sys_staff` VALUES (6, 2, 'lq', 'jv77mITf0Nl7Vpz1iyPSAszCDwLxq4lU11UnEOn4q6U=', 'lq', '11111111111', '服务员', 1, NULL, 'PzBgx3X4Rqt+GDPMcm2ekw==', 1);
+INSERT INTO `sys_staff` VALUES (2, 1, 'admin', '8pgVn7BnedAGOKthCSdIUifitpQsAWfKSDDFoz5R8oM=', '管理员', '18433646699', '店长', 1, '2025-08-25 11:19:39', 'SOMMsmOVbHI38x1hUkWfiQ==', 1);
+INSERT INTO `sys_staff` VALUES (6, 2, 'lq', 'jv77mITf0Nl7Vpz1iyPSAszCDwLxq4lU11UnEOn4q6U=', 'lq', '11111111111', '服务员', 1, '2025-08-25 17:06:20', 'PzBgx3X4Rqt+GDPMcm2ekw==', 1);
 
 -- ----------------------------
 -- Table structure for sys_staff_role
@@ -1607,7 +1961,7 @@ CREATE TABLE `sys_timertask`  (
   `Corn` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '设置运行时段',
   `StartNumber` bigint NULL DEFAULT NULL COMMENT '运行次数',
   PRIMARY KEY (`Id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '定时器管理' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '定时器管理' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_timertask

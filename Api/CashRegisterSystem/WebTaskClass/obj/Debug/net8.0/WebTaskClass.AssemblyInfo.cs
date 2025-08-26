@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WebTaskClass")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2577a89ed3cdcdfe49439292f8f17f4f9322bc30")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+30137afd6b0abbb29947d6219064ce6951ec0161")]
 [assembly: System.Reflection.AssemblyProductAttribute("WebTaskClass")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WebTaskClass")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
