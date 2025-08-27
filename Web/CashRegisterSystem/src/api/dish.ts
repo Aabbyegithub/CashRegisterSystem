@@ -11,6 +11,11 @@ export function getDishCategoryList() {
     return axios.get('/api/Dishcategory/GetAllDishCategoryList');
 }
 
+//获取厨房列表
+export function getkitchenList() {
+    return axios.get('/api/KitchenManage/GetAllKitchenList');
+}
+
 // 添加菜品
 export function addDish(sys_Dish: {
     category_id: string;
@@ -24,6 +29,7 @@ export function addDish(sys_Dish: {
     status: number;
     cooking_time: number;
     store_id: null;
+    kitchen_id:string;
 }) {
     return axios.post('/api/Dish/AddDish', sys_Dish);
 }
@@ -47,6 +53,7 @@ export function updateDish(sys_Dish: {
     status: number;
     cooking_time: number;
     store_id: null;
+      kitchen_id:string;
 }) {
     return axios.post('/api/Dish/UpdateDish', sys_Dish);
 }

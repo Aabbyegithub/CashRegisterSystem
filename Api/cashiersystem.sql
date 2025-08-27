@@ -11,7 +11,7 @@
  Target Server Version : 80036 (8.0.36)
  File Encoding         : 65001
 
- Date: 27/08/2025 17:11:05
+ Date: 28/08/2025 17:37:08
 */
 
 SET NAMES utf8mb4;
@@ -44,7 +44,7 @@ CREATE TABLE `sys_bill`  (
   INDEX `idx_bill_close_time`(`close_time` ASC) USING BTREE,
   INDEX `idx_bill_invoice`(`invoice_status` ASC) USING BTREE,
   CONSTRAINT `fk_bill_order` FOREIGN KEY (`order_id`) REFERENCES `sys_order` (`order_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '账单表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '账单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_bill
@@ -73,7 +73,7 @@ CREATE TABLE `sys_coupon`  (
   INDEX `idx_coupon_status`(`status` ASC) USING BTREE,
   INDEX `idx_coupon_valid`(`valid_start` ASC, `valid_end` ASC) USING BTREE,
   CONSTRAINT `fk_coupon_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_coupon
@@ -98,6 +98,7 @@ CREATE TABLE `sys_dish`  (
   `cooking_time` int NOT NULL DEFAULT 0 COMMENT '预估制作时间（分钟）',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `kitchen_id` int NOT NULL COMMENT '制作厨房',
   PRIMARY KEY (`dish_id`) USING BTREE,
   INDEX `idx_dish_category`(`category_id` ASC) USING BTREE,
   INDEX `idx_dish_name`(`dish_name` ASC) USING BTREE,
@@ -110,8 +111,8 @@ CREATE TABLE `sys_dish`  (
 -- ----------------------------
 -- Records of sys_dish
 -- ----------------------------
-INSERT INTO `sys_dish` VALUES (2, 2, NULL, '烧鸭', 45.00, 45.00, 1, 0, '招牌特色菜', 'https://localhost:7092/20250816/a8e35a05-72e4-459e-9cf7-35c37c0289a2.png', 1, 60, '2025-08-16 14:09:20', '2025-08-16 14:09:20');
-INSERT INTO `sys_dish` VALUES (3, 1, 2, '油麦菜', 15.00, 10.00, 1, 1, '季节菜', 'https://localhost:7092/20250816/b4f5b2bb-e207-44fc-a2b1-835f8c0958d2.jpg', 1, 0, '2025-08-16 14:13:30', '2025-08-16 14:13:30');
+INSERT INTO `sys_dish` VALUES (2, 2, NULL, '烧鸭', 45.00, 45.00, 1, 0, '招牌特色菜', 'https://localhost:7092/20250816/a8e35a05-72e4-459e-9cf7-35c37c0289a2.png', 1, 60, '2025-08-16 14:09:20', '2025-08-16 14:09:20', 0);
+INSERT INTO `sys_dish` VALUES (3, 1, 2, '油麦菜', 15.00, 10.00, 1, 1, '季节菜', 'https://localhost:7092/20250816/b4f5b2bb-e207-44fc-a2b1-835f8c0958d2.jpg', 1, 0, '2025-08-16 14:13:30', '2025-08-16 14:13:30', 0);
 
 -- ----------------------------
 -- Table structure for sys_dish_category
@@ -152,7 +153,7 @@ CREATE TABLE `sys_dish_formula`  (
   CONSTRAINT `fk_formula_dish` FOREIGN KEY (`dish_id`) REFERENCES `sys_dish` (`dish_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `fk_formula_material` FOREIGN KEY (`material_id`) REFERENCES `sys_raw_material` (`material_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_formula_spec` FOREIGN KEY (`spec_id`) REFERENCES `sys_dish_spec` (`spec_id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜品配方表（原材料消耗规则）' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜品配方表（原材料消耗规则）' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_dish_formula
@@ -172,7 +173,7 @@ CREATE TABLE `sys_dish_spec`  (
   PRIMARY KEY (`spec_id`) USING BTREE,
   INDEX `idx_spec_dish`(`dish_id` ASC) USING BTREE,
   CONSTRAINT `fk_spec_dish` FOREIGN KEY (`dish_id`) REFERENCES `sys_dish` (`dish_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜品规格表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜品规格表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_dish_spec
@@ -205,7 +206,7 @@ CREATE TABLE `sys_inventory`  (
   INDEX `idx_material_expiry`(`material_id` ASC, `expiry_date` ASC) USING BTREE,
   CONSTRAINT `fk_inventory_material` FOREIGN KEY (`material_id`) REFERENCES `sys_raw_material` (`material_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_inventory_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_inventory
@@ -233,7 +234,7 @@ CREATE TABLE `sys_inventory_loss`  (
   INDEX `idx_loss_time`(`loss_time` ASC) USING BTREE,
   CONSTRAINT `fk_loss_material` FOREIGN KEY (`material_id`) REFERENCES `sys_raw_material` (`material_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_loss_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存损耗表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存损耗表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_inventory_loss
@@ -244,17 +245,20 @@ CREATE TABLE `sys_inventory_loss`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_kitchen`;
 CREATE TABLE `sys_kitchen`  (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `kitchen_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '厨房名称',
   `kitchen_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '厨房类型',
   `kitchen_description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '描述',
-  `store_id` bigint NOT NULL COMMENT '所属门店',
+  `store_id` bigint NULL DEFAULT NULL COMMENT '所属门店',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '厨房管理表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '厨房管理表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_kitchen
 -- ----------------------------
+INSERT INTO `sys_kitchen` VALUES (1, '热菜厨房', '热菜厨房', '111', 0);
+INSERT INTO `sys_kitchen` VALUES (2, '凉菜厨房', '凉菜厨房', '', 0);
+INSERT INTO `sys_kitchen` VALUES (3, '饮料厨房', '饮料厨房', '', 0);
 
 -- ----------------------------
 -- Table structure for sys_kitchen_order
@@ -317,7 +321,7 @@ CREATE TABLE `sys_member`  (
   INDEX `idx_member_birthday`(`birthday` ASC) USING BTREE,
   INDEX `idx_member_referrer`(`referrer_id` ASC) USING BTREE,
   CONSTRAINT `fk_member_referrer` FOREIGN KEY (`referrer_id`) REFERENCES `sys_member` (`member_id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '会员表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '会员表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_member
@@ -342,7 +346,7 @@ CREATE TABLE `sys_member_balance`  (
   INDEX `fk_balance_payment`(`payment_id` ASC) USING BTREE,
   CONSTRAINT `fk_balance_member` FOREIGN KEY (`member_id`) REFERENCES `sys_member` (`member_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `fk_balance_payment` FOREIGN KEY (`payment_id`) REFERENCES `sys_payment` (`payment_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '会员储值记录表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '会员储值记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_member_balance
@@ -367,7 +371,7 @@ CREATE TABLE `sys_operationlog`  (
   `UpTime` datetime NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`Id`) USING BTREE,
   INDEX `index`(`UserId` ASC, `ActionType` ASC, `ModuleName` ASC, `OrgId` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 896 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统操作日志' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 976 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统操作日志' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_operationlog
@@ -1267,6 +1271,86 @@ INSERT INTO `sys_operationlog` VALUES (892, 2, 4, '系统设置>角色管理', '
 INSERT INTO `sys_operationlog` VALUES (893, 2, 1, '系统设置>角色管理', '修改角色权限', '2025-08-25 17:06:38', '{\"roleId\":1,\"permissionIds\":[1,13,2,14,15,16,3,18,19,4,20,21,22,23,5,24,25,26,27,6,28,29,52,7,30,31,32,33,8,34,35,36,37,9,38,40,10,41,42,43,11,44,45,46,47,12,48,49,50,51]}', 1, 2, '2025-08-25 17:06:38', 2, '2025-08-25 17:06:38');
 INSERT INTO `sys_operationlog` VALUES (894, 2, 1, '系统设置>角色管理', '修改角色权限', '2025-08-25 17:06:54', '{\"roleId\":3,\"permissionIds\":[1,13,2,14,15,16,3,18,19,4,20,21,22,23,5,24,25,26,27,6,28,29,52,7,30,31,32,33,8,34,35,36,37,9,38,40,10,41,42,43,11,44,45,46,47,48,49,50,51]}', 1, 2, '2025-08-25 17:06:54', 2, '2025-08-25 17:06:54');
 INSERT INTO `sys_operationlog` VALUES (895, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-25 17:07:07', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-25 17:07:07', 2, '2025-08-25 17:07:07');
+INSERT INTO `sys_operationlog` VALUES (896, 2, 10, '系统登陆', '人员登陆', '2025-08-28 09:16:42', '账号：admin,员工姓名：管理员', 1, 2, '2025-08-28 09:16:42', 2, '2025-08-28 09:16:42');
+INSERT INTO `sys_operationlog` VALUES (897, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-28 09:16:58', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-28 09:16:58', 2, '2025-08-28 09:16:58');
+INSERT INTO `sys_operationlog` VALUES (898, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-28 09:16:58', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-28 09:16:58', 2, '2025-08-28 09:16:58');
+INSERT INTO `sys_operationlog` VALUES (899, 2, 1, '系统设置>角色管理', '修改角色权限', '2025-08-28 09:17:08', '{\"roleId\":1,\"permissionIds\":[1,13,53,2,14,15,16,3,18,19,4,20,21,22,23,5,24,25,26,27,6,28,29,52,7,30,31,32,33,8,34,35,36,37,9,38,40,10,41,42,43,11,44,45,46,47,12,48,49,50,51]}', 1, 2, '2025-08-28 09:17:08', 2, '2025-08-28 09:17:08');
+INSERT INTO `sys_operationlog` VALUES (900, 2, 1, '系统设置>角色管理', '修改角色权限', '2025-08-28 09:17:13', '{\"roleId\":3,\"permissionIds\":[1,13,53,2,14,15,16,3,18,19,4,20,21,22,23,5,24,25,26,27,6,28,29,52,7,30,31,32,33,8,34,35,36,37,9,38,40,10,41,42,43,11,44,45,46,47,48,49,50,51]}', 1, 2, '2025-08-28 09:17:13', 2, '2025-08-28 09:17:13');
+INSERT INTO `sys_operationlog` VALUES (901, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-08-28 09:17:15', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-28 09:17:15', 2, '2025-08-28 09:17:15');
+INSERT INTO `sys_operationlog` VALUES (902, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 09:18:23', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 09:18:23', 2, '2025-08-28 09:18:23');
+INSERT INTO `sys_operationlog` VALUES (903, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 09:18:23', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 09:18:23', 2, '2025-08-28 09:18:23');
+INSERT INTO `sys_operationlog` VALUES (904, 2, 4, '系统设置>角色管理', '菜品分类管理查询', '2025-08-28 09:18:27', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-28 09:18:27', 2, '2025-08-28 09:18:27');
+INSERT INTO `sys_operationlog` VALUES (905, 2, 4, '系统设置>角色管理', '菜品分类管理查询', '2025-08-28 09:18:27', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-28 09:18:27', 2, '2025-08-28 09:18:27');
+INSERT INTO `sys_operationlog` VALUES (906, 2, 4, '系统设置>角色管理', '菜品分类管理查询', '2025-08-28 09:18:27', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-08-28 09:18:27', 2, '2025-08-28 09:18:27');
+INSERT INTO `sys_operationlog` VALUES (907, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 09:18:28', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 09:18:28', 2, '2025-08-28 09:18:28');
+INSERT INTO `sys_operationlog` VALUES (908, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 09:18:28', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 09:18:28', 2, '2025-08-28 09:18:28');
+INSERT INTO `sys_operationlog` VALUES (909, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 09:18:28', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 09:18:28', 2, '2025-08-28 09:18:28');
+INSERT INTO `sys_operationlog` VALUES (910, 2, 10, '系统登陆', '人员登陆', '2025-08-28 13:56:14', '账号：admin,员工姓名：管理员', 1, 2, '2025-08-28 13:56:14', 2, '2025-08-28 13:56:14');
+INSERT INTO `sys_operationlog` VALUES (911, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 13:56:39', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 13:56:39', 2, '2025-08-28 13:56:39');
+INSERT INTO `sys_operationlog` VALUES (912, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 13:56:39', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 13:56:39', 2, '2025-08-28 13:56:39');
+INSERT INTO `sys_operationlog` VALUES (913, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:01:15', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:01:15', 2, '2025-08-28 14:01:15');
+INSERT INTO `sys_operationlog` VALUES (914, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:01:16', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:01:16', 2, '2025-08-28 14:01:16');
+INSERT INTO `sys_operationlog` VALUES (915, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:01:41', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:01:41', 2, '2025-08-28 14:01:41');
+INSERT INTO `sys_operationlog` VALUES (916, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:01:41', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:01:41', 2, '2025-08-28 14:01:41');
+INSERT INTO `sys_operationlog` VALUES (917, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:03:13', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:03:13', 2, '2025-08-28 14:03:13');
+INSERT INTO `sys_operationlog` VALUES (918, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:03:13', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:03:13', 2, '2025-08-28 14:03:13');
+INSERT INTO `sys_operationlog` VALUES (919, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:03:26', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:03:26', 2, '2025-08-28 14:03:26');
+INSERT INTO `sys_operationlog` VALUES (920, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:03:26', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:03:26', 2, '2025-08-28 14:03:26');
+INSERT INTO `sys_operationlog` VALUES (921, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:04:27', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:04:27', 2, '2025-08-28 14:04:27');
+INSERT INTO `sys_operationlog` VALUES (922, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:04:27', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:04:27', 2, '2025-08-28 14:04:27');
+INSERT INTO `sys_operationlog` VALUES (923, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:20:33', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:20:33', 2, '2025-08-28 14:20:33');
+INSERT INTO `sys_operationlog` VALUES (924, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:20:34', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:20:34', 2, '2025-08-28 14:20:34');
+INSERT INTO `sys_operationlog` VALUES (925, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:28:33', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:28:33', 2, '2025-08-28 14:28:33');
+INSERT INTO `sys_operationlog` VALUES (926, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:28:33', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:28:33', 2, '2025-08-28 14:28:33');
+INSERT INTO `sys_operationlog` VALUES (927, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:28:42', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:28:42', 2, '2025-08-28 14:28:42');
+INSERT INTO `sys_operationlog` VALUES (928, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:28:42', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:28:42', 2, '2025-08-28 14:28:42');
+INSERT INTO `sys_operationlog` VALUES (929, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:28:53', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:28:53', 2, '2025-08-28 14:28:53');
+INSERT INTO `sys_operationlog` VALUES (930, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:28:53', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:28:53', 2, '2025-08-28 14:28:53');
+INSERT INTO `sys_operationlog` VALUES (931, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:29:11', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:29:11', 2, '2025-08-28 14:29:11');
+INSERT INTO `sys_operationlog` VALUES (932, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:29:11', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:29:11', 2, '2025-08-28 14:29:11');
+INSERT INTO `sys_operationlog` VALUES (933, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:29:18', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:29:18', 2, '2025-08-28 14:29:18');
+INSERT INTO `sys_operationlog` VALUES (934, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:29:18', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:29:18', 2, '2025-08-28 14:29:18');
+INSERT INTO `sys_operationlog` VALUES (935, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:29:48', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:29:48', 2, '2025-08-28 14:29:48');
+INSERT INTO `sys_operationlog` VALUES (936, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:32:03', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:32:03', 2, '2025-08-28 14:32:03');
+INSERT INTO `sys_operationlog` VALUES (937, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:32:15', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:32:15', 2, '2025-08-28 14:32:15');
+INSERT INTO `sys_operationlog` VALUES (938, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:32:31', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:32:31', 2, '2025-08-28 14:32:31');
+INSERT INTO `sys_operationlog` VALUES (939, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-08-28 14:32:38', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-08-28 14:32:38', 2, '2025-08-28 14:32:38');
+INSERT INTO `sys_operationlog` VALUES (940, 2, 10, '系统登陆', '人员登陆', '2025-08-28 16:33:20', '账号：admin,员工姓名：管理员', 1, 2, '2025-08-28 16:33:20', 2, '2025-08-28 16:33:20');
+INSERT INTO `sys_operationlog` VALUES (941, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:20:15', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:20:15', 2, '2025-08-28 17:20:15');
+INSERT INTO `sys_operationlog` VALUES (942, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:20:23', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:20:23', 2, '2025-08-28 17:20:23');
+INSERT INTO `sys_operationlog` VALUES (943, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:27:30', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:27:30', 2, '2025-08-28 17:27:30');
+INSERT INTO `sys_operationlog` VALUES (944, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:28:34', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:28:34', 2, '2025-08-28 17:28:34');
+INSERT INTO `sys_operationlog` VALUES (945, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:28:47', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:28:47', 2, '2025-08-28 17:28:47');
+INSERT INTO `sys_operationlog` VALUES (946, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:28:50', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:28:50', 2, '2025-08-28 17:28:50');
+INSERT INTO `sys_operationlog` VALUES (947, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:28:53', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:28:53', 2, '2025-08-28 17:28:53');
+INSERT INTO `sys_operationlog` VALUES (948, 2, 3, '系统设置>厨房管理', '新增厨房', '2025-08-28 17:29:05', '{\"kitchen\":{\"id\":0,\"kitchen_name\":\"热菜厨房\",\"kitchen_type\":\"热菜厨房\",\"kitchen_description\":\"\",\"store_id\":0}}', 1, 2, '2025-08-28 17:29:05', 2, '2025-08-28 17:29:05');
+INSERT INTO `sys_operationlog` VALUES (949, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:31:40', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:31:40', 2, '2025-08-28 17:31:40');
+INSERT INTO `sys_operationlog` VALUES (950, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:32:01', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:32:01', 2, '2025-08-28 17:32:01');
+INSERT INTO `sys_operationlog` VALUES (951, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:32:14', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:32:14', 2, '2025-08-28 17:32:14');
+INSERT INTO `sys_operationlog` VALUES (952, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:32:20', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:32:20', 2, '2025-08-28 17:32:20');
+INSERT INTO `sys_operationlog` VALUES (953, 2, 3, '系统设置>厨房管理', '新增厨房', '2025-08-28 17:32:31', '{\"kitchen\":{\"id\":0,\"kitchen_name\":\"热菜厨房\",\"kitchen_type\":\"热菜厨房\",\"kitchen_description\":\"\",\"store_id\":0}}', 1, 2, '2025-08-28 17:32:31', 2, '2025-08-28 17:32:31');
+INSERT INTO `sys_operationlog` VALUES (954, 2, 10, '系统登陆', '人员登陆', '2025-08-28 17:32:46', '账号：admin,员工姓名：管理员', 1, 2, '2025-08-28 17:32:46', 2, '2025-08-28 17:32:46');
+INSERT INTO `sys_operationlog` VALUES (955, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:32:50', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:32:50', 2, '2025-08-28 17:32:50');
+INSERT INTO `sys_operationlog` VALUES (956, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:32:50', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:32:50', 2, '2025-08-28 17:32:50');
+INSERT INTO `sys_operationlog` VALUES (957, 2, 3, '系统设置>厨房管理', '新增厨房', '2025-08-28 17:32:55', '{\"kitchen\":{\"id\":0,\"kitchen_name\":\"热菜厨房\",\"kitchen_type\":\"热菜厨房\",\"kitchen_description\":\"\",\"store_id\":0}}', 1, 2, '2025-08-28 17:32:55', 2, '2025-08-28 17:32:55');
+INSERT INTO `sys_operationlog` VALUES (958, 2, 10, '系统登陆', '人员登陆', '2025-08-28 17:34:04', '账号：admin,员工姓名：管理员', 1, 2, '2025-08-28 17:34:04', 2, '2025-08-28 17:34:04');
+INSERT INTO `sys_operationlog` VALUES (959, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:34:06', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:34:06', 2, '2025-08-28 17:34:06');
+INSERT INTO `sys_operationlog` VALUES (960, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:34:06', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:34:06', 2, '2025-08-28 17:34:06');
+INSERT INTO `sys_operationlog` VALUES (961, 2, 1, '系统设置>厨房管理', '修改厨房', '2025-08-28 17:34:12', '{\"kitchen\":{\"id\":1,\"kitchen_name\":\"热菜厨房\",\"kitchen_type\":\"热菜厨房\",\"kitchen_description\":\"\",\"store_id\":0}}', 1, 2, '2025-08-28 17:34:12', 2, '2025-08-28 17:34:12');
+INSERT INTO `sys_operationlog` VALUES (962, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:34:12', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:34:12', 2, '2025-08-28 17:34:12');
+INSERT INTO `sys_operationlog` VALUES (963, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:34:17', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:34:17', 2, '2025-08-28 17:34:17');
+INSERT INTO `sys_operationlog` VALUES (964, 2, 1, '系统设置>厨房管理', '修改厨房', '2025-08-28 17:34:29', '{\"kitchen\":{\"id\":1,\"kitchen_name\":\"热菜厨房\",\"kitchen_type\":\"热菜厨房\",\"kitchen_description\":\"\",\"store_id\":0}}', 1, 2, '2025-08-28 17:34:29', 2, '2025-08-28 17:34:29');
+INSERT INTO `sys_operationlog` VALUES (965, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:34:29', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:34:29', 2, '2025-08-28 17:34:29');
+INSERT INTO `sys_operationlog` VALUES (966, 2, 1, '系统设置>厨房管理', '修改厨房', '2025-08-28 17:35:22', '{\"kitchen\":{\"id\":1,\"kitchen_name\":\"热菜厨房\",\"kitchen_type\":\"热菜厨房\",\"kitchen_description\":\"111\",\"store_id\":0}}', 1, 2, '2025-08-28 17:35:22', 2, '2025-08-28 17:35:22');
+INSERT INTO `sys_operationlog` VALUES (967, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:35:22', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:35:22', 2, '2025-08-28 17:35:22');
+INSERT INTO `sys_operationlog` VALUES (968, 2, 1, '系统设置>厨房管理', '修改厨房', '2025-08-28 17:35:22', '{\"kitchen\":{\"id\":1,\"kitchen_name\":\"热菜厨房\",\"kitchen_type\":\"热菜厨房\",\"kitchen_description\":\"111\",\"store_id\":0}}', 1, 2, '2025-08-28 17:35:22', 2, '2025-08-28 17:35:22');
+INSERT INTO `sys_operationlog` VALUES (969, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:35:22', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:35:22', 2, '2025-08-28 17:35:22');
+INSERT INTO `sys_operationlog` VALUES (970, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:35:25', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:35:25', 2, '2025-08-28 17:35:25');
+INSERT INTO `sys_operationlog` VALUES (971, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:35:37', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:35:37', 2, '2025-08-28 17:35:37');
+INSERT INTO `sys_operationlog` VALUES (972, 2, 3, '系统设置>厨房管理', '新增厨房', '2025-08-28 17:36:23', '{\"kitchen\":{\"id\":0,\"kitchen_name\":\"凉菜厨房\",\"kitchen_type\":\"凉菜厨房\",\"kitchen_description\":\"\",\"store_id\":0}}', 1, 2, '2025-08-28 17:36:23', 2, '2025-08-28 17:36:23');
+INSERT INTO `sys_operationlog` VALUES (973, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:36:23', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:36:23', 2, '2025-08-28 17:36:23');
+INSERT INTO `sys_operationlog` VALUES (974, 2, 3, '系统设置>厨房管理', '新增厨房', '2025-08-28 17:36:50', '{\"kitchen\":{\"id\":0,\"kitchen_name\":\"饮料厨房\",\"kitchen_type\":\"饮料厨房\",\"kitchen_description\":\"\",\"store_id\":0}}', 1, 2, '2025-08-28 17:36:50', 2, '2025-08-28 17:36:50');
+INSERT INTO `sys_operationlog` VALUES (975, 2, 4, '系统设置>厨房管理', '厨房列表查询', '2025-08-28 17:36:50', '{\"page\":1,\"size\":10}', 1, 2, '2025-08-28 17:36:50', 2, '2025-08-28 17:36:50');
 
 -- ----------------------------
 -- Table structure for sys_order
@@ -1381,7 +1465,7 @@ CREATE TABLE `sys_payment`  (
   INDEX `idx_payment_time`(`pay_time` ASC) USING BTREE,
   INDEX `idx_payment_account`(`store_account_id` ASC) USING BTREE,
   CONSTRAINT `fk_payment_order` FOREIGN KEY (`order_id`) REFERENCES `sys_order` (`order_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付记录表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_payment
@@ -1401,7 +1485,7 @@ CREATE TABLE `sys_permission`  (
   PRIMARY KEY (`permission_id`) USING BTREE,
   UNIQUE INDEX `uk_permission_key`(`permission_key` ASC) USING BTREE,
   INDEX `idx_permission_parent`(`parent_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 53 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 54 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_permission
@@ -1456,6 +1540,7 @@ INSERT INTO `sys_permission` VALUES (49, '角色权限', 'RolePermission', 'role
 INSERT INTO `sys_permission` VALUES (50, '门店设置', 'StoreSetting', 'store-setting', 12, '/src/assets/门店设置.png');
 INSERT INTO `sys_permission` VALUES (51, '数据备份', 'DataBackup', 'data-backup', 12, '/src/assets/数据备份.png');
 INSERT INTO `sys_permission` VALUES (52, '厨房管理', 'KitchenManagement', 'Kitchen-list', 6, '/src/assets/菜品规格.png');
+INSERT INTO `sys_permission` VALUES (53, '核心指标报表', 'CoreKPIReport', 'CoreKPIReport', 1, '/src/assets/数据概览.png');
 
 -- ----------------------------
 -- Table structure for sys_promotion
@@ -1477,7 +1562,7 @@ CREATE TABLE `sys_promotion`  (
   INDEX `idx_promotion_time`(`start_time` ASC, `end_time` ASC) USING BTREE,
   INDEX `idx_promotion_status`(`status` ASC) USING BTREE,
   CONSTRAINT `fk_promotion_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_promotion
@@ -1508,7 +1593,7 @@ CREATE TABLE `sys_purchase_order`  (
   INDEX `idx_po_status`(`status` ASC) USING BTREE,
   CONSTRAINT `fk_po_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_po_supplier` FOREIGN KEY (`supplier_id`) REFERENCES `sys_supplier` (`supplier_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '采购单表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '采购单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_purchase_order
@@ -1540,7 +1625,7 @@ CREATE TABLE `sys_queue`  (
   INDEX `fk_queue_table`(`table_id` ASC) USING BTREE,
   CONSTRAINT `fk_queue_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_queue_table` FOREIGN KEY (`table_id`) REFERENCES `sys_restaurant_table` (`table_id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '排队叫号表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '排队叫号表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_queue
@@ -1564,7 +1649,7 @@ CREATE TABLE `sys_raw_material`  (
   INDEX `idx_material_name`(`material_name` ASC) USING BTREE,
   INDEX `idx_material_category`(`category` ASC) USING BTREE,
   CONSTRAINT `fk_material_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '原材料表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '原材料表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_raw_material
@@ -1595,7 +1680,7 @@ CREATE TABLE `sys_reservation`  (
   INDEX `idx_reservation_status`(`status` ASC) USING BTREE,
   CONSTRAINT `fk_reservation_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_reservation_table` FOREIGN KEY (`table_id`) REFERENCES `sys_restaurant_table` (`table_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '预订信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '预订信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_reservation
@@ -1662,110 +1747,112 @@ CREATE TABLE `sys_role_permission`  (
   INDEX `idx_role_permission_permission`(`permission_id` ASC) USING BTREE,
   CONSTRAINT `fk_role_permission_permission` FOREIGN KEY (`permission_id`) REFERENCES `sys_permission` (`permission_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_role_permission_role` FOREIGN KEY (`role_id`) REFERENCES `sys_role` (`role_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 702 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色权限关联表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 803 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色权限关联表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role_permission
 -- ----------------------------
-INSERT INTO `sys_role_permission` VALUES (603, 1, 1);
-INSERT INTO `sys_role_permission` VALUES (604, 1, 13);
-INSERT INTO `sys_role_permission` VALUES (605, 1, 2);
-INSERT INTO `sys_role_permission` VALUES (606, 1, 14);
-INSERT INTO `sys_role_permission` VALUES (607, 1, 15);
-INSERT INTO `sys_role_permission` VALUES (608, 1, 16);
-INSERT INTO `sys_role_permission` VALUES (609, 1, 3);
-INSERT INTO `sys_role_permission` VALUES (610, 1, 18);
-INSERT INTO `sys_role_permission` VALUES (611, 1, 19);
-INSERT INTO `sys_role_permission` VALUES (612, 1, 4);
-INSERT INTO `sys_role_permission` VALUES (613, 1, 20);
-INSERT INTO `sys_role_permission` VALUES (614, 1, 21);
-INSERT INTO `sys_role_permission` VALUES (615, 1, 22);
-INSERT INTO `sys_role_permission` VALUES (616, 1, 23);
-INSERT INTO `sys_role_permission` VALUES (617, 1, 5);
-INSERT INTO `sys_role_permission` VALUES (618, 1, 24);
-INSERT INTO `sys_role_permission` VALUES (619, 1, 25);
-INSERT INTO `sys_role_permission` VALUES (620, 1, 26);
-INSERT INTO `sys_role_permission` VALUES (621, 1, 27);
-INSERT INTO `sys_role_permission` VALUES (622, 1, 6);
-INSERT INTO `sys_role_permission` VALUES (623, 1, 28);
-INSERT INTO `sys_role_permission` VALUES (624, 1, 29);
-INSERT INTO `sys_role_permission` VALUES (625, 1, 52);
-INSERT INTO `sys_role_permission` VALUES (626, 1, 7);
-INSERT INTO `sys_role_permission` VALUES (627, 1, 30);
-INSERT INTO `sys_role_permission` VALUES (628, 1, 31);
-INSERT INTO `sys_role_permission` VALUES (629, 1, 32);
-INSERT INTO `sys_role_permission` VALUES (630, 1, 33);
-INSERT INTO `sys_role_permission` VALUES (631, 1, 8);
-INSERT INTO `sys_role_permission` VALUES (632, 1, 34);
-INSERT INTO `sys_role_permission` VALUES (633, 1, 35);
-INSERT INTO `sys_role_permission` VALUES (634, 1, 36);
-INSERT INTO `sys_role_permission` VALUES (635, 1, 37);
-INSERT INTO `sys_role_permission` VALUES (636, 1, 9);
-INSERT INTO `sys_role_permission` VALUES (637, 1, 38);
-INSERT INTO `sys_role_permission` VALUES (638, 1, 40);
-INSERT INTO `sys_role_permission` VALUES (639, 1, 10);
-INSERT INTO `sys_role_permission` VALUES (640, 1, 41);
-INSERT INTO `sys_role_permission` VALUES (641, 1, 42);
-INSERT INTO `sys_role_permission` VALUES (642, 1, 43);
-INSERT INTO `sys_role_permission` VALUES (643, 1, 11);
-INSERT INTO `sys_role_permission` VALUES (644, 1, 44);
-INSERT INTO `sys_role_permission` VALUES (645, 1, 45);
-INSERT INTO `sys_role_permission` VALUES (646, 1, 46);
-INSERT INTO `sys_role_permission` VALUES (647, 1, 47);
-INSERT INTO `sys_role_permission` VALUES (648, 1, 12);
-INSERT INTO `sys_role_permission` VALUES (649, 1, 48);
-INSERT INTO `sys_role_permission` VALUES (650, 1, 49);
-INSERT INTO `sys_role_permission` VALUES (651, 1, 50);
-INSERT INTO `sys_role_permission` VALUES (652, 1, 51);
-INSERT INTO `sys_role_permission` VALUES (653, 3, 1);
-INSERT INTO `sys_role_permission` VALUES (654, 3, 13);
-INSERT INTO `sys_role_permission` VALUES (655, 3, 2);
-INSERT INTO `sys_role_permission` VALUES (656, 3, 14);
-INSERT INTO `sys_role_permission` VALUES (657, 3, 15);
-INSERT INTO `sys_role_permission` VALUES (658, 3, 16);
-INSERT INTO `sys_role_permission` VALUES (659, 3, 3);
-INSERT INTO `sys_role_permission` VALUES (660, 3, 18);
-INSERT INTO `sys_role_permission` VALUES (661, 3, 19);
-INSERT INTO `sys_role_permission` VALUES (662, 3, 4);
-INSERT INTO `sys_role_permission` VALUES (663, 3, 20);
-INSERT INTO `sys_role_permission` VALUES (664, 3, 21);
-INSERT INTO `sys_role_permission` VALUES (665, 3, 22);
-INSERT INTO `sys_role_permission` VALUES (666, 3, 23);
-INSERT INTO `sys_role_permission` VALUES (667, 3, 5);
-INSERT INTO `sys_role_permission` VALUES (668, 3, 24);
-INSERT INTO `sys_role_permission` VALUES (669, 3, 25);
-INSERT INTO `sys_role_permission` VALUES (670, 3, 26);
-INSERT INTO `sys_role_permission` VALUES (671, 3, 27);
-INSERT INTO `sys_role_permission` VALUES (672, 3, 6);
-INSERT INTO `sys_role_permission` VALUES (673, 3, 28);
-INSERT INTO `sys_role_permission` VALUES (674, 3, 29);
-INSERT INTO `sys_role_permission` VALUES (675, 3, 52);
-INSERT INTO `sys_role_permission` VALUES (676, 3, 7);
-INSERT INTO `sys_role_permission` VALUES (677, 3, 30);
-INSERT INTO `sys_role_permission` VALUES (678, 3, 31);
-INSERT INTO `sys_role_permission` VALUES (679, 3, 32);
-INSERT INTO `sys_role_permission` VALUES (680, 3, 33);
-INSERT INTO `sys_role_permission` VALUES (681, 3, 8);
-INSERT INTO `sys_role_permission` VALUES (682, 3, 34);
-INSERT INTO `sys_role_permission` VALUES (683, 3, 35);
-INSERT INTO `sys_role_permission` VALUES (684, 3, 36);
-INSERT INTO `sys_role_permission` VALUES (685, 3, 37);
-INSERT INTO `sys_role_permission` VALUES (686, 3, 9);
-INSERT INTO `sys_role_permission` VALUES (687, 3, 38);
-INSERT INTO `sys_role_permission` VALUES (688, 3, 40);
-INSERT INTO `sys_role_permission` VALUES (689, 3, 10);
-INSERT INTO `sys_role_permission` VALUES (690, 3, 41);
-INSERT INTO `sys_role_permission` VALUES (691, 3, 42);
-INSERT INTO `sys_role_permission` VALUES (692, 3, 43);
-INSERT INTO `sys_role_permission` VALUES (693, 3, 11);
-INSERT INTO `sys_role_permission` VALUES (694, 3, 44);
-INSERT INTO `sys_role_permission` VALUES (695, 3, 45);
-INSERT INTO `sys_role_permission` VALUES (696, 3, 46);
-INSERT INTO `sys_role_permission` VALUES (697, 3, 47);
-INSERT INTO `sys_role_permission` VALUES (698, 3, 48);
-INSERT INTO `sys_role_permission` VALUES (699, 3, 49);
-INSERT INTO `sys_role_permission` VALUES (700, 3, 50);
-INSERT INTO `sys_role_permission` VALUES (701, 3, 51);
+INSERT INTO `sys_role_permission` VALUES (702, 1, 1);
+INSERT INTO `sys_role_permission` VALUES (703, 1, 13);
+INSERT INTO `sys_role_permission` VALUES (704, 1, 53);
+INSERT INTO `sys_role_permission` VALUES (705, 1, 2);
+INSERT INTO `sys_role_permission` VALUES (706, 1, 14);
+INSERT INTO `sys_role_permission` VALUES (707, 1, 15);
+INSERT INTO `sys_role_permission` VALUES (708, 1, 16);
+INSERT INTO `sys_role_permission` VALUES (709, 1, 3);
+INSERT INTO `sys_role_permission` VALUES (710, 1, 18);
+INSERT INTO `sys_role_permission` VALUES (711, 1, 19);
+INSERT INTO `sys_role_permission` VALUES (712, 1, 4);
+INSERT INTO `sys_role_permission` VALUES (713, 1, 20);
+INSERT INTO `sys_role_permission` VALUES (714, 1, 21);
+INSERT INTO `sys_role_permission` VALUES (715, 1, 22);
+INSERT INTO `sys_role_permission` VALUES (716, 1, 23);
+INSERT INTO `sys_role_permission` VALUES (717, 1, 5);
+INSERT INTO `sys_role_permission` VALUES (718, 1, 24);
+INSERT INTO `sys_role_permission` VALUES (719, 1, 25);
+INSERT INTO `sys_role_permission` VALUES (720, 1, 26);
+INSERT INTO `sys_role_permission` VALUES (721, 1, 27);
+INSERT INTO `sys_role_permission` VALUES (722, 1, 6);
+INSERT INTO `sys_role_permission` VALUES (723, 1, 28);
+INSERT INTO `sys_role_permission` VALUES (724, 1, 29);
+INSERT INTO `sys_role_permission` VALUES (725, 1, 52);
+INSERT INTO `sys_role_permission` VALUES (726, 1, 7);
+INSERT INTO `sys_role_permission` VALUES (727, 1, 30);
+INSERT INTO `sys_role_permission` VALUES (728, 1, 31);
+INSERT INTO `sys_role_permission` VALUES (729, 1, 32);
+INSERT INTO `sys_role_permission` VALUES (730, 1, 33);
+INSERT INTO `sys_role_permission` VALUES (731, 1, 8);
+INSERT INTO `sys_role_permission` VALUES (732, 1, 34);
+INSERT INTO `sys_role_permission` VALUES (733, 1, 35);
+INSERT INTO `sys_role_permission` VALUES (734, 1, 36);
+INSERT INTO `sys_role_permission` VALUES (735, 1, 37);
+INSERT INTO `sys_role_permission` VALUES (736, 1, 9);
+INSERT INTO `sys_role_permission` VALUES (737, 1, 38);
+INSERT INTO `sys_role_permission` VALUES (738, 1, 40);
+INSERT INTO `sys_role_permission` VALUES (739, 1, 10);
+INSERT INTO `sys_role_permission` VALUES (740, 1, 41);
+INSERT INTO `sys_role_permission` VALUES (741, 1, 42);
+INSERT INTO `sys_role_permission` VALUES (742, 1, 43);
+INSERT INTO `sys_role_permission` VALUES (743, 1, 11);
+INSERT INTO `sys_role_permission` VALUES (744, 1, 44);
+INSERT INTO `sys_role_permission` VALUES (745, 1, 45);
+INSERT INTO `sys_role_permission` VALUES (746, 1, 46);
+INSERT INTO `sys_role_permission` VALUES (747, 1, 47);
+INSERT INTO `sys_role_permission` VALUES (748, 1, 12);
+INSERT INTO `sys_role_permission` VALUES (749, 1, 48);
+INSERT INTO `sys_role_permission` VALUES (750, 1, 49);
+INSERT INTO `sys_role_permission` VALUES (751, 1, 50);
+INSERT INTO `sys_role_permission` VALUES (752, 1, 51);
+INSERT INTO `sys_role_permission` VALUES (753, 3, 1);
+INSERT INTO `sys_role_permission` VALUES (754, 3, 13);
+INSERT INTO `sys_role_permission` VALUES (755, 3, 53);
+INSERT INTO `sys_role_permission` VALUES (756, 3, 2);
+INSERT INTO `sys_role_permission` VALUES (757, 3, 14);
+INSERT INTO `sys_role_permission` VALUES (758, 3, 15);
+INSERT INTO `sys_role_permission` VALUES (759, 3, 16);
+INSERT INTO `sys_role_permission` VALUES (760, 3, 3);
+INSERT INTO `sys_role_permission` VALUES (761, 3, 18);
+INSERT INTO `sys_role_permission` VALUES (762, 3, 19);
+INSERT INTO `sys_role_permission` VALUES (763, 3, 4);
+INSERT INTO `sys_role_permission` VALUES (764, 3, 20);
+INSERT INTO `sys_role_permission` VALUES (765, 3, 21);
+INSERT INTO `sys_role_permission` VALUES (766, 3, 22);
+INSERT INTO `sys_role_permission` VALUES (767, 3, 23);
+INSERT INTO `sys_role_permission` VALUES (768, 3, 5);
+INSERT INTO `sys_role_permission` VALUES (769, 3, 24);
+INSERT INTO `sys_role_permission` VALUES (770, 3, 25);
+INSERT INTO `sys_role_permission` VALUES (771, 3, 26);
+INSERT INTO `sys_role_permission` VALUES (772, 3, 27);
+INSERT INTO `sys_role_permission` VALUES (773, 3, 6);
+INSERT INTO `sys_role_permission` VALUES (774, 3, 28);
+INSERT INTO `sys_role_permission` VALUES (775, 3, 29);
+INSERT INTO `sys_role_permission` VALUES (776, 3, 52);
+INSERT INTO `sys_role_permission` VALUES (777, 3, 7);
+INSERT INTO `sys_role_permission` VALUES (778, 3, 30);
+INSERT INTO `sys_role_permission` VALUES (779, 3, 31);
+INSERT INTO `sys_role_permission` VALUES (780, 3, 32);
+INSERT INTO `sys_role_permission` VALUES (781, 3, 33);
+INSERT INTO `sys_role_permission` VALUES (782, 3, 8);
+INSERT INTO `sys_role_permission` VALUES (783, 3, 34);
+INSERT INTO `sys_role_permission` VALUES (784, 3, 35);
+INSERT INTO `sys_role_permission` VALUES (785, 3, 36);
+INSERT INTO `sys_role_permission` VALUES (786, 3, 37);
+INSERT INTO `sys_role_permission` VALUES (787, 3, 9);
+INSERT INTO `sys_role_permission` VALUES (788, 3, 38);
+INSERT INTO `sys_role_permission` VALUES (789, 3, 40);
+INSERT INTO `sys_role_permission` VALUES (790, 3, 10);
+INSERT INTO `sys_role_permission` VALUES (791, 3, 41);
+INSERT INTO `sys_role_permission` VALUES (792, 3, 42);
+INSERT INTO `sys_role_permission` VALUES (793, 3, 43);
+INSERT INTO `sys_role_permission` VALUES (794, 3, 11);
+INSERT INTO `sys_role_permission` VALUES (795, 3, 44);
+INSERT INTO `sys_role_permission` VALUES (796, 3, 45);
+INSERT INTO `sys_role_permission` VALUES (797, 3, 46);
+INSERT INTO `sys_role_permission` VALUES (798, 3, 47);
+INSERT INTO `sys_role_permission` VALUES (799, 3, 48);
+INSERT INTO `sys_role_permission` VALUES (800, 3, 49);
+INSERT INTO `sys_role_permission` VALUES (801, 3, 50);
+INSERT INTO `sys_role_permission` VALUES (802, 3, 51);
 
 -- ----------------------------
 -- Table structure for sys_set_meal
@@ -1789,7 +1876,7 @@ CREATE TABLE `sys_set_meal`  (
   INDEX `idx_meal_time`(`start_time` ASC, `end_time` ASC) USING BTREE,
   INDEX `idx_meal_fixed`(`is_fixed` ASC) USING BTREE,
   CONSTRAINT `fk_meal_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '套餐信息表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '套餐信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_set_meal
@@ -1814,7 +1901,7 @@ CREATE TABLE `sys_set_meal_item`  (
   CONSTRAINT `fk_meal_item_dish` FOREIGN KEY (`dish_id`) REFERENCES `sys_dish` (`dish_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_meal_item_meal` FOREIGN KEY (`meal_id`) REFERENCES `sys_set_meal` (`meal_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `fk_meal_item_spec` FOREIGN KEY (`spec_id`) REFERENCES `sys_dish_spec` (`spec_id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '套餐包含菜品表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '套餐包含菜品表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_set_meal_item
@@ -1910,7 +1997,7 @@ CREATE TABLE `sys_supplier`  (
   PRIMARY KEY (`supplier_id`) USING BTREE,
   INDEX `idx_supplier_name`(`supplier_name` ASC) USING BTREE,
   INDEX `idx_supplier_status`(`status` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '供应商表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '供应商表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_supplier
@@ -1961,7 +2048,7 @@ CREATE TABLE `sys_timertask`  (
   `Corn` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '设置运行时段',
   `StartNumber` bigint NULL DEFAULT NULL COMMENT '运行次数',
   PRIMARY KEY (`Id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '定时器管理' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '定时器管理' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_timertask

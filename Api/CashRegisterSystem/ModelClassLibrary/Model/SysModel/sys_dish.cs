@@ -114,6 +114,13 @@ namespace MyNamespace
         /// </summary>           
         public long? store_id { get; set; }
 
+        /// <summary>
+        /// Desc:制作厨房
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public int kitchen_id { get; set; }
+
         [Navigate(NavigateType.OneToOne, nameof(category_id), nameof(sys_dish_category.category_id))]//一对一 
         public sys_dish_category? dish_category { get; set; }
 

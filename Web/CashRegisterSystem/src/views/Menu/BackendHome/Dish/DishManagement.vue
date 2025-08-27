@@ -79,7 +79,12 @@
           </template>
         </el-table-column>
         <el-table-column prop="cooking_time" label="烹饪时长(分钟)" align="center" />
-        <el-table-column label="操作" align="center" width="180">
+        <el-table-column prop="kitchen_id" label="制作厨房" align="center">
+            <template #default="scope">
+                {{ kitchenList.find(cat => cat.id === scope.row.kitchen_id)?.name || '' }}
+            </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" width="120">
           <template #default="scope">
             <el-button type="text" style="color: #f56c6c;" @click="handleDelete(scope.row)">删除</el-button>
             <el-button type="text" style="color: #67c23a;" @click="openEditDialog(scope.row)">编辑</el-button>
@@ -162,6 +167,11 @@
         <el-form-item label="烹饪时长(分钟)">
           <el-input v-model.number="form.cooking_time" />
         </el-form-item>
+        <el-form-item label="制作厨房">
+          <el-select v-model="form.kitchen_id" placeholder="请选择制作厨房" >
+            <el-option v-for="kitchen in kitchenList" :key="kitchen.id" :value="kitchen.id" :label="kitchen.name">{{ kitchen.name }}</el-option>
+         </el-select>
+        </el-form-item>
       </el-form>
       <template #footer>
         <el-button class="cancel-btn" @click="addDialogVisible = false">取消</el-button>
@@ -227,6 +237,11 @@
         <el-form-item label="烹饪时长(分钟)">
           <el-input v-model.number="form.cooking_time" />
         </el-form-item>
+        <el-form-item label="制作厨房">
+          <el-select v-model="form.kitchen_id" placeholder="请选择制作厨房" >
+            <el-option v-for="kitchen in kitchenList" :key="kitchen.id" :value="kitchen.id" :label="kitchen.name">{{ kitchen.name }}</el-option>
+         </el-select>
+        </el-form-item>
       </el-form>
       <template #footer>
         <el-button class="cancel-btn" @click="editDialogVisible = false">取消</el-button>
@@ -239,7 +254,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
-import { getDishList, addDish, updateDish, deleteDish, getDishCategoryList } from '../../../../api/dish';
+import { getDishList, addDish, updateDish, deleteDish, getDishCategoryList, getkitchenList } from '../../../../api/dish';
 import { getStoreList } from '../../../../api/login';
 import config from '../../../../../public/config';
 const uploadUrl = config.apiBaseUrl + '/api/Img/UpImg';
@@ -251,6 +266,7 @@ const currentPage = ref(1);
 const addDialogVisible = ref(false);
 const editDialogVisible = ref(false);
 const storeList = ref<any[]>([]);
+const kitchenList = ref<any[]>([])
 const selectedType = ref('');
 const dishcatageList = ref<any[]>([]);
 const form = ref({
@@ -265,7 +281,8 @@ const form = ref({
   image_url: '',
   status: 1,
   cooking_time: 0,
-  store_id: null
+  store_id: null,
+  kitchen_id:''
 });
 
 const getDishListData = async () => {
@@ -303,7 +320,19 @@ onMounted(() => {
   getDishListData();
   fetchStoreList();
   fetchDishCategoryList()
+  fetchkitchenList()
 });
+
+async function fetchkitchenList(){
+ await getkitchenList().then((res: any) => {
+    if (res && res.response) {
+      kitchenList.value = res.response.map((item: any) => ({
+        id: item.id,
+        name: item.kitchen_name
+      }));
+    }
+  });
+}
 
 const handleQuery = () => {
   currentPage.value = 1;
@@ -339,7 +368,8 @@ const openAddDialog = () => {
     image_url: '',
     status: 1,
     cooking_time: 0,
-    store_id: null
+    store_id: null,
+    kitchen_id:''
   };
   addDialogVisible.value = true;
 };

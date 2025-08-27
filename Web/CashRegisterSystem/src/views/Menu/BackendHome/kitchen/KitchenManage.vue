@@ -2,12 +2,12 @@
   <div class="kitchen-manage-container">
     <!-- 筛选区 -->
     <el-form class="filter-bar" :inline="true">
-      <el-form-item label="门店：">
+      <!-- <el-form-item label="门店：">
         <el-select v-model="selectedStore" placeholder="请选择门店" style="min-width:140px;">
           <el-option value="">全部门店</el-option>
           <el-option v-for="store in storeList" :key="store.id" :label="store.name" :value="store.id" />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="厨房类型：">
         <el-select v-model="kitchenType" placeholder="全部类型" style="min-width:120px;">
           <el-option value="">全部</el-option>
@@ -23,14 +23,14 @@
     <!-- 厨房列表 -->
     <el-table :data="filteredKitchens" border style="width:100%;height: 67vh;" :header-cell-style="{ background: '#f8f9fa', color: '#606266' }" class="custom-table">
       <el-table-column type="index" label="序号" width="60" align="center" />
-      <el-table-column prop="kitchen_name" label="厨房名称" align="center" />
-      <el-table-column prop="kitchen_type" label="厨房类型" align="center" />
-      <el-table-column prop="store_id" label="所属门店" align="center">
+      <el-table-column prop="kitchen_name" label="厨房名称" align="center"  width="120"/>
+      <el-table-column prop="kitchen_type" label="厨房类型" align="center"  width="120"/>
+      <!-- <el-table-column prop="store_id" label="所属门店" align="center">
         <template #default="scope">
           {{ getStoreName(scope.row.store_id) }}
         </template>
-      </el-table-column>
-      <el-table-column prop="desc" label="描述" align="center" />
+      </el-table-column> -->
+      <el-table-column prop="kitchen_description" label="描述" align="center" />
       <el-table-column label="操作" align="center" width="180">
         <template #default="scope">
           <el-button type="text" class="table-btn-edit" @click="openEditDialog(scope.row)">编辑</el-button>
@@ -55,11 +55,11 @@
     <!-- 新增/编辑弹窗 -->
     <el-dialog v-model="dialogVisible" width="500" :title="dialogTitle">
       <el-form :model="form" label-width="120px">
-        <el-form-item label="所属门店">
+        <!-- <el-form-item label="所属门店">
           <el-select v-model="form.store_id" placeholder="请选择门店">
             <el-option v-for="store in storeList" :key="store.id" :label="store.name" :value="store.id" />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="厨房名称">
           <el-input v-model="form.kitchen_name" placeholder="请输入厨房名称" />
         </el-form-item>
@@ -67,7 +67,7 @@
             <el-input v-model="form.kitchen_type" placeholder="请输入厨房类型" />
         </el-form-item>
         <el-form-item label="描述">
-          <el-input v-model="form.desc" placeholder="可填写厨房说明" />
+          <el-input v-model="form.kitchen_description" placeholder="可填写厨房说明" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -79,21 +79,22 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
-import { ElMessage } from 'element-plus';
+import { ref, computed, onMounted } from 'vue';
+import { ElMessage, ElMessageBox } from 'element-plus';
+import { getKitchenList, addKitchen, updateKitchen, deleteKitchen } from '../../../../api/KitchenManage';
 
-interface Store { id: string; name: string; }
+
+interface Store { id: string | number; name: string; }
 interface Kitchen {
-  kitchen_id: number;
+  id: number;
   kitchen_name: string;
   kitchen_type: string;
-  store_id: string;
-  desc?: string;
+  kitchen_description?: string;
 }
 
 const storeList = ref<Store[]>([
-  { id: '1', name: '旗舰店' },
-  { id: '2', name: '分店A' }
+  { id: 1, name: '旗舰店' },
+  { id: 2, name: '分店A' }
 ]);
 const selectedStore = ref('');
 const kitchenType = ref('');
@@ -103,89 +104,141 @@ const total = ref(0);
 const dialogVisible = ref(false);
 const dialogTitle = ref('新增厨房');
 const form = ref<Kitchen | any>({
-  kitchen_id: 0,
+  id: 0,
   kitchen_name: '',
   kitchen_type: '',
-  store_id: '',
-  desc: ''
+  kitchen_description: '',
 });
-const kitchenList = ref<Kitchen[]>([
-  { kitchen_id: 1, kitchen_name: '热菜厨房', kitchen_type: '热菜', store_id: '1', desc: '主营热菜' },
-  { kitchen_id: 2, kitchen_name: '凉菜厨房', kitchen_type: '凉菜', store_id: '1', desc: '主营凉菜' },
-  { kitchen_id: 3, kitchen_name: '饮品厨房', kitchen_type: '饮品', store_id: '2', desc: '主营饮品' }
-]);
+const kitchenList = ref<Kitchen[]>([]);
 
 const filteredKitchens = computed(() => {
   let result = kitchenList.value.filter(k => {
-    const matchStore = !selectedStore.value || k.store_id === selectedStore.value;
     const matchType = !kitchenType.value || k.kitchen_type === kitchenType.value;
-    return matchStore && matchType;
+    return  matchType;
   });
   total.value = result.length;
   const startIdx = (currentPage.value - 1) * pageSize.value;
   return result.slice(startIdx, startIdx + pageSize.value);
 });
 
-const getStoreName = (id: string) => {
-  const store = storeList.value.find(s => s.id === id);
+const getStoreName = (id: number | string) => {
+  const store = storeList.value.find(s => s.id == id);
   return store ? store.name : '-';
 };
 
+
+const fetchKitchenList = async () => {
+    await getKitchenList(currentPage.value, pageSize.value)
+    .then((res:any)=>{
+      if (res.success) {
+        kitchenList.value = res.response || [];
+        total.value = res.count || 0;
+      } else {
+        ElMessage.error(res.message || '获取厨房列表失败');
+      }
+    }).catch(e=>{
+      ElMessage.error('获取厨房列表失败');
+    });
+}
+
 const handleQuery = () => {
-  // 仅模拟筛选，实际可扩展为接口请求
+  fetchKitchenList();
 };
+
 const handleReset = () => {
   selectedStore.value = '';
   kitchenType.value = '';
-  handleQuery();
+  fetchKitchenList();
 };
+
 const openAddDialog = () => {
   dialogTitle.value = '新增厨房';
   form.value = {
-    kitchen_id: 0,
+    id: 0,
     kitchen_name: '',
     kitchen_type: '',
-    store_id: '',
-    desc: ''
+    kitchen_description: '',
+    store_id: ''
   };
   dialogVisible.value = true;
 };
+
 const openEditDialog = (row: Kitchen) => {
   dialogTitle.value = '编辑厨房';
   form.value = { ...row };
   dialogVisible.value = true;
 };
-const handleSave = () => {
-  if (!form.value.kitchen_name || !form.value.kitchen_type || !form.value.store_id) {
+
+const handleSave = async () => {
+  if (!form.value.kitchen_name || !form.value.kitchen_type) {
     ElMessage.warning('请填写必填项');
     return;
   }
-  if (form.value.kitchen_id === 0) {
-    form.value.kitchen_id = Date.now();
-    kitchenList.value.push({ ...form.value });
-    ElMessage.success('新增成功');
-  } else {
-    const idx = kitchenList.value.findIndex(k => k.kitchen_id === form.value.kitchen_id);
-    if (idx !== -1) {
-      kitchenList.value[idx] = { ...form.value };
-      ElMessage.success('修改成功');
+  try {
+    if (form.value.id === 0) {
+      // 新增
+      const res:any = await addKitchen({
+        kitchen_name: form.value.kitchen_name,
+        kitchen_type: form.value.kitchen_type,
+        kitchen_description: form.value.kitchen_description,
+      });
+      if (res.success) {
+        ElMessage.success('新增成功');
+        dialogVisible.value = false;
+        fetchKitchenList();
+      } else {
+        ElMessage.error(res.message || '新增失败');
+      }
+    } else {
+      // 编辑
+      const res:any = await updateKitchen({
+        id: form.value.id,
+        kitchen_name: form.value.kitchen_name,
+        kitchen_type: form.value.kitchen_type,
+        kitchen_description: form.value.kitchen_description,
+      });
+      if (res.success) {
+        ElMessage.success('修改成功');
+        dialogVisible.value = false;
+        fetchKitchenList();
+      } else {
+        ElMessage.error(res.message || '修改失败');
+      }
     }
+  } catch (e) {
+    ElMessage.error('操作失败');
   }
-  dialogVisible.value = false;
 };
+
 const handleDelete = (row: Kitchen) => {
-  const idx = kitchenList.value.findIndex(k => k.kitchen_id === row.kitchen_id);
-  if (idx !== -1) {
-    kitchenList.value.splice(idx, 1);
-    ElMessage.success('删除成功');
-  }
+  ElMessageBox.confirm('确定要删除该厨房吗？', '提示', { type: 'warning' })
+    .then(async () => {
+      try {
+        const res:any = await deleteKitchen(row.id);
+        if (res.success) {
+          ElMessage.success('删除成功');
+          fetchKitchenList();
+        } else {
+          ElMessage.error(res.message || '删除失败');
+        }
+      } catch (e) {
+        ElMessage.error('删除失败');
+      }
+    });
 };
+
 const handleSizeChange = (val: number) => {
   pageSize.value = val;
+  fetchKitchenList();
 };
 const handlePageChange = (val: number) => {
   currentPage.value = val;
+  fetchKitchenList();
 };
+
+onMounted(() => {
+  fetchKitchenList();
+});
 </script>
 
 <style scoped>

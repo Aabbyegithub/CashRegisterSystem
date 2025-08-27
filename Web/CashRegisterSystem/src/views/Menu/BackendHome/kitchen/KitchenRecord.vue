@@ -52,8 +52,8 @@
       <el-table-column prop="create_time" label="派单时间" align="center" />
       <el-table-column prop="finish_time" label="完成时间" align="center" />
       <el-table-column prop="pick_time" label="取餐时间" align="center" />
-      <el-table-column prop="cook_id" label="厨师ID" align="center" />
-      <el-table-column prop="picker_id" label="取餐员ID" align="center" />
+      <el-table-column prop="cook_name" label="厨师" align="center" />
+      <el-table-column prop="picker_name" label="取餐员" align="center" />
     </el-table>
     <div v-if="filteredOrders.length === 0" class="empty-row">
       <el-empty description="暂无出餐记录" />

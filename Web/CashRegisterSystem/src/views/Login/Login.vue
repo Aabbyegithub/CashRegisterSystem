@@ -18,12 +18,12 @@
         >
           账号登录
         </div>
-        <div 
+        <!-- <div 
           :class="['tab-item', { active: loginTab === 'sms' }]" 
           @click="loginTab = 'sms'"
         >
           短信登录
-        </div>
+        </div> -->
       </div>
 
       <el-form 
@@ -68,8 +68,8 @@
         </template>
 
         <!-- 短信登录表单 -->
-        <template v-else>
-          <!-- <el-form-item label="门店" prop="storeId">
+        <!-- <template v-else>
+          <el-form-item label="门店" prop="storeId">
             <el-select v-model="form.storeId" placeholder="请选择门店">
               <el-option
                 v-for="store in storeList"
@@ -78,7 +78,7 @@
                 :value="store.store_id"
               />
             </el-select>
-          </el-form-item> -->
+          </el-form-item>
           <el-form-item label="手机号" prop="phone">
             <el-input 
               v-model="form.phone" 
@@ -105,7 +105,7 @@
               </template>
             </el-input>
           </el-form-item>
-        </template>
+        </template> -->
 
         <el-form-item>
           <el-button 
@@ -208,7 +208,7 @@ async function fetchStoreList() {
 }
 
 onMounted(() => {
-  fetchStoreList();
+  //fetchStoreList();
 });
 
 const submit = async () => {
@@ -219,7 +219,7 @@ const submit = async () => {
     let res: any
     if (loginTab.value === 'account') {
       // 账号密码登录逻辑
-      res = await loginApi(form.username, form.password,form.storeId)
+      res = await loginApi(form.username, form.password)
       // if (!res || !res.response || !res.response.token) {
       //   throw new Error('登录失败，请检查账号或密码')
       // }

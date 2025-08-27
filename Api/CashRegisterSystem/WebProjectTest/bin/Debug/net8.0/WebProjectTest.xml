@@ -189,6 +189,58 @@
             修改菜品
             </summary>
         </member>
+        <member name="M:WebProjectTest.Controllers.KitchenController.KitchenDashboardController.GetKitchenOrderList(System.Nullable{System.Int32},System.String,System.Int32,System.Int32)">
+            <summary>
+            获取厨房订单列表
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.KitchenController.KitchenDashboardController.GetOrderStatusStats(System.Nullable{System.Int32},System.String,System.Int32)">
+            <summary>
+            统计各状态订单数量
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.KitchenController.KitchenDashboardController.UpdateOrderStatus(System.Int32,System.Int32)">
+            <summary>
+            操作订单状态（开始制作、完成、取餐、退菜）
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.KitchenController.KitchenManageController.GetKitchenListAsync(System.Nullable{System.Int32},System.String,System.Int32,System.Int32)">
+            <summary>
+            获取厨房列表
+            </summary>
+            <param name="orgId"></param>
+            <param name="storeId"></param>
+            <param name="kitchenType"></param>
+            <param name="page"></param>
+            <param name="size"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.KitchenController.KitchenManageController.GetAllKitchenListAsync">
+            <summary>
+            获取门店所有厨房
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.KitchenController.KitchenManageController.AddKitchenAsync(MyNamespace.sys_kitchen)">
+            <summary>
+            添加厨房
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.KitchenController.KitchenManageController.DeleteKitchenAsync(System.Int32)">
+            <summary>
+            删除厨房
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.KitchenController.KitchenManageController.UpdateKitchenAsync(MyNamespace.sys_kitchen)">
+            <summary>
+            修改厨房
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.KitchenController.ServingFoodController.GetKitchenOrderList(System.Nullable{System.Int32},System.String,System.Int32,System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            获取厨房订单列表
+            </summary>
+        </member>
         <member name="M:WebProjectTest.Controllers.OrderController.OrderController.GetOrderListAsync(System.Int32,System.Int32)">
             <summary>
             获取订单列表
