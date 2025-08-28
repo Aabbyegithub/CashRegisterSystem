@@ -12,6 +12,6 @@ namespace WebIServices.IServices.KitchenIServices
 {
     public interface ServingFoodIServices : IBaseService
     {
-        Task<ApiResponse<List<sys_kitchen_order>>> GetkitchenListAsync(int? storeId, string? kitchenType, int status, int orgId,string? StartTime,string?EndTime,int page, int size, RefAsync<int> count);
+        Task<ApiPageResponse<List<sys_kitchen_order>>> GetkitchenListAsync(int? storeId, string? kitchenType, int? status, int orgId,string? StartTime,string?EndTime,int page, int size, RefAsync<int> count);
     }
 }

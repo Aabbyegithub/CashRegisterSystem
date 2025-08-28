@@ -20,7 +20,7 @@ namespace WebServiceClass.Services.KitchenServices
         {
             _dal = dal;
         }
-        public async Task<ApiResponse<List<sys_kitchen_order>>> GetkitchenListAsync(int? storeId, string? kitchenType, int status, int orgId, string? StartTime, string? EndTime, int page, int size, RefAsync<int> count)
+        public async Task<ApiPageResponse<List<sys_kitchen_order>>> GetkitchenListAsync(int? storeId, string? kitchenType, int? status, int orgId, string? StartTime, string? EndTime, int page, int size, RefAsync<int> count)
         {
             var query = _dal.Db.Queryable<sys_kitchen_order>()
                 .Includes(x => x.cook).Includes(x => x.picker).Includes(x => x.orderitem)
@@ -47,7 +47,7 @@ namespace WebServiceClass.Services.KitchenServices
             }
 
             var list = await query.OrderBy(x => x.create_time, OrderByType.Desc) .ToPageListAsync(page, size, count);
-            return Success(list, "获取厨房订单成功");
+            return PageSuccess(list,count, "获取厨房订单成功");
         }
     }
 }

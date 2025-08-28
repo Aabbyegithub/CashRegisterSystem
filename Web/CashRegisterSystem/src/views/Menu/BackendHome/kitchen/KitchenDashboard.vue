@@ -27,7 +27,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="handleQuery">查询</el-button>
+        <el-button type="primary" @click="fetchOrders">查询</el-button>
         <el-button @click="handleReset">重置</el-button>
       </el-form-item>
     </el-form>
@@ -72,8 +72,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
+import { getKitchenOrderList, getOrderStatusStats, updateOrderStatus } from  '../../../../api/KitchenManage';
+import { it } from 'element-plus/es/locales.mjs';
 
 interface Store { id: string; name: string; }
 interface KitchenOrder {
@@ -127,24 +129,84 @@ const filteredOrders = computed(() => {
     );
   });
 });
+onMounted(() => {
+  fetchOrders();
+  fetchStats();
+});
 
-const handleQuery = () => {
-  // 统计各状态数量
-  const statObj = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-  filteredOrders.value.forEach(order => {
-    const statusNum = Number(order.status);
-    if (statusNum >= 1 && statusNum <= 5) {
-      statObj[statusNum as 1|2|3|4|5]++;
-    }
+// 查询订单
+async function fetchOrders() {
+  const res:any = await getKitchenOrderList({
+    storeId: selectedStore.value,
+    kitchenType: kitchenType.value,
+    status: status.value
   });
-  stats.value = { ...statObj };
-};
+  if (res.success) {
+    orders.value = res.response.map((item:any) => ({
+      kitchen_id: item.kitchen_id,
+      item_id: item.item_id,
+      store_id: item.store_id,
+      table_no: item.table_no,
+      dish_name: item.dish_name,
+      spec_name: item.spec_name,
+      quantity: item.quantity,
+      cooking_require: item.cooking_require,
+      kitchen_type: item.kitchen_type,
+      status: item.status,
+      create_time: item.create_time,
+      finish_time: item.finish_time,
+      pick_time: item.pick_time,
+      overtime_warn: item.overtime_warn,
+      cook_id: item.cook_id,
+      picker_id: item.picker_id
+    }));
+  }
+  fetchStats()
+}
+
+// 查询统计
+async function fetchStats() {
+  const res:any = await getOrderStatusStats({
+    storeId: selectedStore.value,
+    kitchenType: kitchenType.value
+  });
+  if (res.success) {
+    stats.value = res.response;
+  }
+}
+
+// 更新订单状态
+async function updateStatus(order: KitchenOrder, newStatus: number) {
+  const res = await updateOrderStatus({
+    kitchenOrderId: order.kitchen_id,
+    status: newStatus
+  });
+  if (res.data.success) {
+    ElMessage.success('状态已更新');
+    fetchOrders();
+    fetchStats();
+  } else {
+    ElMessage.error('状态更新失败');
+  }
+}
+
+// const handleQuery = () => {
+//   // 统计各状态数量
+//   const statObj = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+//   filteredOrders.value.forEach(order => {
+//     const statusNum = Number(order.status);
+//     if (statusNum >= 1 && statusNum <= 5) {
+//       statObj[statusNum as 1|2|3|4|5]++;
+//     }
+//   });
+//   stats.value = { ...statObj };
+// };
 
 const handleReset = () => {
   selectedStore.value = '';
   kitchenType.value = '';
   status.value = '';
-  handleQuery();
+  fetchStats();
 };
 
 const statusTagType = (status: number) => {
@@ -158,31 +220,11 @@ const statusTagType = (status: number) => {
   }
 };
 
-const startCooking = (order: KitchenOrder) => {
-  order.status = 2;
-  ElMessage.success('已开始制作');
-  handleQuery();
-};
-const finishCooking = (order: KitchenOrder) => {
-  order.status = 3;
-  order.finish_time = new Date().toISOString();
-  ElMessage.success('已完成制作');
-  handleQuery();
-};
-const pickOrder = (order: KitchenOrder) => {
-  order.status = 4;
-  order.pick_time = new Date().toISOString();
-  ElMessage.success('已取餐');
-  handleQuery();
-};
-const cancelOrder = (order: KitchenOrder) => {
-  order.status = 5;
-  ElMessage.error('已退菜');
-  handleQuery();
-};
+const startCooking = (order: KitchenOrder) => updateStatus(order, 2);
+const finishCooking = (order: KitchenOrder) => updateStatus(order, 3);
+const pickOrder = (order: KitchenOrder) => updateStatus(order, 4);
 
-// 初始化统计
-handleQuery();
+
 </script>
 
 <style scoped>

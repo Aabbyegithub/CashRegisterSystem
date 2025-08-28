@@ -22,9 +22,9 @@ namespace WebProjectTest.Controllers.KitchenController
         /// </summary>
         [HttpGet]
         [OperationLogFilter("厨房管理", "厨房订单查询", ActionType.Search)]
-        public async Task<ApiResponse<List<sys_kitchen_order>>> GetKitchenOrderList(int? storeId, string? kitchenType, int status, int orgId)
+        public async Task<ApiResponse<List<sys_kitchen_order>>> GetKitchenOrderList(int? storeId, string? kitchenType, int? status)
         {
-            return await _dashboardService.GetkitchenListAsync(storeId, kitchenType, status, orgId);
+            return await _dashboardService.GetkitchenListAsync(storeId, kitchenType, status, OrgId);
         }
 
         /// <summary>
@@ -32,9 +32,9 @@ namespace WebProjectTest.Controllers.KitchenController
         /// </summary>
         [HttpGet]
         [OperationLogFilter("厨房管理", "订单状态统计", ActionType.Search)]
-        public async Task<ApiResponse<Dictionary<int, int>>> GetOrderStatusStats(int? storeId, string? kitchenType, int orgId)
+        public async Task<ApiResponse<Dictionary<int, int>>> GetOrderStatusStats(int? storeId, string? kitchenType)
         {
-            return await _dashboardService.GetOrderStatusStatsAsync(storeId, kitchenType, orgId);
+            return await _dashboardService.GetOrderStatusStatsAsync(storeId, kitchenType, OrgId);
         }
 
         /// <summary>

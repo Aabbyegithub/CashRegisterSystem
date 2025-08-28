@@ -24,7 +24,7 @@ namespace WebProjectTest.Controllers.KitchenController
         /// </summary>
         [HttpGet]
         [OperationLogFilter("系统设置>厨房管理", "厨房列表查询", ActionType.Search)]
-        public async Task<ApiResponse<List<sys_kitchen_order>>> GetKitchenOrderList(int? storeId, string? kitchenType, int status, string? StartTime, string? EndTime, int page = 1, int size = 10)
+        public async Task<ApiPageResponse<List<sys_kitchen_order>>> GetKitchenOrderList(int? storeId, string? kitchenType, int? status, string? StartTime, string? EndTime, int page = 1, int size = 10)
         {
             RefAsync<int> count = 0;
             return await _servingFoodIServices.GetkitchenListAsync(storeId, kitchenType, status, OrgId, StartTime, EndTime, page, size, count);

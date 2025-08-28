@@ -14,7 +14,7 @@ namespace WebIServices.IServices.KitchenIServices
         /// <summary>
         /// 获取厨房订单列表（支持筛选）
         /// </summary>
-        Task<ApiResponse<List<sys_kitchen_order>>> GetkitchenListAsync(int? storeId, string? kitchenType, int status, int orgId);
+        Task<ApiResponse<List<sys_kitchen_order>>> GetkitchenListAsync(int? storeId, string? kitchenType, int? status, int orgId);
 
         /// <summary>
         /// 统计各状态订单数量

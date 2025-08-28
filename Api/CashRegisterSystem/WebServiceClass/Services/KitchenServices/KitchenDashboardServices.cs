@@ -21,7 +21,7 @@ namespace WebServiceClass.Services.KitchenServices
             _dal = dal;
         }
 
-        public async Task<ApiResponse<List<sys_kitchen_order>>> GetkitchenListAsync(int? storeId, string? kitchenType, int status, int orgId)
+        public async Task<ApiResponse<List<sys_kitchen_order>>> GetkitchenListAsync(int? storeId, string? kitchenType, int? status, int orgId)
         {
             var query = _dal.Db.Queryable<sys_kitchen_order>()
                 .WhereIF(orgId!=1, x => x.store_id == orgId);

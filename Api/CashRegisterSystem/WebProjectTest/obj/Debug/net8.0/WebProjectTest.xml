@@ -189,12 +189,12 @@
             修改菜品
             </summary>
         </member>
-        <member name="M:WebProjectTest.Controllers.KitchenController.KitchenDashboardController.GetKitchenOrderList(System.Nullable{System.Int32},System.String,System.Int32,System.Int32)">
+        <member name="M:WebProjectTest.Controllers.KitchenController.KitchenDashboardController.GetKitchenOrderList(System.Nullable{System.Int32},System.String,System.Nullable{System.Int32})">
             <summary>
             获取厨房订单列表
             </summary>
         </member>
-        <member name="M:WebProjectTest.Controllers.KitchenController.KitchenDashboardController.GetOrderStatusStats(System.Nullable{System.Int32},System.String,System.Int32)">
+        <member name="M:WebProjectTest.Controllers.KitchenController.KitchenDashboardController.GetOrderStatusStats(System.Nullable{System.Int32},System.String)">
             <summary>
             统计各状态订单数量
             </summary>
@@ -236,7 +236,7 @@
             修改厨房
             </summary>
         </member>
-        <member name="M:WebProjectTest.Controllers.KitchenController.ServingFoodController.GetKitchenOrderList(System.Nullable{System.Int32},System.String,System.Int32,System.String,System.String,System.Int32,System.Int32)">
+        <member name="M:WebProjectTest.Controllers.KitchenController.ServingFoodController.GetKitchenOrderList(System.Nullable{System.Int32},System.String,System.Nullable{System.Int32},System.String,System.String,System.Int32,System.Int32)">
             <summary>
             获取厨房订单列表
             </summary>

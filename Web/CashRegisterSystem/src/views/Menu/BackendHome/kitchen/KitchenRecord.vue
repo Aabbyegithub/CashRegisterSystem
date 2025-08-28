@@ -75,7 +75,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
+import { getAllKitchenOrderList } from '../../../../api/KitchenManage';
+import { dayjs } from 'element-plus';
 
 interface Store { id: string; name: string; }
 interface KitchenOrder {
@@ -95,6 +97,8 @@ interface KitchenOrder {
   overtime_warn: number;
   cook_id?: number;
   picker_id?: number;
+  cook_name?: string;
+  picker_name?: string;
 }
 
 const storeList = ref<Store[]>([
@@ -106,6 +110,11 @@ const kitchenType = ref('');
 const status = ref('');
 const dateRange = ref<[Date | null, Date | null] | null>(null);
 
+const orders = ref<KitchenOrder[]>([]);
+const currentPage = ref(1);
+const pageSize = ref(10);
+const total = ref(0);
+
 const statusMap: Record<number | string, string> = {
   1: '待制作',
   2: '制作中',
@@ -114,51 +123,53 @@ const statusMap: Record<number | string, string> = {
   5: '已退菜',
 };
 
-const orders = ref<KitchenOrder[]>([
-  { kitchen_id: 1, item_id: 101, store_id: 1, table_no: 'A01', dish_name: '宫保鸡丁', spec_name: '大份', quantity: 2, cooking_require: '微辣', kitchen_type: '热菜', status: 1, create_time: '2025-08-22 12:00:00', finish_time: '2025-08-22 12:20:00', pick_time: '2025-08-22 12:25:00', overtime_warn: 0, cook_id: 201, picker_id: 301 },
-  { kitchen_id: 2, item_id: 102, store_id: 1, table_no: 'A02', dish_name: '凉拌黄瓜', spec_name: '', quantity: 1, cooking_require: '', kitchen_type: '凉菜', status: 3, create_time: '2025-08-22 12:05:00', finish_time: '2025-08-22 12:15:00', pick_time: '2025-08-22 12:18:00', overtime_warn: 1, cook_id: 202, picker_id: 302 },
-  { kitchen_id: 3, item_id: 103, store_id: 2, table_no: 'B01', dish_name: '柠檬水', spec_name: '', quantity: 3, cooking_require: '', kitchen_type: '饮品', status: 4, create_time: '2025-08-22 12:10:00', finish_time: '2025-08-22 12:15:00', pick_time: '2025-08-22 12:16:00', overtime_warn: 0, cook_id: 203, picker_id: 303 },
-]);
+const filteredOrders = computed(() => orders.value);
 
-const currentPage = ref(1);
-const pageSize = ref(10);
-const total = ref(orders.value.length);
-
-const filteredOrders = computed(() => {
-  let result = orders.value.filter(order => {
-    const matchStore = !selectedStore.value || String(order.store_id) === selectedStore.value;
-    const matchType = !kitchenType.value || order.kitchen_type === kitchenType.value;
-    const matchStatus = !status.value || String(order.status) === status.value;
-    let matchDate = true;
-    if (dateRange.value && dateRange.value[0] && dateRange.value[1]) {
-      const start = new Date(dateRange.value[0]).getTime();
-      const end = new Date(dateRange.value[1]).getTime();
-      const create = new Date(order.create_time).getTime();
-      matchDate = create >= start && create <= end;
-    }
-    return matchStore && matchType && matchStatus && matchDate;
-  });
-  total.value = result.length;
-  // 分页
-  const startIdx = (currentPage.value - 1) * pageSize.value;
-  return result.slice(startIdx, startIdx + pageSize.value);
-});
+async function fetchOrders() {
+  const params: any = {
+    storeId: selectedStore.value,
+    kitchenType: kitchenType.value,
+    status: status.value,
+    page: currentPage.value,
+    size: pageSize.value
+  };
+  if (dateRange.value && dateRange.value[0] && dateRange.value[1]) {
+    params.StartTime = dateRange.value[0].toISOString();
+    params.EndTime = dateRange.value[1].toISOString();
+  }
+  const res:any = await getAllKitchenOrderList(params);
+  if (res.success) {
+    orders.value = res.response.map((item:any) => ({
+      ...item,
+      create_time:dayjs(item.create_time).format('YYYY-MM-DD HH:mm:ss'),
+      finish_time: item.finish_time ? dayjs(item.finish_time).format('YYYY-MM-DD HH:mm:ss') : '',
+      pick_time: item.pick_time ? dayjs(item.pick_time).format('YYYY-MM-DD HH:mm:ss') : '',
+      cook_name: item.cook ? item.cook.name : '',
+      picker_name: item.picker ? item.picker.name : ''
+    }));
+    total.value = res.count; // 如果接口有 total 字段请用 total
+  }
+}
 
 const handleQuery = () => {
-  // 仅刷新筛选和分页
+  currentPage.value = 1;
+  fetchOrders();
 };
 const handleReset = () => {
   selectedStore.value = '';
   kitchenType.value = '';
   status.value = '';
   dateRange.value = null;
-  handleQuery();
+  currentPage.value = 1;
+  fetchOrders();
 };
 const handleSizeChange = (val: number) => {
   pageSize.value = val;
+  fetchOrders();
 };
 const handlePageChange = (val: number) => {
   currentPage.value = val;
+  fetchOrders();
 };
 
 const statusTagType = (status: number) => {
@@ -171,6 +182,9 @@ const statusTagType = (status: number) => {
     default: return '';
   }
 };
+
+
+fetchOrders();
 </script>
 
 <style scoped>

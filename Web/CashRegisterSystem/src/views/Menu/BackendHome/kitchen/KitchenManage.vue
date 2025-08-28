@@ -8,14 +8,14 @@
           <el-option v-for="store in storeList" :key="store.id" :label="store.name" :value="store.id" />
         </el-select>
       </el-form-item> -->
-      <el-form-item label="厨房类型：">
+      <!-- <el-form-item label="厨房类型：">
         <el-select v-model="kitchenType" placeholder="全部类型" style="min-width:120px;">
           <el-option value="">全部</el-option>
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
-        <el-button type="primary" @click="handleQuery" style="background-color: #22A2B6;">查询</el-button>
-        <el-button @click="handleReset" class="cancel-btn">重置</el-button>
+        <!-- <el-button type="primary" @click="handleQuery" style="background-color: #22A2B6;">查询</el-button>
+        <el-button @click="handleReset" class="cancel-btn">重置</el-button> -->
         <el-button type="primary" @click="openAddDialog" class="Btn-Save">新增厨房</el-button>
       </el-form-item>
     </el-form>
