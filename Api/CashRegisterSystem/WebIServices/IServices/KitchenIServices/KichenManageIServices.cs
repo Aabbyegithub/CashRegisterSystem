@@ -18,7 +18,7 @@ namespace WebIServices.IServices.KitchenIServices
         /// <returns></returns>
         Task<List<sys_kitchen>> GetkitchenListAsync(int? storeId, string? kitchenType, int orgId, int page, int size, RefAsync<int> count);
 
-        Task<List<sys_kitchen>> GetAllKichenListAsync(int orgId);
+        Task<List<sys_kitchen>> GetAllKichenListAsync();
          
         /// <summary>
         /// 添加厨房

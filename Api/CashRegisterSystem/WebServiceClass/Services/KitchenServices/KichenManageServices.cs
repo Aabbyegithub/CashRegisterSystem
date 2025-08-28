@@ -40,10 +40,9 @@ public class KichenManageServices :IBaseService, KichenManageIServices
         return Success(result, result ? "修改成功" : "修改失败");
     }
 
-    public Task<List<sys_kitchen>> GetAllKichenListAsync(int orgId)
+    public Task<List<sys_kitchen>> GetAllKichenListAsync()
     {
         return _dal.Db.Queryable<sys_kitchen>()
-            .Where(x => x.store_id == orgId)
             .ToListAsync();
     }
 }

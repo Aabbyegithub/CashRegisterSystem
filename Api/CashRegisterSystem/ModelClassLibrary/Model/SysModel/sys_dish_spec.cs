@@ -45,7 +45,7 @@ namespace MyNamespace
            public string spec_type {get;set;} = null!;
 
            /// <summary>
-           /// Desc:价格差（相对于基础价）
+           /// Desc:价格
            /// Default:0.00
            /// Nullable:False
            /// </summary>           
@@ -57,6 +57,9 @@ namespace MyNamespace
            /// Nullable:False
            /// </summary>           
            public int sort_order {get;set;}
+
+        [Navigate(NavigateType.OneToOne, nameof(dish_id), nameof(sys_dish.dish_id))]//一对一 
+        public sys_dish? dish { get; set; }
 
     }
 }

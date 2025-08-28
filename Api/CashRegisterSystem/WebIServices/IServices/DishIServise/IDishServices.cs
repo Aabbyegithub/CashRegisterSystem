@@ -17,6 +17,8 @@ namespace WebIServices.IServices.DishIServise
         ///</summary>
         Task<List<sys_dish>> GetDishPageList(string? name,int?type,int orgid,int page,int size, RefAsync<int> count );
 
+        Task<List<sys_dish>> GetDishPageList(int orgId);
+
         /// <summary>
         /// 添加菜品
         /// </summary>

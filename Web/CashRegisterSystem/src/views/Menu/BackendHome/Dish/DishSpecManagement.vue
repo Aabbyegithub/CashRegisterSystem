@@ -2,6 +2,12 @@
   <div class="dish-spec-container">
     <!-- 筛选区域 -->
     <el-form class="filter-bar" :inline="true">
+      <el-form-item label="菜品">
+          <el-select v-model="selecteddish" class="store-select" placeholder="请选择菜品"style="min-width: 120px;">
+            <el-option value="">全部菜品</el-option>
+            <el-option v-for="dish in dishList" :key="dish.id" :value="dish.name">{{ dish.name }}</el-option>
+          </el-select>
+      </el-form-item>
       <el-form-item label="规格名称：">
         <el-input v-model="specName" placeholder="请输入规格名称" clearable style="min-width:140px;" />
       </el-form-item>
@@ -34,14 +40,23 @@
             {{ (currentPage - 1) * pageSize + scope.$index + 1 }}
           </template>
         </el-table-column>
-        <el-table-column prop="dish_id" label="菜品名称" align="center" />
+        <el-table-column prop="dish_id" label="菜品名称" align="center">
+          <template #default="scope">
+            <span>
+              {{
+                dishList.find((dish) => dish.id === scope.row.dish_id)
+                  ?.name || '未知菜品'
+              }}
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column prop="spec_type" label="规格类型" align="center" />
         <el-table-column prop="spec_name" label="规格名称" align="center" />
-        <!-- <el-table-column prop="price_diff" label="价格差" align="center">
+        <el-table-column prop="price_diff" label="价格" align="center">
           <template #default="scope">
             <span :style="{ color: scope.row.price_diff > 0 ? '#FF4D4F' : '' }">{{ scope.row.price_diff.toFixed(2) }}</span>
           </template>
-        </el-table-column> -->
+        </el-table-column>
         <el-table-column prop="sort_order" label="排序序号" align="center" />
         <el-table-column label="操作" align="center" width="180">
           <template #default="scope">
@@ -69,8 +84,8 @@
     <el-dialog v-model="dialogVisible" width="500" :title="dialogTitle">
       <el-form :model="form" label-width="120px">
         <el-form-item label="菜品名称">
-          <el-select v-model="form.dish_name" placeholder="请选择菜品">
-            <el-option v-for="dish in [{dish_id:101,dish_name:'宫保鸡丁'},{dish_id:102,dish_name:'麻辣小龙虾'},{dish_id:103,dish_name:'清蒸鲈鱼'}]" :key="dish.dish_id" :label="dish.dish_name" :value="dish.dish_id" />
+          <el-select v-model="form.dish_id" placeholder="请选择菜品">
+            <el-option v-for="dish in dishList" :key="dish.id" :label="dish.name" :value="dish.id" />
           </el-select> 
         </el-form-item>
         <el-form-item label="规格类型">
@@ -83,9 +98,9 @@
         <el-form-item label="规格名称">
           <el-input v-model="form.spec_name" placeholder="如大份/中份/小份" />
         </el-form-item>
-        <!-- <el-form-item label="价格差">
+        <el-form-item label="价格">
           <el-input v-model.number="form.price_diff" type="number" placeholder="如0.00" />
-        </el-form-item> -->
+        </el-form-item>
         <el-form-item label="排序序号">
           <el-input v-model.number="form.sort_order" type="number" placeholder="如0" />
         </el-form-item>
@@ -99,8 +114,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { getSpecList, getSpecById, addSpec, updateSpec, deleteSpec } from '../../../../api/dishspec';
 import { ElMessage } from 'element-plus';
+import { getAllDishList } from '../../../../api/dish';
 
 interface Spec {
   spec_id: number;
@@ -117,27 +134,35 @@ const currentPage = ref(1);
 const pageSize = ref(10);
 const total = ref(0);
 const specList = ref<Spec[]>([]);
-
+const selecteddish = ref('');
+const dishList = ref<any[]>([]);
 const dialogVisible = ref(false);
 const dialogTitle = ref('新增规格');
 const form = ref<Spec | any>({
   spec_id: 0,
-  dish_id: 0,
+  dish_id: '',
   spec_name: '',
   spec_type: '',
   price_diff: 0.00,
   sort_order: 0
 });
 
-const handleQuery = () => {
-  // 模拟数据筛选
-  specList.value = mockSpecs.filter(spec => {
-    return (
-      (!specName.value || spec.spec_name.includes(specName.value)) &&
-      (!specType.value || spec.spec_type === specType.value)
-    );
-  });
-  total.value = specList.value.length;
+const handleQuery = async () => {
+  const params = {
+    pageIndex: currentPage.value,
+    pageSize: pageSize.value,
+    dishId: selecteddish.value || undefined,
+    specName: specName.value,
+    specType: specType.value
+  };
+  const res:any = await getSpecList(params);
+  if (res?.success) {
+    specList.value = res.response || [];
+    total.value = res.count || 0;
+  } else {
+    specList.value = [];
+    total.value = 0;
+  }
 };
 
 const handleReset = () => {
@@ -150,7 +175,7 @@ const openAddDialog = () => {
   dialogTitle.value = '新增规格';
   form.value = {
     spec_id: 0,
-    dish_id: 0,
+    dish_id: '',
     spec_name: '',
     spec_type: '',
     price_diff: 0.00,
@@ -159,40 +184,43 @@ const openAddDialog = () => {
   dialogVisible.value = true;
 };
 
-const openEditDialog = (row: Spec) => {
+const openEditDialog = async (row: Spec) => {
   dialogTitle.value = '编辑规格';
-  form.value = { ...row };
+  const res:any = await getSpecById(row.spec_id);
+  if (res?.success) {
+    form.value = res.response;
+  } else {
+    form.value = { ...row };
+  }
   dialogVisible.value = true;
 };
 
-const handleSave = () => {
+const handleSave = async () => {
   if (!form.value.dish_id || !form.value.spec_name || !form.value.spec_type) {
     ElMessage.warning('请填写必填项');
     return;
   }
-  if (form.value.spec_id === 0) {
+  let res:any;
+  if (!form.value.spec_id || form.value.spec_id === 0) {
     // 新增
-    form.value.spec_id = Date.now();
-    mockSpecs.push({ ...form.value });
-    ElMessage.success('新增成功');
+    res = await addSpec(form.value);
+    if (res?.success) ElMessage.success('新增成功');
   } else {
     // 编辑
-    const idx = mockSpecs.findIndex(s => s.spec_id === form.value.spec_id);
-    if (idx !== -1) {
-      mockSpecs[idx] = { ...form.value };
-      ElMessage.success('修改成功');
-    }
+    res = await updateSpec(form.value);
+    if (res?.success) ElMessage.success('修改成功');
   }
   dialogVisible.value = false;
   handleQuery();
 };
 
-const handleDelete = (row: Spec) => {
-  const idx = mockSpecs.findIndex(s => s.spec_id === row.spec_id);
-  if (idx !== -1) {
-    mockSpecs.splice(idx, 1);
+const handleDelete = async (row: Spec) => {
+  const res:any = await deleteSpec(row.spec_id);
+  if (res?.success) {
     ElMessage.success('删除成功');
     handleQuery();
+  } else {
+    ElMessage.error(res?.message || '删除失败');
   }
 };
 
@@ -204,21 +232,20 @@ const handlePageChange = (val: number) => {
   currentPage.value = val;
   handleQuery();
 };
-
-// 模拟数据
-const mockSpecs: Spec[] = [
-  { spec_id: 1, dish_id: 101, spec_name: '大份', spec_type: '分量', price_diff: 5.00, sort_order: 1 },
-  { spec_id: 2, dish_id: 101, spec_name: '中份', spec_type: '分量', price_diff: 2.00, sort_order: 2 },
-  { spec_id: 3, dish_id: 101, spec_name: '小份', spec_type: '分量', price_diff: 0.00, sort_order: 3 },
-  { spec_id: 4, dish_id: 102, spec_name: '微辣', spec_type: '辣度', price_diff: 0.00, sort_order: 1 },
-  { spec_id: 5, dish_id: 102, spec_name: '中辣', spec_type: '辣度', price_diff: 0.00, sort_order: 2 },
-  { spec_id: 6, dish_id: 102, spec_name: '重辣', spec_type: '辣度', price_diff: 0.00, sort_order: 3 },
-  { spec_id: 7, dish_id: 103, spec_name: '清蒸', spec_type: '做法', price_diff: 0.00, sort_order: 1 },
-  { spec_id: 8, dish_id: 103, spec_name: '红烧', spec_type: '做法', price_diff: 0.00, sort_order: 2 }
-];
-
-// 初始化
-handleQuery();
+onMounted(() => {
+  handleQuery();
+  fetchDishList();
+});
+async function fetchDishList() {
+  await getAllDishList().then((res:any)=> {
+    if (res && res.response) {
+      dishList.value = res.response.map((item: any) => ({
+        id: item.dish_id,
+        name: item.dish_name
+      }));
+    }
+  });
+}
 </script>
 
 <style scoped>

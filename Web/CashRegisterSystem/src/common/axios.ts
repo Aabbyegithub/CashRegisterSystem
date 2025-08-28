@@ -46,8 +46,8 @@ service.interceptors.response.use(
         router.replace('/login');
       return Promise.reject(error.response?.data?.message || '请求错误')
     }else{
-       localStorage.removeItem('token'); 
-      router.replace('/login');
+      //  localStorage.removeItem('token'); 
+      // router.replace('/login');
       // 网络或服务器错误统一提示
       ElMessage.error(error.response?.data?.message || '服务器错误')
       return Promise.reject(error)

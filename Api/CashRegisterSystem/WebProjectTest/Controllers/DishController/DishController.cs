@@ -45,7 +45,26 @@ namespace WebProjectTest.Controllers.DishController
             }
         }
 
+        [HttpGet]
+        [OperationLogFilter("系统设置>角色管理", "菜品管理查询", ActionType.Search)]
+        public async Task<ApiResponse<List<sys_dish>>> GetAllDishListAsync()
+        {
+            RefAsync<int> count = 0;
+            try
+            {
+                var res = await _DishServices.GetDishPageList(OrgId);
+                if (res != null)
+                {
+                    return Success(res);
+                }
+                return Fail<List<sys_dish>>("获取数据失败");
+            }
+            catch (Exception)
+            {
 
+                return Error<List<sys_dish>>("服务器错误");
+            }
+        }
         /// <summary>
         /// 添加菜品
         /// </summary>

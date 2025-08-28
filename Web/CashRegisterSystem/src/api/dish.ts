@@ -6,6 +6,11 @@ export function getDishList(dishname:string,type:string, page: number = 0, size:
     return axios.get('/api/Dish/GetDishList', { params: {dishname,type, page, size } });
 }
 
+// 获取菜品列表
+export function getAllDishList() {
+    return axios.get('/api/Dish/GetAllDishList');
+}
+
 //获取菜品分类
 export function getDishCategoryList() {
     return axios.get('/api/Dishcategory/GetAllDishCategoryList');

@@ -55,7 +55,7 @@ namespace WebProjectTest.Controllers.KitchenController
         [HttpGet]
         public async Task<ApiResponse<List<sys_kitchen>>> GetAllKitchenListAsync()
         {
-            return Success( await _kichenManageIServices.GetAllKichenListAsync(OrgId));
+            return Success( await _kichenManageIServices.GetAllKichenListAsync());
         }
 
         /// <summary>

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WebIServices")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9fee82f1cbfaf6a64b88a60a0288eab1312211b3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+24187414e7c423b347f583321f53ffbc3dfdd8f6")]
 [assembly: System.Reflection.AssemblyProductAttribute("WebIServices")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WebIServices")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

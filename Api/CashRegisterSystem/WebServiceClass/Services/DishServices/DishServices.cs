@@ -55,6 +55,14 @@ namespace WebServiceClass.Services.DishServices
                 .ToPageListAsync(page, size, count);
         }
 
+        public Task<List<sys_dish>> GetDishPageList( int orgId)
+        {
+            return _dal.Db.Queryable<sys_dish>()
+
+                .WhereIF(orgId != 1, a => a.store_id == orgId || a.store_id == null)
+                .ToListAsync();
+        }
+
         public async Task<ApiResponse<bool>> UpdateDishAsync(sys_dish dish)
         {
            try
