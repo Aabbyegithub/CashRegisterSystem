@@ -78,6 +78,7 @@
 import { ref, computed, watch } from 'vue';
 import { getAllKitchenOrderList } from '../../../../api/KitchenManage';
 import { dayjs } from 'element-plus';
+import { getStoreList } from '../../../../api/login';
 
 interface Store { id: string; name: string; }
 interface KitchenOrder {
@@ -101,10 +102,7 @@ interface KitchenOrder {
   picker_name?: string;
 }
 
-const storeList = ref<Store[]>([
-  { id: '1', name: '旗舰店' },
-  { id: '2', name: '分店A' }
-]);
+const storeList = ref<Store[]>([]);
 const selectedStore = ref('');
 const kitchenType = ref('');
 const status = ref('');
@@ -185,6 +183,18 @@ const statusTagType = (status: number) => {
 
 
 fetchOrders();
+fetchStoreList();
+async function fetchStoreList() {
+  await getStoreList().then((res:any)=> {
+    if (res && res.response) {
+      var storedata = res.response.filter((item: any) => item.store_name !== '管理员');
+      storeList.value = storedata.map((item: any) => ({
+        id: item.store_id,
+        name: item.store_name
+      }));
+    }
+  });
+}
 </script>
 
 <style scoped>

@@ -2,6 +2,12 @@
   <div class="promotion-list-container">
     <!-- 筛选区 -->
       <el-form :inline="true" :model="filterForm" class="filter-form">
+      <el-form-item label="门店">
+          <el-select v-model="selectedStore" class="store-select" placeholder="请选择门店"style="min-width: 120px;">
+            <el-option value="">全部门店</el-option>
+            <el-option v-for="store in storeList" :key="store.id" :value="store.name">{{ store.name }}</el-option>
+          </el-select>
+      </el-form-item>
         <el-form-item label="活动名称">
           <el-input v-model="filterForm.name" placeholder="请输入活动名称" clearable />
         </el-form-item>
@@ -34,6 +40,11 @@
     <!-- 表格区 -->
     <div class="table-card">
       <el-table :data="promotionList" border stripe style="width: 100%;height: 67vh;">
+        <el-table-column label="门店名称" prop="store_id" align="center">
+            <template #default="scope">
+             {{ storeList.find(cat => cat.id === scope.row.store_id)?.name || '' }}
+            </template>
+        </el-table-column>
         <el-table-column prop="name" label="活动名称" min-width="120"  align="center"/>
         <el-table-column prop="type" label="类型" min-width="100"  align="center"/>
         <el-table-column prop="startTime" label="开始时间" min-width="160"  align="center"/>
@@ -128,7 +139,8 @@ const promotionList = ref<Promotion[]>([]);
 const total = ref(0);
 const pageSize = ref(10);
 const currentPage = ref(1);
-
+const storeList = ref<any[]>([])
+const selectedStore = ref('');
 // 弹窗相关
 const dialogVisible = ref(false);
 const dialogTitle = ref('');

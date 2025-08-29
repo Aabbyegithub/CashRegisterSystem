@@ -79,5 +79,12 @@ namespace MyNamespace
            /// </summary>           
            public long? referrer_id {get;set;}
 
+        /// <summary>
+        /// Desc:推荐人会员ID（老带新用）
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
+        public decimal? balance { get; set; }
+
     }
 }

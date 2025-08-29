@@ -9,7 +9,7 @@
         <el-date-picker v-model="searchDate" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" style="min-width:220px;" />
       </el-form-item>
       <el-form-item label="操作员工：">
-        <el-input v-model="searchOperator" placeholder="请输入员工ID" clearable style="min-width:120px;" />
+        <el-input v-model="searchOperator" placeholder="请输入员工" clearable style="min-width:120px;" />
       </el-form-item>
     <el-form-item>
       <el-button @click="handleReset" class="cancel-btn">重置</el-button>

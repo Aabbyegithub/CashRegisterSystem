@@ -123,10 +123,24 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="生效时间">
-          <el-input v-model="form.start_time" placeholder="2025-08-22 00:00:00" />
+          <el-date-picker
+            v-model="form.start_time"
+            type="datetime"
+            placeholder="请选择生效时间"
+            format="YYYY-MM-DD HH:mm:ss"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            style="width: 100%;"
+          />
         </el-form-item>
         <el-form-item label="失效时间">
-          <el-input v-model="form.end_time" placeholder="2025-08-31 23:59:59" />
+          <el-date-picker
+            v-model="form.end_time"
+            type="datetime"
+            placeholder="请选择失效时间"
+            format="YYYY-MM-DD HH:mm:ss"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            style="width: 100%;"
+          />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -178,7 +192,7 @@
             </el-table-column>
             <el-table-column prop="spec_id" label="规格" align="center" >
               <template #default="scope">
-              {{ specAllOptions.find(cat => cat.id === scope.row.spec_id)?.name || '' }}
+              {{ specOptions.find(cat => cat.id === scope.row.spec_id)?.name || '' }}
               </template>
             </el-table-column>
             <el-table-column prop="quantity" label="数量" align="center" />
@@ -381,14 +395,14 @@ const handleSave = async () => {
   let res:any;
   if (!form.value.meal_id || form.value.meal_id === 0) {
     // 新增
-    form.value.start_time = new Date(form.value.start_time);
-    form.value.end_time = new Date(form.value.end_time);
+    form.value.start_time = dayjs(form.value.start_time, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DDTHH:mm:ss');
+    form.value.end_time = dayjs(form.value.end_time, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DDTHH:mm:ss');
     res = await addMeal(form.value);
     if (res?.success) ElMessage.success('新增成功');
   } else {
     // 编辑
-    form.value.start_time = new Date(form.value.start_time);
-    form.value.end_time = new Date(form.value.end_time);
+    form.value.start_time = dayjs(form.value.start_time, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DDTHH:mm:ss');
+    form.value.end_time = dayjs(form.value.end_time, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DDTHH:mm:ss');
     res = await updateMeal(form.value);
     if (res?.success) ElMessage.success('修改成功');
   }
@@ -416,6 +430,7 @@ const handlePageChange = (val: number) => {
 
 
 const openItemDialog = async (row: SetMeal) => {
+   fetchAllDishSpec()
   // 获取套餐菜品明细
   const res:any = await getMealItemList(row.meal_id);
   itemList.value = res?.response || [];

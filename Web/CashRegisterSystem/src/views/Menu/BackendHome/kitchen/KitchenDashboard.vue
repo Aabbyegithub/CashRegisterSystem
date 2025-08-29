@@ -42,7 +42,7 @@
 
     <!-- 厨房订单卡片区 -->
     <div class="order-card-list">
-      <div v-for="order in filteredOrders" :key="order.kitchen_id" class="order-card" :class="order.status">
+      <div v-for="order in orders" :key="order.kitchen_id" class="order-card" :class="order.status">
         <div class="order-header">
           <span class="order-table">桌台：{{ order.table_no }}</span>
           <span class="order-type">{{ order.kitchen_type }}</span>
@@ -64,7 +64,7 @@
           <!-- <el-button v-if="order.status < 4" type="danger" size="small" @click="cancelOrder(order)">退菜</el-button> -->
         </div>
       </div>
-      <div v-if="filteredOrders.length === 0" class="empty-row">
+      <div v-if="orders.length === 0" class="empty-row">
         <el-empty description="当前没有厨房订单" />
       </div>
     </div>
@@ -76,6 +76,7 @@ import { ref, computed, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { getKitchenOrderList, getOrderStatusStats, updateOrderStatus } from  '../../../../api/KitchenManage';
 import { it } from 'element-plus/es/locales.mjs';
+import { getStoreList } from '../../../../api/login';
 
 interface Store { id: string; name: string; }
 interface KitchenOrder {
@@ -97,10 +98,7 @@ interface KitchenOrder {
   picker_id?: number;
 }
 
-const storeList = ref<Store[]>([
-  { id: '1', name: '旗舰店' },
-  { id: '2', name: '分店A' }
-]);
+const storeList = ref<Store[]>([]);
 const selectedStore = ref('');
 const kitchenType = ref('');
 const status = ref('');
@@ -114,24 +112,21 @@ const statusMap: Record<number | string, string> = {
 };
 const stats = ref({ 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 });
 
-const orders = ref<KitchenOrder[]>([
-  { kitchen_id: 1, item_id: 101, store_id: 1, table_no: 'A01', dish_name: '宫保鸡丁', spec_name: '大份', quantity: 2, cooking_require: '微辣', kitchen_type: '热菜', status: 1, create_time: '2025-08-22 12:00:00', overtime_warn: 0 },
-  { kitchen_id: 2, item_id: 102, store_id: 1, table_no: 'A02', dish_name: '凉拌黄瓜', spec_name: '', quantity: 1, cooking_require: '', kitchen_type: '凉菜', status: 2, create_time: '2025-08-22 12:05:00', overtime_warn: 1 },
-  { kitchen_id: 3, item_id: 103, store_id: 2, table_no: 'B01', dish_name: '柠檬水', spec_name: '', quantity: 3, cooking_require: '', kitchen_type: '饮品', status: 3, create_time: '2025-08-22 12:10:00', overtime_warn: 0 },
-]);
+const orders = ref<KitchenOrder[]>([]);
 
-const filteredOrders = computed(() => {
-  return orders.value.filter(order => {
-    return (
-      (!selectedStore.value || String(order.store_id) === selectedStore.value) &&
-      (!kitchenType.value || order.kitchen_type === kitchenType.value) &&
-      (!status.value || String(order.status) === status.value)
-    );
-  });
-});
+// const filteredOrders = computed(() => {
+//   return orders.value.filter(order => {
+//     return (
+//       (!selectedStore.value || String(order.store_id) === selectedStore.value) &&
+//       (!kitchenType.value || order.kitchen_type === kitchenType.value) &&
+//       (!status.value || String(order.status) === status.value)
+//     );
+//   });
+// });
 onMounted(() => {
   fetchOrders();
   fetchStats();
+  fetchStoreList();
 });
 
 // 查询订单
@@ -224,6 +219,17 @@ const startCooking = (order: KitchenOrder) => updateStatus(order, 2);
 const finishCooking = (order: KitchenOrder) => updateStatus(order, 3);
 const pickOrder = (order: KitchenOrder) => updateStatus(order, 4);
 
+async function fetchStoreList() {
+  await getStoreList().then((res:any)=> {
+    if (res && res.response) {
+      var storedata = res.response.filter((item: any) => item.store_name !== '管理员');
+      storeList.value = storedata.map((item: any) => ({
+        id: item.store_id,
+        name: item.store_name
+      }));
+    }
+  });
+}
 
 </script>
 

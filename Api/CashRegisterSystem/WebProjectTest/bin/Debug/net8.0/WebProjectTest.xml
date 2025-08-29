@@ -316,6 +316,41 @@
             获取厨房订单列表
             </summary>
         </member>
+        <member name="M:WebProjectTest.Controllers.MemberController.MemberBalanceController.GetBalanceRecordListAsync(System.String,System.String,System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            储值记录分页查询
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.MemberController.MemberController.GetMemberPageList(System.String,System.String,System.Nullable{System.Int32},System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            获取会员分页列表
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.MemberController.MemberController.AddMemberAsync(MyNamespace.sys_member)">
+            <summary>
+            新增会员
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.MemberController.MemberController.UpdateMemberAsync(MyNamespace.sys_member)">
+            <summary>
+            修改会员信息
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.MemberController.MemberController.ToggleStatusAsync(System.Int64,System.Int32)">
+            <summary>
+            切换会员状态（冻结/解冻）
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.MemberController.MemberController.AddBalanceAsync(MyNamespace.sys_member_balance)">
+            <summary>
+            新增会员储值记录
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.MemberController.MemberController.GetBalanceRecordsAsync(System.Int64,System.Int32,System.Int32)">
+            <summary>
+            获取会员储值记录分页列表
+            </summary>
+        </member>
         <member name="M:WebProjectTest.Controllers.OrderController.OrderController.GetOrderListAsync(System.Int32,System.Int32)">
             <summary>
             获取订单列表

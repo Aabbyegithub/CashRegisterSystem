@@ -9,8 +9,8 @@ WebProjectTest_Store.json
 WebProjectTest_User.json
 WebProjectTest_QueueList.json
 WebProjectTest_Order.json
+WebProjectTest_MemberBalance.json
 WebProjectTest_Member.json
-WebProjectTest_StoredValue.json
 WebProjectTest_KitchenDashboard.json
 WebProjectTest_KitchenManage.json
 WebProjectTest_ServingFood.json
