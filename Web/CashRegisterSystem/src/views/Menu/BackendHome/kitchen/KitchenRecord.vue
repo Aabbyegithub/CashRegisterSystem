@@ -19,11 +19,7 @@
       <el-form-item label="状态：">
         <el-select v-model="status" placeholder="全部状态" style="min-width:120px;">
           <el-option value="">全部</el-option>
-          <el-option value="1">待制作</el-option>
-          <el-option value="2">制作中</el-option>
-          <el-option value="3">已完成</el-option>
-          <el-option value="4">已取餐</el-option>
-          <el-option value="5">已退菜</el-option>
+          <el-option v-for="(label, value) in statusMap" :key="value" :label="label" :value="value" />
         </el-select>
       </el-form-item>
       <el-form-item label="时间区间：">
@@ -75,7 +71,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { getAllKitchenOrderList } from '../../../../api/KitchenManage';
 import { dayjs } from 'element-plus';
 import { getStoreList } from '../../../../api/login';

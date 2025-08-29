@@ -28,7 +28,7 @@ namespace MyNamespace
            /// Default:
            /// Nullable:False
            /// </summary>           
-           public string member_no {get;set;} = null!;
+           public string? member_no {get;set;}
 
            /// <summary>
            /// Desc:手机号（登录账号）

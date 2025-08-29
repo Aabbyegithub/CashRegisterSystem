@@ -3,9 +3,9 @@
     <!-- 筛选区 -->
       <el-form :inline="true" :model="filterForm" class="filter-form">
       <el-form-item label="门店">
-          <el-select v-model="selectedStore" class="store-select" placeholder="请选择门店"style="min-width: 120px;">
+          <el-select v-model="selectedStore" class="store-select" placeholder="请选择门店" style="min-width: 120px;">
             <el-option value="">全部门店</el-option>
-            <el-option v-for="store in storeList" :key="store.id" :value="store.name">{{ store.name }}</el-option>
+            <el-option v-for="store in storeList" :key="store.id" :value="store.id" :label="store.name">{{ store.name }}</el-option>
           </el-select>
       </el-form-item>
         <el-form-item label="活动名称">
@@ -45,17 +45,17 @@
              {{ storeList.find(cat => cat.id === scope.row.store_id)?.name || '' }}
             </template>
         </el-table-column>
-        <el-table-column prop="name" label="活动名称" min-width="120"  align="center"/>
+        <el-table-column prop="promotion_name" label="活动名称" min-width="120"  align="center"/>
         <el-table-column prop="type" label="类型" min-width="100"  align="center"/>
-        <el-table-column prop="startTime" label="开始时间" min-width="160"  align="center"/>
-        <el-table-column prop="endTime" label="结束时间" min-width="160"  align="center"/>
-        <el-table-column prop="scope" label="适用范围" min-width="120"  align="center"/>
+        <el-table-column prop="start_time" label="开始时间" min-width="160"  align="center"/>
+        <el-table-column prop="end_time" label="结束时间" min-width="160"  align="center"/>
+        <el-table-column prop="applicable_scope" label="适用范围" min-width="120"  align="center"/>
         <el-table-column prop="status" label="状态" min-width="100" align="center">
           <template #default="scope">
             <el-tag :type="statusTagType(scope.row.status)">{{ scope.row.status }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="180" align="center">
+        <el-table-column label="操作" min-width="100" align="center">
           <template #default="scope">
             <el-button type="primary" size="small" @click="openDialog('edit', scope.row)">编辑</el-button>
             <el-button type="danger" size="small" @click="handleDelete(scope.row)">删除</el-button>
@@ -78,6 +78,11 @@
     <!-- 新建/编辑弹窗 -->
     <el-dialog :title="dialogTitle" v-model="dialogVisible" width="520px" :close-on-click-modal="false">
       <el-form :model="dialogForm" :rules="dialogRules" ref="dialogFormRef" label-width="110px">
+        <el-form-item label="门店">
+          <el-select v-model="dialogForm.store_id" placeholder="请选择门店">
+              <el-option v-for="store in storeList" :key="store.id" :value="store.id" :label="store.name">{{ store.name }}</el-option>
+            </el-select>
+        </el-form-item>
         <el-form-item label="活动名称" prop="name">
           <el-input v-model="dialogForm.name" placeholder="请输入活动名称" />
         </el-form-item>
@@ -115,8 +120,10 @@
 
 <script lang="ts" setup>
 import { ref, reactive, onMounted } from 'vue';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { dayjs, ElMessage, ElMessageBox } from 'element-plus';
 import type { FormInstance, FormRules } from 'element-plus';
+import { getStoreList } from '../../../../api/login';
+import { getPromotionList, addPromotion, updatePromotion, deletePromotion } from '../../../../api/Promotion';
 
 // 筛选表单
 const filterForm = reactive({
@@ -125,15 +132,16 @@ const filterForm = reactive({
   status: '',
 });
 
-// 促销活动列表模拟数据
+// 促销活动列表
 interface Promotion {
-  id: number;
-  name: string;
-  type: string;
-  startTime: string;
-  endTime: string;
-  scope: string;
-  status: string;
+  promotion_id: number;
+  store_id: number;
+  promotion_name: string;
+  type: string | number;
+  start_time: string;
+  end_time: string;
+  applicable_scope: string;
+  status: string | number;
 }
 const promotionList = ref<Promotion[]>([]);
 const total = ref(0);
@@ -146,7 +154,8 @@ const dialogVisible = ref(false);
 const dialogTitle = ref('');
 const dialogFormRef = ref<FormInstance>();
 const dialogForm = reactive({
-  id: 0,
+  promotion_id: 0,
+  store_id: '',
   name: '',
   type: '',
   startTime: '',
@@ -164,32 +173,54 @@ const dialogRules = reactive<FormRules>({
 });
 
 // 状态标签类型
-const statusTagType = (status: string) => {
+const statusTagType = (status: string | number) => {
   switch (status) {
+    case 0:
     case '未开始': return 'info';
+    case 1:
     case '进行中': return 'success';
+    case 2:
     case '已结束': return 'warning';
     default: return '';
   }
 };
 
 // 查询、重置
-const handleQuery = () => {
-  // 模拟筛选
-  let list = mockPromotions.filter(p => {
-    return (
-      (!filterForm.name || p.name.includes(filterForm.name)) &&
-      (!filterForm.type || p.type === filterForm.type) &&
-      (!filterForm.status || p.status === filterForm.status)
-    );
-  });
-  total.value = list.length;
-  promotionList.value = list.slice((currentPage.value-1)*pageSize.value, currentPage.value*pageSize.value);
+const handleQuery = async () => {
+  const typeMap: any = { '满减': 0, '折扣': 1, '赠品': 2, '': '' };
+  const statusMap: any = { '未开始': 0, '进行中': 1, '已结束': 2, '': '' };
+  const res = await getPromotionList(
+    currentPage.value,
+    pageSize.value,
+    selectedStore.value,
+    filterForm.name,
+    typeMap[filterForm.type],
+    statusMap[filterForm.status]
+  );
+  const data:any = res;
+  if (data.success && data.response) {
+    promotionList.value = data.response.map((item: any) => ({
+      promotion_id: item.promotion_id,
+      store_id: item.store_id,
+      promotion_name: item.promotion_name,
+      type: ['满减', '折扣', '赠品'][item.type] ?? item.type,
+      start_time: dayjs(item.start_time).format('YYYY-MM-DD HH:mm:ss'),
+      end_time: dayjs(item.end_time).format('YYYY-MM-DD HH:mm:ss'),
+      applicable_scope: item.applicable_scope,
+      status: ['未开始', '进行中', '已结束'][item.status] ?? item.status,
+    }));
+    total.value = data.count || data.response.length;
+  } else {
+    promotionList.value = [];
+    total.value = 0;
+  }
 };
 const handleReset = () => {
   filterForm.name = '';
   filterForm.type = '';
   filterForm.status = '';
+  selectedStore.value = '';
+  currentPage.value = 1;
   handleQuery();
 };
 
@@ -208,10 +239,20 @@ const openDialog = (type: 'add' | 'edit', row?: Promotion) => {
   dialogTitle.value = type === 'add' ? '新建活动' : '编辑活动';
   dialogVisible.value = true;
   if (type === 'edit' && row) {
-    Object.assign(dialogForm, row);
+    Object.assign(dialogForm, {
+      promotion_id: row.promotion_id,
+      store_id: row.store_id,
+      name: row.promotion_name,
+      type: row.type,
+      startTime: row.start_time,
+      endTime: row.end_time,
+      scope: row.applicable_scope,
+      status: row.status,
+    });
   } else {
     Object.assign(dialogForm, {
-      id: 0,
+      promotion_id: 0,
+      store_id: '',
       name: '',
       type: '',
       startTime: '',
@@ -221,69 +262,62 @@ const openDialog = (type: 'add' | 'edit', row?: Promotion) => {
     });
   }
 };
-const handleDialogConfirm = () => {
-  dialogFormRef.value?.validate((valid) => {
+const handleDialogConfirm = async () => {
+  dialogFormRef.value?.validate(async (valid) => {
     if (valid) {
-      if (dialogForm.id) {
-        // 编辑
-        const idx = mockPromotions.findIndex(p => p.id === dialogForm.id);
-        if (idx > -1) Object.assign(mockPromotions[idx], { ...dialogForm });
-        ElMessage.success('编辑成功');
+      const typeMap: any = { '满减': 0, '折扣': 1, '赠品': 2 };
+      const statusMap: any = { '未开始': 0, '进行中': 1, '已结束': 2 };
+      const payload = {
+        promotion_id: dialogForm.promotion_id,
+        store_id: dialogForm.store_id || 0,
+        promotion_name: dialogForm.name,
+        type: typeMap[dialogForm.type] ?? '',
+        start_time: dayjs(dialogForm.startTime).format('YYYY-MM-DDTHH:mm:ss'),
+        end_time: dayjs(dialogForm.endTime).format('YYYY-MM-DDTHH:mm:ss'),
+        rule: '',
+        applicable_scope: dialogForm.scope,
+        status: statusMap[dialogForm.status] ?? '',
+      };
+      let res:any;
+      if (dialogForm.promotion_id) {
+        res = await updatePromotion(payload);
+        if (res.success) ElMessage.success('编辑成功');
       } else {
-        // 新建
-        dialogForm.id = Date.now();
-        mockPromotions.unshift({ ...dialogForm });
-        ElMessage.success('新建成功');
+        res = await addPromotion(payload);
+        if (res.success) ElMessage.success('新建成功');
       }
       dialogVisible.value = false;
       handleQuery();
     }
   });
 };
-const handleDelete = (row: Promotion) => {
+const handleDelete = async (row: Promotion) => {
   ElMessageBox.confirm('确定要删除该活动吗？', '提示', { type: 'warning' })
-    .then(() => {
-      const idx = mockPromotions.findIndex(p => p.id === row.id);
-      if (idx > -1) mockPromotions.splice(idx, 1);
-      ElMessage.success('删除成功');
+    .then(async () => {
+      const res:any = await deletePromotion(row.promotion_id);
+      if (res.success) ElMessage.success('删除成功');
       handleQuery();
     });
 };
 
-// 模拟数据
-const mockPromotions: Promotion[] = [
-  {
-    id: 1,
-    name: '满100减20活动',
-    type: '满减',
-    startTime: '2025-08-01',
-    endTime: '2025-08-31',
-    scope: '全场商品',
-    status: '进行中',
-  },
-  {
-    id: 2,
-    name: '8折限时折扣',
-    type: '折扣',
-    startTime: '2025-09-01',
-    endTime: '2025-09-15',
-    scope: '指定菜品',
-    status: '未开始',
-  },
-  {
-    id: 3,
-    name: '赠品活动',
-    type: '赠品',
-    startTime: '2025-07-01',
-    endTime: '2025-07-31',
-    scope: '部分商品',
-    status: '已结束',
-  },
-];
-
+// 查询门店列表
 onMounted(() => {
   handleQuery();
+  fetchStoreList();
 });
+
+
+async function fetchStoreList() {
+  await getStoreList().then((res:any)=> {
+    if (res && res.response) {
+      var storedata = res.response.filter((item: any) => item.store_name !== '管理员');
+      storeList.value = storedata.map((item: any) => ({
+        id: item.store_id,
+        name: item.store_name
+      }));
+    }
+  });
+}
 </script>
 
 <style scoped>

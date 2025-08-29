@@ -83,8 +83,6 @@ import { ref, computed, onMounted } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { getKitchenList, addKitchen, updateKitchen, deleteKitchen } from '../../../../api/KitchenManage';
 
-
-interface Store { id: string | number; name: string; }
 interface Kitchen {
   id: number;
   kitchen_name: string;
@@ -92,11 +90,7 @@ interface Kitchen {
   kitchen_description?: string;
 }
 
-const storeList = ref<Store[]>([
-  { id: 1, name: '旗舰店' },
-  { id: 2, name: '分店A' }
-]);
-const selectedStore = ref('');
+
 const kitchenType = ref('');
 const currentPage = ref(1);
 const pageSize = ref(10);
@@ -121,10 +115,6 @@ const filteredKitchens = computed(() => {
   return result.slice(startIdx, startIdx + pageSize.value);
 });
 
-const getStoreName = (id: number | string) => {
-  const store = storeList.value.find(s => s.id == id);
-  return store ? store.name : '-';
-};
 
 
 const fetchKitchenList = async () => {
@@ -137,19 +127,11 @@ const fetchKitchenList = async () => {
         ElMessage.error(res.message || '获取厨房列表失败');
       }
     }).catch(e=>{
-      ElMessage.error('获取厨房列表失败');
+      ElMessage.error('获取厨房列表失败'+e);
     });
 }
 
-const handleQuery = () => {
-  fetchKitchenList();
-};
 
-const handleReset = () => {
-  selectedStore.value = '';
-  kitchenType.value = '';
-  fetchKitchenList();
-};
 
 const openAddDialog = () => {
   dialogTitle.value = '新增厨房';

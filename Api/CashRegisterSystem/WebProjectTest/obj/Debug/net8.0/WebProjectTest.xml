@@ -132,6 +132,56 @@
             <param name="orderId"></param>
             <returns></returns>
         </member>
+        <member name="M:WebProjectTest.Controllers.CouponController.GetCouponList(System.Nullable{System.Int64},System.String,System.Nullable{System.Byte},System.Nullable{System.Byte},System.Int32,System.Int32)">
+            <summary>
+            获取优惠券列表（分页+筛选）
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.CouponController.GetCouponById(System.Int64)">
+            <summary>
+            获取优惠券详情
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.CouponController.AddCoupon(MyNamespace.sys_coupon)">
+            <summary>
+            新增优惠券
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.CouponController.UpdateCoupon(MyNamespace.sys_coupon)">
+            <summary>
+            编辑优惠券
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.CouponController.DeleteCoupon(System.Int64)">
+            <summary>
+            删除优惠券
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.PromotionController.GetPromotionList(System.Nullable{System.Int64},System.String,System.Nullable{System.Byte},System.Nullable{System.Byte},System.Int32,System.Int32)">
+            <summary>
+            获取促销活动列表（分页+筛选）
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.PromotionController.GetPromotionById(System.Int64)">
+            <summary>
+            获取促销活动详情
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.PromotionController.AddPromotion(MyNamespace.sys_promotion)">
+            <summary>
+            新增促销活动
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.PromotionController.UpdatePromotion(MyNamespace.sys_promotion)">
+            <summary>
+            编辑促销活动
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.PromotionController.DeletePromotion(System.Int64)">
+            <summary>
+            删除促销活动
+            </summary>
+        </member>
         <member name="M:WebProjectTest.Controllers.DBFirst.DBFirstController.GenerateEntitiesList(System.Collections.Generic.List{System.String})">
             <summary>
             批量生成实体类文件

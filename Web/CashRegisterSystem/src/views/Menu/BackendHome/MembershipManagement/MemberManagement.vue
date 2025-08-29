@@ -28,7 +28,7 @@
     <!-- 会员列表 -->
     <el-table :data="filteredMembers" border style="width:100%;height: 68vh;" :header-cell-style="{ background: '#f8f9fa', color: '#606266' }" class="custom-table">
       <el-table-column type="index" label="序号" width="60" align="center" />
-      <el-table-column prop="member_no" label="会员编号" align="center" />
+      <el-table-column prop="member_no" label="会员编号" align="center" width="200px"/>
       <el-table-column prop="phone" label="手机号" align="center" />
       <el-table-column prop="name" label="姓名" align="center" />
       <el-table-column prop="birthday" label="生日" align="center" />
@@ -39,11 +39,12 @@
         </template>
       </el-table-column>
       <el-table-column prop="total_points" label="总积分" align="center" />
-      <el-table-column prop="referrer_id" label="推荐人" align="center">
+       <el-table-column prop="balance" label="账户余额" align="center" />
+      <!-- <el-table-column prop="referrer_id" label="推荐人" align="center">
         <template #default="scope">
           {{ getReferrerName(scope.row.referrer_id) }}
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="操作" align="center" width="220">
         <template #default="scope">
           <el-button type="text" class="table-btn-balance" @click="openBalanceDialog(scope.row)">储值</el-button>
@@ -51,29 +52,6 @@
           <el-button type="text" class="table-btn-status" @click="toggleStatus(scope.row)">{{ scope.row.status === 1 ? '冻结' : '解冻' }}</el-button>
         </template>
       </el-table-column>
-    <!-- 编辑会员弹窗（移到根节点，避免嵌套在 el-table-column 内） -->
-    <el-dialog v-model="showEditMember" width="500" title="编辑会员">
-      <el-form :model="editForm" label-width="120px">
-        <el-form-item label="手机号">
-          <el-input v-model="editForm.phone" placeholder="请输入手机号" />
-        </el-form-item>
-        <el-form-item label="姓名">
-          <el-input v-model="editForm.name" placeholder="请输入姓名" />
-        </el-form-item>
-        <el-form-item label="生日">
-          <el-date-picker v-model="editForm.birthday" type="date" placeholder="请选择生日" style="width:100%;" />
-        </el-form-item>
-        <el-form-item label="推荐人">
-          <el-select v-model="editForm.referrer_id" placeholder="请选择推荐人">
-            <el-option v-for="m in memberList" :key="m.member_id" :label="m.name" :value="m.member_id" />
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="showEditMember = false" class="cancel-btn">取消</el-button>
-        <el-button type="primary" @click="handleEditMember" class="Btn-Save">保存</el-button>
-      </template>
-    </el-dialog>
     </el-table>
     <div v-if="filteredMembers.length === 0" class="empty-row">
       <el-empty description="暂无会员记录" />
@@ -104,11 +82,11 @@
         <el-form-item label="生日">
           <el-date-picker v-model="addForm.birthday" type="date" placeholder="请选择生日" style="width:100%;" />
         </el-form-item>
-        <el-form-item label="推荐人">
+        <!-- <el-form-item label="推荐人">
           <el-select v-model="addForm.referrer_id" placeholder="请选择推荐人">
             <el-option v-for="m in memberList" :key="m.member_id" :label="m.name" :value="m.member_id" />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <template #footer>
         <el-button @click="showAddMember = false" class="cancel-btn">取消</el-button>
@@ -132,29 +110,41 @@
             <el-option value="3" label="现金" />
           </el-select>
         </el-form-item>
-        <el-form-item label="操作员工">
+        <!-- <el-form-item label="操作员工">
           <el-input v-model="balanceForm.operator_id" placeholder="请输入员工ID" />
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <template #footer>
         <el-button @click="showBalanceDialog = false" class="cancel-btn">取消</el-button>
         <el-button type="primary" @click="handleBalance" class="Btn-Save">确认储值</el-button>
       </template>
     </el-dialog>
+
+    <!-- 编辑会员弹窗 -->
+    <el-dialog v-model="showEditMember" width="500" title="编辑会员">
+      <el-form :model="editForm" label-width="120px">
+        <el-form-item label="手机号">
+          <el-input v-model="editForm.phone" placeholder="请输入手机号" />
+        </el-form-item>
+        <el-form-item label="姓名">
+          <el-input v-model="editForm.name" placeholder="请输入姓名" />
+        </el-form-item>
+        <el-form-item label="生日">
+          <el-date-picker v-model="editForm.birthday" type="date" placeholder="请选择生日" style="width:100%;" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="showEditMember = false" class="cancel-btn">取消</el-button>
+        <el-button type="primary" @click="handleEditMember" class="Btn-Save">保存</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script lang="ts" setup>
-const showEditMember = ref(false);
-const editForm = ref({
-  member_id: 0,
-  phone: '',
-  name: '',
-  birthday: '',
-  referrer_id: undefined as number | undefined
-});
-import { ref, computed } from 'vue';
-import { ElMessage } from 'element-plus';
+import { ref, computed, onMounted } from 'vue';
+import { dayjs, ElMessage } from 'element-plus';
+import { getMemberPageList, addMember, updateMember, toggleMemberStatus } from '../../../../api/member';
 
 interface Member {
   member_id: number;
@@ -167,16 +157,22 @@ interface Member {
   total_points: number;
   referrer_id?: null | number;
 }
-interface BalanceRecord {
-  balance_id: number;
-  member_id: number;
-  balance: number;
-  recharge_amount: number;
-  give_amount: number;
-  recharge_time: string;
-  payment_id: number;
-  operator_id: number;
-}
+const showEditMember = ref(false);
+const editForm = ref({
+  member_id: 0,
+  phone: '',
+  name: '',
+  birthday: '',
+  referrer_id: undefined as number | undefined
+});
+const showAddMember = ref(false);
+const addForm = ref({
+  phone: '',
+  name: '',
+  birthday: '',
+  referrer_id: undefined as number | undefined
+});
+
 
 const searchPhone = ref('');
 const searchName = ref('');
@@ -186,58 +182,29 @@ const currentPage = ref(1);
 const pageSize = ref(10);
 const total = ref(0);
 
-const memberList = ref<Member[]>([
-  { member_id: 1, member_no: 'M001', phone: '13812345678', name: '张三', birthday: '1990-01-01', register_time: '2025-08-01 10:00:00', status: 1, total_points: 100 },
-  { member_id: 2, member_no: 'M002', phone: '13987654321', name: '李四', birthday: '1992-05-12', register_time: '2025-08-10 09:30:00', status: 0, total_points: 50, referrer_id: 1 },
-]);
+const memberList = ref<Member[]>([]);
+const filteredMembers = computed(() => memberList.value);
 
-const filteredMembers = computed(() => {
-  let result = memberList.value.filter(m => {
-    const matchPhone = !searchPhone.value || m.phone.includes(searchPhone.value);
-    const matchName = !searchName.value || (m.name && m.name.includes(searchName.value));
-    const matchStatus = !searchStatus.value || String(m.status) === searchStatus.value;
-    let matchRegister = true;
-    if (searchRegister.value && searchRegister.value[0] && searchRegister.value[1]) {
-      const start = new Date(searchRegister.value[0]).getTime();
-      const end = new Date(searchRegister.value[1]).getTime();
-      const reg = new Date(m.register_time).getTime();
-      matchRegister = reg >= start && reg <= end;
-    }
-    return matchPhone && matchName && matchStatus && matchRegister;
-  });
-  total.value = result.length;
-  // 分页
-  const startIdx = (currentPage.value - 1) * pageSize.value;
-  return result.slice(startIdx, startIdx + pageSize.value);
-});
-
-const showAddMember = ref(false);
-const addForm = ref({
-  phone: '',
-  name: '',
-  birthday: '',
-  referrer_id: undefined as number | undefined
-});
-const handleAddMember = () => {
+const handleAddMember = async () => {
   if (!addForm.value.phone) {
     ElMessage.warning('请填写手机号');
     return;
   }
-  const newId = Date.now();
-  const member: Member = {
-    member_id: newId,
-    member_no: 'M' + newId,
-    phone: addForm.value.phone,
-    name: addForm.value.name,
-    birthday: addForm.value.birthday,
+  const member = {
+    ...addForm.value,
+    birthday: addForm.value.birthday ? new Date(addForm.value.birthday).toISOString() : '',
     register_time: new Date().toISOString(),
     status: 1,
     total_points: 0
   };
-  if (addForm.value.referrer_id !== undefined) member.referrer_id = addForm.value.referrer_id;
-  memberList.value.push(member);
-  showAddMember.value = false;
-  ElMessage.success('新增会员成功');
+  const res:any = await addMember(member);
+  if (res?.success) {
+    ElMessage.success('新增会员成功');
+    showAddMember.value = false;
+    handleQuery();
+  } else {
+    ElMessage.error(res?.message || '新增失败');
+  }
 };
 
 const showBalanceDialog = ref(false);
@@ -278,43 +245,80 @@ const openEditDialog = (row: Member) => {
   };
   showEditMember.value = true;
 };
-const handleEditMember = () => {
-  const idx = memberList.value.findIndex(m => m.member_id === editForm.value.member_id);
-  if (idx !== -1) {
-    memberList.value[idx] = {
-      ...memberList.value[idx],
-      phone: editForm.value.phone,
-      name: editForm.value.name,
-      birthday: editForm.value.birthday,
-      referrer_id: editForm.value.referrer_id
-    };
+const handleEditMember = async () => {
+  const member = {
+    ...editForm.value,
+    birthday: editForm.value.birthday ? new Date(editForm.value.birthday).toISOString() : '',
+  };
+  const res:any = await updateMember(member);
+  if (res?.success) {
     ElMessage.success('会员信息已更新');
     showEditMember.value = false;
+    handleQuery();
+  } else {
+    ElMessage.error(res?.message || '修改失败');
   }
 };
 
-const toggleStatus = (row: Member) => {
-  row.status = row.status === 1 ? 0 : 1;
-  ElMessage.success(row.status === 1 ? '已解冻' : '已冻结');
+const toggleStatus = async (row: Member) => {
+  const newStatus = row.status === 1 ? 0 : 1;
+  const res:any = await toggleMemberStatus({ memberId: row.member_id, status: newStatus });
+  if (res?.success) {
+    ElMessage.success(newStatus === 1 ? '已解冻' : '已冻结');
+    handleQuery();
+  } else {
+    ElMessage.error(res?.message || '操作失败');
+  }
 };
-const getReferrerName = (id?: number | null) => {
-  if (!id) return '-';
-  const ref = memberList.value.find(m => m.member_id === id);
-  return ref?.name || '-';
+
+const handleQuery = async () => {
+  const params: any = {
+    page: currentPage.value,
+    size: pageSize.value,
+    phone: searchPhone.value,
+    name: searchName.value,
+    status: searchStatus.value
+  };
+  if (searchRegister.value && searchRegister.value[0] && searchRegister.value[1]) {
+    params.startDate = new Date(searchRegister.value[0]).toISOString();
+    params.endDate = new Date(searchRegister.value[1]).toISOString();
+  }
+  const res:any = await getMemberPageList(params);
+  if (res?.success) {
+    memberList.value = (res.response || []).map((element: any) => {
+      return {
+        ...element,
+        birthday: element.birthday ? dayjs(element.birthday).format('YYYY-MM-DD HH:mm:ss') : '',
+        register_time: element.register_time ? dayjs(element.register_time).format('YYYY-MM-DD HH:mm:ss') : ''
+      };
+    });
+    total.value = res.count || 0;
+  } else {
+    memberList.value = [];
+    total.value = 0;
+  }
 };
-const handleQuery = () => {};
+
 const handleReset = () => {
   searchPhone.value = '';
   searchName.value = '';
   searchStatus.value = '';
   searchRegister.value = null;
+  handleQuery();
 };
 const handleSizeChange = (val: number) => {
   pageSize.value = val;
+  handleQuery();
 };
 const handlePageChange = (val: number) => {
   currentPage.value = val;
+  handleQuery();
 };
+
+onMounted(() => {
+  handleQuery();
+});
+
 </script>
 
 <style scoped>

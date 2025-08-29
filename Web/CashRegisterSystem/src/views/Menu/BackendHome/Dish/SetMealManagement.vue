@@ -5,7 +5,7 @@
       <el-form-item label="门店">
           <el-select v-model="selectedStore" class="store-select" placeholder="请选择门店"style="min-width: 120px;">
             <el-option value="">全部门店</el-option>
-            <el-option v-for="store in storeList" :key="store.id" :value="store.name">{{ store.name }}</el-option>
+            <el-option v-for="store in storeList" :key="store.id" :value="store.id" :label="store.name">{{ store.name }}</el-option>
           </el-select>
       </el-form-item>
       <el-form-item label="套餐名称：">
@@ -199,7 +199,7 @@
             <el-table-column label="操作" align="center" width="160">
               <template #default="scope">
                 <el-button type="text" style="color:#22A2B6" @click="openItemEditDialog('edit', scope.row, group.groupName)">编辑</el-button>
-                <el-button type="text" style="color:#f56c6c" @click="handleItemDelete(scope.row, group.groupName)">删除</el-button>
+                <el-button type="text" style="color:#f56c6c" @click="handleItemDelete(scope.row)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -297,7 +297,6 @@ const mealList = ref<SetMeal[]>([]);
 const storeList = ref<any[]>([]);
 const dishOptions = ref<any[]>([]);
 const specOptions = ref<any[]>([]);
-const specAllOptions = ref<any[]>([]);
 const selectedStore = ref('');
 const dialogVisible = ref(false);
 const dialogTitle = ref('新增套餐');
@@ -494,7 +493,7 @@ const handleItemSave = async () => {
   itemEditDialogVisible.value = false;
 };
 
-const handleItemDelete = async (row: SetMealItem, groupName?: string) => {
+const handleItemDelete = async (row: SetMealItem) => {
   const res:any = await deleteMealItem(row.item_id);
   if (res?.success) {
     ElMessage.success('删除成功');

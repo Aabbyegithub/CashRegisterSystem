@@ -14,15 +14,15 @@ namespace WebServiceClass.Services.MemberServices
 {
     public class MemberBalanceServices : MemberBalanceIServices, IBaseService
     {
-        private readonly ISqlSugarClient _db;
+        private readonly ISqlHelper _dal;
 
-        public MemberBalanceServices(ISqlSugarClient db)
+        public MemberBalanceServices(ISqlHelper dal)
         {
-            _db = db;
+            _dal = dal;
         }
         public async Task<ApiPageResponse<List<sys_member_balance>>> GetBalanceRecordListAsync(string? keyword, string? startDate, string? endDate, string? operatorId, int page, int size, RefAsync<int> count)
         {
-            var res = await _db.Queryable<sys_member_balance>()
+            var res = await _dal.Db.Queryable<sys_member_balance>()
                 .Includes(a => a.member)
                 .Includes(a => a.operatorName)
                 .WhereIF(!string.IsNullOrEmpty(keyword), a => a.member.name.Contains(keyword) || a.member.phone.Contains(keyword))

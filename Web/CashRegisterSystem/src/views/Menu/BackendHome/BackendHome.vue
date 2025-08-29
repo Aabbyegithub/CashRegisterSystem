@@ -211,9 +211,7 @@ const menuGroups = ref<any[]>([]);
 const activeTab = ref('DashboardIndex');
 const tabs = ref<any[]>([]);
 
-const toggleCollapse = () => {
-  isCollapsed.value = !isCollapsed.value;
-};
+
 
 const toggleGroup = (group: string) => {
   if (!isCollapsed.value) {
@@ -236,19 +234,11 @@ const handleMenuClick = (key: string) => {
   }
 };
 
-const getPageTitle = () => {
-  const currentRouteName = route.name as string;
-  for (const group of menuGroups.value) {
-    const item = group.children.find((c: any) => c.name === currentRouteName);
-    if (item) return item.title;
-  }
-  return '后台管理';
-};
+
 
 function addTab(routeName: string) {
   // 查找菜单项
   let tabTitle = '后台管理';
-  let tabComponent = shallowRef('router-view');
   for (const group of menuGroups.value) {
     const item = group.children.find((c: any) => c.name === routeName);
     if (item) {

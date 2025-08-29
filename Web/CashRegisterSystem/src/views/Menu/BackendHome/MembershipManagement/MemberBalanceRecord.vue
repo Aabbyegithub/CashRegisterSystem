@@ -34,9 +34,9 @@
       </el-table-column>
       <el-table-column prop="operator_id" label="操作员工" align="center" />
     </el-table>
-    <div v-if="filteredRecords.length === 0" class="empty-row">
+    <!-- <div v-if="filteredRecords.length === 0" class="empty-row">
       <el-empty description="暂无储值记录" />
-    </div>
+    </div> -->
 
     <!-- 分页 -->
     <div class="pagination-bar">
@@ -54,14 +54,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { getBalanceRecordList } from '../../../../api/member';
 
-interface Member {
-  member_id: number;
-  member_no: string;
-  phone: string;
-  name?: string;
-}
+
 interface BalanceRecord {
   balance_id: number;
   member_id: number;
@@ -86,54 +82,55 @@ const currentPage = ref(1);
 const pageSize = ref(10);
 const total = ref(0);
 
-const memberList = ref<Member[]>([
-  { member_id: 1, member_no: 'M001', phone: '13812345678', name: '张三' },
-  { member_id: 2, member_no: 'M002', phone: '13987654321', name: '李四' },
-]);
-const recordList = ref<BalanceRecord[]>([
-  { balance_id: 1, member_id: 1, balance: 600, recharge_amount: 500, give_amount: 100, recharge_time: '2025-08-21 10:00:00', payment_id: 1, operator_id: 101 },
-  { balance_id: 2, member_id: 2, balance: 200, recharge_amount: 200, give_amount: 0, recharge_time: '2025-08-22 09:30:00', payment_id: 2, operator_id: 102 },
-]);
+const recordList = ref<BalanceRecord[]>([]);
 
 const filteredRecords = computed(() => {
-  let result = recordList.value.map(r => {
-    const member = memberList.value.find(m => m.member_id === r.member_id);
-    return {
-      ...r,
-      member_no: member?.member_no || '-',
-      name: member?.name || '-',
-      phone: member?.phone || '-',
-    };
-  }).filter(r => {
-    const matchKeyword = !searchKeyword.value || r.phone.includes(searchKeyword.value) || r.name.includes(searchKeyword.value);
-    let matchDate = true;
-    if (searchDate.value && searchDate.value[0] && searchDate.value[1]) {
-      const start = new Date(searchDate.value[0]).getTime();
-      const end = new Date(searchDate.value[1]).getTime();
-      const recharge = new Date(r.recharge_time).getTime();
-      matchDate = recharge >= start && recharge <= end;
-    }
-    const matchOperator = !searchOperator.value || String(r.operator_id) === searchOperator.value;
-    return matchKeyword && matchDate && matchOperator;
-  });
-  total.value = result.length;
-  // 分页
-  const startIdx = (currentPage.value - 1) * pageSize.value;
-  return result.slice(startIdx, startIdx + pageSize.value);
+  return recordList.value;
 });
 
-const handleQuery = () => {};
+const handleQuery = async () => {
+  const params: any = {
+    page: currentPage.value,
+    size: pageSize.value,
+    keyword: searchKeyword.value,
+    operatorId: searchOperator.value
+  };
+  if (searchDate.value && searchDate.value[0] && searchDate.value[1]) {
+    params.startDate = new Date(searchDate.value[0]).toISOString();
+    params.endDate = new Date(searchDate.value[1]).toISOString();
+  }
+  const res = await getBalanceRecordList(params);
+  if (res?.data?.success) {
+    recordList.value = (res.data.response || []).map((r: any) => ({
+      ...r,
+      recharge_time: r.recharge_time ? r.recharge_time.replace('T', ' ').slice(0, 19) : '',
+      operator_name: r.operatorName?.name || '-'
+    }));
+    total.value = res.data.count || 0;
+  } else {
+    recordList.value = [];
+    total.value = 0;
+  }
+};
+
 const handleReset = () => {
   searchKeyword.value = '';
   searchDate.value = null;
   searchOperator.value = '';
+  handleQuery();
 };
 const handleSizeChange = (val: number) => {
   pageSize.value = val;
+  handleQuery();
 };
 const handlePageChange = (val: number) => {
   currentPage.value = val;
+  handleQuery();
 };
+
+onMounted(() => {
+  handleQuery();
+});
 </script>
 
 <style scoped>

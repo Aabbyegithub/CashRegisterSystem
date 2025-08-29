@@ -122,7 +122,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import { ElSelect, ElInput, ElButton, ElTable, ElTableColumn, ElPagination, ElTag, ElDialog, ElForm, ElFormItem, ElMessage } from 'element-plus';
 import { getStoreList } from '../../../../api/login';
 import { addStaffApi, deleteStaffApi, editStaffApi, getRoleList, getStaffList } from '../../../../api/staffmang';
@@ -145,7 +145,6 @@ const total = ref(10)
 const roleList = ref<any[]>([]);
 
 // 新增缺失的参数和接口方法
-const selectAll = ref(false);
 const selectedRows = ref<any[]>([]);
 
 async function fetchStaffList() {
@@ -224,9 +223,7 @@ function handlePageChange(val: number) {
   pageIndex.value = val;
   fetchStaffList();
 }
-function toggleSelectAll() {
-  // TODO: 全选/取消全选逻辑
-}
+
 
 async function handleBatchDelete() {
   // TODO: 批量删除逻辑
@@ -322,12 +319,7 @@ async function fetchRoleList() {
   width: 180px;
   color: #4E5969;
 }
-.store-select, .search-input {
-  /* padding: 4px 10px;
-  border-radius: 4px;
-  border: 1px solid #DCDFE6;
-  font-size: 14px; */
-}
+
 .search-btn {
   background-color: #22a2b6;
   color: #fff;

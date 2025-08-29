@@ -19,11 +19,7 @@
       <el-form-item label="状态：">
         <el-select v-model="status" placeholder="全部状态" style="min-width:120px;">
           <el-option value="">全部</el-option>
-          <el-option value="1">待制作</el-option>
-          <el-option value="2">制作中</el-option>
-          <el-option value="3">已完成</el-option>
-          <el-option value="4">已取餐</el-option>
-          <el-option value="5">已退菜</el-option>
+          <el-option v-for="(label, value) in statusMap" :key="value" :label="label" :value="value" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -72,10 +68,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref,onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { getKitchenOrderList, getOrderStatusStats, updateOrderStatus } from  '../../../../api/KitchenManage';
-import { it } from 'element-plus/es/locales.mjs';
 import { getStoreList } from '../../../../api/login';
 
 interface Store { id: string; name: string; }

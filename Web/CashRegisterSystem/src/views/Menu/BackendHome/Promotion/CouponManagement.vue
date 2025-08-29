@@ -3,6 +3,12 @@
     <!-- 筛选区 -->
     <!-- <el-card class="filter-card"> -->
       <el-form :inline="true" :model="filterForm" class="filter-form">
+      <el-form-item label="门店">
+          <el-select v-model="selectedStore" class="store-select" placeholder="请选择门店"style="min-width: 120px;">
+            <el-option value="">全部门店</el-option>
+            <el-option v-for="store in storeList" :key="store.id" :value="store.id":label="store.name">{{ store.name }}</el-option>
+          </el-select>
+      </el-form-item>
         <el-form-item label="优惠券名称">
           <el-input v-model="filterForm.name" placeholder="请输入优惠券名称" clearable />
         </el-form-item>
@@ -35,10 +41,15 @@
     <!-- 表格区 -->
     <div class="table-card">
       <el-table :data="couponList" border stripe style="width: 100%;height: 65vh;">
-        <el-table-column prop="name" label="优惠券名称" min-width="120"   align="center"/>
+        <el-table-column label="门店名称" prop="store_id" align="center">
+            <template #default="scope">
+             {{ storeList.find(cat => cat.id === scope.row.store_id)?.name || '' }}
+            </template>
+        </el-table-column>
+        <el-table-column prop="coupon_name" label="优惠券名称" min-width="120"   align="center"/>
         <el-table-column prop="type" label="类型" min-width="100"  align="center"/>
-        <el-table-column prop="amount" label="面值/折扣" min-width="100"  align="center"/>
-        <el-table-column prop="minAmount" label="最低消费" min-width="100"  align="center"/>
+        <el-table-column prop="value" label="面值/折扣" min-width="100"  align="center"/>
+        <el-table-column prop="min_consumption" label="最低消费" min-width="100"  align="center"/>
         <el-table-column prop="total" label="发放数量" min-width="100"  align="center"/>
         <el-table-column prop="received" label="已领取" min-width="100"  align="center"/>
         <el-table-column prop="used" label="已使用" min-width="100"  align="center"/>
@@ -71,6 +82,11 @@
     <!-- 新增/编辑弹窗 -->
     <el-dialog :title="dialogTitle" v-model="dialogVisible" width="500px" :close-on-click-modal="false">
       <el-form :model="dialogForm" :rules="dialogRules" ref="dialogFormRef" label-width="100px">
+        <el-form-item label="门店">
+          <el-select v-model="dialogForm.store_id" placeholder="请选择门店">
+              <el-option v-for="store in storeList" :key="store.id" :value="store.id" :label="store.name">{{ store.name }}</el-option>
+            </el-select>
+        </el-form-item>
         <el-form-item label="优惠券名称" prop="name">
           <el-input v-model="dialogForm.name" placeholder="请输入名称" />
         </el-form-item>
@@ -111,8 +127,10 @@
 
 <script lang="ts" setup>
 import { ref, reactive, onMounted } from 'vue';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { dayjs, ElMessage, ElMessageBox } from 'element-plus';
 import type { FormInstance, FormRules } from 'element-plus';
+import { getStoreList } from '../../../../api/login';
+import { getCouponList, getCouponById, addCoupon, updateCoupon, deleteCoupon } from '../../../../api/Coupon';
 
 // 筛选表单
 const filterForm = reactive({
@@ -121,30 +139,37 @@ const filterForm = reactive({
   status: '',
 });
 
-// 优惠券列表模拟数据
+// 优惠券列表
 interface Coupon {
-  id: number;
-  name: string;
-  type: string;
-  amount: string;
-  minAmount: string;
-  total: number;
-  received: number;
-  used: number;
-  validTime: string;
-  status: string;
+  coupon_id: number;
+  store_id: number;
+  coupon_no: string;
+  coupon_name: string;
+  type: string | number;
+  value: number;
+  min_consumption: number;
+  valid_start: string;
+  valid_end: string;
+  status: string | number;
+  applicable_dishes: string;
+  total?: number;
+  received?: number;
+  used?: number;
 }
 const couponList = ref<Coupon[]>([]);
 const total = ref(0);
 const pageSize = ref(10);
 const currentPage = ref(1);
-
+const selectedStore = ref('');
+const storeList = ref<{ id: string; name: string }[]>([]);
 // 弹窗相关
 const dialogVisible = ref(false);
 const dialogTitle = ref('');
 const dialogFormRef = ref<FormInstance>();
 const dialogForm = reactive({
-  id: 0,
+  coupon_id: 0,
+  store_id: '',
+  coupon_no: '',
   name: '',
   type: '',
   amount: '',
@@ -164,32 +189,61 @@ const dialogRules = reactive<FormRules>({
 });
 
 // 状态标签类型
-const statusTagType = (status: string) => {
+const statusTagType = (status: string | number) => {
   switch (status) {
+    case 0:
     case '未开始': return 'info';
+    case 1:
     case '进行中': return 'success';
+    case 2:
     case '已结束': return 'warning';
     default: return '';
   }
 };
 
 // 查询、重置
-const handleQuery = () => {
-  // 模拟筛选
-  let list = mockCoupons.filter(c => {
-    return (
-      (!filterForm.name || c.name.includes(filterForm.name)) &&
-      (!filterForm.type || c.type === filterForm.type) &&
-      (!filterForm.status || c.status === filterForm.status)
-    );
-  });
-  total.value = list.length;
-  couponList.value = list.slice((currentPage.value-1)*pageSize.value, currentPage.value*pageSize.value);
+const handleQuery = async () => {
+  const typeMap: any = { '满减券': 0, '折扣券': 1, '代金券': 2, '': '' };
+  const statusMap: any = { '未开始': 0, '进行中': 1, '已结束': 2, '': '' };
+  const res = await getCouponList(
+    currentPage.value,
+    pageSize.value,
+    selectedStore.value,
+    filterForm.name,
+    typeMap[filterForm.type],
+    statusMap[filterForm.status]
+  );
+  const data:any = res
+  if (data.success && data.response) {
+    couponList.value = data.response.map((item: any) => ({
+      coupon_id: item.coupon_id,
+      store_id: item.store_id,
+      coupon_no: item.coupon_no,
+      coupon_name: item.coupon_name,
+      type: ['满减券', '折扣券', '代金券'][item.type] ?? item.type,
+      value: item.value,
+      min_consumption: item.min_consumption,
+      valid_start: dayjs(item.valid_start).format('YYYY-MM-DD'),
+      valid_end: dayjs(item.valid_end).format('YYYY-MM-DD'),
+      validTime: `${dayjs(item.valid_start).format('YYYY-MM-DD')} ~ ${dayjs(item.valid_end).format('YYYY-MM-DD')}`,
+      status: ['未开始', '进行中', '已结束'][item.status] ?? item.status,
+      applicable_dishes: item.applicable_dishes,
+      total: item.total ?? 0,
+      received: item.received ?? 0,
+      used: item.used ?? 0,
+    }));
+    total.value = data.count || data.response.length;
+  } else {
+    couponList.value = [];
+    total.value = 0;
+  }
 };
 const handleReset = () => {
   filterForm.name = '';
   filterForm.type = '';
   filterForm.status = '';
+  selectedStore.value = '';
+  currentPage.value = 1;
   handleQuery();
 };
 
@@ -204,14 +258,30 @@ const handlePageChange = (val: number) => {
 };
 
 // 新增/编辑弹窗
-const openDialog = (type: 'add' | 'edit', row?: Coupon) => {
+const openDialog = async (type: 'add' | 'edit', row?: Coupon) => {
   dialogTitle.value = type === 'add' ? '新增优惠券' : '编辑优惠券';
   dialogVisible.value = true;
   if (type === 'edit' && row) {
-    Object.assign(dialogForm, row);
+    // 获取详情
+    const res:any = await getCouponById(row.coupon_id);
+    const item = res.response || row;
+    Object.assign(dialogForm, {
+      coupon_id: item.coupon_id,
+      store_id: item.store_id,
+      coupon_no: item.coupon_no,
+      name: item.coupon_name,
+      type: ['满减券', '折扣券', '代金券'][item.type] ?? item.type,
+      amount: item.value,
+      minAmount: item.min_consumption,
+      total: item.total ?? 0,
+      validTime: [item.valid_start?.slice(0, 10), item.valid_end?.slice(0, 10)],
+      status: ['未开始', '进行中', '已结束'][item.status] ?? item.status,
+    });
   } else {
     Object.assign(dialogForm, {
-      id: 0,
+      coupon_id: 0,
+      store_id:  '',
+      coupon_no: '',
       name: '',
       type: '',
       amount: '',
@@ -222,78 +292,63 @@ const openDialog = (type: 'add' | 'edit', row?: Coupon) => {
     });
   }
 };
-const handleDialogConfirm = () => {
-  dialogFormRef.value?.validate((valid) => {
+const handleDialogConfirm = async () => {
+  dialogFormRef.value?.validate(async (valid) => {
     if (valid) {
-      if (dialogForm.id) {
-        // 编辑
-        const idx = mockCoupons.findIndex(c => c.id === dialogForm.id);
-        if (idx > -1) Object.assign(mockCoupons[idx], { ...dialogForm });
-        ElMessage.success('编辑成功');
+      const typeMap: any = { '满减券': 0, '折扣券': 1, '代金券': 2 };
+      const statusMap: any = { '未开始': 0, '进行中': 1, '已结束': 2 };
+      const payload = {
+        coupon_id: dialogForm.coupon_id,
+        store_id: dialogForm.store_id  || 0,
+        coupon_no: dialogForm.coupon_no || '',
+        coupon_name: dialogForm.name,
+        type: typeMap[dialogForm.type] ?? '',
+        value: Number(dialogForm.amount),
+        min_consumption: Number(dialogForm.minAmount),
+        valid_start: Array.isArray(dialogForm.validTime) ? dayjs(dialogForm.validTime[0]).format('YYYY-MM-DDT00:00:00') : '',
+        valid_end: Array.isArray(dialogForm.validTime) ? dayjs(dialogForm.validTime[1]).add(1, 'day').format('YYYY-MM-DDT00:00:00') : '',
+        status: statusMap[dialogForm.status] ?? '',
+        applicable_dishes: '',
+      };
+      let res:any;
+      if (dialogForm.coupon_id) {
+        res = await updateCoupon(payload);
+        if (res?.success) ElMessage.success('编辑成功');
       } else {
-        // 新增
-        dialogForm.id = Date.now();
-        mockCoupons.unshift({ ...dialogForm, received: 0, used: 0 });
-        ElMessage.success('新增成功');
+        res = await addCoupon(payload);
+        if (res?.success) ElMessage.success('新增成功');
       }
       dialogVisible.value = false;
       handleQuery();
     }
   });
 };
-const handleDelete = (row: Coupon) => {
+const handleDelete = async (row: Coupon) => {
   ElMessageBox.confirm('确定要删除该优惠券吗？', '提示', { type: 'warning' })
-    .then(() => {
-      const idx = mockCoupons.findIndex(c => c.id === row.id);
-      if (idx > -1) mockCoupons.splice(idx, 1);
-      ElMessage.success('删除成功');
+    .then(async () => {
+      const res:any = await deleteCoupon(row.coupon_id);
+      if (res?.success) ElMessage.success('删除成功');
       handleQuery();
     });
 };
 
-// 模拟数据
-const mockCoupons: Coupon[] = [
-  {
-    id: 1,
-    name: '满100减20',
-    type: '满减券',
-    amount: '20',
-    minAmount: '100',
-    total: 1000,
-    received: 800,
-    used: 600,
-    validTime: '2025-08-01 ~ 2025-08-31',
-    status: '进行中',
-  },
-  {
-    id: 2,
-    name: '8折优惠券',
-    type: '折扣券',
-    amount: '8折',
-    minAmount: '50',
-    total: 500,
-    received: 300,
-    used: 200,
-    validTime: '2025-09-01 ~ 2025-09-30',
-    status: '未开始',
-  },
-  {
-    id: 3,
-    name: '50元代金券',
-    type: '代金券',
-    amount: '50',
-    minAmount: '200',
-    total: 200,
-    received: 180,
-    used: 150,
-    validTime: '2025-07-01 ~ 2025-07-31',
-    status: '已结束',
-  },
-];
-
+// 初始化
 onMounted(() => {
   handleQuery();
+  fetchStoreList();
 });
+
+async function fetchStoreList() {
+  await getStoreList().then((res:any)=> {
+    if (res && res.response) {
+      var storedata = res.response.filter((item: any) => item.store_name !== '管理员');
+      storeList.value = storedata.map((item: any) => ({
+        id: item.store_id,
+        name: item.store_name
+      }));
+    }
+  });
+}
 </script>
 
 <style scoped>

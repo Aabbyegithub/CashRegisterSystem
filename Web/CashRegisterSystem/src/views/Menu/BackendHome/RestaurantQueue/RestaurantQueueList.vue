@@ -227,7 +227,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import {
   ElSelect, ElOption, ElInput, ElButton, ElTable, ElTableColumn,
   ElPagination, ElTag, ElDialog, ElForm, ElFormItem, ElRadioGroup, ElRadio, ElEmpty, ElMessage
@@ -269,13 +269,6 @@ interface QueueItem {
   waitTime: number;
   notes?: string;
   status: string;
-}
-interface Table {
-  id: string;
-  number: string;
-  shape: string;
-  capacity: number;
-  areaName: string;
 }
 
 const storeList = ref<Store[]>([]);
