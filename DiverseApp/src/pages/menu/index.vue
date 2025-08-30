@@ -77,17 +77,17 @@
           <image :src="selectedDish?.img" class="spec-img" />
           <view class="spec-info">
             <view class="spec-title">{{ selectedDish?.name }}</view>
-            <view class="spec-desc">已选：{{ selectedSpec }} / {{ selectedSpicy }}</view>
+            <view class="spec-desc">已选：{{ selectedSpec }}<span v-if="spicyList.length >0 && specList.length >0">/</span>{{ selectedSpicy }}</view>
             <view class="spec-price">￥{{ selectedDish?.price }}</view>
           </view>
         </view>
-        <view class="spec-section">
+        <view v-if="specList.length>0" class="spec-section">
           <view class="spec-label">份量</view>
           <view class="spec-options">
             <view v-for="spec in specList" :key="spec" :class="['spec-option', selectedSpec === spec ? 'active' : '']" @click="selectedSpec = spec">{{ spec }}</view>
           </view>
         </view>
-        <view class="spec-section">
+        <view v-if="spicyList.length>0" class="spec-section">
           <view class="spec-label">辣度</view>
           <view class="spec-options">
             <view v-for="spicy in spicyList" :key="spicy" :class="['spec-option', selectedSpicy === spicy ? 'active' : '']" @click="selectedSpicy = spicy">{{ spicy }}</view>
@@ -158,22 +158,29 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShareAppMessage, onShow } from '@dcloudio/uni-app'
 // 规格弹窗相关
 const showSpecDialog = ref(false)
 const selectedDish = ref<any>(null)
-const specList = ['约1000克']
-const spicyList = ['不辣', '正常', '中辣', '重辣']
-const selectedSpec = ref(specList[0])
-const selectedSpicy = ref(spicyList[0])
+const specList = ref<string[]>(['约1000克'])
+const spicyList = ref<string[]>(['不辣', '正常', '中辣', '重辣'])
+const selectedSpec = ref(specList.value[0])
+const selectedSpicy = ref(spicyList.value[0])
 const qty = ref(1)
 const TableId = ref(0)
 
 function openSpecDialog(dish: any) {
+  // 获取分量规格数组（查出是一个列表）
+  const specArr = dishes.value.find(d => d.id === dish.id)?.dish_spec.filter((d: any) => d.spec_type === '分量') || []
+  // 如果每个分量对象有 spec_name 字段，组成数组
+  specList.value =  specArr.map((item: any) => item.spec_name)
+  const specyArr = dishes.value.find(d => d.id === dish.id)?.dish_spec.filter((d: any) => d.spec_type === '辣度') || []
+  spicyList.value =specyArr.map((item: any) => item.spec_name)
+
   selectedDish.value = dish
   showSpecDialog.value = true
-  selectedSpec.value = specList[0]
-  selectedSpicy.value = spicyList[0]
+  selectedSpec.value = specList.value[0]
+  selectedSpicy.value = spicyList.value[0]
   qty.value = 1
 }
 function changeQty(val: number) {
@@ -308,15 +315,32 @@ async function submitOrder() {
 }
 
 onLoad(() => {
-  const { tableId, storeId,people } = uni.getStorageSync('TableInfo') || {}
+  const { tableId,orgId,people } = uni.getStorageSync('TableInfo') || uni.getStorageSync('UserInfo') || {}
   if (tableId) {
     // 获取桌台ID
     TableId.value = tableId
   }else {
     uni.showToast({ title: '未指定桌台', icon: 'none' })
+    uni.switchTab({
+      url: `../table/index`
+    })
+    return
   }
-  getmenuType(storeId) 
-  getmenuList(storeId)
+  getmenuType(orgId) 
+  getmenuList(orgId)
+})
+onShow(() => {
+  const { tableId,orgId,people } = uni.getStorageSync('TableInfo') || uni.getStorageSync('UserInfo') || {}
+  if (tableId) {
+    // 获取桌台ID
+    TableId.value = tableId
+  }else {
+    uni.showToast({ title: '未指定桌台', icon: 'none' })
+    uni.switchTab({
+      url: `../table/index`
+    })
+    return
+  }
 })
 
 async function getmenuType(storeId: number) {

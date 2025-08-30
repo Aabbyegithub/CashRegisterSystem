@@ -75,12 +75,12 @@
             <el-tag type="primary">{{ scope.row.queueNumber }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="customerName" label="姓名" align="center" />
+        <!-- <el-table-column prop="customerName" label="姓名" align="center" />
         <el-table-column prop="phone" label="手机号" align="center">
           <template #default="scope">
             {{ formatPhone(scope.row.phone) }}
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column prop="partySize" label="人数" align="center">
           <template #default="scope">
             <el-tag>{{ scope.row.partySize }}</el-tag>

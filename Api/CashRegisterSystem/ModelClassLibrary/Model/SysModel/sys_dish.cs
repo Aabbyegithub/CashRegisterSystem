@@ -124,5 +124,9 @@ namespace MyNamespace
         [Navigate(NavigateType.OneToOne, nameof(category_id), nameof(sys_dish_category.category_id))]//一对一 
         public sys_dish_category? dish_category { get; set; }
 
+
+        [Navigate(NavigateType.OneToMany, nameof(dish_id), nameof(sys_dish_spec.dish_id))]//一对一 
+        public List<sys_dish_spec>? dish_spec { get; set; }
+
     }
 }

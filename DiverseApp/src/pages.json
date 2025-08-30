@@ -1,6 +1,12 @@
 {
 	"pages": [ 
 		{
+			"path": "pages/my/Login",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		},
+		{
 			"path": "pages/table/index",
 			"style": {
 				"navigationBarTitleText": "桌台"
@@ -39,15 +45,15 @@
 			}
 		},
 		{
-			"path": "pages/my/Login",
-			"style": {
-				"navigationBarTitleText": "登录"
-			}
-		},
-		{
 			"path": "pages/my/Register",
 			"style": {
 				"navigationBarTitleText": "注册"
+			}
+		},
+		{
+			"path": "pages/order/Coupon",
+			"style": {
+				"navigationBarTitleText": "优惠卷"
 			}
 		}
 

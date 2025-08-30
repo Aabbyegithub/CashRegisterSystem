@@ -9,14 +9,18 @@ interface RequestOptions {
   headers?: Record<string, string>;
   timeout?: number;
 }
-
+const token = uni.getStorageSync('token') || '';
 export function request(options: RequestOptions): Promise<any> {
   return new Promise((resolve, reject) => {
     uni.request({
       url: BASE_URL + options.url,
       method: options.method || 'GET',
       data: options.data || {},
-      header: { ...DEFAULT_HEADERS, ...(options.headers || {}) },
+      header: { 
+        ...DEFAULT_HEADERS, 
+        ...(options.headers || {}) ,
+        'Authorization': token ? `Bearer ${token}` : '',
+      },
       timeout: options.timeout || TIMEOUT,
       success: (res:any) => {
         if (res.statusCode === 200) {

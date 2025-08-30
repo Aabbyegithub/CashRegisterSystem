@@ -1,60 +1,63 @@
 <template>
   <view class="login-page">
     <view class="login-header">
-      <image src="/static/login-bg.png" class="login-bg" mode="widthFix" />
+      <image src="/static/mytop.png" class="login-bg" mode="widthFix" />
       <view class="login-title">餐厅收银系统</view>
-    </view>
-    <view class="login-tabs">
-      <view :class="['login-tab', activeTab === 0 ? 'active' : '']" @click="activeTab = 0">账号登录</view>
-      <view :class="['login-tab', activeTab === 1 ? 'active' : '']" @click="activeTab = 1">短信登录</view>
-    </view>
-    <view v-if="activeTab === 0" class="login-form">
-      <view class="form-row">
-        <view class="form-label">账号</view>
-        <u-input v-model="form.account" placeholder="请输入账号" custom-style="background:#f6fbfc;border-radius:8px;" />
-      </view>
-      <view class="form-row">
-        <view class="form-label">密码</view>
-        <u-input v-model="form.password" type="password" placeholder="请输入密码" custom-style="background:#f6fbfc;border-radius:8px;" />
+      <view class="login-form login-form-float">
+        <view class="form-row">
+          <view class="form-label">账号</view>
+          <u-input v-model="form.account" placeholder="请输入账号" custom-style="background:#eaf7f7;border-radius:8px;" />
+        </view>
+        <view class="form-row">
+          <view class="form-label">密码</view>
+          <u-input v-model="form.password" :type="showPwd ? 'text' : 'password'" placeholder="请输入密码" custom-style="background:#eaf7f7;border-radius:8px;padding-right:40px;" />
+          <view class="pwd-toggle" @click.stop="showPwd = !showPwd">
+            <text v-if="showPwd">👁️</text>
+            <text v-else>🙈</text>
+          </view>
+        </view>
         <view class="form-forget" @click="goForget">忘记密码？</view>
+        <u-button type="primary" custom-style="width:100%;margin:40px auto 0;background:linear-gradient(90deg,#17b2c2,#0e8a9e);border-radius:8px;font-size:18px;" @click="login">登录</u-button>
       </view>
-      <u-button type="primary" custom-style="width:90%;margin:40px auto 0;background:linear-gradient(90deg,#17b2c2,#0e8a9e);border-radius:8px;" @click="login">登录</u-button>
-    </view>
-    <view v-else class="login-form">
-      <view class="form-row">
-        <view class="form-label">手机号</view>
-        <u-input v-model="form.mobile" placeholder="请输入手机号" custom-style="background:#f6fbfc;border-radius:8px;" />
-      </view>
-      <view class="form-row">
-        <view class="form-label">验证码</view>
-        <u-input v-model="form.code" placeholder="请输入验证码" custom-style="background:#f6fbfc;border-radius:8px;" />
-        <u-button type="default" size="mini" custom-style="margin-left:10px;" @click="sendCode">获取验证码</u-button>
-      </view>
-      <u-button type="primary" custom-style="width:90%;margin:40px auto 0;background:linear-gradient(90deg,#17b2c2,#0e8a9e);border-radius:8px;" @click="loginSms">登录</u-button>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
+import { request } from '@/utitl/request'
 import { ref } from 'vue'
-const activeTab = ref(0)
 const form = ref({
   account: '',
-  password: '',
-  mobile: '',
-  code: ''
+  password: ''
 })
-function login() {
+const showPwd = ref(false)
+async function login() {
   // 登录逻辑
-}
-function loginSms() {
-  // 短信登录逻辑
-}
-function sendCode() {
-  // 发送验证码逻辑
+  await request({
+    url: '/api/User/Login',
+    method: 'GET',
+    data:{
+      UserName: form.value.account,
+      PassWord: form.value.password
+    }
+  }).then((res:any) => {
+    if (res.start === 200) {
+      uni.showToast({ title: '登录成功', icon: 'success' })
+      // 保存登录状态
+      uni.setStorageSync('token', res.response.token)
+        uni.setStorageSync('UserInfo', JSON.stringify(res.response))
+      // 跳转到首页或其他页面
+      uni.switchTab({ url: '/pages/table/index' })
+    } else {
+      uni.showToast({ title: res.message || '登录失败', icon: 'none' })
+    }
+  }).catch(err => {
+    uni.showToast({ title: '网络错误，请稍后重试', icon: 'none' })
+  })
 }
 function goForget() {
   // 跳转忘记密码
+  uni.navigateTo({ url: '/pages/my/ForgetPwd' })
 }
 </script>
 
@@ -87,6 +90,7 @@ function goForget() {
   background: #fff;
   border-radius: 24px 24px 0 0;
   overflow: hidden;
+  z-index: 999 ;
 }
 .login-tab {
   flex: 1;
@@ -103,9 +107,18 @@ function goForget() {
   border-bottom: 2px solid #0e8a9e;
 }
 .login-form {
-  padding: 0 24px;
+  position: absolute;
+  left: 50%;
+  top: 170px;
+  transform: translateX(-50%);
+  width: 90%;
+  min-width: 320px;
+  max-width: 400px;
   background: #fff;
-  border-radius: 0 0 16px 16px;
+  border-radius: 28px;
+  box-shadow: 0 8px 32px rgba(14,138,158,0.16);
+  padding: 36px 24px 28px 24px;
+  z-index: 2;
 }
 .form-row {
   display: flex;
@@ -118,12 +131,30 @@ function goForget() {
   color: #333;
   font-size: 16px;
 }
-.form-forget {
+.pwd-toggle {
   position: absolute;
-  right: 0;
+  right: 38px;
   top: 50%;
   transform: translateY(-50%);
+  font-size: 20px;
+  color: #999;
+  cursor: pointer;
+  user-select: none;
+  margin-right: -30px;
+}
+.form-forget {
+  text-align: right;
   color: #999;
   font-size: 14px;
+  margin-top: 12px;
+  cursor: pointer;
 }
+.form-change {
+  text-align: right;
+  color: #999;
+  font-size: 14px;
+  margin-top: 12px;
+  cursor: pointer;
+}
+
 </style>

@@ -123,6 +123,29 @@ namespace WebServiceClass.Helper.WeChat
                 return response.Content.ReadAsStringAsync().Result;
             }
         }
+
+
+        public static async Task<string> CallCustomerUnifiedRechargeApi(string attach, string description, string outTradeNo, decimal total, string code, string storeNum, long userId)
+        {
+            var url = "https://www.xaerss.com/Business/WechatPay/GetUnifiedRechargeResult1";
+            var payload = new
+            {
+                attach,
+                description,
+                out_trade_no = outTradeNo,
+                total,
+                code,
+                storeNum,
+                userId
+            };
+            var json = JsonConvert.SerializeObject(payload);
+            using (var client = new HttpClient())
+            {
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await client.PostAsync(url, content);
+                return await response.Content.ReadAsStringAsync();
+            }
+        }
         #endregion
     }
 }

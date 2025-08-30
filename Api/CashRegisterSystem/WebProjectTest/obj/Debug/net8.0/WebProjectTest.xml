@@ -83,7 +83,7 @@
             <param name="people"></param>
             <returns></returns>
         </member>
-        <member name="M:WebProjectTest.Controllers.AppController.ClientController.GetTableOrderAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:WebProjectTest.Controllers.AppController.ClientController.GetTableOrderAsync(System.Int32,System.Nullable{System.Int32},System.Int32)">
             <summary>
             获取桌台订单，可以结算或者加菜，催菜
             </summary>
@@ -131,6 +131,11 @@
             <param name="newTableId"></param>
             <param name="orderId"></param>
             <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.AppController.ClientController.GetCouponList(System.Nullable{System.Int64})">
+            <summary>
+            获取优惠券列表
+            </summary>
         </member>
         <member name="M:WebProjectTest.Controllers.CouponController.GetCouponList(System.Nullable{System.Int64},System.String,System.Nullable{System.Byte},System.Nullable{System.Byte},System.Int32,System.Int32)">
             <summary>

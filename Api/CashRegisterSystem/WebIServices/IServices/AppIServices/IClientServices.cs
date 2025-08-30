@@ -10,7 +10,7 @@ using static WebProjectTest.Common.Message;
 
 namespace WebIServices.IServices.ClientIServices
 {
-    public interface IClientServices:IBaseService
+    public interface IClientServices : IBaseService
     {
         /// <summary>
         /// 获取当前门店相关桌台信息
@@ -42,7 +42,7 @@ namespace WebIServices.IServices.ClientIServices
         /// <param name="sourceType"></param>
         /// <param name="people"></param>
         /// <returns></returns>
-        Task<ApiResponse<bool>>SaveOrder(List<Order> order, int store_id, int table_id, int sourceType,int people,int? orderId);
+        Task<ApiResponse<bool>> SaveOrder(List<Order> order, int store_id, int table_id, int sourceType, int people, int? orderId);
 
         /// <summary>
         /// 获取桌台订单
@@ -50,7 +50,7 @@ namespace WebIServices.IServices.ClientIServices
         /// <param name="store_id"></param>
         /// <param name="table_id"></param>
         /// <returns></returns>
-        Task<ApiResponse<List<sys_order>>> GetTableOrder(int store_id, int table_id,int sourceType);
+        Task<ApiResponse<List<sys_order>>> GetTableOrder(int store_id, int? table_id, int sourceType);
 
         /// <summary>
         /// 催单
@@ -72,7 +72,7 @@ namespace WebIServices.IServices.ClientIServices
         /// <param name="orderId"></param>
         /// <param name="CouponsId"></param>
         /// <returns></returns>
-        Task<ApiResponse<bool>> OrderCheckout(int orderId,int? CouponsId,string type);
+        Task<ApiResponse<bool>> OrderCheckout(int orderId, int? CouponsId, string type);
 
         /// <summary>
         /// 订单并桌
@@ -91,5 +91,14 @@ namespace WebIServices.IServices.ClientIServices
         /// <param name="orderId"></param>
         /// <returns></returns>
         Task<ApiResponse<bool>> ChangeTables(int oldTableId, int newTableId, int orderId);
+
+        /// <summary>
+        /// 获取优惠卷
+        /// </summary>
+        /// <param name="storeId"></param>
+        /// <returns></returns>
+        Task<ApiResponse<List<sys_coupon>>> GetCouponListAsync(long? storeId);
+
+        
     }
 }

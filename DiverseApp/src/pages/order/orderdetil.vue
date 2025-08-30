@@ -28,13 +28,13 @@
         <view class="order-item-price">￥{{ item.price }}</view>
         <!-- <view v-if="item.detail" class="order-item-detail" v-html="item.detail"></view> -->
       </view>
-      <view class="order-coupon">
+      <view v-if="coupons.length>0" class="order-coupon" @click="handleCunpon">
         <view class="order-coupon-label">选择优惠券 <span style="color:#F04216">·</span></view>
-        <view class="order-coupon-info">消费券 满100减5元</view>
+        <view class="order-coupon-info">{{ selectcoupons }}</view>
       </view>
       <view class="order-total">
         <view class="order-total-label">总计</view>
-        <view class="order-total-info"><span style="color:#F04216">已优惠￥5元</span> ￥{{ total }}</view>
+        <view class="order-total-info"><span v-if="couponsMoney" style="color:#F04216">{{couponsMoney}}</span> ￥{{ total }}</view>
       </view>
     </view>
     <view class="order-pay">
@@ -82,8 +82,9 @@
 
 <script setup lang="ts">
 import { request } from '@/utitl/request'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 import { ref } from 'vue'
+import dayjs from 'dayjs'
 const tableName = ref('A2桌')
 const oldtableId = ref(0)
 const storeId = ref(0)
@@ -100,6 +101,10 @@ const orderId = ref("0")
 const orderstatus = ref()
 const total = ref(71)
 const payType = ref('wechat')
+const coupons = ref([])
+const selectcoupons = ref('')
+const couponsMoney = ref('')
+const selectcouponsId = ref('')
 const payList = ref([
   { value: 'wechat', label: '微信支付', icon: '/static/Vector.png' },
   // { value: 'balance', label: '余额支付', icon: '/static/payFrame(1).png' },
@@ -107,6 +112,18 @@ const payList = ref([
   { value: 'bank', label: '银行卡', icon: '/static/payFrame(3).png' },
   // { value: 'cash', label: '现金', icon: '/static/payFrame(4).png' }
 ])
+function handleCunpon() {
+  // 计算当前可用总价（已减去优惠）
+  let couponDiscount = 0
+  if (couponsMoney.value) {
+    const match = couponsMoney.value.match(/\d+(\.\d+)?/)
+    couponDiscount = match ? parseFloat(match[0]) : 0
+  }
+  const availableTotal = total.value + couponDiscount
+  uni.navigateTo({
+    url: '../order/Coupon?total=' + availableTotal
+  })
+}
 function goBack() {
   uni.navigateBack()
 }
@@ -118,7 +135,28 @@ function addDish() {
     url: '../menu/index'
   })
 }
-function checkout() {
+async function checkout() {
+  await request({
+    url: '/api/Client/OrderCheckout',
+    method: 'POST',
+    data: {
+      orderId: orderId.value,
+      type: payType.value,
+      CouponsId: selectcouponsId.value || 0
+    }
+  }).then((res:any) => {
+    if (res.start == 200) {
+      uni.showToast({ title: '结账成功', icon: 'success' })
+      // 结账成功后，清除已选择的优惠券
+      uni.removeStorageSync('selectedCoupon')
+      // 返回订单列表页
+      uni.navigateBack()
+    } else {
+      uni.showToast({ title: res.message || '结账失败', icon: 'none' })
+    }
+  }).catch(() => {
+    uni.showToast({ title: '结账失败', icon: 'none' })
+  })
   uni.showToast({ title: '结账成功', icon: 'success' })
 }
 async function confirmMerge() {
@@ -173,13 +211,64 @@ async function confirmChange() {
   GetTables(storeId.value)
 }
 
-onLoad((options: any) => {
+onLoad(async (options: any) => {
     console.log('订单详情参数:', options)
     const { orderId: oid, orderstatus: ostatus } = options
     orderId.value = oid
     orderstatus.value = ostatus
-    GetOrderDetail(oid)
+    await GetOrderDetail(oid)
+    await getStoredCoupon()
+
 })
+onShow(() => {
+  console.log('onShow订单详情')
+  var selectedCoupon = uni.getStorageSync('selectedCoupon')
+  if(selectedCoupon && selectedCoupon.id){
+    selectcoupons.value = selectedCoupon.coupon_name+'满   '+selectedCoupon.min_consumption+'减'+selectedCoupon.value
+    couponsMoney.value = '已优惠￥'+selectedCoupon.value+'元'
+    // 重新计算总价，避免多次减去
+    let orderTotal = 0
+    if(orderList.value && orderList.value.length > 0){
+      orderTotal = orderList.value.reduce((sum:any, item:any) => sum + Number(item.price), 0)
+    }else{
+      orderTotal = total.value
+    }
+    total.value = orderTotal - selectedCoupon.value
+    selectcouponsId.value = selectedCoupon.id
+  }
+})
+
+async function getStoredCoupon() {
+   const tableInfo = uni.getStorageSync('TableInfo') || {}
+   const userInfo =JSON.parse( uni.getStorageSync('UserInfo') )|| {}
+   console.log('tableInfo:', tableInfo)
+   console.log('userInfo:', userInfo)
+   const storeId = tableInfo.storeId || userInfo.orgId || 0
+   await request({
+     url: '/api/Client/GetCouponList',
+     method: 'GET',
+     data:{
+        storeId: storeId
+     }
+   }).then((res:any) => {
+     if (res.start === 200 && res.response) {
+       // 按某字段（如 value）降序排序，取第一个
+       const sorted = res.response.filter((x:any)=> total.value >= x.min_consumption).sort((a:any, b:any) => b.value - a.value)
+       coupons.value = res.response
+       console.log('可用优惠券:', sorted)
+       if(sorted.length > 0){
+        selectcoupons.value = sorted.length > 0 ? sorted[0].coupon_name+'满   '+sorted[0].min_consumption+'减'+sorted[0].value : ''
+        couponsMoney.value = '已优惠￥'+sorted[0].value+'元'
+        total.value = total.value - sorted[0].value
+        uni.setStorageSync('selectedCoupon', sorted[0])
+        selectcouponsId.value = sorted[0].id
+       }
+     }
+   }).catch(err => {
+     console.error('Failed to fetch coupons:', err)
+   })
+}
+
 async function GetOrderDetail(orderId: number) {
   await request({
     url: '/api/Client/OrderDetails',

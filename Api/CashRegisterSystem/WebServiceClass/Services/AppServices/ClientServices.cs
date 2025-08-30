@@ -45,6 +45,7 @@ namespace WebServiceClass.Services.AppServices
         public async Task<ApiResponse<List<DishList>>> GetDish(int store_id)
         {
             var res = await _dal.Db.Queryable<sys_dish>()
+                  .Includes(a=>a.dish_spec)
                   .Includes(a => a.dish_category).OrderBy(a => a.dish_category.sort_order)
                   .Where(a => a.store_id == store_id || a.store_id == null)
                   .Select(a => new DishList
@@ -54,8 +55,9 @@ namespace WebServiceClass.Services.AppServices
                       Desc = a.description,
                       DishCategoryType = a.category_id,
                       Price = a.member_price,
-                      Spece = 1,
-                      Img = a.image_url
+                      Spece = a.dish_spec.Count() > 0 ? 1 : 0,
+                      Img = a.image_url,
+                      dish_spec = a.dish_spec
                   }).ToListAsync();
             return Success(res, "菜品获取成功");
         }
@@ -201,7 +203,7 @@ namespace WebServiceClass.Services.AppServices
             }
         }
 
-        public async Task<ApiResponse<List<sys_order>>> GetTableOrder(int store_id, int table_id, int sourceType)
+        public async Task<ApiResponse<List<sys_order>>> GetTableOrder(int store_id, int? table_id, int sourceType)
         {
             var res = await _dal.Db.Queryable<sys_order>().Includes(a => a.table)
                 .WhereIF(sourceType == 2,a => a.store_id == store_id && a.table_id == table_id &&( a.status == 1 || a.status == 2))
@@ -358,6 +360,15 @@ namespace WebServiceClass.Services.AppServices
                await _dal.Db.Ado.RollbackTranAsync();
                return Fail<bool>($"转桌失败！{e.Message}");
             }
+        }
+
+        public async Task<ApiResponse<List<sys_coupon>>> GetCouponListAsync(long? storeId)
+        {
+            var query = _dal.Db.Queryable<sys_coupon>().Where(x => x.store_id == storeId || x.store_id == 0);
+
+            var list = await query.OrderBy(x => x.coupon_id, OrderByType.Desc)
+                                  .ToListAsync();
+            return Success(list);
         }
     }
 }

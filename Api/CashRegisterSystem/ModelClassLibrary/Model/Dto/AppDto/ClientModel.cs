@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyNamespace;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -40,6 +41,7 @@ namespace ModelClassLibrary.Model.Dto.AppDto
         public string Img { get; set; }
 
         public long DishCategoryType { get; set; }
+       public List<sys_dish_spec> dish_spec{ get; set; }
     }
 
     public class Order

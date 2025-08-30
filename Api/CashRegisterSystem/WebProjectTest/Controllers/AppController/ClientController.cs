@@ -67,7 +67,7 @@ namespace WebProjectTest.Controllers.AppController
         /// <returns></returns>
         [HttpGet]
 
-        public async Task<ApiResponse<List<sys_order>>> GetTableOrderAsync(int store_id, int table_id, int sourceType)
+        public async Task<ApiResponse<List<sys_order>>> GetTableOrderAsync(int store_id, int? table_id, int sourceType)
         {
             return await _clientServices.GetTableOrder(store_id, table_id, sourceType);
         }
@@ -131,6 +131,15 @@ namespace WebProjectTest.Controllers.AppController
         public async Task<ApiResponse<bool>> ChangeTablesAsync(int oldTableId, int newTableId, int orderId)
         {
             return await _clientServices.ChangeTables(oldTableId, newTableId, orderId);
+        }
+
+        /// <summary>
+        /// 获取优惠券列表
+        /// </summary>
+        [HttpGet]
+        public async Task<ApiResponse<List<sys_coupon>>> GetCouponList(long? storeId)
+        {
+            return await _clientServices.GetCouponListAsync(storeId);
         }
     }
 }

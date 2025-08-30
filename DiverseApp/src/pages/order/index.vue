@@ -100,11 +100,12 @@ import { onShow } from '@dcloudio/uni-app';
 const searchValue = ref('')
 const sourceType =ref(2) // 默认客人
 var UserInfo = uni.getStorageSync('UserInfo')
-if (!UserInfo) {
+if (UserInfo) {
    sourceType.value = 1
 }
- const { tableId, storeId,people } = uni.getStorageSync('TableInfo') || {}
-
+ const { tableId1, storeId1,people } = uni.getStorageSync('TableInfo') || {}
+const storeId = storeId1 || (UserInfo ? JSON.parse(UserInfo).orgId : 0)
+const tableId = tableId1 ||  ''
 // 订单数据
 const orders = ref<any[]>([])
 
