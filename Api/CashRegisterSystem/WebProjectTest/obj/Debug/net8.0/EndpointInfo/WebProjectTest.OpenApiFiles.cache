@@ -1,3 +1,5 @@
+WebProjectTest_Coupon.json
+WebProjectTest_Promotion.json
 WebProjectTest_Task.json
 WebProjectTest_Table.json
 WebProjectTest_Auther.json
@@ -24,6 +26,4 @@ WebProjectTest_DishSpecifications.json
 WebProjectTest_SetMeal.json
 WebProjectTest_DBFirst.json
 WebProjectTest_CoreKPIReport.json
-WebProjectTest_Coupon.json
-WebProjectTest_PromotionalList.json
 WebProjectTest_Client.json

@@ -15,13 +15,13 @@
           <view class="status">
             <image
               v-if="order.status === '待支付'"
-              src="/src/static/列表图标.png"
+              src="/src/static/notPayment.png"
               class="status-icon"
               mode="aspectFit"
             />
             <image
               v-else
-              src="/src/static/列表图标(1).png"
+              src="/src/static/Payment.png"
               class="status-icon"
               mode="aspectFit"
             />

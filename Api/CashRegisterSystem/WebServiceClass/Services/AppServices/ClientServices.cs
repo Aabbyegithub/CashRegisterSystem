@@ -37,6 +37,7 @@ namespace WebServiceClass.Services.AppServices
                 Status = a.status,
                 People = a.order == null ? 0 : (int)(a.order.table_capacity ?? 0),
                 Max = a.capacity,
+                order = a.order,
                 bookedTime = a.order == null ? "" : (a.order.reservation == null ? "" : a.order.reservation?.reservation_time.ToString("yy-MM-dd HH:mm:ss"))
             }).ToList();
             return Success(result, "获取桌台列表成功");

@@ -19,6 +19,7 @@ namespace ModelClassLibrary.Model.Dto.AppDto
         public int People { get; set; } = 0;
         public int Max { get; set; }
         public string bookedTime { get; set; }
+        public sys_order order { get; set; }
     }
 
     public class DishCategory

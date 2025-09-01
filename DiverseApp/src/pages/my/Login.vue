@@ -1,7 +1,7 @@
 <template>
   <view class="login-page">
     <view class="login-header">
-      <image src="/static/mytop.png" class="login-bg" mode="widthFix" />
+      <image src="/static/login.png" class="login-bg" mode="widthFix" />
       <view class="login-title">餐厅收银系统</view>
       <view class="login-form login-form-float">
         <view class="form-row">

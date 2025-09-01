@@ -35,9 +35,9 @@ function onInput(e: any) {
 <style scoped>
 .header {
   background:#1E8090 ;
-  padding: 40rpx 0 20rpx 0;
+  /* padding: 40rpx 0 20rpx 0; */
   position: relative;
-  height: 120rpx;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -45,7 +45,7 @@ function onInput(e: any) {
 .search-box {
   position: absolute;
   left: 30rpx;
-  top: 50%;
+  /* top: 50%; */
   transform: translateY(-50%);
   display: flex;
   align-items: center;
@@ -70,6 +70,7 @@ function onInput(e: any) {
   font-size: 25rpx;
   font-weight: bold;
   text-align: center;
-  margin-bottom: -30px;
+  /* margin-bottom: -30px; */
+
 }
 </style>
