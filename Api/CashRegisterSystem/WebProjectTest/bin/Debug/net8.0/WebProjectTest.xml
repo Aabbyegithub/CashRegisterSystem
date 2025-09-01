@@ -105,7 +105,7 @@
             <param name="orderId"></param>
             <returns></returns>
         </member>
-        <member name="M:WebProjectTest.Controllers.AppController.ClientController.OrderCheckout(System.Int32,System.Nullable{System.Int32},System.String)">
+        <member name="M:WebProjectTest.Controllers.AppController.ClientController.OrderCheckout(System.Int32,System.Nullable{System.Int32},System.String,System.String)">
             <summary>
             结账
             </summary>
@@ -427,12 +427,12 @@
             </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "M:WebProjectTest.Controllers.OrderController.OrderController.GetOrderDetailsAsync(System.Int32)" -->
-        <member name="M:WebProjectTest.Controllers.OrderController.OrderController.ChangeTableAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:WebProjectTest.Controllers.OrderController.OrderController.ChangeTableAsync(System.Int32,System.Int32,System.Int32,System.String)">
             <summary>
             换桌
             </summary>
         </member>
-        <member name="M:WebProjectTest.Controllers.OrderController.OrderController.MergeTableAsync(System.Int32,System.Int32,System.Int32)">
+        <member name="M:WebProjectTest.Controllers.OrderController.OrderController.MergeTableAsync(System.Int32,System.Int32,System.Int32,System.String)">
             <summary>
             并桌
             </summary>
@@ -497,6 +497,19 @@
             <summary>
             角色
             </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.DataBackUpController.GetBackUpListAsync(System.String,System.Int32,System.Int32)">
+            <summary>
+            获取备份列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebProjectTest.Controllers.SystemController.DataBackUpController.AddBackUpAsync">
+            <summary>
+            添加备份
+            </summary>
+            <param name="backupName"></param>
+            <returns></returns>
         </member>
         <member name="M:WebProjectTest.Controllers.SystemController.ImgController.UpImg(Microsoft.AspNetCore.Http.IFormFile)">
             <summary>

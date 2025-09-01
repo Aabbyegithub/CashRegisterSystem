@@ -28,6 +28,7 @@ namespace WebServiceClass.Services.SystemService
         {
             try
             {
+                sys_Store.store_code = $"STORE-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}";
                 await _dal.Db.Insertable(sys_Store)
                     .ExecuteCommandAsync();
                 return Success<bool>(true, "商店添加成功");

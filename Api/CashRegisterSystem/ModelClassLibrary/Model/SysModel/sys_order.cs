@@ -183,14 +183,24 @@ namespace MyNamespace
         /// Nullable:False
         /// </summary>   
         public string paymeth {get;set;}
+        /// <summary>
+        ///是否备份
+        /// </summary>
+        public int is_backup {get;set;}
 
 
         [Navigate(NavigateType.OneToOne, nameof(reservation_id), nameof(sys_reservation.reservation_id))]//一对一 
         public sys_reservation? reservation { get; set; }
 
+        [Navigate(NavigateType.OneToOne, nameof(store_id), nameof(sys_store.store_id))]//一对一 
+        public sys_store? store { get; set; }
+
 
         [Navigate(NavigateType.OneToOne, nameof(table_id), nameof(sys_restaurant_table.table_id))]//一对一 
         public sys_restaurant_table? table { get; set; }
+
+        [Navigate(NavigateType.OneToMany, nameof(order_id), nameof(sys_order_item.order_id))]//一对多
+        public List<sys_order_item>? orderitem { get; set; }
 
         [SugarColumn(IsIgnore = true)]
         public string TableNo { get; set; }

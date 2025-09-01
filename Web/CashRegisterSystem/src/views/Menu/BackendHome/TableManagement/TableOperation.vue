@@ -68,7 +68,7 @@
             >
               <div class="table-number">{{ table.tableNo }}</div>
               <div class="table-details">
-                <span>{{ table.tableType }}</span>｜<span>{{ table.capacity }}人</span>
+                <span>{{ table.tableType }}</span>｜<span>{{ table.capacity }}人</span>|<span>最低消费{{ table.minConsumption }}￥</span>
               </div>
               <span class="status-tag" :class="statusTextMap[Number(table.status)]">{{ statusMap[Number(table.status)] }}</span>
             </div>
@@ -108,7 +108,7 @@
         <div class="operation-buttons">
           <el-button @click="closeModal">取消</el-button>
           <el-button type="primary" :loading="loading" :disabled="!canConfirmOperation" @click="handleConfirm">
-            {{ selectedTargetTables.length > 1 ? '确认并桌' : '确认换桌' }}
+            {{ changtable === 1 ? '确认并桌' : '确认换桌' }}
           </el-button>
         </div>
       </el-card>
@@ -117,8 +117,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, onMounted } from 'vue';
-import { ElMessage } from 'element-plus';
+import { ref, computed, onMounted } from 'vue';
+import { dayjs, ElMessage } from 'element-plus';
+import { changeTable, getAllTables, mergeTables } from '../../../../api/TableOperation';
 // import { getAvailableTables, getTableOrder, transferTable, mergeTables } from '@/api/table';
 // import { formatDateTime } from '@/utils/date';
 
@@ -143,10 +144,11 @@ const allTables = ref<any[]>([]); // 所有桌台（用于当前桌台选择）
 const availableTables = ref<any[]>([]); // 可用桌台列表
 const selectedSourceTableId = ref<number | null>(null); // 当前桌台ID
 const sourceTable = ref<any>(null); // 当前桌台对象
-const selectedTargetTableIds = ref<number[]>([]); // 目标桌台ID列表
-const selectedTargetTables = computed(() => availableTables.value.filter(t => selectedTargetTableIds.value.includes(t.tableId)));
+const selectedTargetTableIds = ref<number>(); // 目标桌台ID列表
+const selectedTargetTables = computed(() => availableTables.value.filter(t =>t.tableId == selectedTargetTableIds.value));
 const operationReason = ref('');
 const loading = ref(false);
+const changtable = ref(1);
 const formRef = ref();
 const form = ref({});
 const currentOrder = ref<any>(null);
@@ -164,23 +166,28 @@ const statusTextMap: Record<number, string> = {
   4: 'maintenance'
 };
 
-const isTableSelected = (tableId: number) => selectedTargetTableIds.value.includes(tableId);
+const isTableSelected = (tableId: number) => selectedTargetTableIds.value == tableId;
 
 const handleSourceTableChange = (tableId: number) => {
   sourceTable.value = allTables.value.find(t => t.tableId === tableId) || null;
+  ElMessage.info('请选择换桌或并台操作')
   // 切换当前桌台时清空目标桌台选择
-  selectedTargetTableIds.value = [];
+  // availableTables.value = allTables.value.filter(t => t.status === sourceTable.value.status && t.tableId !== tableId);
+  selectedTargetTableIds.value =0;
   loadTableOrder();
 };
 
 const handleChangeTable = () => {
+   changtable.value = 2;
   if (!sourceTable.value) {
     ElMessage.warning('请先选择当前桌台');
     return;
   }
+  availableTables.value = allTables.value.filter(t => t.status !=2 && t.tableId !== sourceTable.value.tableId);
 };
 
 const handleMerge = () => {
+      changtable.value = 1;
   if (!sourceTable.value) {
     ElMessage.warning('请先选择当前桌台');
     return;
@@ -189,44 +196,54 @@ const handleMerge = () => {
     ElMessage.warning('只有占用状态的桌台才能进行并台操作');
     return;
   }
+    availableTables.value = allTables.value.filter(t => t.status ==2 && t.tableId !== sourceTable.value.tableId);
   // 切换到并台模式
-  selectedTargetTableIds.value = [];
+  selectedTargetTableIds.value = 0;
   loadTableOrder();
 };
 
 const handleTableSelect = (tableId: number) => {
   // 单选为换桌，多选为并桌
-  if (selectedTargetTableIds.value.includes(tableId)) {
-    selectedTargetTableIds.value = selectedTargetTableIds.value.filter(id => id !== tableId);
-  } else {
-    selectedTargetTableIds.value.push(tableId);
-  }
+  // if (selectedTargetTableIds.value.includes(tableId)) {
+    selectedTargetTableIds.value = tableId
+  // } else {
+  //   selectedTargetTableIds.value.push(tableId);
+  // }
 };
 const canConfirmOperation = computed(() => {
-  return operationReason.value.trim() && selectedTargetTableIds.value.length > 0;
+  return operationReason.value.trim() && selectedTargetTableIds.value != 0;
 });
 const handleConfirm = async () => {
   if (!canConfirmOperation.value) return;
-  await formRef.value?.validate();
+  if(sourceTable.value.status !==2){
+    ElMessage.error('只有占用状态的桌台才能进行操作');
+    return;
+  }
   loading.value = true;
-  setTimeout(() => {
-    loading.value = false;
-    ElMessage.success(selectedTargetTableIds.value.length > 1 ? '并桌操作成功' : '换桌操作成功');
+  if (changtable.value === 2) {
+    // 换桌逻辑
+    await changeTable(sourceTable.value.tableId, selectedTargetTableIds.value ?? 0,sourceTable.value.order?.order_id, operationReason.value);
+    ElMessage.success('换桌成功');
     emit('success');
-    emit('close');
-  }, 1200);
+    loading.value = false;
+  } else {
+    // 并桌逻辑
+    await mergeTables(sourceTable.value.tableId, selectedTargetTableIds.value ?? 0,sourceTable.value.order?.order_id,operationReason.value);
+    ElMessage.success('并桌成功');
+    emit('success');
+    loading.value = false;
+  }
 };
 const closeModal = () => {
   emit('close');
 };
 const loadTableOrder = () => {
-  // mock订单
   if (sourceTable.value && sourceTable.value.status === 2) {
     currentOrder.value = {
-      orderNo: '20240601001',
-      startTime: '2024-06-01 12:00:00',
-      partySize: 3,
-      totalAmount: 288.5
+      orderNo: sourceTable.value.order?.order_no ,
+      startTime: dayjs(sourceTable.value.order?.start_time).format('YYYY-MM-DD HH:mm'),
+      partySize: sourceTable.value.order?.table_capacity,
+      totalAmount: sourceTable.value.order?.payable_amount
     };
   } else {
     currentOrder.value = null;
@@ -235,40 +252,38 @@ const loadTableOrder = () => {
 const formatDateTime = (dateStr: string) => dateStr;
 
 // mock数据加载
-const loadTables = () => {
-  // 模拟更多桌台数据，覆盖不同类型、状态、容量
-  allTables.value = [
-    { tableId: 1, tableNo: 'A01', tableType: '大厅', capacity: 4, status: 1, minConsumption: 100 },
-    { tableId: 2, tableNo: 'A02', tableType: '大厅', capacity: 6, status: 2, minConsumption: 120 },
-    { tableId: 3, tableNo: 'B01', tableType: '包间', capacity: 8, status: 1, minConsumption: 200 },
-    { tableId: 4, tableNo: 'B02', tableType: '包间', capacity: 10, status: 1, minConsumption: 300 },
-    { tableId: 5, tableNo: 'C01', tableType: '卡座', capacity: 2, status: 1, minConsumption: 50 },
-    { tableId: 6, tableNo: 'C02', tableType: '卡座', capacity: 2, status: 3, minConsumption: 60 },
-    { tableId: 7, tableNo: 'D01', tableType: '大厅', capacity: 4, status: 4, minConsumption: 90 },
-    { tableId: 8, tableNo: 'E01', tableType: '包间', capacity: 12, status: 1, minConsumption: 500 },
-    { tableId: 9, tableNo: 'F01', tableType: '大厅', capacity: 6, status: 1, minConsumption: 150 },
-    { tableId: 10, tableNo: 'G01', tableType: '卡座', capacity: 3, status: 1, minConsumption: 80 }
-  ];
-  availableTables.value = allTables.value.filter(t => t.status === 1);
-  // 默认选第一个桌台
-  if (selectedSourceTableId.value === null && allTables.value.length) {
-    selectedSourceTableId.value = allTables.value[0].tableId;
-    sourceTable.value = allTables.value[0];
-    loadTableOrder();
-  }
+const loadTables = async () => {
+  await getAllTables().then((res:any)=>{
+    console.log(res);
+    if(res.success){
+      allTables.value = res.response.map((item: any) => ({
+        tableId: item.id,
+        tableNo: item.name,
+        tableType: item.desc??'',
+        capacity: item.max,
+        status: item.status,
+        minConsumption: item.min_consumption,
+        order : item.order
+      }));
+     
+      // 默认选第一个桌台
+      if (selectedSourceTableId.value === null && allTables.value.length) {
+        selectedSourceTableId.value = allTables.value[0].tableId;
+        sourceTable.value = allTables.value[0];
+        availableTables.value = allTables.value.filter(t => t.status === allTables.value[0].status && t.tableId !== allTables.value[0].tableId);
+        loadTableOrder();
+         ElMessage.info('请选择换桌或并台操作')
+      }
+    }else{
+      ElMessage.error(res?.message || '获取桌台数据失败');
+    }
+  });
 };
 
 onMounted(() => {
   loadTables();
 });
 
-watch(() => props.visible, (val) => {
-  if (val) {
-    loadTables();
-    selectedTargetTableIds.value = [];
-    operationReason.value = '';
-  }
-});
 </script>
 
 <style scoped>

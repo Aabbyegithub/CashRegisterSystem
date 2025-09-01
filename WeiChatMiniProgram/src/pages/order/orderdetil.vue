@@ -108,8 +108,8 @@ const selectcouponsId = ref('')
 const payList = ref([
   { value: 'wechat', label: '微信支付', icon: '/static/Vector.png' },
   // { value: 'balance', label: '余额支付', icon: '/static/payFrame(1).png' },
-  { value: 'alipay', label: '支付宝', icon: '/static/payFrame(2).png' },
-  { value: 'bank', label: '银行卡', icon: '/static/payFrame(3).png' },
+  // { value: 'alipay', label: '支付宝', icon: '/static/payFrame(2).png' },
+  // { value: 'bank', label: '银行卡', icon: '/static/payFrame(3).png' },
   // { value: 'cash', label: '现金', icon: '/static/payFrame(4).png' }
 ])
 function handleCunpon() {

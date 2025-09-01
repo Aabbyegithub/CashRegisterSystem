@@ -60,7 +60,7 @@ namespace WebIServices.IServices.OrderIServices
         /// <param name="newTableId"></param>
         /// <param name="orderId"></param>
         /// <returns></returns>
-        Task<ApiResponse<bool>> MergeTables(int oldTableId, int newTableId, int orderId);
+        Task<ApiResponse<bool>> MergeTables(int oldTableId, int newTableId, int orderId,string? remark);
 
         /// <summary>
         /// 订单转桌
@@ -69,7 +69,7 @@ namespace WebIServices.IServices.OrderIServices
         /// <param name="newTableId"></param>
         /// <param name="orderId"></param>
         /// <returns></returns>
-        Task<ApiResponse<bool>> ChangeTables(int oldTableId, int newTableId, int orderId);
+        Task<ApiResponse<bool>> ChangeTables(int oldTableId, int newTableId, int orderId,string? remark);
 
         /// <summary>
         /// 单独菜品退款

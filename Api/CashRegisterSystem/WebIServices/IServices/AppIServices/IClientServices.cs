@@ -72,7 +72,7 @@ namespace WebIServices.IServices.ClientIServices
         /// <param name="orderId"></param>
         /// <param name="CouponsId"></param>
         /// <returns></returns>
-        Task<ApiResponse<bool>> OrderCheckout(int orderId, int? CouponsId, string type);
+        Task<ApiResponse<bool>> OrderCheckout(int orderId, int? CouponsId, string type,string Code,string url);
 
         /// <summary>
         /// 订单并桌

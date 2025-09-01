@@ -228,7 +228,7 @@ const handleQuery = async () => {
       validTime: `${dayjs(item.valid_start).format('YYYY-MM-DD')} ~ ${dayjs(item.valid_end).format('YYYY-MM-DD')}`,
       status: ['未开始', '进行中', '已结束'][item.status] ?? item.status,
       applicable_dishes: item.applicable_dishes,
-      total: item.total ?? 0,
+      total: item.total,
       received: item.received ?? 0,
       used: item.used ?? 0,
     }));
@@ -309,6 +309,8 @@ const handleDialogConfirm = async () => {
         valid_end: Array.isArray(dialogForm.validTime) ? dayjs(dialogForm.validTime[1]).add(1, 'day').format('YYYY-MM-DDT00:00:00') : '',
         status: statusMap[dialogForm.status] ?? '',
         applicable_dishes: '',
+        total:dialogForm.total,
+
       };
       let res:any;
       if (dialogForm.coupon_id) {

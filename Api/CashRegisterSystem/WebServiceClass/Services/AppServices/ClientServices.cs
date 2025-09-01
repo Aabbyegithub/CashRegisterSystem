@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using WebIServices.IBase;
 using WebIServices.IServices.ClientIServices;
 using WebProjectTest.Common;
+using WebServiceClass.Helper.WeChat;
 using static WebProjectTest.Common.Message;
 
 namespace WebServiceClass.Services.AppServices
@@ -38,6 +39,7 @@ namespace WebServiceClass.Services.AppServices
                 People = a.order == null ? 0 : (int)(a.order.table_capacity ?? 0),
                 Max = a.capacity,
                 order = a.order,
+                desc = a.desc,
                 bookedTime = a.order == null ? "" : (a.order.reservation == null ? "" : a.order.reservation?.reservation_time.ToString("yy-MM-dd HH:mm:ss"))
             }).ToList();
             return Success(result, "获取桌台列表成功");
@@ -143,7 +145,7 @@ namespace WebServiceClass.Services.AppServices
                         service_fee = 0, // 服务费
                         total_amount = order.Sum(o => decimal.Parse(o.price) * o.qty),
                         payable_amount = order.Sum(o => decimal.Parse(o.price) * o.qty),
-                        table_fee = 0, // 桌台费
+                        table_fee = table.min_consumption, // 桌台费
                         start_time = DateTime.Now,
                         is_split = 0, // 是否分单
                         operator_id = 0, // 操作员ID  0默认用户
@@ -261,9 +263,81 @@ namespace WebServiceClass.Services.AppServices
             return Success(result, "获取订单明细成功");
         }
 
-        public Task<ApiResponse<bool>> OrderCheckout(int orderId, int? CouponsId, string type)
+        public async Task<ApiResponse<bool>> OrderCheckout(int orderId, int? CouponsId, string type,string Code,string url)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _dal.Db.Ado.BeginTranAsync();
+                var Msg = "";var coupon = new sys_coupon();
+                if(CouponsId.HasValue && CouponsId > 0)
+                {
+                     coupon = await _dal.Db.Queryable<sys_coupon>().FirstAsync(a => a.coupon_id == CouponsId);
+                    if(coupon != null)
+                    {
+                        if(coupon.status == 0 || coupon.status == 2)
+                        {
+                            Msg = "优惠券不可用，可能未到使用时间或已过期";
+                        }
+                        else if(coupon.status == 1)
+                        {
+                            //更新优惠券状态
+                            coupon.used = coupon.used+1;
+                            coupon.received = coupon.received+1;
+                            if (coupon.total!=null && coupon.used>=coupon.total)
+                            {
+                                coupon.status = 2;//优惠卷全部使用完
+                            }
+                            await _dal.Db.Updateable(coupon).ExecuteCommandAsync();
+                        }
+                    }
+                    else
+                    {
+                        Msg = "优惠券不存在";
+                    }
+                }
+                switch (type)
+                {
+                    case "wechat": //微信
+                        decimal service_fee = (decimal)0.00;
+                        var order1 = await _dal.Db.Queryable<sys_order>().Includes(a => a.store).FirstAsync(a => a.order_id == orderId);
+                        if (order1.table_fee != 0 && order1.payable_amount < order1.table_fee)
+                            service_fee = order1.payable_amount * (decimal)0.1;
+                        await _dal.Db.Updateable<sys_order>()
+                        .SetColumns(a => new sys_order { status = 3, pay_time = DateTime.Now, close_time = DateTime.Now, paymeth = "微信支付",payable_amount = a.payable_amount - coupon.value+ service_fee,service_fee = service_fee})
+                        .Where(a => a.order_id == orderId).ExecuteCommandAsync();
+                        await _dal.Db.Updateable<sys_restaurant_table>()
+                        .SetColumns(a => new sys_restaurant_table { status = 4, order_id = null }).Where(a => a.table_id == orderId).ExecuteCommandAsync();
+                        var order = await _dal.Db.Queryable<sys_order>().Includes(a => a.store).FirstAsync(a => a.order_id == orderId);
+
+                        var res = await WeChatPayHelper.CallCustomerUnifiedRechargeApi(url, "餐饮收银", "餐饮收银订单支付", order?.order_no, order.payable_amount, Code, order.store?.store_code, 0);
+                        //支付记录
+                        await _dal.Db.Insertable(new sys_payment
+                        {
+                            order_id = orderId,
+                            payment_no =  DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(1000, 9999),
+                            pay_amount = order.payable_amount,
+                            pay_type = 1,
+                            status = 2,
+                            pay_time = DateTime.Now,
+                            coupon_id = coupon?.coupon_id
+
+                        }).ExecuteCommandAsync();
+                        Msg = res;
+                        break;
+                    case "alipay": //支付宝
+
+                        break;
+                    default:
+                        break;
+                }
+                await _dal.Db.Ado.CommitTranAsync();
+                return Success(true, "结账成功");   
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         /// <summary>
@@ -365,7 +439,7 @@ namespace WebServiceClass.Services.AppServices
 
         public async Task<ApiResponse<List<sys_coupon>>> GetCouponListAsync(long? storeId)
         {
-            var query = _dal.Db.Queryable<sys_coupon>().Where(x => x.store_id == storeId || x.store_id == 0);
+            var query = _dal.Db.Queryable<sys_coupon>().Where(x => x.store_id == storeId || x.store_id == 0).Where(a=>a.status==1);
 
             var list = await query.OrderBy(x => x.coupon_id, OrderByType.Desc)
                                   .ToListAsync();

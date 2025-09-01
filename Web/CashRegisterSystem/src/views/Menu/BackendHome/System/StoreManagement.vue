@@ -24,6 +24,7 @@
           @selection-change="handleSelectionChange"
         >
           <el-table-column type="selection" width="55" />
+          <el-table-column label="门店编码" prop="store_code" align="center" />
           <el-table-column label="门店名称" prop="store_name" align="center" />
           <el-table-column label="地址" prop="address" align="center" />
           <el-table-column label="联系电话" prop="phone" align="center" />
@@ -121,7 +122,8 @@ async function fetchStoreList() {
         business_hours: item.business_hours,
         total_tables: item.total_tables,
         status: item.status,
-        created_at:dayjs(item.created_at).format('YYYY-MM-DD HH:mm:ss')
+        created_at:dayjs(item.created_at).format('YYYY-MM-DD HH:mm:ss'),
+        store_code:item.store_code
       }));
       total.value = res.count || 0;
     } else {

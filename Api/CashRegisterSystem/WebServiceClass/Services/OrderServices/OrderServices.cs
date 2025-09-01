@@ -133,7 +133,7 @@ namespace WebServiceClass.Services.OrderServices
         /// <param name="orderId"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<ApiResponse<bool>> MergeTables(int oldTableId, int newTableId, int orderId)
+        public async Task<ApiResponse<bool>> MergeTables(int oldTableId, int newTableId, int orderId, string? remark)
         {
             try
             {
@@ -146,7 +146,8 @@ namespace WebServiceClass.Services.OrderServices
                     old_table_id = oldTableId,
                     new_table_id = newTableId,
                     transfer_time = DateTime.Now,
-                    type = 2
+                    type = 2,
+                    remark = remark
                 }).ExecuteCommandAsync();
                 var table = await _dal.Db.Queryable<sys_restaurant_table>().FirstAsync(a => a.table_id == newTableId);
                 var order = await _dal.Db.Queryable<sys_order>().Where(a => a.order_id == orderId || a.order_id == table.order_id).ToListAsync();
@@ -189,7 +190,7 @@ namespace WebServiceClass.Services.OrderServices
         /// <param name="orderId"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<ApiResponse<bool>> ChangeTables(int oldTableId, int newTableId, int orderId)
+        public async Task<ApiResponse<bool>> ChangeTables(int oldTableId, int newTableId, int orderId, string? remark)
         {
             try
             {
@@ -202,7 +203,8 @@ namespace WebServiceClass.Services.OrderServices
                     old_table_id = oldTableId,
                     new_table_id = newTableId,
                     transfer_time = DateTime.Now,
-                    type = 1
+                    type = 1,
+                    remark = remark
                 }).ExecuteCommandAsync();
                 await _dal.Db.Updateable<sys_restaurant_table>()
                     .SetColumns(a => new sys_restaurant_table { status = 1, order_id = null }).Where(a => a.table_id == oldTableId).ExecuteCommandAsync();

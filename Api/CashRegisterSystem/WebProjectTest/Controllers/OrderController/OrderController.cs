@@ -106,9 +106,9 @@ namespace WebProjectTest.Controllers.OrderController
         /// </summary>
         [HttpGet]
         [OperationLogFilter("订单管理", "换桌", ActionType.Edit)]
-        public async Task<ApiResponse<bool>> ChangeTableAsync(int oldTableId, int newTableId, int orderId)
+        public async Task<ApiResponse<bool>> ChangeTableAsync(int oldTableId, int newTableId, int orderId,string? remark)
         {
-            return await _OrderServices.ChangeTables(oldTableId, newTableId, orderId);
+            return await _OrderServices.ChangeTables(oldTableId, newTableId, orderId,remark);
         }
 
         /// <summary>
@@ -116,9 +116,9 @@ namespace WebProjectTest.Controllers.OrderController
         /// </summary>
         [HttpGet]
         [OperationLogFilter("订单管理", "并桌", ActionType.Edit)]
-        public async Task<ApiResponse<bool>> MergeTableAsync(int oldTableId, int newTableId, int orderId)
+        public async Task<ApiResponse<bool>> MergeTableAsync(int oldTableId, int newTableId, int orderId,string? remark)
         {
-            return await _OrderServices.MergeTables(oldTableId, newTableId, orderId);
+            return await _OrderServices.MergeTables(oldTableId, newTableId, orderId,remark);
         }
 
         /// <summary>
@@ -160,5 +160,7 @@ namespace WebProjectTest.Controllers.OrderController
         {
             return await _OrderServices.OrderCheckout(orderId, CouponsId, type, UserId);
         }
+
+
     }
 }

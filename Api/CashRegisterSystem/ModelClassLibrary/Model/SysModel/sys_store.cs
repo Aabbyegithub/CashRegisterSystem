@@ -80,5 +80,11 @@ namespace MyNamespace
            /// </summary>           
            public DateTime updated_at {get;set;} = DateTime.Now;
 
+        /// <summary>
+        /// 门店编码
+        /// </summary>
+
+        public string store_code { get;set;} = null!;
+
     }
 }

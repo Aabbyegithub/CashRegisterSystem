@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ModelClassLibrary.Model.Dto.AppDto;
 using MyNamespace;
 using WebIServices.IServices.ClientIServices;
+using WebProjectTest.Common;
 using static WebProjectTest.Common.Message;
 
 namespace WebProjectTest.Controllers.AppController
@@ -102,9 +103,9 @@ namespace WebProjectTest.Controllers.AppController
         /// <param name="type"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ApiResponse<bool>> OrderCheckout(int orderId, int? CouponsId, string type)
+        public async Task<ApiResponse<bool>> OrderCheckout(int orderId, int? CouponsId, string type,string Code)
         {
-            return await _clientServices.OrderCheckout(orderId, CouponsId, type);
+            return await _clientServices.OrderCheckout(orderId, CouponsId, type,Code,AppSettings.GetConfig("Payment:WeChat:CustomUrl"));
         }
 
         /// <summary>

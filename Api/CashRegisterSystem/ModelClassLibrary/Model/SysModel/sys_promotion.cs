@@ -74,7 +74,7 @@ namespace MyNamespace
            public string? applicable_scope {get;set;}
 
            /// <summary>
-           /// Desc:状态（1-未开始；2-进行中；3-已结束）
+           /// Desc:状态（1-可用；0-未开始 2过期）
            /// Default:
            /// Nullable:False
            /// </summary>           

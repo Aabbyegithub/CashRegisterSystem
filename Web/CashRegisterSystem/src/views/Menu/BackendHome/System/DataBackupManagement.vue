@@ -12,23 +12,18 @@
       <el-table
         :data="filteredBackupList"
         border
-        style="width: 100%"
+        style="width: 100%;height: 70vh;"
         :header-cell-style="{ background: '#f8f9fa', color: '#606266' }"
       >
-        <el-table-column prop="backup_name" label="备份名称" width="200" align="center" />
-        <el-table-column prop="backup_time" label="备份时间" align="center" />
-        <el-table-column prop="size" label="文件大小" align="center" />
-        <el-table-column prop="status" label="状态" align="center">
+        <el-table-column prop="backup_name" label="备份名称" width="300" align="center" />
+        <el-table-column prop="backup_time" label="备份时间" align="center" width="150" />
+        <el-table-column prop="size" label="备份订单数" align="center" width="100"/>
+        <el-table-column prop="status" label="状态" align="center" width="100">
           <template #default="scope">
             <el-tag :type="scope.row.status === '成功' ? 'success' : 'warning'">{{ scope.row.status }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="180" align="center">
-          <template #default="scope">
-            <el-button type="text" style="color: #165DFF;" @click="viewDetail(scope.row)">明细</el-button>
-            <el-button type="text" style="color: #f56c6c;" @click="deleteBackup(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
+        <el-table-column prop="remark" label="备份备注" align="center" />
       </el-table>
     </div>
 
@@ -47,62 +42,69 @@
         @current-change="handlePageChange"
       />
     </div>
-
-    <!-- 明细弹窗 -->
-    <el-dialog v-model="showDetailDialog" title="备份明细" width="500">
-      <el-descriptions :title="detailData.backup_name" :column="1" border>
-        <el-descriptions-item label="备份时间">{{ detailData.backup_time }}</el-descriptions-item>
-        <el-descriptions-item label="文件大小">{{ detailData.size }}</el-descriptions-item>
-        <el-descriptions-item label="状态">{{ detailData.status }}</el-descriptions-item>
-        <el-descriptions-item label="文件路径">{{ detailData.path }}</el-descriptions-item>
-        <el-descriptions-item label="备注">{{ detailData.remark }}</el-descriptions-item>
-      </el-descriptions>
-      <template #footer>
-        <el-button class="cancel-btn" @click="showDetailDialog = false">关闭</el-button>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
-const backupList = ref([
-  { backup_id: 1, backup_name: '自动备份2025-08-01', backup_time: '2025-08-01 02:00', size: '12MB', status: '成功', path: '/backup/20250801.bak', remark: '系统自动备份' },
-  { backup_id: 2, backup_name: '手动备份2025-08-05', backup_time: '2025-08-05 15:30', size: '13MB', status: '成功', path: '/backup/20250805.bak', remark: '管理员手动备份' },
-  { backup_id: 3, backup_name: '自动备份2025-08-08', backup_time: '2025-08-08 02:00', size: '12.5MB', status: '失败', path: '/backup/20250808.bak', remark: '磁盘空间不足' },
-])
-const searchKeyword = ref('')
-const filteredBackupList = computed(() => {
-  if (!searchKeyword.value) return backupList.value
-  return backupList.value.filter(b => b.backup_name.includes(searchKeyword.value))
-})
-const page = ref(1)
-const pageSize = ref(10)
+import { getBackupList, addBackup } from '../../../../api/Backup';
+import { dayjs, ElMessage } from 'element-plus';
 
-function handleBackup() {
-  // TODO: 触发备份API
+const backupList = ref<any[]>([]);
+const searchKeyword = ref('');
+const page = ref(1);
+const pageSize = ref(10);
+const total = ref(0);
+const filteredBackupList = computed(() => {
+  if (!searchKeyword.value) return backupList.value.slice((page.value-1)*pageSize.value, page.value*pageSize.value);
+  const filtered = backupList.value.filter(b => b.backup_name.includes(searchKeyword.value));
+  total.value = filtered.length;
+  return filtered.slice((page.value-1)*pageSize.value, page.value*pageSize.value);
+});
+
+async function handleBackup() {
+  const res:any = await addBackup();
+  if (res?.success) {
+    ElMessage.success('备份成功');
+    await refreshBackupList();
+  } else {
+    ElMessage.error(res?.message || '备份失败');
+  }
 }
-function refreshBackupList() {
-  // TODO: 刷新备份列表
+async function refreshBackupList() {
+  const res:any = await getBackupList(page.value, pageSize.value, searchKeyword.value);
+  const data =res;
+  if (data.success && data.response) {
+    backupList.value = data.response.map((item: any) => ({
+      backup_id: item.id,
+      backup_name: item.backup_name,
+      backup_time: dayjs(item.backup_time).format('YYYY-MM-DD HH:mm'),
+      size: (item.backup_sum ?? 0) + '条',
+      status: item.status === 1 ? '成功' : '失败',
+      remark: item.backup_remark,
+      path: '',
+    }));
+    total.value = data.count || data.response.length;
+  } else {
+    backupList.value = [];
+    total.value = 0;
+  }
 }
 function filterBackupList() {
-  page.value = 1
+  page.value = 1;
+  refreshBackupList();
 }
 function handleSizeChange(val: number) {
-  pageSize.value = val
+  pageSize.value = val;
+  refreshBackupList();
 }
 function handlePageChange(val: number) {
-  page.value = val
+  page.value = val;
+  refreshBackupList();
 }
-function deleteBackup(row: any) {
-  // TODO: 删除备份API
-}
-const showDetailDialog = ref(false)
-const detailData = reactive({ backup_name: '', backup_time: '', size: '', status: '', path: '', remark: '' })
-function viewDetail(row: any) {
-  Object.assign(detailData, row)
-  showDetailDialog.value = true
-}
+
+// 页面初始化
+refreshBackupList();
 </script>
 
 <style scoped>

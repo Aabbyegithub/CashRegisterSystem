@@ -125,9 +125,8 @@ namespace WebServiceClass.Helper.WeChat
         }
 
 
-        public static async Task<string> CallCustomerUnifiedRechargeApi(string attach, string description, string outTradeNo, decimal total, string code, string storeNum, long userId)
+        public static async Task<string> CallCustomerUnifiedRechargeApi(string url, string attach, string description, string outTradeNo, decimal total, string code, string storeNum, long userId)
         {
-            var url = "https://www.xaerss.com/Business/WechatPay/GetUnifiedRechargeResult1";
             var payload = new
             {
                 attach,

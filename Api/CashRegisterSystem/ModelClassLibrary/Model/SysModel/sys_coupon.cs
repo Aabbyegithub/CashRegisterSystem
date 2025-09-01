@@ -51,12 +51,12 @@ namespace MyNamespace
            /// </summary>           
            public byte type {get;set;}
 
-           /// <summary>
-           /// Desc:面值（满减金额/折扣率）
-           /// Default:0.00
-           /// Nullable:False
-           /// </summary>           
-           public decimal value {get;set;}
+        /// <summary>
+        /// Desc:面值（满减金额/折扣率）
+        /// Default:0.00
+        /// Nullable:False
+        /// </summary>           
+        public decimal value { get; set; } = 0;
 
            /// <summary>
            /// Desc:最低消费（满减券用）
@@ -80,7 +80,7 @@ namespace MyNamespace
            public DateTime valid_end {get;set;}
 
            /// <summary>
-           /// Desc:状态（1-可用；0-过期/禁用）
+           /// Desc:状态（1-可用；0-未开始 2过期）
            /// Default:1
            /// Nullable:False
            /// </summary>           
@@ -92,6 +92,10 @@ namespace MyNamespace
            /// Nullable:True
            /// </summary>           
            public string? applicable_dishes {get;set;}
+
+        public int? total{get;set;}
+        public int received { get; set; } = 0;
+        public int used { get; set; } = 0;
 
     }
 }

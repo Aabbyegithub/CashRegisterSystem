@@ -94,6 +94,11 @@
           align="center"
         />
         <el-table-column
+          prop="min_consumption"
+          label="包间最低消费"
+          align="center"
+        />
+        <el-table-column
           prop="desc"
           label="桌台描述"
           align="center"
@@ -177,6 +182,9 @@
         <el-form-item label="桌台描述">
           <el-input v-model="form.desc" />
         </el-form-item>
+        <el-form-item label="包间最低消费">
+          <el-input v-model="form.min_consumption" />
+        </el-form-item>
         <el-form-item label="最后使用时间">
           <el-input v-model="form.lastUseTime" />
         </el-form-item>
@@ -220,6 +228,9 @@
         </el-form-item>
         <el-form-item label="容纳人数">
           <el-input v-model.number="form.capacity" />
+        </el-form-item>
+        <el-form-item label="包间最低消费">
+          <el-input v-model="form.min_consumption" />
         </el-form-item>
         <el-form-item label="桌台描述">
           <el-input v-model="form.desc" />
@@ -278,7 +289,8 @@ interface Table {
   status: number;        
   capacity: number;
   desc: string;      
-  lastUseTime: string;   
+  lastUseTime: string; 
+  min_consumption:string  
 }
 const tableList = ref<Table[]>([
   // { tableNo: 'A01', tableType: '圆桌', status: '空闲', capacity: 8, lastUseTime: '2025.3.15 12:00' },
@@ -303,7 +315,8 @@ const form = ref<Table>({
   status: 1, // 默认状态为空闲
   capacity: 0,
   desc: '',
-  lastUseTime: ''
+  lastUseTime: '',
+  min_consumption:''
 });
 
 // 模拟接口请求
@@ -381,7 +394,8 @@ const openAddDialog = () => {
     status: 1, // 默认状态为空闲
     capacity: 0,
     desc: '',
-    lastUseTime: ''
+    lastUseTime: '',
+    min_consumption:''
   };
   addDialogVisible.value = true;
 };
@@ -394,7 +408,7 @@ const handleAdd = async () => {
     capacity: form.value.capacity,
     status: form.value.status,
     desc: form.value.desc,
-    // min_consumption: form.value.min_consumption,
+    min_consumption: form.value.min_consumption,
    })
     ElMessage.success('新增成功');
     addDialogVisible.value = false;
@@ -421,6 +435,7 @@ const handleEditConfirm = async () => {
     status: form.value.status,
     capacity: form.value.capacity,
     desc: form.value.desc,
+    min_consumption:form.value.min_consumption,
   });
   ElMessage.success('编辑成功');
   getTableList();

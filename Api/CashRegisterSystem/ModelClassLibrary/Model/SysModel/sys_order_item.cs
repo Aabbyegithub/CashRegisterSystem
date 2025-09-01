@@ -119,5 +119,8 @@ namespace MyNamespace
         [Navigate(NavigateType.OneToOne, nameof(order_id), nameof(sys_order.order_id))]//一对一 
         public sys_order? order { get; set; }
 
+        [Navigate(NavigateType.OneToOne, nameof(item_id), nameof(sys_kitchen_order.item_id))]//一对一 
+        public sys_kitchen_order? kitchenorder { get; set; }
+
     }
 }

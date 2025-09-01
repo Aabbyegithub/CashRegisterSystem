@@ -8,16 +8,25 @@ export function getOrderDetailsByTableId(tableId: string) {
   });
 }
 //转桌
-export function changeTable(orderId: string, newTableId: string) {
-  return axios.post('/api/Order/ChangeTable', {
+export function changeTable(oldTableId: string, newTableId: number,orderId: string,remark?:string) {
+  return axios.get('/api/Order/ChangeTable', {params:{
     orderId,
-    newTableId
+    newTableId,
+    oldTableId,
+    remark: remark || ''}
   });
 }
 //并桌
-export function mergeTables(orderId: string, tableIds: string[]) {
-  return axios.post('/api/Order/MergeTables', {
+export function mergeTables(oldTableId: string, newTableId: number,orderId: string,remark?:string) {
+  return axios.get('/api/Order/MergeTable', {params:{
     orderId,
-    tableIds
+    newTableId,
+    oldTableId,
+    remark: remark || ''}
   });
+}
+
+//获取所有桌台
+export function getAllTables() {
+  return axios.get('/api/Table/GetTableListInfo');
 }
