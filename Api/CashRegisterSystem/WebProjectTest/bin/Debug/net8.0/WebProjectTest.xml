@@ -478,6 +478,11 @@
             过号
             </summary>
         </member>
+        <member name="M:WebProjectTest.Controllers.QueueController.QueueController.finishQueueAsync(System.Int64)">
+            <summary>
+            入座
+            </summary>
+        </member>
         <member name="M:WebProjectTest.Controllers.QueueController.QueueController.CancelQueueAsync(System.Int64)">
             <summary>
             取消排队
@@ -789,6 +794,86 @@
             </summary>
             <param name="jobId"></param>
             <returns></returns>
+        </member>
+        <member name="M:CashRegisterSystem.Controllers.Inventory.InventoryAlertController.GetInventoryAlertList(System.Nullable{System.Int64},System.Nullable{System.Int64},System.String,System.Int32,System.Int32)">
+            <summary>
+            获取库存预警列表（筛选+分页）
+            </summary>
+        </member>
+        <member name="M:CashRegisterSystem.Controllers.Inventory.InventoryAlertController.PurchaseMaterial(System.Int64,System.Decimal,System.String)">
+            <summary>
+            采购原材料
+            </summary>
+        </member>
+        <member name="M:CashRegisterSystem.Controllers.Inventory.InventoryLossController.GetLossList(System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Int32},System.Int32,System.Int32)">
+            <summary>
+            获取损耗记录列表（筛选+分页）
+            </summary>
+        </member>
+        <member name="M:CashRegisterSystem.Controllers.Inventory.InventoryLossController.AddLoss(MyNamespace.sys_inventory_loss)">
+            <summary>
+            新增损耗记录
+            </summary>
+        </member>
+        <member name="M:CashRegisterSystem.Controllers.Inventory.InventoryLossController.GetLossDetail(System.Int64)">
+            <summary>
+            获取损耗详情
+            </summary>
+        </member>
+        <member name="M:CashRegisterSystem.Controllers.Inventory.PurchaseOrderController.GetPurchaseOrderList(System.Nullable{System.Int64},System.String,System.Nullable{System.Int64},System.Nullable{System.Byte},System.Int32,System.Int32)">
+            <summary>
+            获取采购单列表（筛选+分页）
+            </summary>
+        </member>
+        <member name="M:CashRegisterSystem.Controllers.Inventory.PurchaseOrderController.AddPurchaseOrder(MyNamespace.sys_purchase_order)">
+            <summary>
+            新增采购单
+            </summary>
+        </member>
+        <member name="M:CashRegisterSystem.Controllers.Inventory.PurchaseOrderController.GetPurchaseOrderDetail(System.Int64)">
+            <summary>
+            采购单详情
+            </summary>
+        </member>
+        <member name="M:CashRegisterSystem.Controllers.Inventory.PurchaseOrderController.CancelPurchaseOrder(System.Int64)">
+            <summary>
+            取消采购单
+            </summary>
+        </member>
+        <member name="M:CashRegisterSystem.Controllers.Inventory.PurchaseOrderController.ArrivedPurchaseOrderAsync(System.Int64)">
+             <summary>
+            确认收货采购单
+             </summary>
+        </member>
+        <member name="M:CashRegisterSystem.Controllers.Inventory.PurchaseOrderController.SavePurchaseOrderAsync(System.Int64,System.Int64)">
+             <summary>
+            采购单审核
+             </summary>
+        </member>
+        <member name="M:CashRegisterSystem.Controllers.Inventory.RawMaterialsController.GetRawMaterialList(System.Nullable{System.Int64},System.String,System.String,System.Nullable{System.Byte},System.Int32,System.Int32)">
+            <summary>
+            获取原材料列表（筛选+分页）
+            </summary>
+        </member>
+        <member name="M:CashRegisterSystem.Controllers.Inventory.RawMaterialsController.GetAllRawMaterialList">
+            <summary>
+            获取原材料列表
+            </summary>
+        </member>
+        <member name="M:CashRegisterSystem.Controllers.Inventory.RawMaterialsController.AddRawMaterial(MyNamespace.sys_raw_material)">
+            <summary>
+            新增原材料
+            </summary>
+        </member>
+        <member name="M:CashRegisterSystem.Controllers.Inventory.RawMaterialsController.UpdateRawMaterial(MyNamespace.sys_raw_material)">
+            <summary>
+            编辑原材料
+            </summary>
+        </member>
+        <member name="M:CashRegisterSystem.Controllers.Inventory.RawMaterialsController.ChangeStatus(System.Int64,System.Byte)">
+            <summary>
+            启用/禁用原材料
+            </summary>
         </member>
     </members>
 </doc>

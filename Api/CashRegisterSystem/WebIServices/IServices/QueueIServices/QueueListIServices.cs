@@ -26,6 +26,7 @@ namespace WebIServices.IServices.QueueIServices
         /// <param name="count"></param>
         /// <returns></returns>
         Task<List<sys_queue>> GetQueuePageListAsync(int orgId, int? storeId, int? status, int? partySize, string? keyword, int page, int size, RefAsync<int> count);
+        Task<List<sys_queue>> GetQueuePageListAsync(int orgId);
         
         /// <summary>
         /// 新增排队
@@ -62,6 +63,13 @@ namespace WebIServices.IServices.QueueIServices
         /// <param name="queueId"></param>
         /// <returns></returns>
         Task<ApiResponse<bool>> SkipQueueAsync(long queueId);
+
+        /// <summary>
+        /// 入座
+        /// </summary>
+        /// <param name="queueId"></param>
+        /// <returns></returns>
+        Task<ApiResponse<bool>> finishQueueAsync(long queueId);
 
         /// <summary>
         /// 安排桌台

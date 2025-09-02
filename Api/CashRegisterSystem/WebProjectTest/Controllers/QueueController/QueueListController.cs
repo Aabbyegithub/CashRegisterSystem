@@ -52,7 +52,7 @@ namespace WebProjectTest.Controllers.QueueController
             RefAsync<int> count = 0;
             try
             {
-                var res = await _queueServices.GetQueuePageListAsync(OrgId, null, 1, null, "", 1, 9999, count);
+                var res = await _queueServices.GetQueuePageListAsync(OrgId);
                 if (res != null)
                 {
                     return Success(res);
@@ -93,6 +93,16 @@ namespace WebProjectTest.Controllers.QueueController
         public async Task<ApiResponse<bool>> SkipQueueAsync(long queueId)
         {
             return await _queueServices.SkipQueueAsync(queueId);
+        }
+
+        /// <summary>
+        /// 入座
+        /// </summary>
+        [HttpPost]
+        [OperationLogFilter("排队叫号", "过号", ActionType.Edit)]
+        public async Task<ApiResponse<bool>> finishQueueAsync(long queueId)
+        {
+            return await _queueServices.finishQueueAsync(queueId);
         }
 
         /// <summary>

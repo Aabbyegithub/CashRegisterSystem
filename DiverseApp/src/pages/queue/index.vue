@@ -30,19 +30,20 @@
       <view v-for="item in queueList" :key="item.queue_id" class="queue-card" :class="item.status===1?'waiting':item.status===2?'processing':'other'">
         <view class="queue-card-left">
           <view class="queue-status-tag" :class="item.status===1?'tag-wait':item.status===2?'tag-process':'tag-other'">
-            {{ item.status===2?'处理中':item.status===1?'等待中':'其他' }}
+            {{ item.status===2?'处理中':item.status===1?'等待中':'过号' }}
           </view>
-          <view class="queue-customer">排队号：{{ item.customer_no }}</view>
-          <view class="queue-no">用餐人数: #{{ item.queue_peo }}</view>
+          <!-- <view class="queue-customer">顾客：{{ item.customer_name }}</view> -->
+          <view class="queue-no">排队号：{{ item.queue_no }}</view>
+          <view class="queue-party-size">用餐人数: {{ item.party_size }}</view>
         </view>
         <view class="queue-card-right">
           <view class="queue-wait-label">等待时间</view>
-          <view class="queue-wait-time" :class="item.status===1?'time-red':'time-normal'">{{ item.wait_time }}</view>
+          <view class="queue-wait-time" :class="item.status===1?'time-red':'time-normal'">{{ item.wait_time || '-' }}</view>
           <view class="queue-card-actions">
-            <u-button v-if="item.status===2" size="mini" custom-style="margin-right:10px" @click="call(item)">过号</u-button>
+            <u-button v-if="item.status===1 || item.status ===2" size="mini" custom-style="margin-right:10px" @click="skip(item)">过号</u-button>
             <u-button v-if="item.status===2" type="success" size="mini" @click="finish(item)">完成</u-button>
-            <!-- <u-button v-if="item.status===1" size="mini" custom-style="margin-right:10px" @click="advance(item)">提前</u-button> -->
-            <u-button v-if="item.status===1" type="error" size="mini" @click="cancel(item)">取消</u-button>
+            <u-button v-if="item.status===1" size="mini" custom-style="margin-right:10px" @click="call(item)">叫号</u-button>
+            <u-button v-if="item.status===1 || item.status ===2" type="error" size="mini" @click="cancel(item)">取消</u-button>
           </view>
         </view>
       </view>
@@ -87,35 +88,149 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { request } from '@/utitl/request'
+import { onLoad, onUnload } from '@dcloudio/uni-app'
 const stats = ref({
-  current: 8,
-  finished: 24,
-  today: 32
+  current: 0,
+  finished: 0,
+  today: 0
 })
 const showAddDialog = ref(false)
 const form = ref({
   customer_name: '',
   customer_phone: '',
-  party_size: 1
+  party_size: 1,
+  remark: ''
 })
-const queueList = ref([
-  { queue_id: 1, customer_name: '张三', queue_no: '20230512001', status: 2, wait_time: '15分钟' },
-  { queue_id: 2, customer_name: '李四', queue_no: '20230512002', status: 1, wait_time: '8分钟' },
-  { queue_id: 3, customer_name: '王五', queue_no: '20230512003', status: 1, wait_time: '5分钟' }
-])
-const finishedList = ref([
-  { queue_id: 100, customer_name: '赵六', queue_no: '20230512000' }
-])
-function call(item) {}
-function finish(item) {}
-function advance(item) {}
-function cancel(item) {}
-function viewAll() {}
-function submitQueue() {
-  // 新增排队逻辑
-  showAddDialog.value = false
-  uni.showToast({ title: '新增成功', icon: 'success' })
+const queueList = ref<any[]>([])
+const finishedList = ref([])
+
+async function fetchQueueList() {
+  await request({
+    url: '/api/Queue/GetQueueList',
+    method: 'GET'
+  }).then((res: any) => {
+    if (res.success && res.response) {
+      queueList.value = res.response
+      queueList.value.forEach((item:any)=>{
+        if(item.status ===1 || item.status ===2 ){
+          // 计算等待时间
+          const created = new Date(item.created_at)
+          const now = new Date()
+          const diffMs = now.getTime() - created.getTime()
+          const diffMins = Math.floor(diffMs / 60000)
+          item.wait_time = diffMins < 60 ? `${diffMins}分钟` : `${Math.floor(diffMins/60)}小时${diffMins%60}分钟`
+        }else{
+          item.wait_time = '-'
+        }
+      })
+    }
+  })
 }
+async function fetchQueueStats() {
+  await request({
+    url: '/api/Queue/GetAppQueueStats',
+    method: 'GET'
+  }).then((res: any) => {
+    if (res.success && res.response) {
+      stats.value.current = res.response.waitingCount
+      stats.value.finished = res.response.finished
+      stats.value.today = res.response.totalToday
+    }
+  })
+}
+async function submitQueue() {
+  await request({
+    url: '/api/Queue/AddQueue',
+    method: 'POST',
+    data: {
+      party_size: form.value.party_size,
+      remark: form.value.remark
+    }
+  }).then((res: any) => {
+    if (res.success) {
+      showAddDialog.value = false
+      uni.showToast({ title: '新增成功', icon: 'success' })
+      fetchQueueList()
+      fetchQueueStats()
+    } else {
+      uni.showToast({ title: res.message || '新增失败', icon: 'none' })
+    }
+  })
+}
+async function skip(item: any) {
+  await request({
+    url: `/api/Queue/SkipQueue?queueId=${item.queue_id}`,
+    method: 'POST',
+    // data: { queueId: item.queue_id }
+  }).then((res: any) => {
+    if (res.success) {
+      uni.showToast({ title: '已过号', icon: 'success' })
+      fetchQueueList()
+      fetchQueueStats()
+    } else {
+      uni.showToast({ title: res.message || '操作失败', icon: 'none' })
+    }
+  })
+}
+async function finish(item: any) {
+  await request({
+    url: `/api/Queue/finishQueue?queueId=${item.queue_id}`,
+    method: 'POST',
+    // data: { queueId: item.queue_id }
+  }).then((res: any) => {
+    if (res.success) {
+      uni.showToast({ title: '已完成', icon: 'success' })
+      fetchQueueList()
+      fetchQueueStats()
+    } else {
+      uni.showToast({ title: res.message || '操作失败', icon: 'none' })
+    }
+  })
+}
+async function call(item: any) {
+  await request({
+    url: `/api/Queue/CallQueue?queueId=${item.queue_id}`,
+    method: 'POST',
+    // data: { queueId: item.queue_id }
+  }).then((res: any) => {
+    if (res.success) {
+      uni.showToast({ title: '已叫号', icon: 'success' })
+      fetchQueueList()
+      fetchQueueStats()
+    } else {
+      uni.showToast({ title: res.message || '操作失败', icon: 'none' })
+    }
+  })
+}
+async function cancel(item: any) {
+  await request({
+    url: '/api/Queue/CancelQueue?queueId='+item.queue_id,
+    method: 'POST',
+    // data: { queueId: item.queue_id }
+  }).then((res: any) => {
+    if (res.success) {
+      uni.showToast({ title: '已取消', icon: 'success' })
+      fetchQueueList()
+      fetchQueueStats()
+    } else {
+      uni.showToast({ title: res.message || '操作失败', icon: 'none' })
+    }
+  })
+}
+
+let queueTimer: any = null
+onLoad(() => {
+  fetchQueueList()
+  fetchQueueStats()
+  queueTimer = setInterval(() => {
+    fetchQueueList()
+    fetchQueueStats()
+  }, 5000 *6)
+})
+onUnload(() => {
+  if (queueTimer) clearInterval(queueTimer)
+})
 </script>
 
 <style scoped>

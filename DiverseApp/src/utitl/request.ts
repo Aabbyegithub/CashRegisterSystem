@@ -9,18 +9,24 @@ interface RequestOptions {
   headers?: Record<string, string>;
   timeout?: number;
 }
-const token = uni.getStorageSync('token') || '';
 export function request(options: RequestOptions): Promise<any> {
   return new Promise((resolve, reject) => {
+    const token = uni.getStorageSync('token') || '' // 每次请求都获取最新 token
+    const headers = {
+      ...DEFAULT_HEADERS,
+      ...(options.headers || {}),
+      // 注意后端要求的字段大小写
+      Authorization: token ? `Bearer ${token}` : '',
+    }
+    // 登录接口不带 token
+    // if (options.url.includes('/login')) {
+    //   delete headers.Authorization
+    // }
     uni.request({
       url: BASE_URL + options.url,
       method: options.method || 'GET',
       data: options.data || {},
-      header: { 
-        ...DEFAULT_HEADERS, 
-        ...(options.headers || {}) ,
-        'Authorization': token ? `Bearer ${token}` : '',
-      },
+      header: headers,
       timeout: options.timeout || TIMEOUT,
       success: (res:any) => {
         if (res.statusCode === 200) {
@@ -28,10 +34,12 @@ export function request(options: RequestOptions): Promise<any> {
         } else if (res.statusCode === 401) {
           // 登录失效，跳转到登录页或做相关处理
           uni.showToast({ title: '登录失效，请重新登录', icon: 'none' });
+          uni.removeStorageSync('token'); // 清除过期 token
+          uni.removeStorageSync('userInfo'); // 清除用户信息
           // 可根据实际情况跳转页面
           setTimeout(() => {
-            uni.redirectTo({ url: '/pages/login/index' });
-          }, 1500);
+            uni.redirectTo({ url: '/pages/my/Login' });
+          }, 500);
           
         } else {
             // 其他错误处理
@@ -44,8 +52,3 @@ export function request(options: RequestOptions): Promise<any> {
     });
   });
 }
-
-// 示例用法：
-// request({ url: '/user/login', method: 'POST', data: { username, password } })
-//   .then(res => { ... })
-//   .catch(err => { ... })

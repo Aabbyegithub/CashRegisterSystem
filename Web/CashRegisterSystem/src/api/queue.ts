@@ -25,6 +25,7 @@ export function addQueue(queue: {
   customer_phone: string;
   party_size: number;
   status: number;
+  remark: string;
 }) {
   return axios.post('/api/Queue/AddQueue', queue);
 }

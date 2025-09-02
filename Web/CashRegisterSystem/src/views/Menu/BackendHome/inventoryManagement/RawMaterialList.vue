@@ -31,9 +31,9 @@
         <el-button type="primary" @click="openAddDialog" class="Btn-Save">新增原材料</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="filteredList" border style="width:100%;height: 68vh;" :header-cell-style="{ background: '#f8f9fa', color: '#606266' }" class="custom-table">
+    <el-table :data="rawMaterialList" border style="width:100%;height: 68vh;" :header-cell-style="{ background: '#f8f9fa', color: '#606266' }" class="custom-table">
       <el-table-column type="index" label="序号" width="60" align="center" />
-      <el-table-column prop="material_id" label="ID" align="center" />
+      <!-- <el-table-column prop="material_id" label="ID" align="center" /> -->
       <el-table-column prop="material_name" label="名称" align="center" />
       <el-table-column prop="category" label="分类" align="center" />
       <el-table-column prop="unit" label="单位" align="center" />
@@ -51,9 +51,6 @@
         </template>
       </el-table-column>
     </el-table>
-    <div v-if="filteredList.length === 0" class="empty-row">
-      <el-empty description="暂无原材料记录" />
-    </div>
     <div class="pagination-bar">
       <el-pagination
         layout="prev, pager, next, ->, sizes, jumper"
@@ -68,6 +65,11 @@
     <!-- 新增/编辑弹窗 -->
     <el-dialog v-model="showDialog" :title="dialogTitle" width="500">
       <el-form :model="form" label-width="120px">
+        <el-form-item label="门店">
+        <el-select v-model="form.store_id" placeholder="门店特有请选择门店">
+            <el-option v-for="store in storeList" :key="store.id" :value="store.id" :label="store.name">{{ store.name }}</el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="原材料名称">
           <el-input v-model="form.material_name" placeholder="请输入原材料名称" />
         </el-form-item>
@@ -102,8 +104,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
+import { getStoreList } from '../../../../api/login';
+import { getRawMaterialList, addRawMaterial, updateRawMaterial, changeRawMaterialStatus } from '../../../../api/RawMaterial';
 
 interface Store { id: string; name: string; }
 interface RawMaterial {
@@ -116,22 +120,11 @@ interface RawMaterial {
   status: number;
   store_id: string;
 }
-const storeList = ref<Store[]>([
-  { id: '1', name: '旗舰店' },
-  { id: '2', name: '分店A' }
-]);
-const rawMaterialList = ref<RawMaterial[]>([
-  { material_id: 1, material_name: '鸡肉', category: '生鲜', unit: 'kg', purchase_price: 20, warning_threshold: 10, status: 1, store_id: '1' },
-  { material_id: 2, material_name: '食盐', category: '调料', unit: 'kg', purchase_price: 2, warning_threshold: 5, status: 1, store_id: '1' },
-  { material_id: 3, material_name: '大米', category: '粮油', unit: 'kg', purchase_price: 4, warning_threshold: 20, status: 0, store_id: '2' }
-]);
-const searchStore = ref('');
-const searchName = ref('');
-const searchCategory = ref('');
-const searchStatus = ref('');
+const storeList = ref<Store[]>([]);
+const rawMaterialList = ref<RawMaterial[]>([]);
+const total = ref(0);
 const currentPage = ref(1);
 const pageSize = ref(10);
-const total = ref(0);
 const showDialog = ref(false);
 const dialogTitle = ref('新增原材料');
 const form = ref<RawMaterial | any>({
@@ -144,30 +137,50 @@ const form = ref<RawMaterial | any>({
   status: 1,
   store_id: ''
 });
-const filteredList = computed(() => {
-  let result = rawMaterialList.value.filter(m => {
-    const matchStore = !searchStore.value || m.store_id === searchStore.value;
-    const matchName = !searchName.value || m.material_name.includes(searchName.value);
-    const matchCategory = !searchCategory.value || m.category === searchCategory.value;
-    const matchStatus = !searchStatus.value || String(m.status) === searchStatus.value;
-    return matchStore && matchName && matchCategory && matchStatus;
-  });
-  total.value = result.length;
-  const startIdx = (currentPage.value - 1) * pageSize.value;
-  return result.slice(startIdx, startIdx + pageSize.value);
-});
-function handleQuery() {}
+const searchStore = ref('');
+const searchName = ref('');
+const searchCategory = ref('');
+const searchStatus = ref('');
+async function handleQuery() {
+  const data:any = await getRawMaterialList(
+    currentPage.value,
+    pageSize.value,
+    searchStore.value,
+    searchName.value,
+    searchCategory.value,
+    searchStatus.value
+  );
+  if (data.success && data.response) {
+    rawMaterialList.value = data.response.map((item: any) => ({
+      material_id: item.material_id,
+      material_name: item.material_name,
+      category: item.category,
+      unit: item.unit,
+      purchase_price: item.purchase_price,
+      warning_threshold: item.warning_threshold,
+      status: item.status,
+      store_id: item.store_id?.toString() || ''
+    }));
+    total.value = data.count || data.response.length;
+  } else {
+    rawMaterialList.value = [];
+    total.value = 0;
+  }
+}
 function handleReset() {
   searchStore.value = '';
   searchName.value = '';
   searchCategory.value = '';
   searchStatus.value = '';
+  handleQuery();
 }
 function handleSizeChange(val: number) {
   pageSize.value = val;
+  handleQuery();
 }
 function handlePageChange(val: number) {
   currentPage.value = val;
+  handleQuery();
 }
 function openAddDialog() {
   dialogTitle.value = '新增原材料';
@@ -188,68 +201,92 @@ function openEditDialog(row: RawMaterial) {
   form.value = { ...row };
   showDialog.value = true;
 }
-function handleSave() {
+async function handleSave() {
   if (!form.value.material_name || !form.value.category || !form.value.unit) {
     ElMessage.warning('请填写必填项');
     return;
   }
+  let res:any;
   if (form.value.material_id === 0) {
-    form.value.material_id = Date.now();
-    rawMaterialList.value.push({ ...form.value });
-    ElMessage.success('新增成功');
+    form.value.store_id = form.value.store_id || 0; // 确保新增时ID为0
+    res = await addRawMaterial(form.value);
+    if (res.success) {
+      ElMessage.success('新增成功');
+      showDialog.value = false;
+      handleQuery();
+    } else {
+      ElMessage.error(res.message || '新增失败');
+    }
   } else {
-    const idx = rawMaterialList.value.findIndex(m => m.material_id === form.value.material_id);
-    if (idx !== -1) {
-      rawMaterialList.value[idx] = { ...form.value };
-      ElMessage.success('修改成功');
+    res = await updateRawMaterial(form.value);
+    if (res.success) {
+      ElMessage.success('编辑成功');
+      showDialog.value = false;
+      handleQuery();
+    } else {
+      ElMessage.error(res.message || '编辑失败');
     }
   }
-  showDialog.value = false;
 }
-function toggleStatus(row: RawMaterial) {
-  row.status = row.status === 1 ? 0 : 1;
-  ElMessage.success(row.status === 1 ? '已启用' : '已禁用');
+async function toggleStatus(row: RawMaterial) {
+  const newStatus = row.status === 1 ? 0 : 1;
+  const res:any = await changeRawMaterialStatus(row.material_id, newStatus);
+  if (res.success) {
+    ElMessage.success(`已${newStatus === 1 ? '启用' : '禁用'}`);
+    handleQuery();
+  } else {
+    ElMessage.error(res.message || '操作失败');
+  }
+}
+onMounted(() => {
+  handleQuery();
+fetchStoreList();
+});
+
+
+async function fetchStoreList() {
+  await getStoreList().then((res:any)=> {
+    if (res && res.response) {
+      var storedata = res.response.filter((item: any) => item.store_name !== '管理员');
+      storeList.value = storedata.map((item: any) => ({
+        id: item.store_id,
+        name: item.store_name
+      }));
+    }
+  });
 }
 </script>
 <style scoped>
 .inventory-container {
   padding: 20px;
-  background: #fff;
-  min-height: 100%;
+  background-color: #fff;
+  /* min-height: 100vh; */
 }
 .filter-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  align-items: center;
-  margin-bottom: 18px;
-}
-.Btn-Save {
-  background-color: #22a2b6;
-  border-color: #22a2b6;
-  color: #fff;
-  min-width: 90px;
-  height: 36px;
-}
-.cancel-btn {
+  /* margin-bottom: 20px; */
+  margin-top: -20px;
   background-color: #fff;
-  border-color: #6b5d5d;
-  color: #000;
-  min-width: 90px;
-  height: 36px;
-  margin-right: 12px;
+  padding: 15px;
+  border-radius: 5px;
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
 }
-.custom-table >>> .el-table__body tr:hover {
-  background: #e6f7fa !important;
+.custom-table {
+  border-radius: 5px;
+  overflow: hidden;
 }
-.table-btn-edit {
-  color: #67c23a !important;
-  font-weight: 500;
-  margin-right: 8px;
+.custom-table th {
+  background-color: #f8f9fa;
+  color: #606266;
 }
-.table-btn-status {
-  color: #f56c6c !important;
-  font-weight: 500;
+.custom-table td {
+  background-color: #fff;
+  color: #333;
+}
+.custom-table .table-btn-edit {
+  color: #409eff;
+}
+.custom-table .table-btn-status {
+  color: #67c23a;
 }
 .pagination-bar {
   display: flex;
@@ -259,9 +296,12 @@ function toggleStatus(row: RawMaterial) {
   padding: 12px 16px 0 0;
   font-size: 14px;
 }
-.empty-row {
-  width: 100%;
-  text-align: center;
-  padding: 40px 0;
+.cancel-btn {
+  background-color: #f56c6c;
+  color: #fff;
+}
+.Btn-Save {
+  background-color: #22A2B6;
+  color: #fff;
 }
 </style>

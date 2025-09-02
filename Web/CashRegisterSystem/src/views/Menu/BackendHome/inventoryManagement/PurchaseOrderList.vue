@@ -33,10 +33,15 @@
     </el-form>
     <el-table :data="filteredList" border style="width:100%;height: 68vh;" :header-cell-style="{ background: '#f8f9fa', color: '#606266' }">
       <el-table-column type="index" label="序号" width="60" align="center" />
-      <el-table-column prop="po_id" label="ID" align="center" />
       <el-table-column prop="po_no" label="采购单号" align="center" />
-      <el-table-column prop="store_id" label="门店" align="center" />
+           <el-table-column label="门店名称" prop="store_id" align="center">
+            <template #default="scope">
+             {{ storeList.find(cat => cat.id === scope.row.store_id)?.name || '' }}
+            </template>
+        </el-table-column>
       <el-table-column prop="supplier_id" label="供应商" align="center" />
+      <el-table-column prop="materialname" label="采购物品" align="center" />
+      <el-table-column prop="quantity" label="采购数量" align="center" />
       <el-table-column prop="order_time" label="下单时间" align="center" />
       <el-table-column prop="expect_arrival_time" label="预计到货" align="center" />
       <el-table-column prop="actual_arrival_time" label="实际到货" align="center" />
@@ -75,7 +80,15 @@
           <el-input v-model="detailForm.store_name" disabled />
         </el-form-item>
         <el-form-item label="供应商">
-          <el-input v-model="detailForm.supplier_name" disabled />
+          <el-select v-model="detailForm.supplier_id" placeholder="请选择供应商">
+            <el-option v-for="s in supplierList" :key="s.supplier_id" :label="s.supplier_name" :value="s.supplier_id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="采购物品">
+          <el-input v-model="detailForm.materialname" disabled />
+        </el-form-item>
+        <el-form-item label="采购数量">
+          <el-input v-model="detailForm.quantity" disabled />
         </el-form-item>
         <el-form-item label="下单时间">
           <el-input v-model="detailForm.order_time" disabled />
@@ -101,6 +114,8 @@
       </el-form>
       <template #footer>
         <el-button @click="detailDialogVisible = false">关闭</el-button>
+        <el-button v-if="detailForm.status == 1" @click="handelSave(detailForm)">确认</el-button>
+        <el-button v-if="detailForm.status == 2" @click="handleArrived(detailForm)">到货</el-button>
       </template>
     </el-dialog>
     <el-dialog v-model="addDialogVisible" title="新增采购单" width="500px" :close-on-click-modal="false">
@@ -117,6 +132,14 @@
           <el-select v-model="addForm.supplier_id" placeholder="请选择供应商">
             <el-option v-for="s in supplierList" :key="s.supplier_id" :label="s.supplier_name" :value="s.supplier_id" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="采购物品">
+          <el-select v-model="addForm.materialname" filterable allow-create default-first-option placeholder="请选择或输入采购物品">
+            <el-option v-for="m in materialList" :key="m.material_id" :label="m.material_name" :value="m.material_name" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="采购物品">
+          <el-input-number v-model="addForm.quantity" :min="1" style="width:100%;" />
         </el-form-item>
         <el-form-item label="预计到货">
           <el-date-picker v-model="addForm.expect_arrival_time" type="date" placeholder="选择日期" style="width:100%;" />
@@ -136,7 +159,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { getStoreList } from '../../../../api/login';
+import { getPurchaseOrderList, getPurchaseOrderDetail, addPurchaseOrder, cancelPurchaseOrder, ArrivedPurchaseOrder, SavePurchaseOrder } from '../../../../api/PurchaseOrder';
+import { getAllRawMaterialList } from '../../../../api/RawMaterial';
+import { dayjs, ElMessage } from 'element-plus';
 
 const poStatusMap = {
   1: '待确认',
@@ -144,54 +171,10 @@ const poStatusMap = {
   3: '已到货',
   4: '已取消'
 };
-const storeList = ref([
-  { id: '1', name: '总部' },
-  { id: '2', name: '分店A' },
-  { id: '3', name: '分店B' }
-]);
-const supplierList = ref([
-  { supplier_id: '201', supplier_name: '供应商A' },
-  { supplier_id: '202', supplier_name: '供应商B' },
-  { supplier_id: '203', supplier_name: '供应商C' }
-]);
-// const operatorList = ref([
-//   { operator_id: '301', operator_name: '张三' },
-//   { operator_id: '302', operator_name: '李四' }
-// ]);
-const purchaseOrderList = ref([
-  {
-    po_id: 'PO001',
-    po_no: '20250825001',
-    store_id: '1',
-    store_name: '总部',
-    supplier_id: '201',
-    supplier_name: '供应商A',
-    order_time: '2025-08-25 09:00',
-    expect_arrival_time: '2025-08-28',
-    actual_arrival_time: '',
-    total_amount: 1200,
-    status: 1,
-    operator_id: '301',
-    operator_name: '张三',
-    remark: '急需采购'
-  },
-  {
-    po_id: 'PO002',
-    po_no: '20250825002',
-    store_id: '2',
-    store_name: '分店A',
-    supplier_id: '202',
-    supplier_name: '供应商B',
-    order_time: '2025-08-24 15:30',
-    expect_arrival_time: '2025-08-27',
-    actual_arrival_time: '2025-08-27',
-    total_amount: 800,
-    status: 3,
-    operator_id: '302',
-    operator_name: '李四',
-    remark: '常规采购'
-  }
-]);
+const storeList = ref<any[]>([]);
+const supplierList = ref<any[]>([]);
+const purchaseOrderList = ref<any[]>([]);
+const materialList = ref<any[]>([]);
 const searchStore = ref('');
 const searchPoNo = ref('');
 const searchSupplier = ref('');
@@ -210,88 +193,202 @@ const detailForm = ref({
   total_amount: 0,
   status: 1,
   operator_name: '',
-  remark: ''
+  remark: '',
+  quantity:1,
+  materialname:'',
+  supplier_id:''
 });
 const addDialogVisible = ref(false);
 const addForm = ref({
   po_no: '',
   store_id: '',
   supplier_id: '',
+  materialname: '',
   expect_arrival_time: '',
   total_amount: 0,
-  remark: ''
+  remark: '',
+  quantity:1
 });
-const filteredList = computed(() => {
-  let list = purchaseOrderList.value;
-  if (searchStore.value) {
-    list = list.filter(po => po.store_id === searchStore.value);
-  }
-  if (searchPoNo.value) {
-    list = list.filter(po => po.po_no.includes(searchPoNo.value));
-  }
-  if (searchSupplier.value) {
-    list = list.filter(po => po.supplier_id === searchSupplier.value);
-  }
-  if (searchStatus.value) {
-    list = list.filter(po => String(po.status) === searchStatus.value);
-  }
-  total.value = list.length;
-  const start = (currentPage.value - 1) * pageSize.value;
-  return list.slice(start, start + pageSize.value);
-});
+const filteredList = computed(() => purchaseOrderList.value);
+
 function handleReset() {
   searchStore.value = '';
   searchPoNo.value = '';
   searchSupplier.value = '';
   searchStatus.value = '';
   currentPage.value = 1;
+  handleQuery();
 }
-function handleQuery() {
-  currentPage.value = 1;
+async function handleQuery() {
+  const res:any = await getPurchaseOrderList(
+    currentPage.value,
+    pageSize.value,
+    searchStore.value,
+    searchPoNo.value,
+    searchSupplier.value,
+    searchStatus.value
+  );
+  if (res?.success && res.response) {
+    purchaseOrderList.value = res.response.map((item: any) => ({
+      ...item,
+      operator_id:item.staff?.name,
+      store_name: storeList.value.find(s => s.id == item.store_id)?.name || '',
+      supplier_name: supplierList.value.find(s => s.supplier_id == item.supplier_id)?.supplier_name || '',
+      order_time: item.order_time?.replace('T', ' ').slice(0, 16),
+      expect_arrival_time:dayjs(item.expect_arrival_time).format('YYYY-MM-DD HH:mm'),
+      actual_arrival_time:item.actual_arrival_time ? dayjs(item.actual_arrival_time).format('YYYY-MM-DD HH:mm ') : '',
+    }));
+    total.value = res.count || res.response.length;
+  } else {
+    purchaseOrderList.value = [];
+    total.value = 0;
+  }
 }
 function handleSizeChange(size: number) {
   pageSize.value = size;
   currentPage.value = 1;
+  handleQuery();
 }
 function handlePageChange(page: number) {
   currentPage.value = page;
+  handleQuery();
 }
-function openDetailDialog(row: any) {
-  Object.assign(detailForm.value, row);
-  detailDialogVisible.value = true;
+async function openDetailDialog(row: any) {
+  const res:any = await getPurchaseOrderDetail(row.po_id);
+  if (res?.success && res.response) {
+    const item = res.response;
+    detailForm.value = {
+      ...item,
+      store_name: storeList.value.find(s => s.id == item.store_id)?.name || '',
+      supplier_name: supplierList.value.find(s => s.supplier_id == item.supplier_id)?.supplier_name || '',
+      order_time: item.order_time?.replace('T', ' ').slice(0, 16),
+      expect_arrival_time: item.expect_arrival_time?.replace('T', ' ').slice(0, 10),
+      actual_arrival_time: item.actual_arrival_time?.replace('T', ' ').slice(0, 10),
+      operator_name: item.operator_id
+    };
+    detailDialogVisible.value = true;
+  } else {
+    ElMessage.error(res?.message || '获取详情失败');
+  }
 }
 function openAddDialog() {
   addForm.value.po_no = '';
   addForm.value.store_id = '';
   addForm.value.supplier_id = '';
+  addForm.value.materialname = '';
   addForm.value.expect_arrival_time = '';
   addForm.value.total_amount = 0;
   addForm.value.remark = '';
+  addForm.value.quantity =1;
   addDialogVisible.value = true;
 }
-function handleAddConfirm() {
-  const store = storeList.value.find(s => s.id === addForm.value.store_id);
-  const supplier = supplierList.value.find(s => s.supplier_id === addForm.value.supplier_id);
-  purchaseOrderList.value.unshift({
-    po_id: 'PO' + (purchaseOrderList.value.length + 1).toString().padStart(3, '0'),
-    po_no: addForm.value.po_no || '自动生成',
-    store_id: addForm.value.store_id,
-    store_name: store ? store.name : '',
-    supplier_id: addForm.value.supplier_id,
-    supplier_name: supplier ? supplier.supplier_name : '',
-    order_time: new Date().toLocaleString(),
-    expect_arrival_time: addForm.value.expect_arrival_time,
+async function handleAddConfirm() {
+  if (!addForm.value.store_id || !addForm.value.supplier_id || !addForm.value.expect_arrival_time) {
+    ElMessage.warning('请填写完整信息');
+    return;
+  }
+  const payload = {
+    ...addForm.value,
+    po_id: 0,
+    order_time: new Date().toISOString(),
     actual_arrival_time: '',
-    total_amount: addForm.value.total_amount,
     status: 1,
-    operator_id: '301',
-    operator_name: '张三',
-    remark: addForm.value.remark
-  });
-  addDialogVisible.value = false;
+  };
+  const res:any = await addPurchaseOrder(payload);
+  if (res?.success) {
+    ElMessage.success('新增成功');
+    addDialogVisible.value = false;
+    handleQuery();
+  } else {
+    ElMessage.error(res?.message || '新增失败');
+  }
 }
-function cancelOrder(row: any) {
-  row.status = 4;
+async function cancelOrder(row: any) {
+  const res:any = await cancelPurchaseOrder(row.po_id);
+  if (res?.success) {
+    ElMessage.success('已取消');
+    handleQuery();
+  } else {
+    ElMessage.error(res?.message || '取消失败');
+  }
+}
+
+async function handelSave(row: any) {
+  const res:any = await getPurchaseOrderDetail(row.po_id);
+  if (res?.success && res.response) {
+    const item = res.response;
+    if(item.status != 1){
+      ElMessage.warning('当前状态不可操作');
+      return;
+    }
+    const updateRes:any = await SavePurchaseOrder(row.po_id,row.supplier_id);
+    if (updateRes?.success) {
+      ElMessage.success('采购单已确认');
+      detailDialogVisible.value = false;
+      handleQuery();
+    } else {
+      ElMessage.error(updateRes?.message || '操作失败');
+    }
+  } else {
+    ElMessage.error(res?.message || '获取详情失败');
+  }
+}
+
+async function handleArrived(row: any) {
+  const res:any = await getPurchaseOrderDetail(row.po_id);
+  if (res?.success && res.response) {
+    const item = res.response;
+    if(item.status != 2){
+      ElMessage.warning('当前状态不可操作');
+      return;
+    }
+    const updateRes:any = await ArrivedPurchaseOrder(row.po_id);
+    if (updateRes?.success) {
+      ElMessage.success('采购单已到货');
+      detailDialogVisible.value = false;
+      handleQuery();
+    } else {
+      ElMessage.error(updateRes?.message || '操作失败');
+    }
+  } else {
+    ElMessage.error(res?.message || '获取详情失败');
+  }
+}
+
+
+onMounted(() => {
+  fetchStoreList();
+  fetchSupplierList();
+  fetchMaterialList();
+  handleQuery();
+});
+
+async function fetchStoreList() {
+  await getStoreList().then((res:any)=> {
+    if (res && res.response) {
+      var storedata = res.response.filter((item: any) => item.store_name !== '管理员');
+      storeList.value = storedata.map((item: any) => ({
+        id: item.store_id,
+        name: item.store_name
+      }));
+    }
+  });
+}
+// TODO: fetchSupplierList 需对接供应商接口
+async function fetchSupplierList() {
+  supplierList.value = [
+    { supplier_id: 201, supplier_name: '供应商A' },
+    { supplier_id: 202, supplier_name: '供应商B' },
+    { supplier_id: 203, supplier_name: '供应商C' }
+  ];
+}
+async function fetchMaterialList() {
+  const res:any = await getAllRawMaterialList();
+  if (res?.response) {
+    materialList.value = res.response;
+  } else {
+    materialList.value = [];
+  }
 }
 </script>
 <style scoped>

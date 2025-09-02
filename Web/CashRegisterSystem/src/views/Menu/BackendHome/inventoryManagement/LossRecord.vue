@@ -29,7 +29,6 @@
     </el-form>
     <el-table :data="filteredList" border style="width:100%;height: 68vh;" :header-cell-style="{ background: '#f8f9fa', color: '#606266' }">
       <el-table-column type="index" label="序号" width="60" align="center" />
-      <el-table-column prop="loss_id" label="ID" align="center" />
       <el-table-column prop="material_name" label="原材料" align="center" />
       <el-table-column prop="loss_type" label="损耗类型" align="center" />
       <el-table-column prop="quantity" label="损耗数量" align="center" />
@@ -102,32 +101,26 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { getStoreList } from '../../../../api/login';
+import { getLossList, getLossDetail, addLoss } from '../../../../api/InventoryLoss';
+import { ElMessage } from 'element-plus';
+import { getAllRawMaterialList } from '../../../../api/RawMaterial';
 
-const storeList = ref([
-  { id: '1', name: '总部' },
-  { id: '2', name: '分店A' },
-  { id: '3', name: '分店B' }
-]);
+const storeList = ref<any[]>([]);
 const materialList = ref([
   { material_id: '101', material_name: '鸡肉', unit: 'kg' },
   { material_id: '102', material_name: '食用油', unit: 'L' },
   { material_id: '103', material_name: '盐', unit: 'kg' },
   { material_id: '104', material_name: '大米', unit: 'kg' }
 ]);
-const lossRecordList = ref([
-  { loss_id: 'L001', material_id: '101', material_name: '鸡肉', loss_type: '报损', quantity: 2, unit: 'kg', loss_time: '2025-08-20 10:00', operator: '张三', remark: '运输损坏' },
-  { loss_id: 'L002', material_id: '102', material_name: '食用油', loss_type: '过期', quantity: 1, unit: 'L', loss_time: '2025-08-21 09:30', operator: '李四', remark: '超保质期' },
-  { loss_id: 'L003', material_id: '104', material_name: '大米', loss_type: '丢失', quantity: 5, unit: 'kg', loss_time: '2025-08-22 14:20', operator: '王五', remark: '仓库丢失' }
-]);
-
+const lossRecordList = ref<any[]>([]);
+const total = ref(0);
+const currentPage = ref(1);
+const pageSize = ref(10);
 const searchStore = ref('');
 const searchMaterial = ref('');
 const searchType = ref('');
-
-const currentPage = ref(1);
-const pageSize = ref(10);
-const total = ref(0);
 
 const addDialogVisible = ref(false);
 const addForm = ref({
@@ -160,21 +153,47 @@ const filteredList = computed(() => {
   return list.slice(start, start + pageSize.value);
 });
 
+async function handleQuery() {
+  const data:any = await getLossList(
+    currentPage.value,
+    pageSize.value,
+    searchStore.value,
+    searchMaterial.value,
+    searchType.value
+  );
+  if (data.success && data.response) {
+    lossRecordList.value = data.response.map((item: any) => ({
+      loss_id: item.loss_id,
+      material_id: item.material_id,
+      material_name: materialList.value.find(m => m.material_id == item.material_id)?.material_name || '',
+      loss_type: item.loss_type === 0 ? '报损' : item.loss_type === 1 ? '过期' : '丢失',
+      quantity: item.loss_quantity,
+      unit: materialList.value.find(m => m.material_id == item.material_id)?.unit || '',
+      loss_time: item.loss_time?.replace('T', ' ').slice(0, 16),
+      operator: item.staff?.name || '当前用户',
+      remark: item.loss_reason || ''
+    }));
+    total.value = data.count || data.response.length;
+  } else {
+    lossRecordList.value = [];
+    total.value = 0;
+  }
+}
 function handleReset() {
   searchStore.value = '';
   searchMaterial.value = '';
   searchType.value = '';
   currentPage.value = 1;
-}
-function handleQuery() {
-  currentPage.value = 1;
+  handleQuery();
 }
 function handleSizeChange(size: number) {
   pageSize.value = size;
   currentPage.value = 1;
+  handleQuery();
 }
 function handlePageChange(page: number) {
   currentPage.value = page;
+  handleQuery();
 }
 function openAddDialog() {
   addForm.value.material_id = '';
@@ -183,29 +202,71 @@ function openAddDialog() {
   addForm.value.remark = '';
   addDialogVisible.value = true;
 }
-function handleAddConfirm() {
-  // 模拟新增损耗记录
-  const material = materialList.value.find(m => m.material_id === addForm.value.material_id);
-  lossRecordList.value.unshift({
-    loss_id: 'L' + (lossRecordList.value.length + 1).toString().padStart(3, '0'),
+async function handleAddConfirm() {
+  if (!addForm.value.material_id || !addForm.value.loss_type || !addForm.value.quantity) {
+    ElMessage.warning('请填写完整信息');
+    return;
+  }
+  // 损耗类型映射
+  const typeMap: any = { '报损': 0, '过期': 1, '丢失': 2 };
+  const payload = {
     material_id: addForm.value.material_id,
-    material_name: material ? material.material_name : '',
-    loss_type: addForm.value.loss_type,
-    quantity: addForm.value.quantity,
-    unit: material ? material.unit : '',
-    loss_time: new Date().toLocaleString(),
-    operator: '当前用户',
-    remark: addForm.value.remark
-  });
-  addDialogVisible.value = false;
+    loss_type: typeMap[addForm.value.loss_type],
+    loss_quantity: addForm.value.quantity,
+    loss_reason: addForm.value.remark,
+    batch_no: '',
+    loss_id: 0
+  };
+  const res:any = await addLoss(payload);
+  if (res?.success) {
+    ElMessage.success('新增成功');
+    addDialogVisible.value = false;
+    handleQuery();
+  } else {
+    ElMessage.error(res?.message || '新增失败');
+  }
 }
-function openDetailDialog(row: any) {
-  detailForm.value.material_name = row.material_name;
-  detailForm.value.loss_type = row.loss_type;
-  detailForm.value.quantity = row.quantity;
-  detailForm.value.remark = row.remark;
+async function openDetailDialog(row: any) {
+  const res:any = await getLossDetail(row.loss_id);
+  const item = res?.response || row;
+  detailForm.value.material_name = materialList.value.find(m => m.material_id == item.material_id)?.material_name || '';
+  detailForm.value.loss_type = item.loss_type === 0 ? '报损' : item.loss_type === 1 ? '过期' : '丢失';
+  detailForm.value.quantity = item.loss_quantity;
+  detailForm.value.remark = item.loss_reason || '';
   detailDialogVisible.value = true;
 }
+
+onMounted(() => {
+  fetchStoreList();
+  handleQuery();
+  fetchmaterialList()
+});
+
+async function fetchStoreList() {
+  await getStoreList().then((res:any)=> {
+    if (res && res.response) {
+      var storedata = res.response.filter((item: any) => item.store_name !== '管理员');
+      storeList.value = storedata.map((item: any) => ({
+        id: item.store_id,
+        name: item.store_name
+      }));
+    }
+  });
+}
+
+async function fetchmaterialList() {
+  await getAllRawMaterialList().then((res:any)=> {
+    if (res && res.response) {
+      materialList.value = res.response.map((item: any) => ({
+        material_id: item.material_id,
+        material_name: item.material_name,
+        unit: item.unit
+      }));
+    }
+  });
+}
+
+
 </script>
 <style scoped>
 .inventory-container {

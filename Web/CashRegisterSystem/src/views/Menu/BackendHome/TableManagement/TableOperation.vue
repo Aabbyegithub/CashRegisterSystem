@@ -225,12 +225,14 @@ const handleConfirm = async () => {
     await changeTable(sourceTable.value.tableId, selectedTargetTableIds.value ?? 0,sourceTable.value.order?.order_id, operationReason.value);
     ElMessage.success('换桌成功');
     emit('success');
+    loadTables();
     loading.value = false;
   } else {
     // 并桌逻辑
     await mergeTables(sourceTable.value.tableId, selectedTargetTableIds.value ?? 0,sourceTable.value.order?.order_id,operationReason.value);
     ElMessage.success('并桌成功');
     emit('success');
+    loadTables();
     loading.value = false;
   }
 };

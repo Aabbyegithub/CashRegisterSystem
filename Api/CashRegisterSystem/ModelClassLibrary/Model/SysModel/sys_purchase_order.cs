@@ -92,6 +92,11 @@ namespace MyNamespace
            /// Nullable:True
            /// </summary>           
            public string? remark {get;set;}
+           public string? materialname {get;set;}
+           public int? quantity {get;set;}
+
+        [Navigate(NavigateType.OneToOne, nameof(operator_id), nameof(sys_staff.staff_id))]//一对一 
+        public sys_staff? staff { get; set; }
 
     }
 }

@@ -130,8 +130,10 @@ let comboChart: Chart | null = null;
 let waiterChart: Chart | null = null;
 let storeChart: Chart | null = null;
 let orderChart: Chart | null = null;
+let chartInitFlag = false;
 
 function destroyCharts() {
+  chartInitFlag = false;
   if (peakChart) { peakChart.destroy(); peakChart = null; }
   if (topDishChart) { topDishChart.destroy(); topDishChart = null; }
   if (comboChart) { comboChart.destroy(); comboChart = null; }
@@ -143,124 +145,122 @@ function destroyCharts() {
 onMounted(async () => {
   await nextTick();
   destroyCharts();
-
-  peakChart = new Chart(document.getElementById('peakChart') as HTMLCanvasElement, {
-    type: 'bar',
-    data: {
-      labels: peakData.value.map(d => d.period),
-      datasets: [{
-        label: '就餐人数',
-        data: peakData.value.map(d => d.count),
-        backgroundColor: '#165DFF'
-      }]
-    },
-    options: {
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true } }
-    }
-  });
-
-  topDishChart = new Chart(document.getElementById('topDishChart') as HTMLCanvasElement, {
-    type: 'bar',
-    data: {
-      labels: topDishData.value.map(d => d.name),
-      datasets: [
-        {
-          label: '销量',
-          data: topDishData.value.map(d => d.sales),
-          backgroundColor: '#36CFC9'
-        },
-        {
-          label: '利润',
-          data: topDishData.value.map(d => d.profit),
-          backgroundColor: '#FAAD14'
-        }
-      ]
-    },
-    options: {
-      plugins: { legend: { position: 'top' } },
-      scales: { y: { beginAtZero: true } }
-    }
-  });
-
-  comboChart = new Chart(document.getElementById('comboChart') as HTMLCanvasElement, {
-    type: 'pie',
-    data: {
-      labels: comboData.value.map(d => d.mainDish + '+' + d.comboDish),
-      datasets: [{
-        data: comboData.value.map(d => parseInt(d.rate)),
-        backgroundColor: ['#165DFF', '#36CFC9', '#FAAD14', '#722ED1']
-      }]
-    },
-    options: {
-      plugins: { legend: { position: 'bottom' } }
-    }
-  });
-
-  waiterChart = new Chart(document.getElementById('waiterChart') as HTMLCanvasElement, {
-    type: 'bar',
-    data: {
-      labels: waiterData.value.map(d => d.name),
-      datasets: [
-        {
-          label: '接单量',
-          data: waiterData.value.map(d => d.orderCount),
+  setTimeout(() => {
+    if (chartInitFlag) return; // 防止多次初始化
+    chartInitFlag = true;
+    peakChart = new Chart(document.getElementById('peakChart') as HTMLCanvasElement, {
+      type: 'bar',
+      data: {
+        labels: peakData.value.map(d => d.period),
+        datasets: [{
+          label: '就餐人数',
+          data: peakData.value.map(d => d.count),
           backgroundColor: '#165DFF'
-        },
-        {
-          label: '退菜率',
-          data: waiterData.value.map(d => parseFloat(d.returnRate)),
-          backgroundColor: '#FF4D4F'
-        },
-        {
-          label: '顾客评价',
-          data: waiterData.value.map(d => parseFloat(d.rating)),
-          backgroundColor: '#36CFC9'
-        }
-      ]
-    },
-    options: {
-      plugins: { legend: { position: 'top' } },
-      scales: { y: { beginAtZero: true } }
-    }
-  });
-
-  storeChart = new Chart(document.getElementById('storeChart') as HTMLCanvasElement, {
-    type: 'bar',
-    data: {
-      labels: storeData.value.map(d => d.name),
-      datasets: [
-        {
-          label: '营业额',
-          data: storeData.value.map(d => d.revenue),
-          backgroundColor: '#165DFF'
-        },
-        {
-          label: '利润率',
-          data: storeData.value.map(d => d.profitRate),
-          backgroundColor: '#FAAD14'
-        }
-      ]
-    },
-    options: {
-      plugins: { legend: { position: 'top' } },
-      scales: { y: { beginAtZero: true } }
-    }
-  });
-
-  orderChart = new Chart(document.getElementById('orderChart') as HTMLCanvasElement, {
-    type: 'doughnut',
-    data: {
-      labels: orderData.value.map(d => d.store),
-      datasets: [{
-        data: orderData.value.map(d => d.takeawayRate),
-        backgroundColor: ['#165DFF', '#36CFC9', '#FAAD14']
-      }]
-    },
-    options: {
-      plugins: { legend: { position: 'bottom' } }
-    }
-  });
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+    topDishChart = new Chart(document.getElementById('topDishChart') as HTMLCanvasElement, {
+      type: 'bar',
+      data: {
+        labels: topDishData.value.map(d => d.name),
+        datasets: [
+          {
+            label: '销量',
+            data: topDishData.value.map(d => d.sales),
+            backgroundColor: '#36CFC9'
+          },
+          {
+            label: '利润',
+            data: topDishData.value.map(d => d.profit),
+            backgroundColor: '#FAAD14'
+          }
+        ]
+      },
+      options: {
+        plugins: { legend: { position: 'top' } },
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+    comboChart = new Chart(document.getElementById('comboChart') as HTMLCanvasElement, {
+      type: 'pie',
+      data: {
+        labels: comboData.value.map(d => d.mainDish + '+' + d.comboDish),
+        datasets: [{
+          data: comboData.value.map(d => parseInt(d.rate)),
+          backgroundColor: ['#165DFF', '#36CFC9', '#FAAD14', '#722ED1']
+        }]
+      },
+      options: {
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+    waiterChart = new Chart(document.getElementById('waiterChart') as HTMLCanvasElement, {
+      type: 'bar',
+      data: {
+        labels: waiterData.value.map(d => d.name),
+        datasets: [
+          {
+            label: '接单量',
+            data: waiterData.value.map(d => d.orderCount),
+            backgroundColor: '#165DFF'
+          },
+          {
+            label: '退菜率',
+            data: waiterData.value.map(d => parseFloat(d.returnRate)),
+            backgroundColor: '#FF4D4F'
+          },
+          {
+            label: '顾客评价',
+            data: waiterData.value.map(d => parseFloat(d.rating)),
+            backgroundColor: '#36CFC9'
+          }
+        ]
+      },
+      options: {
+        plugins: { legend: { position: 'top' } },
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+    storeChart = new Chart(document.getElementById('storeChart') as HTMLCanvasElement, {
+      type: 'bar',
+      data: {
+        labels: storeData.value.map(d => d.name),
+        datasets: [
+          {
+            label: '营业额',
+            data: storeData.value.map(d => d.revenue),
+            backgroundColor: '#165DFF'
+          },
+          {
+            label: '利润率',
+            data: storeData.value.map(d => d.profitRate),
+            backgroundColor: '#FAAD14'
+          }
+        ]
+      },
+      options: {
+        plugins: { legend: { position: 'top' } },
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+    orderChart = new Chart(document.getElementById('orderChart') as HTMLCanvasElement, {
+      type: 'doughnut',
+      data: {
+        labels: orderData.value.map(d => d.store),
+        datasets: [{
+          data: orderData.value.map(d => d.takeawayRate),
+          backgroundColor: ['#165DFF', '#36CFC9', '#FAAD14']
+        }]
+      },
+      options: {
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+  }, 100);
 });
 
 onActivated(() => {

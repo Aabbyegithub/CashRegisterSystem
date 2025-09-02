@@ -34,9 +34,16 @@ namespace WebServiceClass.Services.QueueServices
         }
 
 
+        public async Task<List<sys_queue>> GetQueuePageListAsync(int orgId)
+        {
+            var query = _dal.Db.Queryable<sys_queue>().Where(a=>a.store_id == orgId && a.status !=4 && a.status !=5);
+            return await query.OrderBy(x => x.created_at, OrderByType.Desc)
+                             .ToListAsync();
+        }
+
         public async Task<ApiResponse<bool>> AddQueueAsync(sys_queue queue,int orgId)
         {
-            var quCount = await _dal.Db.Queryable<sys_queue>().Where(a => a.store_id == (queue.store_id > 0 ? queue.store_id : orgId) && a.created_at == DateTime.Today).CountAsync();
+            var quCount = await _dal.Db.Queryable<sys_queue>().Where(a => a.store_id == (queue.store_id > 0 ? queue.store_id : orgId) && a.created_at.Date == DateTime.Today).CountAsync();
             queue.queue_no = $"A{quCount+1:000}";
             queue.created_at = DateTime.Now;
             queue.queue_time = DateTime.Now;
@@ -70,6 +77,11 @@ namespace WebServiceClass.Services.QueueServices
             return await UpdateQueueStatusAsync(queueId, 3);
         }
 
+        public async Task<ApiResponse<bool>> finishQueueAsync(long queueId)
+        {
+            return await UpdateQueueStatusAsync(queueId, 4);
+        }
+
         public async Task<ApiResponse<bool>> AssignTableAsync(long queueId, long tableId)
         {
             var result = await _dal.Db.Updateable<sys_queue>()
@@ -93,14 +105,22 @@ namespace WebServiceClass.Services.QueueServices
             var totalToday = await query.Where(x => x.created_at >= today).CountAsync();
             var waitingCount = await _dal.Db.Queryable<sys_queue>().WhereIF(storeId.HasValue,a=>a.store_id == storeId).Where(x => x.status == 1).CountAsync();
             var skippedCount = await query.Where(x => x.status == 4).CountAsync();
-            var avgWait = await query.Where(x => x.status == 1).AvgAsync(x =>(DateTime.Now - x.created_at).TotalMinutes);
+            var waitingList = await  _dal.Db.Queryable<sys_queue>().WhereIF(storeId.HasValue,a=>a.store_id == storeId).Where(x => x.created_at >= today).ToListAsync();
+            var finished = await _dal.Db.Queryable<sys_queue>().WhereIF(storeId.HasValue,a=>a.store_id == storeId).Where(x => x.created_at >= today && x.status !=1).CountAsync();
+            double avgWait = 0;
+            if (waitingList.Count > 0)
+            {
+                avgWait = waitingList.Average(x => (DateTime.Now - x.created_at).TotalMinutes);
+            }
+            // var avgWait = await query.Where(x => x.status == 1).AvgAsync(x =>(DateTime.Now - x.created_at).TotalMinutes);
             var skippedRate = totalToday > 0 ? (int)((double)skippedCount / totalToday * 100) : 0;
             return new QueueStatsDto
             {
                 waitingCount = waitingCount,
                 averageWaitTime =(int) avgWait,
                 totalToday = totalToday,
-                skippedRate = skippedRate
+                skippedRate = skippedRate,
+                finished = finished
             };
         }
 

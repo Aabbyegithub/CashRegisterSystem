@@ -14,6 +14,7 @@ namespace ModelClassLibrary.Model.Dto.QueueDto
             public int averageWaitTime { get; set; }
             public int totalToday { get; set; }
             public int skippedRate { get; set; }
+            public int finished { get; set; }
         }
     }
 }

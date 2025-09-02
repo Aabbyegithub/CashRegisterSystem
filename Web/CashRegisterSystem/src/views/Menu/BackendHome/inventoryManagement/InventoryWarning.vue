@@ -28,11 +28,12 @@
     </el-form>
     <el-table :data="filteredList" border style="width:100%;height: 68vh;" :header-cell-style="{ background: '#f8f9fa', color: '#606266' }">
       <el-table-column type="index" label="序号" width="60" align="center" />
-      <el-table-column prop="material_id" label="ID" align="center" />
       <el-table-column prop="material_name" label="名称" align="center" />
       <el-table-column prop="category" label="分类" align="center" />
       <el-table-column prop="unit" label="单位" align="center" />
       <el-table-column prop="quantity" label="当前库存" align="center" />
+      <el-table-column prop="in_quantity" label="总入库数量" align="center" />
+      <el-table-column prop="out_quantity" label="出库数量" align="center" />
       <el-table-column prop="warning_threshold" label="预警阈值" align="center" />
       <el-table-column prop="status" label="状态" align="center">
         <template #default="scope">
@@ -78,14 +79,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-
+import { ref, computed, onMounted } from 'vue';
+import { getStoreList } from '../../../../api/login';
+import { getAllRawMaterialList, getInventoryAlertList, PurchaseMaterial } from '../../../../api/RawMaterial';
+import { ElMessage } from 'element-plus';
 // 模拟门店、原材料、分类数据
-const storeList = ref([
-  { id: '1', name: '总部' },
-  { id: '2', name: '分店A' },
-  { id: '3', name: '分店B' }
-]);
+const storeList = ref<any[]>([]);
 const materialList = ref([
   { material_id: '101', material_name: '鸡肉', category: '生鲜', unit: 'kg', quantity: 8, warning_threshold: 10 },
   { material_id: '102', material_name: '食用油', category: '粮油', unit: 'L', quantity: 25, warning_threshold: 20 },
@@ -111,32 +110,40 @@ const purchaseForm = ref({
   purchase_quantity: 1,
   remark: ''
 });
-
-// 表格筛选与分页
-const filteredList = computed(() => {
-  let list = materialList.value;
-  if (searchStore.value) {
-    // 可扩展：根据门店筛选（如有门店字段）
+const filteredList = ref<any[]>([]);
+async function handleQuery() {
+  const data:any = await getInventoryAlertList(
+    currentPage.value,
+    pageSize.value,
+    searchStore.value,
+    searchMaterial.value,
+    searchCategory.value,
+  );
+  if (data.success && data.response) {
+    filteredList.value = data.response.map((item: any) => ({
+      material_id: item.material_id,
+      material_name: item.material_name,
+      category: item.category,
+      unit: item.unit,
+      purchase_price: item.purchase_price,
+      warning_threshold: item.warning_threshold,
+      quantity: item.quantity,
+      in_quantity: item.in_quantity,
+      out_quantity: item.out_quantity,
+      status: item.quantity < item.warning_threshold ? '预警' : '正常',
+      store_id: item.store_id?.toString() || ''
+    }));
+    total.value = data.count || data.response.length;
+  } else {
+    filteredList.value = [];
+    total.value = 0;
   }
-  if (searchMaterial.value) {
-    list = list.filter(m => m.material_id === searchMaterial.value);
-  }
-  if (searchCategory.value) {
-    list = list.filter(m => m.category === searchCategory.value);
-  }
-  total.value = list.length;
-  // 分页
-  const start = (currentPage.value - 1) * pageSize.value;
-  return list.slice(start, start + pageSize.value);
-});
+}
 
 function handleReset() {
   searchStore.value = '';
   searchMaterial.value = '';
   searchCategory.value = '';
-  currentPage.value = 1;
-}
-function handleQuery() {
   currentPage.value = 1;
 }
 function handleSizeChange(size: number) {
@@ -154,11 +161,47 @@ function openPurchaseDialog(row: any) {
   purchaseForm.value.remark = '';
   purchaseDialogVisible.value = true;
 }
-function handlePurchaseConfirm() {
+async function handlePurchaseConfirm() {
   // 模拟采购逻辑，可扩展为接口调用
   purchaseDialogVisible.value = false;
-  // 可弹出提示：采购成功
+ var res:any = await PurchaseMaterial(purchaseForm.value.material_id, purchaseForm.value.purchase_quantity,purchaseForm.value.remark);
+ if(res && res.success){
+  ElMessage.success('采购单申请成功');
+  handleQuery();
+ }
 }
+
+onMounted(() => {
+  fetchStoreList();
+  handleQuery();
+  fetchmaterialList();
+});
+
+async function fetchStoreList() {
+  await getStoreList().then((res:any)=> {
+    if (res && res.response) {
+      var storedata = res.response.filter((item: any) => item.store_name !== '管理员');
+      storeList.value = storedata.map((item: any) => ({
+        id: item.store_id,
+        name: item.store_name
+      }));
+    }
+  });
+}
+
+async function fetchmaterialList() {
+  await getAllRawMaterialList().then((res:any)=> {
+    if (res && res.response) {
+      materialList.value = res.response.map((item: any) => ({
+        material_id: item.material_id,
+        material_name: item.material_name,
+        unit: item.unit
+      }));
+    }
+  });
+}
+
+
 </script>
 <style scoped>
 .inventory-container {

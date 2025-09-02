@@ -224,7 +224,7 @@ import {
 import dayjs from 'dayjs';
 
 // 状态映射，类型安全
-const statusMap: Record<QueueItem['status'], string> = {
+const statusMap: Record<any['status'], string> = {
   1: '等待中',
   2: '已叫号',
   4: '已入座',
@@ -297,7 +297,7 @@ const addQueueRules = {
   ],
   partySize: [
     { required: true, message: '请输入用餐人数', trigger: 'blur' },
-    { type: 'number', min: 1, message: '人数必须大于0', trigger: 'blur' }
+    { type: Number, min: 1, message: '人数必须大于0', trigger: 'blur' }
   ]
 };
 
@@ -407,7 +407,8 @@ const handleAddQueue = () => {
       customer_name: newQueue.value.customerName,
       customer_phone: newQueue.value.phone,
       party_size: Number(newQueue.value.partySize),
-      status: 1
+      status: 1,
+      remark: newQueue.value.notes || ''
     });
     if (res.success) {
       ElMessage.success('新增排队成功');
