@@ -35,14 +35,14 @@ namespace MyNamespace
            /// Default:
            /// Nullable:False
            /// </summary>           
-           public string customer_name {get;set;} = null!;
+           public string? customer_name {get;set;}
 
            /// <summary>
            /// Desc:顾客电话
            /// Default:
            /// Nullable:False
            /// </summary>           
-           public string customer_phone {get;set;} = null!;
+           public string? customer_phone {get;set;} 
 
            /// <summary>
            /// Desc:用餐人数
@@ -56,7 +56,7 @@ namespace MyNamespace
            /// Default:
            /// Nullable:False
            /// </summary>           
-           public string queue_no {get;set;} = null!;
+           public string? queue_no {get;set;}
 
            /// <summary>
            /// Desc:取号时间
@@ -99,6 +99,7 @@ namespace MyNamespace
            /// Nullable:False
            /// </summary>           
            public DateTime updated_at {get;set;}
+           public string? remark { get;set;}
 
     }
 }

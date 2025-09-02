@@ -453,6 +453,51 @@
             </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "M:WebProjectTest.Controllers.OrderController.OrderController.OrderCheckoutAsync(System.Int32,System.Nullable{System.Int32},System.String)" -->
+        <member name="M:WebProjectTest.Controllers.QueueController.QueueController.GetQueuePageList(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.Int32,System.Int32)">
+            <summary>
+            排队分页列表
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.QueueController.QueueController.GetQueueList">
+            <summary>
+            排队分页列表
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.QueueController.QueueController.AddQueueAsync(MyNamespace.sys_queue)">
+            <summary>
+            新增排队
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.QueueController.QueueController.CallQueueAsync(System.Int64)">
+            <summary>
+            叫号
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.QueueController.QueueController.SkipQueueAsync(System.Int64)">
+            <summary>
+            过号
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.QueueController.QueueController.CancelQueueAsync(System.Int64)">
+            <summary>
+            取消排队
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.QueueController.QueueController.AssignTableAsync(System.Int64,System.Int64)">
+            <summary>
+            安排桌台
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.QueueController.QueueController.GetQueueStats(System.Nullable{System.Int32})">
+            <summary>
+            排队统计
+            </summary>
+        </member>
+        <member name="M:WebProjectTest.Controllers.QueueController.QueueController.GetAppQueueStats">
+            <summary>
+            排队统计
+            </summary>
+        </member>
         <member name="T:WebProjectTest.Controllers.SystemController.AutherController">
             <summary>
             获取服务器和人员信息

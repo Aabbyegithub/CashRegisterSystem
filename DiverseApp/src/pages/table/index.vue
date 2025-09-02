@@ -2,7 +2,7 @@
   <view class="table-page">
     <view class="table-area">大堂</view>
     <view class="table-grid">
-      <view v-for="table in tables" :key="table.id" :class="['table-card', table.status === 2 ? 'used-red' : table.status, selectedTable?.id === table.id ? 'selected' : '']" @click="handleTableClick(table)">
+      <view v-for="table in tables" :key="table.id" :class="['table-card', table.status === 2 ? 'used-red' : table.status, selectedTable?.id === table.id ? 'selected' : '']" >
         <view class="table-name">{{ table.name }}</view>
         <view class="table-status">{{ table.status === 1 ? '空闲' : (table.status === 2 ? '使用中' : (table.status === 3 ? '预订':'清洁中')) }}</view>
         <view style="display: flex;">
