@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MyNamespace;
+using SqlSugar;
 using WebIServices.ITask;
 using WebProjectTest.Common.Filter;
 using static ModelClassLibrary.Model.CommonEnmFixts;
+using static WebProjectTest.Common.Message;
 
 namespace WebProjectTest.Controllers.TaskController
 {
@@ -26,7 +29,7 @@ namespace WebProjectTest.Controllers.TaskController
         public async Task<string> StartTaskAsync()
         {
             return await _taskService.StartAsync(new CancellationToken());
-            
+
         }
 
         /// <summary>
@@ -37,8 +40,8 @@ namespace WebProjectTest.Controllers.TaskController
         [OperationLogFilter("定时器管理", "启动定时服务", ActionType.Close)]
         public async Task<string> StopTaskAsync()
         {
-             return await _taskService.StopAsync(new CancellationToken());
-           
+            return await _taskService.StopAsync(new CancellationToken());
+
         }
 
         /// <summary>
@@ -47,10 +50,10 @@ namespace WebProjectTest.Controllers.TaskController
         /// <returns></returns>
         [HttpPost]
         [OperationLogFilter("定时器管理", "启动定时服务", ActionType.Add)]
-        public async Task<string> AddJobAsync(string jobId,string jobName, string cronExpression)
+        public async Task<string> AddJobAsync(string jobId, string jobName, string cronExpression)
         {
-            return await _taskService.AddJobAsync(jobId,jobName, cronExpression, default);
-            
+            return await _taskService.AddJobAsync(jobId, jobName, cronExpression, default);
+
         }
 
         /// <summary>
@@ -63,7 +66,7 @@ namespace WebProjectTest.Controllers.TaskController
         public async Task<string> RemoveJobAsync(string jobId)
         {
             return await _taskService.RemoveJobAsync(jobId, default);
-    
+
         }
 
         /// <summary>
@@ -76,7 +79,7 @@ namespace WebProjectTest.Controllers.TaskController
         public async Task<string> PauseJobAsync(string jobId)
         {
             return await _taskService.PauseJobAsync(jobId, default);
-     
+
         }
 
         /// <summary>
@@ -89,7 +92,62 @@ namespace WebProjectTest.Controllers.TaskController
         public async Task<string> ResumeJobAsync(string jobId)
         {
             return await _taskService.ResumeJobAsync(jobId, default);
-           
+
+        }
+        
+
+         /// <summary>
+        /// 获取定时任务列表（筛选+分页）
+        /// </summary>
+        [HttpGet]
+        [OperationLogFilter("系统管理>定时任务", "定时任务列表查询", ActionType.Search)]
+        public async Task<ApiPageResponse<List<sys_timertask>>> GetTimerTaskList(
+            string? jobName,
+            int pageIndex = 1,
+            int pageSize = 10)
+        {
+            RefAsync<int> totalCount = 0;
+            return await _taskService.GetTimerTaskListAsync(jobName, pageIndex, pageSize, totalCount);
+        }
+
+        /// <summary>
+        /// 新增定时任务
+        /// </summary>
+        [HttpPost]
+        [OperationLogFilter("系统管理>定时任务", "新增定时任务", ActionType.Add)]
+        public async Task<ApiResponse<bool>> AddTimerTask([FromBody] sys_timertask task)
+        {
+            return await _taskService.AddTimerTaskAsync(task);
+        }
+
+        /// <summary>
+        /// 编辑定时任务
+        /// </summary>
+        [HttpPost]
+        [OperationLogFilter("系统管理>定时任务", "编辑定时任务", ActionType.Edit)]
+        public async Task<ApiResponse<bool>> UpdateTimerTask([FromBody] sys_timertask task)
+        {
+            return await _taskService.UpdateTimerTaskAsync(task);
+        }
+
+        /// <summary>
+        /// 删除定时任务
+        /// </summary>
+        [HttpPost]
+        [OperationLogFilter("系统管理>定时任务", "删除定时任务", ActionType.Delete)]
+        public async Task<ApiResponse<bool>> DeleteTimerTask(long taskId)
+        {
+            return await _taskService.DeleteTimerTaskAsync(taskId);
+        }
+
+        /// <summary>
+        /// 获取定时任务详情
+        /// </summary>
+        [HttpGet]
+        [OperationLogFilter("系统管理>定时任务", "定时任务详情", ActionType.Search)]
+        public async Task<ApiResponse<sys_timertask>> GetTimerTaskDetail(long taskId)
+        {
+            return await _taskService.GetTimerTaskDetailAsync(taskId);
         }
     }
 }

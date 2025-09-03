@@ -82,5 +82,10 @@ namespace WebProjectTest.Controllers.DishController
             var specs = await _specService.GetSpecListAsync(dishId, null, null, OrgId, 1, 100, new RefAsync<int>(0));
             return Success(specs.Response ?? new List<sys_dish_spec>(), "获取成功");
         }
+        [HttpGet]
+        public async Task<ApiResponse<List<sys_dish_spec>>> GetDishSpecListAsync(int dishId)
+        {
+            return await _specService.GetDishSpecListAsync(dishId);
+        }
     }
 }

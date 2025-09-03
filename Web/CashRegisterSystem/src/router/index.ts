@@ -153,6 +153,21 @@ const routes = [
             name: 'OperationDecisionReport',
             component: () => import('../views/Menu/BackendHome/Report/OperationDecisionReport.vue') 
           },
+          { 
+            path: 'TaskManagement', 
+            name: 'TaskManagement',
+            component: () => import('../views/Menu/BackendHome/System/TimerTaskManagement.vue') 
+          },
+          { 
+            path: 'SupplierManagement', 
+            name: 'SupplierManagement',
+            component: () => import('../views/Menu/BackendHome/System/SupplierManagement.vue') 
+          },
+           { 
+            path: 'OperationLogManagement', 
+            name: 'OperationLogManagement',
+            component: () => import('../views/Menu/BackendHome/System/OperationLogManagement.vue') 
+          },
         ]
        },
     ]

@@ -14,6 +14,7 @@ namespace WebIServices.IServices.DishIServise
         /// </summary>
         Task<ApiPageResponse<List<sys_dish_spec>>> GetSpecListAsync(long? dishId, string? specName, string? specType,int orgId, int pageIndex, int pageSize, RefAsync<int> count);
         Task<ApiResponse<List<sys_dish_spec>>> GetSpecListAsync();
+        Task<ApiResponse<List<sys_dish_spec>>> GetDishSpecListAsync(int dishId);
 
         /// <summary>
         /// 获取规格详情

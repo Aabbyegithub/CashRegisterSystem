@@ -30,7 +30,7 @@ namespace WebServiceClass.Services.KitchenServices
                 query = query.Where(x => x.store_id == storeId.Value);
 
             if (!string.IsNullOrEmpty(kitchenType))
-                query = query.Where(x => x.kitchen_type == kitchenType);
+                query = query.Where(x => x.kitchen_type.Contains(kitchenType));
 
             if (status > 0)
                 query = query.Where(x => x.status == status);
@@ -48,7 +48,7 @@ namespace WebServiceClass.Services.KitchenServices
                 query = query.Where(x => x.store_id == storeId.Value);
 
             if (!string.IsNullOrEmpty(kitchenType))
-                query = query.Where(x => x.kitchen_type == kitchenType);
+                query = query.Where(x => x.kitchen_type.Contains(kitchenType));
 
             var stats = await query.GroupBy(x => x.status)
                 .Select(x => new { Status = x.status, Count = SqlFunc.AggregateCount(x.kitchen_id) })
@@ -64,34 +64,57 @@ namespace WebServiceClass.Services.KitchenServices
 
         public async Task<ApiResponse<bool>> UpdateOrderStatusAsync(int kitchenOrderId, int status, int userid)
         {
-            var result = 0;
-            if (status == 2 || status == 3)
+            try
             {
-                result = await _dal.Db.Updateable<sys_kitchen_order>()
-              .SetColumns(x =>new sys_kitchen_order
-              {
-                  status = (byte)status,
-                  cook_id = userid,
-                  finish_time = status == 3 ? DateTime.Now : (DateTime?)null
-              })
-               .Where(x => x.kitchen_id == kitchenOrderId)
-               .ExecuteCommandAsync();
-            }
-            if (status == 4)
-            {
-                result = await _dal.Db.Updateable<sys_kitchen_order>()
-                    .SetColumns(x =>new sys_kitchen_order
+                await _dal.Db.Ado.BeginTranAsync();
+                var result = 0;
+                if (status == 2 || status == 3)
+                {
+                    result = await _dal.Db.Updateable<sys_kitchen_order>()
+                  .SetColumns(x => new sys_kitchen_order
+                  {
+                      status = (byte)status,
+                      cook_id = userid,
+                      finish_time = status == 3 ? DateTime.Now : (DateTime?)null
+                  })
+                   .Where(x => x.kitchen_id == kitchenOrderId)
+                   .ExecuteCommandAsync();
+                    //开始制作扣掉库存
+                    if (status == 2)
                     {
-                        status = (byte)status,
-                        picker_id = userid,
-                        pick_time = DateTime.Now
-                    })
-                    .Where(x => x.kitchen_id == kitchenOrderId)
-                    .ExecuteCommandAsync();
+                        var kitchen = await _dal.Db.Queryable<sys_kitchen_order>()
+                            .Includes(a => a.orderitem, b => b.dish, c => c.dish_formula).FirstAsync(a=>a.kitchen_id ==kitchenOrderId );
+
+                        foreach (var item in kitchen.orderitem.dish.dish_formula)
+                        {
+                            var inventory = await _dal.Db.Queryable<sys_inventory>().Where(a => a.material_id == item.material_id && a.quantity != 0).OrderBy(a => a.quantity).FirstAsync();
+                            inventory.quantity = inventory.quantity - item.consumption;
+                            inventory.out_quantity = inventory.quantity+inventory.out_quantity;
+                            await _dal.Db.Updateable<sys_inventory>().ExecuteCommandAsync();
+                        }
+                    }
+                }
+                if (status == 4)
+                {
+                    result = await _dal.Db.Updateable<sys_kitchen_order>()
+                        .SetColumns(x => new sys_kitchen_order
+                        {
+                            status = (byte)status,
+                            picker_id = userid,
+                            pick_time = DateTime.Now
+                        })
+                        .Where(x => x.kitchen_id == kitchenOrderId)
+                        .ExecuteCommandAsync();
+                }
+                  await _dal.Db.Ado.CommitTranAsync();
+                return Success(result > 0, result > 0 ? "操作成功" : "操作失败");
             }
+            catch (Exception)
+            {
 
-
-            return Success(result > 0, result > 0 ? "操作成功" : "操作失败");
+                await _dal.Db.Ado.RollbackTranAsync();
+                return Fail<bool>("操作失败！");
+            }
         }
     }
 }

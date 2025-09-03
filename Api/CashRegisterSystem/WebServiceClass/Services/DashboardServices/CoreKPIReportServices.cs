@@ -108,16 +108,19 @@ namespace WebServiceClass.Services.DashboardServices
             dto.DishCombos = new List<DishComboDto>(); // 可补充实现
 
             // 服务员绩效（订单量、退菜率、评价，假设有相关字段）
-            var waiterPerf = await _dal.Db.Queryable<sys_order>().Includes(x=>x.Staff)
-                .Where(x =>  x.start_time >= today && x.start_time < tomorrow)
-                .GroupBy(x => x.operator_id)
-                .Select(x => new WaiterPerformanceDto
+            var waiterPerf = await _dal.Db.Queryable<sys_order>()
+                .LeftJoin<sys_staff>((order, staff) => order.operator_id == staff.staff_id)
+                .Where(order => order.start_time >= today && order.start_time < tomorrow)
+                .GroupBy((order, staff) => order.operator_id)
+                .Select((order, staff) => new WaiterPerformanceDto
                 {
-                    Name = x.Staff == null?"":x.Staff.name,
-                    OrderCount = SqlFunc.AggregateCount(x.order_id),
-                    ReturnRate = "0%", // 需结合退菜表统计
-                    Rating = "5.0" // 需结合评价表统计
-                }).ToListAsync();
+                    Name = SqlFunc.AggregateMax(SqlFunc.IsNull(staff.name, "")),
+                    OrderCount = SqlFunc.AggregateCount(order.order_id),
+                    ReturnRate = "0%",
+                    Rating = "5.0"
+                })
+                .ToListAsync();
+
             dto.WaiterPerformance = waiterPerf;
 
             // 门店对比（营业额、利润率、排名，假设有相关字段）

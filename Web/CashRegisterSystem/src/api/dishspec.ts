@@ -5,6 +5,9 @@ export function getSpecList(params: { pageIndex: number; pageSize: number; dishI
   return axios.get('/api/DishSpecifications/GetSpecList', { params });
 }
 
+export function getDishSpecList(dishId: number) {
+  return axios.get('/api/DishSpecifications/GetDishSpecList', { params:{dishId} });
+}
 // 获取规格详情
 export function getSpecById(specId: number) {
   return axios.get('/api/DishSpecifications/GetSpecById', { params: { specId } });

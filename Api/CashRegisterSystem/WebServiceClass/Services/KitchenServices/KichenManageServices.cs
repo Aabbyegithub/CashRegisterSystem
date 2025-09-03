@@ -18,7 +18,6 @@ public class KichenManageServices :IBaseService, KichenManageIServices
         return await _dal.Db.Queryable<sys_kitchen>()
             .WhereIF(storeId.HasValue, x => x.store_id == storeId)
             .WhereIF(!string.IsNullOrEmpty(kitchenType), x => x.kitchen_type == kitchenType)
-            .WhereIF(orgId > 0 && orgId !=1, x => x.store_id == orgId)
             .ToPageListAsync(page, size, count);
     }
 

@@ -1,5 +1,7 @@
-﻿using ModelClassLibrary.Model;
-using MyNamespace;
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using ModelClassLibrary.Model;
 using Quartz;
 using Quartz.Impl;
 using SqlSugar;
@@ -7,6 +9,9 @@ using System.Reflection;
 using WebIServices.IBase;
 using WebIServices.ITask;
 using WebServiceClass.Helper;
+using static WebProjectTest.Common.Message;
+using MyNamespace;
+using SqlSugar.Extensions;
 
 namespace WebServiceClass.QuartzTask
 {
@@ -172,9 +177,10 @@ namespace WebServiceClass.QuartzTask
 
             // 将Job和Trigger加入调度器
             await _scheduler.ScheduleJob(job, trigger, cancellationToken);
-
+            
             // 启动调度器
             await _scheduler.Start(cancellationToken);
+            await _dal.Db.Updateable<sys_timertask>().SetColumns(a => a.IsStart == 1).Where(a => a.Id == jobId.ObjToInt()).ExecuteCommandAsync();
             Console.WriteLine($"添加一个新的定时任务，重新启动定时器");
             using (var customLogger = new LoggerHelper(moduleName: "TaskLogger"))
             {
@@ -208,6 +214,7 @@ namespace WebServiceClass.QuartzTask
                     customLogger.LogInfo("移除一个定时任务");
 
                 }
+                 await _dal.Db.Updateable<sys_timertask>().SetColumns(a => a.IsStart == 0).Where(a => a.Id == jobId.ObjToInt()).ExecuteCommandAsync();
                 return $"该定时任务已经移除";
             }else
             {
@@ -229,6 +236,7 @@ namespace WebServiceClass.QuartzTask
                 await _scheduler.PauseTrigger(triggerKey, cancellationToken);
                 Console.WriteLine($"Job with ID '{jobId}' paused.");
                 Console.WriteLine($"该{jobId}定时任务已经暂停");
+                 await _dal.Db.Updateable<sys_timertask>().SetColumns(a => a.IsStart == 2).Where(a => a.Id == jobId.ObjToInt()).ExecuteCommandAsync();
                 return $"该定时任务已经暂停";
             }
             else
@@ -261,5 +269,41 @@ namespace WebServiceClass.QuartzTask
             }
         }
 
+        public async Task<ApiPageResponse<List<sys_timertask>>> GetTimerTaskListAsync(string? jobName, int pageIndex, int pageSize, RefAsync<int> totalCount)
+        {
+            var query = _dal.Db.Queryable<sys_timertask>();
+            if (!string.IsNullOrEmpty(jobName))
+                query = query.Where(x => x.TimerName.Contains(jobName));
+            var list = await query.OrderBy(x => x.Id, OrderByType.Desc)
+                                  .ToPageListAsync(pageIndex, pageSize, totalCount);
+            return PageSuccess(list, totalCount);
+        }
+
+        public async Task<ApiResponse<bool>> AddTimerTaskAsync(sys_timertask task)
+        {
+            var result = await _dal.Db.Insertable(task).ExecuteCommandAsync() > 0;
+            return Success(result, result ? "新增成功" : "新增失败");
+        }
+
+        public async Task<ApiResponse<bool>> UpdateTimerTaskAsync(sys_timertask task)
+        {
+            var result = await _dal.Db.Updateable(task).ExecuteCommandAsync() > 0;
+            return Success(result, result ? "修改成功" : "修改失败");
+        }
+
+        public async Task<ApiResponse<bool>> DeleteTimerTaskAsync(long taskId)
+        {
+            var task = await _dal.Db.Queryable<sys_timertask>().FirstAsync(a=>a.Id == taskId);
+            if (task == null) return Error<bool>("没有该定时任务");
+            if(task.IsStart == 1)return Error<bool>("定时任务正在运行，请勿删除");
+            var result = await _dal.Db.Deleteable<sys_timertask>().Where(x => x.Id == taskId).ExecuteCommandAsync() > 0;
+            return Success(result, result ? "删除成功" : "删除失败");
+        }
+
+        public async Task<ApiResponse<sys_timertask>> GetTimerTaskDetailAsync(long taskId)
+        {
+            var entity = await _dal.Db.Queryable<sys_timertask>().FirstAsync(x => x.Id == taskId);
+            return Success(entity, entity != null ? "查询成功" : "未找到记录");
+        }
     }
 }

@@ -11,9 +11,7 @@
       <el-form-item label="厨房类型：">
         <el-select v-model="kitchenType" placeholder="全部类型" style="min-width:120px;">
           <el-option value="">全部</el-option>
-          <el-option value="热菜">热菜</el-option>
-          <el-option value="凉菜">凉菜</el-option>
-          <el-option value="饮品">饮品</el-option>
+          <el-option v-for="kitchen in kitchenList" :key="kitchen.id" :label="kitchen.name" :value="kitchen.name" />
         </el-select>
       </el-form-item>
       <el-form-item label="状态：">
@@ -69,9 +67,10 @@
 
 <script lang="ts" setup>
 import { ref,onMounted } from 'vue';
-import { ElMessage } from 'element-plus';
+import { dayjs, ElMessage } from 'element-plus';
 import { getKitchenOrderList, getOrderStatusStats, updateOrderStatus } from  '../../../../api/KitchenManage';
 import { getStoreList } from '../../../../api/login';
+import { getkitchenList } from '../../../../api/dish';
 
 interface Store { id: string; name: string; }
 interface KitchenOrder {
@@ -97,6 +96,7 @@ const storeList = ref<Store[]>([]);
 const selectedStore = ref('');
 const kitchenType = ref('');
 const status = ref('');
+const kitchenList = ref<any[]>([]);
 
 const statusMap: Record<number | string, string> = {
   1: '待制作',
@@ -122,6 +122,7 @@ onMounted(() => {
   fetchOrders();
   fetchStats();
   fetchStoreList();
+  fetchkitchenList()
 });
 
 // 查询订单
@@ -143,7 +144,7 @@ async function fetchOrders() {
       cooking_require: item.cooking_require,
       kitchen_type: item.kitchen_type,
       status: item.status,
-      create_time: item.create_time,
+      create_time: dayjs(item.create_time).format('YYYY-MM-DD HH:mm:ss'),
       finish_time: item.finish_time,
       pick_time: item.pick_time,
       overtime_warn: item.overtime_warn,
@@ -221,6 +222,17 @@ async function fetchStoreList() {
       storeList.value = storedata.map((item: any) => ({
         id: item.store_id,
         name: item.store_name
+      }));
+    }
+  });
+}
+
+async function fetchkitchenList(){
+ await getkitchenList().then((res: any) => {
+    if (res && res.response) {
+      kitchenList.value = res.response.map((item: any) => ({
+        id: item.id,
+        name: item.kitchen_name
       }));
     }
   });

@@ -199,14 +199,15 @@ namespace MyNamespace
         [Navigate(NavigateType.OneToOne, nameof(table_id), nameof(sys_restaurant_table.table_id))]//一对一 
         public sys_restaurant_table? table { get; set; }
 
-        [Navigate(NavigateType.OneToOne, nameof(operator_id), nameof(sys_staff.staff_id))]//一对一 
-        public sys_staff? Staff { get; set; }
 
         [Navigate(NavigateType.OneToMany, nameof(order_id), nameof(sys_order_item.order_id))]//一对多
         public List<sys_order_item>? orderitem { get; set; }
 
         [SugarColumn(IsIgnore = true)]
         public string TableNo { get; set; }
+
+        [Navigate(NavigateType.OneToOne, nameof(operator_id), nameof(sys_staff.staff_id))]//一对一 
+        public sys_staff? Staff { get; set; }
 
     }
 }

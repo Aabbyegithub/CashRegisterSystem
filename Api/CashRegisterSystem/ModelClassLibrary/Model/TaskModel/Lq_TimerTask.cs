@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Linq;
 using System.Text;
 
@@ -18,7 +19,8 @@ namespace MyNamespace
         /// Desc:
         /// Default:
         /// Nullable:False
-        /// </summary>           
+        /// </summary>   
+     [SugarColumn(IsPrimaryKey=true,IsIdentity=true)]
         public long Id { get; set; }
 
         /// <summary>
@@ -40,21 +42,21 @@ namespace MyNamespace
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public DateTime? CreateTime { get; set; }
+        public DateTime? CreateTime { get; set; } = DateTime.Now;
 
         /// <summary>
         /// Desc:运行开始时间
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public DateTime? BeginTime { get; set; }
+        public DateTime? BeginTime { get; set; } = DateTime.Now;
 
         /// <summary>
         /// Desc:运行结束时间
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public DateTime? EndTime { get; set; }
+        public DateTime? EndTime { get; set; } = DateTime.Now.AddYears(100);
 
         /// <summary>
         /// Desc:创建人

@@ -176,6 +176,7 @@ namespace WebServiceClass.Services.AppServices
                             await _dal.Db.Ado.RollbackTranAsync();
                             return Fail<bool>("下单失败，订单明细保存失败！");
                         }
+                        var dish = await _dal.Db.Queryable<sys_order_item>().Includes(a=>a.dish,b=>b.dish_kitchen).FirstAsync(a=>a.item_id == itemId);
                         //保存厨房订单
                         var kitchenOrders = order.Select(o => new sys_kitchen_order
                         {
@@ -184,10 +185,11 @@ namespace WebServiceClass.Services.AppServices
                             table_no = table?.table_no,
                             dish_name = o.name,
                             quantity = o.qty,
-                            kitchen_type = "热菜",
+                            kitchen_type = dish.dish.dish_kitchen.kitchen_name,
                             status = 1, // 1-待制作
                             create_time = DateTime.Now,
                             overtime_warn = 0, // 超时预警时间
+                            cooking_require = dish.specification
                         }).ToList();
                         await _dal.Db.Insertable(kitchenOrders).ExecuteCommandAsync();
                     }

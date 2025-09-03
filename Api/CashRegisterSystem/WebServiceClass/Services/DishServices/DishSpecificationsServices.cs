@@ -61,5 +61,12 @@ namespace WebServiceClass.Services.DishServices
             var result = await _dal.Db.Deleteable<sys_dish_spec>().In(specId).ExecuteCommandAsync() > 0;
             return Success(result, result ? "删除成功" : "删除失败");
         }
+
+        public async Task<ApiResponse<List<sys_dish_spec>>> GetDishSpecListAsync(int dishId)
+        {
+            var query = await _dal.Db.Queryable<sys_dish_spec>().Includes(a => a.dish).Where(a=>a.dish_id == dishId).OrderBy(x => x.spec_id, OrderByType.Desc)
+                       .ToListAsync();
+            return Success(query);
+        }
     }
 }

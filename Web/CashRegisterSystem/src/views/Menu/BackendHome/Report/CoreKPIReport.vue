@@ -87,9 +87,9 @@ const storeData = ref<any[]>([]);
 const orderData = ref<any[]>([]);
 
 const fetchDashboardData = async () => {
-  const res = await getDashboardData();
-  if (res.data && res.data.success) {
-    const d = res.data.response;
+  const res:any = await getDashboardData();
+  if (res && res.success) {
+    const d = res.response;
     turnoverRate.value = d.turnoverRate;
     avgPerPerson.value = d.avgPerPerson;
     avgPerOrder.value = d.avgPerOrder;
@@ -273,6 +273,7 @@ onUnmounted(() => {
   display: flex;
   gap: 24px;
   margin-bottom: 24px;
+  height: auto;
 }
 .dashboard-card {
   flex: 1 1 0;

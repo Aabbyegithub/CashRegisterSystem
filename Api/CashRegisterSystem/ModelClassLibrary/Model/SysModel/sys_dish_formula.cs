@@ -58,5 +58,8 @@ namespace MyNamespace
            /// </summary>           
            public decimal loss_rate {get;set;}
 
+        [Navigate(NavigateType.OneToOne, nameof(material_id), nameof(sys_raw_material.material_id))]//一对一 
+        public sys_raw_material? dish_material { get; set; }
+
     }
 }

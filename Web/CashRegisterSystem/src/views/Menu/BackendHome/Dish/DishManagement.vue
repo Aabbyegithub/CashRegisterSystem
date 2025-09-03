@@ -84,10 +84,11 @@
                 {{ kitchenList.find(cat => cat.id === scope.row.kitchen_id)?.name || '' }}
             </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="120">
+        <el-table-column label="操作" align="center" width="180">
           <template #default="scope">
             <el-button type="text" style="color: #f56c6c;" @click="handleDelete(scope.row)">删除</el-button>
             <el-button type="text" style="color: #67c23a;" @click="openEditDialog(scope.row)">编辑</el-button>
+            <el-button type="text" style="color: #165DFF;" @click="openFormulaDialog(scope.row)">配方</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -248,6 +249,73 @@
         <el-button type="primary" class="Btn-Save" @click="handleEditConfirm">确认编辑</el-button>
       </template>
     </el-dialog>
+
+    <!-- 菜品配方弹窗 -->
+    <el-dialog v-model="formulaDialogVisible" width="700" title="菜品配方配置">
+      <el-form :model="formulaForm" inline>
+        <el-form-item label="菜品">
+          <el-input v-model="formulaForm.dish_name" disabled style="width:180px;" />
+        </el-form-item>
+        <el-form-item label="规格">
+          <el-select v-model="formulaForm.spec_id" filterable clearable placeholder="全部规格" style="min-width:140px;">
+            <el-option v-for="spec in specList" :key="spec.spec_id" :label="spec.spec_name" :value="spec.spec_id" />
+          </el-select>
+        </el-form-item>
+        <el-button type="primary" @click="fetchFormulaList">查询</el-button>
+        <el-button @click="openAddFormulaDialog">新增配料</el-button>
+      </el-form>
+      <el-table :data="formulaList" style="margin-top:18px;">
+        <el-table-column prop="material_name" label="原材料" />
+        <el-table-column prop="consumption" label="消耗数量" />
+        <el-table-column prop="loss_rate" label="损耗率">
+          <template #default="scope">{{ (scope.row.loss_rate * 100).toFixed(2) }}%</template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template #default="scope">
+            <el-button @click="editFormula(scope.row)" size="small">编辑</el-button>
+            <el-button @click="deleteFormula(scope.row)" type="danger" size="small">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-dialog v-model="addFormulaDialogVisible" title="新增原材料" width="400px">
+        <el-form :model="addFormulaForm" label-width="90px">
+          <el-form-item label="原材料">
+            <el-select v-model="addFormulaForm.material_id" filterable placeholder="请选择原材料">
+              <el-option v-for="m in materialList" :key="m.material_id" :label="m.material_name" :value="m.material_id" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="消耗数量">
+            <el-input v-model="addFormulaForm.consumption" placeholder="如200g" />
+          </el-form-item>
+          <el-form-item label="损耗率">
+            <el-input-number v-model="addFormulaForm.loss_rate" :min="0" :max="1" :step="0.01" />
+          </el-form-item>
+        </el-form>
+        <template #footer>
+          <el-button @click="addFormulaDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="handleAddFormulaConfirm">确认新增</el-button>
+        </template>
+      </el-dialog>
+      <el-dialog v-model="editFormulaDialogVisible" title="编辑原材料" width="400px">
+        <el-form :model="editFormulaForm" label-width="90px">
+          <el-form-item label="原材料">
+            <el-select v-model="editFormulaForm.material_id" filterable disabled>
+              <el-option v-for="m in materialList" :key="m.material_id" :label="m.material_name" :value="m.material_id" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="消耗数量">
+            <el-input v-model="editFormulaForm.consumption" />
+          </el-form-item>
+          <el-form-item label="损耗率">
+            <el-input-number v-model="editFormulaForm.loss_rate" :min="0" :max="1" :step="0.01" />
+          </el-form-item>
+        </el-form>
+        <template #footer>
+          <el-button @click="editFormulaDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="handleEditFormulaConfirm">保存</el-button>
+        </template>
+      </el-dialog>
+    </el-dialog>
   </div>
 </template>
 
@@ -257,6 +325,9 @@ import { ElMessage } from 'element-plus';
 import { getDishList, addDish, updateDish, deleteDish, getDishCategoryList, getkitchenList } from '../../../../api/dish';
 import { getStoreList } from '../../../../api/login';
 import config from '../../../../../public/config';
+import { getFormulaList, addFormula, updateFormula, deleteFormula as apiDeleteFormula, type Formula } from '../../../../api/dishformula';
+import { getAllRawMaterialList } from '../../../../api/RawMaterial';
+import { getDishSpecList } from '../../../../api/dishspec';
 const uploadUrl = config.apiBaseUrl + '/api/Img/UpImg';
 const dishName = ref('');
 const dishList = ref<any[]>([]);
@@ -284,6 +355,15 @@ const form = ref({
   store_id: null,
   kitchen_id:''
 });
+const formulaDialogVisible = ref(false);
+const formulaForm = ref({ dish_id: '', dish_name: '', spec_id: '' });
+const specList = ref<any[]>([]);
+const formulaList = ref<any[]>([]);
+const materialList = ref<any[]>([]);
+const addFormulaDialogVisible = ref(false);
+const addFormulaForm = ref({ material_id: '', consumption: '', loss_rate: 0 });
+const editFormulaDialogVisible = ref(false);
+const editFormulaForm = ref({ formula_id: '', material_id: '', consumption: '', loss_rate: 0 });
 
 const getDishListData = async () => {
 await getDishList(dishName.value,selectedType.value,currentPage.value - 1, pageSize.value).then((res: any) => {
@@ -415,6 +495,92 @@ function beforeUpload(file: File) {
     ElMessage.error('只能上传图片文件');
   }
   return isImage;
+}
+
+function openFormulaDialog(row: any) {
+  formulaForm.value = { dish_id: row.dish_id, dish_name: row.dish_name, spec_id: '' };
+  fetchSpecList(row.dish_id);
+  fetchFormulaList();
+  formulaDialogVisible.value = true;
+}
+async function fetchSpecList(dish_id: any) {
+  const res:any = await getDishSpecList(dish_id);
+  specList.value = res?.response || [];
+}
+async function fetchFormulaList() {
+  const params = {
+    pageIndex: 1,
+    pageSize: 9999,
+    dishId: Number(formulaForm.value.dish_id),
+    specId: formulaForm.value.spec_id ? Number(formulaForm.value.spec_id) : undefined
+  };
+  const res:any = await getFormulaList(params);
+  formulaList.value = res?.response.map((item:any) => ({
+        ...item,
+        material_name: item.dish_material?.material_name  || '未知材料'
+      })) || [];
+}
+async function fetchMaterialList() {
+  const res:any = await getAllRawMaterialList();
+  materialList.value =res.response ||[];
+}
+function openAddFormulaDialog() {
+  addFormulaForm.value = { material_id: '', consumption: '', loss_rate: 0 };
+  fetchMaterialList();
+  addFormulaDialogVisible.value = true;
+}
+async function handleAddFormulaConfirm() {
+  if (!formulaForm.value.dish_id || !addFormulaForm.value.material_id) {
+    ElMessage.warning('请选择菜品和原材料');
+    return;
+  }
+  const payload: Formula = {
+    formula_id: 0,
+    dish_id: Number(formulaForm.value.dish_id),
+    spec_id: Number(formulaForm.value.spec_id) || 0,
+    material_id: Number(addFormulaForm.value.material_id),
+    consumption: Number(addFormulaForm.value.consumption),
+    loss_rate: Number(addFormulaForm.value.loss_rate)
+  };
+  const res:any = await addFormula(payload);
+  if (res?.success) {
+    ElMessage.success('新增成功');
+    addFormulaDialogVisible.value = false;
+    fetchFormulaList();
+  } else {
+    ElMessage.error(res?.message || '新增失败');
+  }
+}
+function editFormula(row: any) {
+  editFormulaForm.value = { ...row };
+  editFormulaDialogVisible.value = true;
+}
+async function handleEditFormulaConfirm() {
+  const payload: Formula = {
+    formula_id: Number(editFormulaForm.value.formula_id),
+    dish_id: Number(formulaForm.value.dish_id),
+    spec_id: Number(formulaForm.value.spec_id) || 0,
+    material_id: Number(editFormulaForm.value.material_id),
+    consumption: Number(editFormulaForm.value.consumption),
+    loss_rate: Number(editFormulaForm.value.loss_rate)
+  };
+  const res:any = await updateFormula(payload);
+  if (res?.success) {
+    ElMessage.success('保存成功');
+    editFormulaDialogVisible.value = false;
+    fetchFormulaList();
+  } else {
+    ElMessage.error(res?.data?.message || '保存失败');
+  }
+}
+async function deleteFormula(row: any) {
+  const res:any = await apiDeleteFormula(row.formula_id);
+  if (res?.success) {
+    ElMessage.success('删除成功');
+    fetchFormulaList();
+  } else {
+    ElMessage.error(res?.data?.message || '删除失败');
+  }
 }
 </script>
 

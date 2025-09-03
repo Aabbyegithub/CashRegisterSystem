@@ -69,5 +69,8 @@ namespace MyNamespace
         /// </summary>           
         public DateTime ActionTime { get; set; } = DateTime.Now;
 
+        [Navigate(NavigateType.OneToOne, nameof(UserId), nameof(sys_staff.staff_id))]//一对一 
+        public sys_staff? staff { get; set; }
+
     }
 }

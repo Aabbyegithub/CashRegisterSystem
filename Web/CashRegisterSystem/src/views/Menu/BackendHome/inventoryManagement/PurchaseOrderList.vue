@@ -164,6 +164,7 @@ import { getStoreList } from '../../../../api/login';
 import { getPurchaseOrderList, getPurchaseOrderDetail, addPurchaseOrder, cancelPurchaseOrder, ArrivedPurchaseOrder, SavePurchaseOrder } from '../../../../api/PurchaseOrder';
 import { getAllRawMaterialList } from '../../../../api/RawMaterial';
 import { dayjs, ElMessage } from 'element-plus';
+import { getAllSupplierList } from '../../../../api/supplier';
 
 const poStatusMap = {
   1: '待确认',
@@ -374,13 +375,18 @@ async function fetchStoreList() {
     }
   });
 }
+
 // TODO: fetchSupplierList 需对接供应商接口
 async function fetchSupplierList() {
-  supplierList.value = [
-    { supplier_id: 201, supplier_name: '供应商A' },
-    { supplier_id: 202, supplier_name: '供应商B' },
-    { supplier_id: 203, supplier_name: '供应商C' }
-  ];
+
+    await getAllSupplierList().then((res:any)=> {
+    if (res && res.response) {
+      supplierList.value = res.response.map((item: any) => ({
+        supplier_id: item.supplier_id,
+        supplier_name: item.supplier_name
+      }));
+    }
+  });
 }
 async function fetchMaterialList() {
   const res:any = await getAllRawMaterialList();
