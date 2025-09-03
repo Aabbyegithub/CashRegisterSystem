@@ -42,7 +42,7 @@ namespace MyNamespace
            /// Default:
            /// Nullable:False
            /// </summary>           
-           public string reservation_no {get;set;} = null!;
+           public string? reservation_no {get;set;} 
 
            /// <summary>
            /// Desc:预订人姓名

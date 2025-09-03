@@ -30,3 +30,7 @@ export function mergeTables(oldTableId: string, newTableId: number,orderId: stri
 export function getAllTables() {
   return axios.get('/api/Table/GetTableListInfo');
 }
+
+export function getStoreTables(store_id:number) {
+  return axios.get('/api/Client/GetTableListInfo',{params:{store_id}});
+}

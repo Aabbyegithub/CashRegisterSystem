@@ -108,12 +108,12 @@ namespace WebServiceClass.Services.DashboardServices
             dto.DishCombos = new List<DishComboDto>(); // 可补充实现
 
             // 服务员绩效（订单量、退菜率、评价，假设有相关字段）
-            var waiterPerf = await _dal.Db.Queryable<sys_order>()
+            var waiterPerf = await _dal.Db.Queryable<sys_order>().Includes(x=>x.Staff)
                 .Where(x =>  x.start_time >= today && x.start_time < tomorrow)
                 .GroupBy(x => x.operator_id)
                 .Select(x => new WaiterPerformanceDto
                 {
-                    Name = _dal.Db.Queryable<sys_staff>().Where(s => s.staff_id == x.operator_id).Select(s => s.name).First(),
+                    Name = x.Staff == null?"":x.Staff.name,
                     OrderCount = SqlFunc.AggregateCount(x.order_id),
                     ReturnRate = "0%", // 需结合退菜表统计
                     Rating = "5.0" // 需结合评价表统计
@@ -121,12 +121,12 @@ namespace WebServiceClass.Services.DashboardServices
             dto.WaiterPerformance = waiterPerf;
 
             // 门店对比（营业额、利润率、排名，假设有相关字段）
-            var storeCompare = await _dal.Db.Queryable<sys_order>()
+            var storeCompare = await _dal.Db.Queryable<sys_order>().Includes(x=>x.store)
                 .Where(x => x.start_time >= today && x.start_time < tomorrow)
                 .GroupBy(x => x.store_id)
                 .Select(x => new StoreCompareDto
                 {
-                    Name = _dal.Db.Queryable<sys_store>().Where(s => s.store_id == x.store_id).Select(s => s.store_name).First(),
+                    Name = x.store.store_name,
                     Revenue = SqlFunc.AggregateSum(x.total_amount),
                     ProfitRate = 0, // 可根据你的利润字段或公式计算
                     Rank = 0        // 稍后排序后赋值

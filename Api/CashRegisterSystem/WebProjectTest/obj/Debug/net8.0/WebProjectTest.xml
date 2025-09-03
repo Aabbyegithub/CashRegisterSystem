@@ -406,7 +406,7 @@
             获取会员储值记录分页列表
             </summary>
         </member>
-        <member name="M:WebProjectTest.Controllers.OrderController.OrderController.GetOrderListAsync(System.Int32,System.Int32)">
+        <member name="M:WebProjectTest.Controllers.OrderController.OrderController.GetOrderListAsync(System.Nullable{System.Int32},System.String,System.Nullable{System.Int32},System.Int32,System.Int32)">
             <summary>
             获取订单列表
             </summary>

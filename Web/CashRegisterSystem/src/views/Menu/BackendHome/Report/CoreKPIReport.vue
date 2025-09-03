@@ -71,57 +71,37 @@
 <script lang="ts" setup>
 import { ref, onMounted, nextTick, onUnmounted, onActivated } from 'vue';
 import { Chart, registerables } from 'chart.js';
+import { getDashboardData } from '../../../../api/storeapi';
 Chart.register(...registerables);
 
 // 数据（同原来）
-const turnoverRate = ref('2.3');
-const avgPerPerson = ref('85.6');
-const avgPerOrder = ref('210.4');
-const peakData = ref([
-  { period: '早餐', count: 120, rate: '12%' },
-  { period: '午餐', count: 420, rate: '42%' },
-  { period: '晚餐', count: 400, rate: '40%' },
-  { period: '其他', count: 60, rate: '6%' }
-]);
-const topDishData = ref([
-  { rank: 1, name: '肥牛火锅', sales: 320, profit: 4800 },
-  { rank: 2, name: '麻辣小龙虾', sales: 280, profit: 4200 },
-  { rank: 3, name: '烤鱼', sales: 260, profit: 3900 },
-  { rank: 4, name: '酸菜鱼', sales: 240, profit: 3600 },
-  { rank: 5, name: '香辣虾', sales: 220, profit: 3300 },
-  { rank: 6, name: '干锅牛蛙', sales: 210, profit: 3150 },
-  { rank: 7, name: '红烧肉', sales: 200, profit: 3000 },
-  { rank: 8, name: '水煮牛肉', sales: 190, profit: 2850 },
-  { rank: 9, name: '宫保鸡丁', sales: 180, profit: 2700 },
-  { rank: 10, name: '鱼香肉丝', sales: 170, profit: 2550 }
-]);
-const unsalableDishData = ref([
-  { name: '清炒西兰花', sales: 6, warning: true },
-  { name: '蒜蓉粉丝扇贝', sales: 8, warning: true },
-  { name: '糖醋里脊', sales: 12, warning: false },
-  { name: '干锅花菜', sales: 9, warning: true }
-]);
-const comboData = ref([
-  { mainDish: '火锅', comboDish: '肥牛', rate: '80%' },
-  { mainDish: '火锅', comboDish: '金针菇', rate: '65%' },
-  { mainDish: '烤鱼', comboDish: '土豆片', rate: '70%' },
-  { mainDish: '麻辣小龙虾', comboDish: '啤酒', rate: '85%' }
-]);
-const waiterData = ref([
-  { name: '张三', orderCount: 120, returnRate: '2.5%', rating: '4.8' },
-  { name: '李四', orderCount: 98, returnRate: '1.8%', rating: '4.6' },
-  { name: '王五', orderCount: 110, returnRate: '3.1%', rating: '4.7' }
-]);
-const storeData = ref([
-  { name: '旗舰店', revenue: 120000, profitRate: 18, rank: 1 },
-  { name: '分店A', revenue: 85000, profitRate: 15, rank: 2 },
-  { name: '分店B', revenue: 60000, profitRate: 12, rank: 3 }
-]);
-const orderData = ref([
-  { store: '旗舰店', online: 40000, offline: 80000, takeawayRate: 33 },
-  { store: '分店A', online: 30000, offline: 55000, takeawayRate: 35 },
-  { store: '分店B', online: 20000, offline: 40000, takeawayRate: 33 }
-]);
+const turnoverRate = ref(0);
+const avgPerPerson = ref(0);
+const avgPerOrder = ref(0);
+const peakData = ref<any[]>([]);
+const topDishData = ref<any[]>([]);
+const unsalableDishData = ref<any[]>([]);
+const comboData = ref<any[]>([]);
+const waiterData = ref<any[]>([]);
+const storeData = ref<any[]>([]);
+const orderData = ref<any[]>([]);
+
+const fetchDashboardData = async () => {
+  const res = await getDashboardData();
+  if (res.data && res.data.success) {
+    const d = res.data.response;
+    turnoverRate.value = d.turnoverRate;
+    avgPerPerson.value = d.avgPerPerson;
+    avgPerOrder.value = d.avgPerOrder;
+    peakData.value = d.peakPeriod || [];
+    topDishData.value = d.topDishes || [];
+    unsalableDishData.value = d.unsalableDishes || [];
+    comboData.value = d.comboAnalysis || [];
+    waiterData.value = d.waiterPerformance || [];
+    storeData.value = d.storeCompare || [];
+    orderData.value = d.orderChannels || [];
+  }
+};
 
 // 图表实例
 let peakChart: Chart | null = null;
@@ -143,6 +123,7 @@ function destroyCharts() {
 }
 
 onMounted(async () => {
+  await fetchDashboardData();
   await nextTick();
   destroyCharts();
   setTimeout(() => {

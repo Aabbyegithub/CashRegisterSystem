@@ -86,14 +86,14 @@
         </el-table-column>
       </el-table>
       <div class="order-footer">
-        <p style="margin-left: auto;padding-bottom: 20px;">点餐总金额: ¥{{ orderInfo.totalOrderAmount }}<span style="color: #666; font-size: 14px; margin-left: 10px;">
+        <p style="margin-left: auto;padding-bottom: 20px;">点餐总金额: ¥{{ tableInfo.totalAmount }}<span style="color: #666; font-size: 14px; margin-left: 10px;">
     (不可优惠金额 ¥{{ orderInfo.nonDiscountAmount }})
   </span></p>
         <div class="footer-actions">
-             <p style="background-color: #F5F9FB;padding: 10px;">消费项目: ¥{{ orderInfo.consumeAmount }}
-                <el-button type="info"  @click="handleItemDetail" style="background-color: #22A2B6;margin-left: 80px;">消费项目明细</el-button>
+             <p style="background-color: #F5F9FB;padding: 10px;">消费项目: ¥{{ tableInfo.totalAmount }}
+                <!-- <el-button type="info"  @click="handleItemDetail" style="background-color: #22A2B6;margin-left: 80px;">消费项目明细</el-button> -->
             </p>
-          <p style="background-color: #F5F9FB;padding: 10px;">消费金额: ¥{{ orderInfo.consumeAmount }}</p>
+          <p style="background-color: #F5F9FB;padding: 10px;">消费金额: ¥{{ tableInfo.totalAmount }}</p>
           <el-button 
             circle
             @click="handlePrint"
@@ -295,14 +295,24 @@
         </span>
       </template>
     </el-dialog>
+
+    <!-- 打印预览弹窗 -->
+    <el-dialog v-model="printPreviewVisible" width="350px" title="打印预览" :show-close="true">
+      <div id="print-preview-content" v-html="printHtml"></div>
+      <template #footer>
+        <el-button @click="printPreviewVisible = false">取消</el-button>
+        <el-button type="primary" @click="doPrint">打印</el-button>
+      </template>
+    </el-dialog>
 </template>
 
 <script lang="ts" setup>
-import { ElButton, ElTable, ElTableColumn ,ElDialog, dayjs } from 'element-plus';
+import { ElButton, ElTable, ElTableColumn ,ElDialog, dayjs, ElMessage } from 'element-plus';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { getOrderDetail } from '../../../api/OrderDetial';
+import {  getOrderDetail, OrderCheckout, redoOrder, refundOrder, refundOrderItem } from '../../../api/OrderDetial';
 import { getTableList } from '../../../api/FlatOrderManagement';
+import { changeTable, mergeTables } from '../../../api/TableOperation';
 
 const route = useRoute();
 const router = useRouter();
@@ -319,11 +329,6 @@ const payTypes = ref([
   { label: '微信', value: 'wechat' },
   { label: '支付宝', value: 'alipay' },
   { label: '现金', value: 'cash' },
-  { label: '储蓄卡', value: 'debitCard' },
-  { label: '信用卡', value: 'creditCard' },
-  { label: '付款码', value: 'paymentCode' },
-  { label: '三方付', value: 'thirdPay' },
-  { label: '其他', value: 'other' },
 ]);
 const payErase=ref([
   { label: '不抹零', value: 'noZero' },
@@ -352,6 +357,9 @@ const availableTables = ref<any[]>([]);
 // 选中的目标桌台
 const selectedTargetTable = ref('');
 
+// 打印预览相关
+const printPreviewVisible = ref(false);
+const printHtml = ref('');
 
 // 待支付金额（从 tableInfo 取，也可根据实际逻辑调整）
 const toPayAmount = ref(0); 
@@ -375,18 +383,59 @@ const handlePay = () => {
   // 收款逻辑
 };
 
-const handleRefund = () => {
+const handleRefund = async () => {
   console.log('点击订单退款');
-  // 订单退款逻辑
+  await refundOrder(orderid.value as string).then((res:any)=>{
+    if(res.success){
+      console.log('退款接口返回:', res);
+      ElMessage.success('订单退款成功');
+      router.push('/Layout/Orderhome');
+    } else {
+      ElMessage.error(res.message || '订单退款失败，请稍后重试');
+      return;
+    }
+  }).catch((error)=>{
+    ElMessage.error('订单退款失败，请稍后重试');
+    console.error(error);
+    return;
+  })
 };
 
-const handleRedo = () => {
+const handleRedo = async () => {
   console.log('点击重做');
   // 重做逻辑
+  await redoOrder(orderid.value as string).then((res:any)=>{
+    if(res.success){
+      console.log('重做接口返回:', res);
+      ElMessage.success('订单重做成功');
+      router.push('/Layout/Orderhome');
+    } else {
+      ElMessage.error(res.message || '订单重做失败，请稍后重试');
+      return;
+    }
+  }).catch((error)=>{
+    ElMessage.error('订单重做失败，请稍后重试');
+    console.error(error);
+    return;
+  })
 };
 
-const handleItemRefund = (row: any) => {
+const handleItemRefund = async (row: any) => {
   console.log('点击品项退款', row);
+  await refundOrderItem(row.id).then((res:any)=>{
+    if(res.success){
+      console.log('品项退款接口返回:', res);
+      ElMessage.success('品项退款成功');
+      OrderDetail(); // 刷新订单详情
+    } else {
+      ElMessage.error(res.message || '品项退款失败，请稍后重试');
+      return;
+    }
+  }).catch((error)=>{
+    ElMessage.error('品项退款失败，请稍后重试');
+    console.error(error);
+    return;
+  })
   // 品项退款逻辑
 };
 
@@ -396,8 +445,75 @@ const handleItemDetail = () => {
 };
 
 const handlePrint = () => {
-  console.log('点击打印');
-  // 打印逻辑，可结合打印库如 print-js 等实现
+  const order = orderInfo.value;
+  const table = tableInfo.value;
+  console.log(111,table)
+  const shopName = "九天阁餐厅";
+  const tableNumber = table.tableNumber || "-";
+  const tableName = table.tableName || "-";
+  const partySize = table.table_capacity || "-";
+  const orderNumber = order.orderNumber || "-";
+  const createTime = order.createTime || "-";
+  const items = order.items || [];
+  const receivedAmount = table.receivedAmount || 0;
+
+  printHtml.value = `
+    <div style="width:320px;font-family:'SimHei',Arial;margin:0 auto;">
+      <div style="text-align:center;font-size:20px;font-weight:bold;margin-bottom:8px;">${shopName}</div>
+      <hr style="border:none;border-top:1px dashed #333;margin:8px 0;">
+      <div style="font-size:14px;margin-bottom:2px;">桌号：${tableNumber}</div>
+      <div style="font-size:14px;margin-bottom:2px;">人数：${partySize}</div>
+      <div style="font-size:14px;margin-bottom:2px;">单号：${orderNumber}</div>
+      <div style="font-size:14px;margin-bottom:2px;">创建时间：${createTime}</div>
+      <hr style="border:none;border-top:1px dashed #333;margin:8px 0;">
+      <table style="width:100%;font-size:14px;">
+        <thead>
+          <tr>
+            <th style="text-align:left;">菜品</th>
+            <th style="text-align:center;">数量</th>
+            <th style="text-align:right;">价格</th>
+            <th style="text-align:right;">总价</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${items.map((item:any, idx:number) => `
+            <tr>
+              <td style="text-align:left;">${idx+1}. ${item.name}</td>
+              <td style="text-align:center;">${item.quantity}${item.unit || ''}</td>
+              <td style="text-align:right;">${item.price}</td>
+              <td style="text-align:right;">${item.amount}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+      <hr style="border:none;border-top:1px dashed #333;margin:8px 0;">
+      <div style="font-size:16px;font-weight:bold;text-align:left;margin-top:8px;">实收金额：${receivedAmount}</div>
+    </div>
+  `;
+  printPreviewVisible.value = true;
+};
+
+// 真正打印
+const doPrint = () => {
+  const printContent = document.getElementById('print-preview-content');
+  if (!printContent) return;
+  const printWindow = window.open('', '', 'width=350,height=600');
+  printWindow!.document.write(`
+    <html>
+      <head>
+        <title>打印小票</title>
+        <style>
+          @media print { body { margin:0; } }
+        </style>
+      </head>
+      <body>${printContent.innerHTML}</body>
+    </html>
+  `);
+  printWindow!.document.close();
+  printWindow!.focus();
+  printWindow!.print();
+  printWindow!.close();
+  printPreviewVisible.value = false;
 };
 
 const handleSelectionChange = (val:any) => {
@@ -442,11 +558,28 @@ const handlePayDialogClose = () => {
 };
 
 // 确认支付事件
-const handlePayConfirm = () => {
+const handlePayConfirm = async () => {
   console.log('选中支付方式：', selectedPayType.value);
   console.log('支付金额：', toPayAmount.value);
   // 这里可对接实际支付接口
   payDialogVisible.value = false;
+
+  await OrderCheckout(orderid.value as string,selectedPayType.value).then((res:any)=>{
+    if(res.success){
+      orderInfo.value.status='已支付'
+      console.log('支付接口返回:', res);
+      ElMessage.success('支付成功');
+    } else {
+      ElMessage.error(res.message || '支付失败，请稍后重试');
+      return;
+    }
+
+    handleReturn();
+  }).catch((error)=>{
+    ElMessage.error('支付失败，请稍后重试');
+    console.error(error);
+    return;
+  })
 };
 
 
@@ -466,7 +599,7 @@ const handleMergeDialogClose = () => {
 };
 
 // 确认并台逻辑（可根据实际需求调用接口等）
-const confirmMerge = () => {
+const confirmMerge = async () => {
   console.log('选中的并台桌台：', selectedMergeTables.value);
   // 这里可编写调用接口合并桌台的逻辑，比如：
   // api.mergeTables(selectedMergeTables.value).then(() => {
@@ -474,6 +607,8 @@ const confirmMerge = () => {
   // }).catch(() => {
   //   // 失败处理
   // });
+  await mergeTables(currentTable.value.tableId, Number(selectedMergeTables.value) ?? 0,orderid.value as string);
+  ElMessage.success('并桌成功');
   mergeDialogVisible.value = false;
 };
 
@@ -494,19 +629,21 @@ const handleChangeTableDialogClose = () => {
   changeTableDialogVisible.value = false;
 };
 
-const confirmChangeTable = () => {
+const confirmChangeTable = async () => {
   if (!selectedTargetTable.value) return;
   
   const targetTable = availableTables.value.find(
     item => item.value === selectedTargetTable.value
   );
-  
-  console.log(`换桌操作：从${currentTable.value.label}换到${targetTable?.label}`);
-  // 实际项目中调用换桌接口
-  // api.changeTable(currentTable.value, selectedTargetTable.value).then(() => {
-  //   // 换桌成功处理
-  // });
-  
+
+  await changeTable(currentTable.value.tableId,Number(selectedTargetTable.value) ?? 0,orderid.value as string).then((res:any)=>{
+    console.log('换桌接口返回:', res);
+  }).catch((error)=>{
+    ElMessage.error('换桌失败，请稍后重试');
+    console.error(error);
+    return;
+  });
+  ElMessage.success('换桌成功');
   handleChangeTableDialogClose();
 };
 
@@ -514,6 +651,7 @@ onMounted(async () => {
   console.log('订单ID:', orderid.value);
   await OrderDetail();
   await gettableList();
+  inputAmount.value = '￥' + tableInfo.value.totalAmount.toFixed(2);
 });
 
 async function OrderDetail() {

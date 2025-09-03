@@ -23,3 +23,7 @@ export function deleteStoreApi( storeIds:number[] ) {
 export function updateStoreStatusApi(storeId:string,status:number) {
     return axios.get('/api/Store/UpdateStoreStatus',{ params: { storeId, status } })
 }
+
+export function getDashboardData() {
+  return axios.get('/api/CoreKPIReport/GetDashboardData');
+}

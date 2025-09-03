@@ -1,4 +1,5 @@
-﻿using ModelClassLibrary.Model.Dto.OrderDto;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using ModelClassLibrary.Model.Dto.OrderDto;
 using MyNamespace;
 using SqlSugar;
 using System;
@@ -58,10 +59,13 @@ namespace WebServiceClass.Services.OrderServices
                  .ToPageListAsync(page, size, count);
         }
 
-        public Task<List<sys_order>> GetOrderListAsync(int orgId, int page, int size, RefAsync<int> count)
+        public Task<List<sys_order>> GetOrderListAsync(int? store_Id, string? OrdderNo, int? tableId, int orgId, int page, int size, RefAsync<int> count)
         {
-            return _dal.Db.Queryable<sys_order>()
+            return _dal.Db.Queryable<sys_order>().Includes(a =>a.orderitem,b=>b.dish).Includes(a=>a.table).Includes(a=>a.Staff)
                 .WhereIF(orgId != 1, x => x.store_id == orgId)
+                .WhereIF(store_Id.HasValue, x => x.store_id == store_Id)
+                .WhereIF(!string.IsNullOrEmpty(OrdderNo), x => x.order_no.Contains(OrdderNo))
+                .WhereIF(tableId.HasValue, x => x.table_id == tableId)
                 .OrderBy(x => x.created_at, OrderByType.Desc)
                 .ToPageListAsync(page, size, count);
         }
@@ -96,10 +100,11 @@ namespace WebServiceClass.Services.OrderServices
             result.zeroAmount =(decimal)0.00;
             result.orderNumber = order.order_no;
             result.createTime = order.start_time;
+            result.table_capacity = order.table_capacity;
             result.items = res.Select(a => new detail
             {
                 orderItemId = (int)a.item_id,
-                name = $"{a.dish?.dish_name} ({a.specification})*{a.quantity}",
+                name =!string.IsNullOrEmpty(a.specification)? $"{a.dish?.dish_name} ({a.specification})*{a.quantity}" : $"{a.dish?.dish_name} *{a.quantity}",
                 price = a.unit_price,
                 quantity = a.quantity,
                 amount = a.total_price,
@@ -372,6 +377,49 @@ namespace WebServiceClass.Services.OrderServices
         public Task<ApiResponse<bool>> OrderCheckout(int orderId, int? CouponsId, string type, int userId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<ApiResponse<bool>> ReserveOrderAsync(sys_reservation orderreservation,int userId)
+        {
+            try
+            {
+                await _dal.Db.Ado.BeginTranAsync();
+                orderreservation.reservation_no = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+                var ReserveId = await _dal.Db.Insertable(orderreservation).ExecuteReturnBigIdentityAsync();
+                var table = await _dal.Db.Queryable<sys_restaurant_table>()
+                        .Where(a => a.table_id == orderreservation.table_id)
+                        .FirstAsync();
+                var orderId = await _dal.Db.Insertable(new sys_order
+                {
+                    store_id = orderreservation.store_id,
+                    table_id = orderreservation.table_id,
+                    order_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(1000, 9999),
+                    order_type = 1, // 堂食
+                    source_type = 3, // 下单方式
+                    status = 6,// 已下单
+                    discount_amount = 0, // 优惠金额
+                    service_fee = 0, // 服务费
+                    total_amount = 0,
+                    payable_amount = 0,
+                    table_fee = table.min_consumption, // 桌台费
+                    start_time = DateTime.Now,
+                    is_split = 0, // 是否分单
+                    operator_id = userId, // 操作员ID  0默认用户
+                    table_capacity = orderreservation.reservation_capacity
+                }).ExecuteReturnBigIdentityAsync();
+
+                await _dal.Db.Updateable<sys_restaurant_table>().SetColumns(a => new sys_restaurant_table { status = 3, order_id = (int)orderId })
+                     .Where(a => a.table_id == orderreservation.table_id).ExecuteCommandAsync();
+
+                await _dal.Db.Ado.CommitTranAsync();
+                return Success(true);
+            }
+            catch (Exception)
+            {
+                await _dal.Db.Ado.RollbackTranAsync();
+                return Success(false);
+            }
+
         }
     }
 }

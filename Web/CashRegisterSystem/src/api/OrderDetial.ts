@@ -25,26 +25,26 @@ export function mergeTables(orderId: string, tableIds: string[]) {
 }
 
 //订单退款
-export function refundOrder(orderId: string, amount: number, reason: string) {
-  return axios.post('/api/Order/RefundOrder', {
-    orderId,
-    amount,
-    reason
+export function refundOrder(orderId: string) {
+  return axios.post('/api/Order/OrderRefund', {
+    orderId
   });
 }
 
 //订单子项退款
-export function refundOrderItem(orderItemId: string, amount: number, reason: string) {
-  return axios.post('/api/Order/RefundOrderItem', {
-    orderItemId,
-    amount,
-    reason
+export function refundOrderItem(orderItemId: string) {
+  return axios.post('/api/Order/OrderItemRefund', {
+    orderItemId
   });
 }
 
 //订单重做
 export function redoOrder(orderId: string) {
-  return axios.post('/api/Order/RedoOrder', {
+  return axios.post('/api/Order/OrderRedo', {
     orderId
   });
+}
+
+export function OrderCheckout(orderId: string,type:string,CouponsId:number=0) {
+  return axios.post('/api/Client/OrderCheckout', {orderId,type,CouponsId});
 }

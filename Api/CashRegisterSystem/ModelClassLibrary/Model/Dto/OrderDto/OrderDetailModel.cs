@@ -21,6 +21,7 @@ namespace ModelClassLibrary.Model.Dto.OrderDto
         public decimal totalOrderAmount { get; set; }
         public decimal nonDiscountAmount { get; set; }
         public decimal consumeAmount { get; set; }
+        public int? table_capacity { get; set; }
 
         public DateTime createTime { get; set; }
 

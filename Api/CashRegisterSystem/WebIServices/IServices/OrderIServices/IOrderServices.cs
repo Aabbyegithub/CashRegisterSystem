@@ -16,7 +16,7 @@ namespace WebIServices.IServices.OrderIServices
         /// <summary>
         /// 获取订单列表
         /// </summary>
-        Task<List<sys_order>> GetOrderListAsync(int orgId, int page, int size, RefAsync<int> count);
+        Task<List<sys_order>> GetOrderListAsync(int? store_Id, string? OrdderNo, int? tableId, int orgId, int page, int size, RefAsync<int> count);
 
         /// <summary>
         ///获取未结算的订单
@@ -99,5 +99,12 @@ namespace WebIServices.IServices.OrderIServices
         /// <param name="CouponsId"></param>
         /// <returns></returns>
         Task<ApiResponse<bool>> OrderCheckout(int orderId, int? CouponsId, string type,int userId);
+
+        /// <summary>
+        /// 预定
+        /// </summary>
+        /// <param name="orderreservation"></param>
+        /// <returns></returns>
+        Task<ApiResponse<bool>> ReserveOrderAsync(sys_reservation orderreservation,int userId);
     }
 }

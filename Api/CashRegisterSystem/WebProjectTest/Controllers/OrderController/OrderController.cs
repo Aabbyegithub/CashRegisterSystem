@@ -8,6 +8,7 @@ using WebIServices.IBase;
 using WebIServices.IServices.OrderIServices;
 using WebProjectTest.Common.Filter;
 using WebProjectTest.Controllers.SystemController;
+using WebServiceClass.Services.OrderServices;
 using static ModelClassLibrary.Model.CommonEnmFixts;
 using static WebProjectTest.Common.Message;
 
@@ -23,12 +24,12 @@ namespace WebProjectTest.Controllers.OrderController
         /// </summary>
         [HttpGet]
         [OperationLogFilter("订单管理", "查询订单列表", ActionType.Search)]
-        public async Task<ApiPageResponse<List<sys_order>>> GetOrderListAsync(int page = 0, int size = 10)
+        public async Task<ApiPageResponse<List<sys_order>>> GetOrderListAsync(int?store_Id,string?OrdderNo,int? tableId, int page = 0, int size = 10)
         {
             RefAsync<int> count = 0;
             try
             {
-                var res = await _OrderServices.GetOrderListAsync(OrgId, page, size, count);
+                var res = await _OrderServices.GetOrderListAsync(store_Id,OrdderNo,tableId, OrgId, page, size, count);
                 if (res != null)
                 {
                     return PageSuccess(res, count);
@@ -161,6 +162,11 @@ namespace WebProjectTest.Controllers.OrderController
             return await _OrderServices.OrderCheckout(orderId, CouponsId, type, UserId);
         }
 
-
+        [HttpPost]
+        [OperationLogFilter("订单管理", "新增预定", ActionType.Add)]
+        public async Task<ApiResponse<bool>> ReserveOrderAsync([FromBody] sys_reservation orderreservation)
+        {
+            return await _OrderServices.ReserveOrderAsync(orderreservation,UserId);
+        }
     }
 }

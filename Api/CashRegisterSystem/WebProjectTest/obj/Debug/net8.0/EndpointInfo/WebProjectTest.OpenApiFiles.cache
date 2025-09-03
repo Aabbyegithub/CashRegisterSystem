@@ -1,3 +1,7 @@
+WebProjectTest_InventoryAlert.json
+WebProjectTest_InventoryLoss.json
+WebProjectTest_PurchaseOrder.json
+WebProjectTest_RawMaterials.json
 WebProjectTest_Coupon.json
 WebProjectTest_Promotion.json
 WebProjectTest_Task.json
@@ -16,10 +20,6 @@ WebProjectTest_Member.json
 WebProjectTest_KitchenDashboard.json
 WebProjectTest_KitchenManage.json
 WebProjectTest_ServingFood.json
-WebProjectTest_InventoryAlert.json
-WebProjectTest_Loss.json
-WebProjectTest_PurchaseOrder.json
-WebProjectTest_RawMaterials.json
 WebProjectTest_Dishcategory.json
 WebProjectTest_Dish.json
 WebProjectTest_DishSpecifications.json
