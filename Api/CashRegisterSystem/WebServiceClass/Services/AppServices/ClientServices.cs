@@ -265,7 +265,7 @@ namespace WebServiceClass.Services.AppServices
             return Success(result, "获取订单明细成功");
         }
 
-        public async Task<ApiResponse<bool>> OrderCheckout(int orderId, int? CouponsId, string type,string Code,string url)
+        public async Task<ApiResponse<bool>> OrderCheckout(int orderId, int? CouponsId, string type,string Code,string url, int userId)
         {
             try
             {
@@ -305,10 +305,10 @@ namespace WebServiceClass.Services.AppServices
                         if (order1.table_fee != 0 && order1.payable_amount < order1.table_fee)
                             service_fee = order1.payable_amount * (decimal)0.1;
                         await _dal.Db.Updateable<sys_order>()
-                        .SetColumns(a => new sys_order { status = 3, pay_time = DateTime.Now, close_time = DateTime.Now, paymeth = "微信支付",payable_amount = a.payable_amount - coupon.value+ service_fee,service_fee = service_fee})
+                        .SetColumns(a => new sys_order { status = 3, pay_time = DateTime.Now, close_time = DateTime.Now, paymeth = "微信支付",payable_amount = a.payable_amount - coupon.value+ service_fee,service_fee = service_fee,operator_id = userId})
                         .Where(a => a.order_id == orderId).ExecuteCommandAsync();
                         await _dal.Db.Updateable<sys_restaurant_table>()
-                        .SetColumns(a => new sys_restaurant_table { status = 4, order_id = null }).Where(a => a.table_id == orderId).ExecuteCommandAsync();
+                        .SetColumns(a => new sys_restaurant_table { status = 4, order_id = null }).Where(a => a.table_id == order1.table_id).ExecuteCommandAsync();
                         var order = await _dal.Db.Queryable<sys_order>().Includes(a => a.store).FirstAsync(a => a.order_id == orderId);
 
                         var res = await WeChatPayHelper.CallCustomerUnifiedRechargeApi(url, "餐饮收银", "餐饮收银订单支付", order?.order_no, order.payable_amount, Code, order.store?.store_code, 0);

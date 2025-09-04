@@ -46,5 +46,5 @@ export function redoOrder(orderId: string) {
 }
 
 export function OrderCheckout(orderId: string,type:string,CouponsId:number=0) {
-  return axios.post('/api/Client/OrderCheckout', {orderId,type,CouponsId});
+  return axios.get('/api/Order/OrderCheckout',{params:{orderId,type,CouponsId}} );
 }

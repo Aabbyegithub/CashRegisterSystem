@@ -103,11 +103,11 @@
           label="桌台描述"
           align="center"
         />
-        <el-table-column
+        <!-- <el-table-column
           prop="lastUseTime"
           label="最后使用时间"
           align="center"
-        />
+        /> -->
         <el-table-column
           label="操作"
           align="center"

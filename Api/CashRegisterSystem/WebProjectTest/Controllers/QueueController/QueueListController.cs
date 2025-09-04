@@ -23,7 +23,7 @@ namespace WebProjectTest.Controllers.QueueController
         /// 排队分页列表
         /// </summary>
         [HttpGet]
-        [OperationLogFilter("排队叫号", "排队列表查询", ActionType.Search)]
+        [OperationLogFilter("排队叫号>排队列表", "排队列表查询", ActionType.Search)]
         public async Task<ApiPageResponse<List<sys_queue>>> GetQueuePageList(int? storeId, int? status, int? partySize, string? keyword, int page = 1, int size = 10)
         {
             RefAsync<int> count = 0;
@@ -46,7 +46,7 @@ namespace WebProjectTest.Controllers.QueueController
         /// 排队分页列表
         /// </summary>
         [HttpGet]
-        [OperationLogFilter("排队叫号", "排队列表查询", ActionType.Search)]
+        [OperationLogFilter("排队叫号>排队列表", "排队列表查询", ActionType.Search)]
         public async Task<ApiResponse<List<sys_queue>>> GetQueueList()
         {
             RefAsync<int> count = 0;
@@ -69,7 +69,7 @@ namespace WebProjectTest.Controllers.QueueController
         /// 新增排队
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("排队叫号", "新增排队", ActionType.Add)]
+        [OperationLogFilter("排队叫号>排队列表", "新增排队", ActionType.Add)]
         public async Task<ApiResponse<bool>> AddQueueAsync([FromBody] sys_queue queue)
         {
             return await _queueServices.AddQueueAsync(queue,OrgId);
@@ -79,7 +79,7 @@ namespace WebProjectTest.Controllers.QueueController
         /// 叫号
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("排队叫号", "叫号", ActionType.Edit)]
+        [OperationLogFilter("排队叫号>排队列表", "叫号", ActionType.Edit)]
         public async Task<ApiResponse<bool>> CallQueueAsync(long queueId)
         {
             return await _queueServices.CallQueueAsync(queueId);
@@ -89,7 +89,7 @@ namespace WebProjectTest.Controllers.QueueController
         /// 过号
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("排队叫号", "过号", ActionType.Edit)]
+        [OperationLogFilter("排队叫号>排队列表", "过号", ActionType.Edit)]
         public async Task<ApiResponse<bool>> SkipQueueAsync(long queueId)
         {
             return await _queueServices.SkipQueueAsync(queueId);
@@ -99,7 +99,7 @@ namespace WebProjectTest.Controllers.QueueController
         /// 入座
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("排队叫号", "过号", ActionType.Edit)]
+        [OperationLogFilter("排队叫号>排队列表", "过号", ActionType.Edit)]
         public async Task<ApiResponse<bool>> finishQueueAsync(long queueId)
         {
             return await _queueServices.finishQueueAsync(queueId);
@@ -109,7 +109,7 @@ namespace WebProjectTest.Controllers.QueueController
         /// 取消排队
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("排队叫号", "取消排队", ActionType.Delete)]
+        [OperationLogFilter("排队叫号>排队列表", "取消排队", ActionType.Delete)]
         public async Task<ApiResponse<bool>> CancelQueueAsync(long queueId)
         {
             return await _queueServices.CancelQueueAsync(queueId);
@@ -119,7 +119,7 @@ namespace WebProjectTest.Controllers.QueueController
         /// 安排桌台
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("排队叫号", "安排桌台", ActionType.Edit)]
+        [OperationLogFilter("排队叫号>排队列表", "安排桌台", ActionType.Edit)]
         public async Task<ApiResponse<bool>> AssignTableAsync(long queueId, long tableId)
         {
             return await _queueServices.AssignTableAsync(queueId, tableId);
@@ -129,7 +129,7 @@ namespace WebProjectTest.Controllers.QueueController
         /// 排队统计
         /// </summary>
         [HttpGet]
-        [OperationLogFilter("排队叫号", "排队统计", ActionType.Search)]
+        [OperationLogFilter("排队叫号>排队列表", "排队统计", ActionType.Search)]
         public async Task<ApiResponse<QueueStatsDto>> GetQueueStats(int? storeId)
         {
             var stats = await _queueServices.GetQueueStatsAsync(storeId);
@@ -140,7 +140,7 @@ namespace WebProjectTest.Controllers.QueueController
         /// 排队统计
         /// </summary>
         [HttpGet]
-        [OperationLogFilter("排队叫号", "排队统计", ActionType.Search)]
+        [OperationLogFilter("排队叫号>排队列表", "排队统计", ActionType.Search)]
         public async Task<ApiResponse<QueueStatsDto>> GetAppQueueStats()
         {
             var stats = await _queueServices.GetQueueStatsAsync(OrgId);

@@ -121,9 +121,12 @@ function destroyCharts() {
   if (storeChart) { storeChart.destroy(); storeChart = null; }
   if (orderChart) { orderChart.destroy(); orderChart = null; }
 }
-
+let refreshTimer: number | undefined;
 onMounted(async () => {
   await fetchDashboardData();
+  refreshTimer = window.setInterval(() => {
+    fetchDashboardData();
+  }, 30000);
   await nextTick();
   destroyCharts();
   setTimeout(() => {
@@ -250,6 +253,7 @@ onActivated(() => {
 
 onUnmounted(() => {
   destroyCharts();
+  if (refreshTimer) clearInterval(refreshTimer);
 });
 </script>
 

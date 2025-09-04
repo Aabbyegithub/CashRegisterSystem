@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WebTaskClass")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bf3ead54ab4b6bab0dc79749e75a7b5ba3859146")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c709466f4c1422a178127582730fdaf3ddade548")]
 [assembly: System.Reflection.AssemblyProductAttribute("WebTaskClass")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WebTaskClass")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

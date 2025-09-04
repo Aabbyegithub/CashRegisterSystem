@@ -20,3 +20,7 @@ export function getAllOrderList(params: {
 export function reserveOrder(data: any) {
   return axios.post('/api/Order/ReserveOrder', data);
 }
+/// 挂单
+export function handOrder(order: number) {
+  return axios.get('/api/Order/HangOrder', { params: { order } });
+}

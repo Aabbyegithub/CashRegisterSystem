@@ -23,7 +23,7 @@ namespace WebProjectTest.Controllers.KitchenController
         /// 获取厨房订单列表
         /// </summary>
         [HttpGet]
-        [OperationLogFilter("系统设置>厨房管理", "厨房列表查询", ActionType.Search)]
+        [OperationLogFilter("厨房管理>出餐记录表>", "出餐记录表查询", ActionType.Search)]
         public async Task<ApiPageResponse<List<sys_kitchen_order>>> GetKitchenOrderList(int? storeId, string? kitchenType, int? status, string? StartTime, string? EndTime, int page = 1, int size = 10)
         {
             RefAsync<int> count = 0;

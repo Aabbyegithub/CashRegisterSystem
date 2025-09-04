@@ -21,7 +21,7 @@ namespace WebProjectTest.Controllers.MemberController
         /// 获取会员分页列表
         /// </summary>
         [HttpGet]
-        [OperationLogFilter("会员管理", "会员列表查询", ActionType.Search)]
+        [OperationLogFilter("会员管理>会员列表", "会员列表查询", ActionType.Search)]
         public async Task<ApiPageResponse<List<sys_member>>> GetMemberPageList(string? phone, string? name, int? status, string? startDate, string? endDate, int page = 1, int size = 10)
         {
             RefAsync<int> count = 0;
@@ -44,7 +44,7 @@ namespace WebProjectTest.Controllers.MemberController
         /// 新增会员
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("会员管理", "新增会员", ActionType.Add)]
+        [OperationLogFilter("会员管理>会员列表", "新增会员", ActionType.Add)]
         public async Task<ApiResponse<bool>> AddMemberAsync([FromBody] sys_member member)
         {
             return await _memberServices.AddMemberAsync(member);
@@ -54,7 +54,7 @@ namespace WebProjectTest.Controllers.MemberController
         /// 修改会员信息
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("会员管理", "修改会员", ActionType.Edit)]
+        [OperationLogFilter("会员管理>会员列表", "修改会员", ActionType.Edit)]
         public async Task<ApiResponse<bool>> UpdateMemberAsync([FromBody] sys_member member)
         {
             return await _memberServices.UpdateMemberAsync(member);
@@ -64,7 +64,7 @@ namespace WebProjectTest.Controllers.MemberController
         /// 切换会员状态（冻结/解冻）
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("会员管理", "切换会员状态", ActionType.Edit)]
+        [OperationLogFilter("会员管理>会员列表", "切换会员状态", ActionType.Edit)]
         public async Task<ApiResponse<bool>> ToggleStatusAsync(long memberId, int status)
         {
             return await _memberServices.ToggleStatusAsync(memberId, status);
@@ -74,7 +74,7 @@ namespace WebProjectTest.Controllers.MemberController
         /// 新增会员储值记录
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("会员管理", "会员储值", ActionType.Add)]
+        [OperationLogFilter("会员管理>会员列表", "会员储值", ActionType.Add)]
         public async Task<ApiResponse<bool>> AddBalanceAsync([FromBody] sys_member_balance balance)
         {
             return await _memberServices.AddBalanceAsync(balance);
@@ -84,7 +84,7 @@ namespace WebProjectTest.Controllers.MemberController
         /// 获取会员储值记录分页列表
         /// </summary>
         [HttpGet]
-        [OperationLogFilter("会员管理", "会员储值记录查询", ActionType.Search)]
+        [OperationLogFilter("会员管理>会员列表", "会员储值记录查询", ActionType.Search)]
         public async Task<ApiPageResponse<List<sys_member_balance>>> GetBalanceRecordsAsync(long memberId, int page = 1, int size = 10)
         {
             RefAsync<int> count = 0;

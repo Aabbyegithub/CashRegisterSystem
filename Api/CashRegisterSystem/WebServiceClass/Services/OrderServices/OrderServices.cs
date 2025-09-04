@@ -52,7 +52,7 @@ namespace WebServiceClass.Services.OrderServices
         {
             return _dal.Db.Queryable<sys_order>().Includes(x=>x.table)
                  .WhereIF(orgId != 1, x => x.store_id == orgId)
-                 .Where(x => x.status == 1|| x.status == 2)
+                 .Where(x => x.status == 1|| x.status == 2 || x.status == 5)
                  .WhereIF(tableId.HasValue,x=>x.table_id == tableId)
                  .WhereIF(!string.IsNullOrEmpty(orderno),x=>x.order_no.Contains(orderno))
                  .OrderBy(x => x.created_at, OrderByType.Desc)
@@ -420,6 +420,12 @@ namespace WebServiceClass.Services.OrderServices
                 return Success(false);
             }
 
+        }
+
+        public async Task<ApiResponse<bool>> HangOrderAsync(int order,int userId)
+        {
+            await _dal.Db.Updateable<sys_order>().SetColumns(a =>new sys_order { status = 5,operator_id = userId}).Where(a => a.order_id == order).ExecuteCommandAsync();
+            return Success(true);
         }
     }
 }

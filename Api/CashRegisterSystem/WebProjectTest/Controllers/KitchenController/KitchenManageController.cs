@@ -29,7 +29,7 @@ namespace WebProjectTest.Controllers.KitchenController
         /// <param name="size"></param>
         /// <returns></returns>
         [HttpGet]
-        [OperationLogFilter("系统设置>厨房管理", "厨房列表查询", ActionType.Search)]
+        [OperationLogFilter("厨房管理>厨房管理", "厨房列表查询", ActionType.Search)]
         public async Task<ApiPageResponse<List<sys_kitchen>>> GetKitchenListAsync(int? storeId, string? kitchenType, int page = 1, int size = 10)
         {
             RefAsync<int> count = 0;
@@ -62,7 +62,7 @@ namespace WebProjectTest.Controllers.KitchenController
         /// 添加厨房
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("系统设置>厨房管理", "新增厨房", ActionType.Add)]
+        [OperationLogFilter("厨房管理>厨房管理", "新增厨房", ActionType.Add)]
         public async Task<ApiResponse<bool>> AddKitchenAsync([FromBody] sys_kitchen kitchen)
         {
             return await _kichenManageIServices.AddkitchenAsync(kitchen);
@@ -72,7 +72,7 @@ namespace WebProjectTest.Controllers.KitchenController
         /// 删除厨房
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("系统设置>厨房管理", "删除厨房", ActionType.Delete)]
+        [OperationLogFilter("厨房管理>厨房管理", "删除厨房", ActionType.Delete)]
         public async Task<ApiResponse<bool>> DeleteKitchenAsync([FromBody] int kitchenId)
         {
             return await _kichenManageIServices.DeleteKitchenAsync(kitchenId);
@@ -82,7 +82,7 @@ namespace WebProjectTest.Controllers.KitchenController
         /// 修改厨房
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("系统设置>厨房管理", "修改厨房", ActionType.Edit)]
+        [OperationLogFilter("厨房管理>厨房管理", "修改厨房", ActionType.Edit)]
         public async Task<ApiResponse<bool>> UpdateKitchenAsync([FromBody] sys_kitchen kitchen)
         {
             return await _kichenManageIServices.UpdateKitchenAsync(kitchen);

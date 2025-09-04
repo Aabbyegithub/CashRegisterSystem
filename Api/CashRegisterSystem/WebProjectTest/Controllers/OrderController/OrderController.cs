@@ -5,7 +5,9 @@ using ModelClassLibrary.Model.Dto.OrderDto;
 using MyNamespace;
 using SqlSugar;
 using WebIServices.IBase;
+using WebIServices.IServices.ClientIServices;
 using WebIServices.IServices.OrderIServices;
+using WebProjectTest.Common;
 using WebProjectTest.Common.Filter;
 using WebProjectTest.Controllers.SystemController;
 using WebServiceClass.Services.OrderServices;
@@ -17,13 +19,13 @@ namespace WebProjectTest.Controllers.OrderController
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize]
-    public class OrderController(IRedisCacheService redisCacheService, IOrderServices _OrderServices) : AutherController(redisCacheService)
+    public class OrderController(IRedisCacheService redisCacheService, IOrderServices _OrderServices,IClientServices _clientServices) : AutherController(redisCacheService)
     {
         /// <summary>
         /// 获取订单列表
         /// </summary>
         [HttpGet]
-        [OperationLogFilter("订单管理", "查询订单列表", ActionType.Search)]
+        [OperationLogFilter("订单管理>订单列表", "查询订单列表", ActionType.Search)]
         public async Task<ApiPageResponse<List<sys_order>>> GetOrderListAsync(int?store_Id,string?OrdderNo,int? tableId, int page = 0, int size = 10)
         {
             RefAsync<int> count = 0;
@@ -43,7 +45,7 @@ namespace WebProjectTest.Controllers.OrderController
         }
 
         [HttpGet]
-        [OperationLogFilter("订单管理", "查询未结算订单列表", ActionType.Search)]
+        [OperationLogFilter("订单管理>订单列表", "查询未结算订单列表", ActionType.Search)]
         public async Task<ApiPageResponse<List<sys_order>>> GetNotCheckoutOrderListAsync(int? tableId, string? orderno, int page = 0, int size = 10)
         {
             RefAsync<int> count = 0;
@@ -66,7 +68,7 @@ namespace WebProjectTest.Controllers.OrderController
         /// 添加新订单
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("订单管理", "新增订单", ActionType.Add)]
+        [OperationLogFilter("订单管理>订单列表", "新增订单", ActionType.Add)]
         public async Task<ApiResponse<bool>> AddOrderAsync([FromBody] sys_order sys_Order)
         {
             return await _OrderServices.AddOrderAsync(sys_Order);
@@ -76,7 +78,7 @@ namespace WebProjectTest.Controllers.OrderController
         /// 删除订单
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("订单管理", "删除订单", ActionType.Delete)]
+        [OperationLogFilter("订单管理>订单列表", "删除订单", ActionType.Delete)]
         public async Task<ApiResponse<bool>> DeleteOrderAsync([FromBody] List<int> orderIds)
         {
             return await _OrderServices.DeleteOrderAsync(orderIds);
@@ -86,7 +88,7 @@ namespace WebProjectTest.Controllers.OrderController
         /// 修改订单
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("订单管理", "修改订单", ActionType.Edit)]
+        [OperationLogFilter("订单管理>订单列表", "修改订单", ActionType.Edit)]
         public async Task<ApiResponse<bool>> UpdateOrderAsync([FromBody] sys_order sys_Order)
         {
             return await _OrderServices.UpdateOrderAsync(sys_Order);
@@ -96,7 +98,7 @@ namespace WebProjectTest.Controllers.OrderController
         /// 获取订单明细 
         /// summary>
         [HttpGet]
-        [OperationLogFilter("订单管理", "获取订单明细", ActionType.Search)]
+        [OperationLogFilter("订单管理>订单列表", "获取订单明细", ActionType.Search)]
         public async Task<ApiResponse<OrderDetailModel>> GetOrderDetailsAsync(int orderId)
         {
             return await _OrderServices.OrderDetails(orderId);
@@ -106,7 +108,7 @@ namespace WebProjectTest.Controllers.OrderController
         /// 换桌
         /// </summary>
         [HttpGet]
-        [OperationLogFilter("订单管理", "换桌", ActionType.Edit)]
+        [OperationLogFilter("订单管理>订单列表", "换桌", ActionType.Edit)]
         public async Task<ApiResponse<bool>> ChangeTableAsync(int oldTableId, int newTableId, int orderId,string? remark)
         {
             return await _OrderServices.ChangeTables(oldTableId, newTableId, orderId,remark);
@@ -116,7 +118,7 @@ namespace WebProjectTest.Controllers.OrderController
         /// 并桌
         /// </summary>
         [HttpGet]
-        [OperationLogFilter("订单管理", "并桌", ActionType.Edit)]
+        [OperationLogFilter("订单管理>订单列表", "并桌", ActionType.Edit)]
         public async Task<ApiResponse<bool>> MergeTableAsync(int oldTableId, int newTableId, int orderId,string? remark)
         {
             return await _OrderServices.MergeTables(oldTableId, newTableId, orderId,remark);
@@ -126,7 +128,7 @@ namespace WebProjectTest.Controllers.OrderController
         /// 订单子项退款    
         /// </summary>
         [HttpGet]
-        [OperationLogFilter("订单管理", "订单子项退款", ActionType.Edit)]
+        [OperationLogFilter("订单管理>订单列表", "订单子项退款", ActionType.Edit)]
         public async Task<ApiResponse<bool>> OrderItemRefundAsync(int orderItemId)
         {
             return await _OrderServices.OrderItemRefund(orderItemId, UserId);
@@ -136,7 +138,7 @@ namespace WebProjectTest.Controllers.OrderController
         /// 订单退款
         /// </summary>
         [HttpGet]
-        [OperationLogFilter("订单管理", "订单退款", ActionType.Edit)]
+        [OperationLogFilter("订单管理>订单列表", "订单退款", ActionType.Edit)]
         public async Task<ApiResponse<bool>> OrderRefundAsync(int orderId)
         {
             return await _OrderServices.OrderRefund(orderId, UserId);
@@ -146,7 +148,7 @@ namespace WebProjectTest.Controllers.OrderController
         /// 订单重做
         /// </summary>
         [HttpGet]
-        [OperationLogFilter("订单管理", "订单重做", ActionType.Edit)]
+        [OperationLogFilter("订单管理>订单列表", "订单重做", ActionType.Edit)]
         public async Task<ApiResponse<bool>> OrderRedoAsync(int orderId)
         {
             return await _OrderServices.OrderRedo(orderId, UserId);
@@ -156,17 +158,36 @@ namespace WebProjectTest.Controllers.OrderController
         /// 订单结账
         /// summary>
         [HttpGet]
-        [OperationLogFilter("订单管理", "订单结账", ActionType.Edit)]
+        [OperationLogFilter("订单管理>订单列表", "订单结账", ActionType.Edit)]
         public async Task<ApiResponse<bool>> OrderCheckoutAsync(int orderId, int? CouponsId, string type)
         {
-            return await _OrderServices.OrderCheckout(orderId, CouponsId, type, UserId);
+            var url = "";
+            switch (type)
+            {
+                case "wechat":
+                    url = AppSettings.GetConfig("Payment:WeChat:CustomUrl");
+                    break;
+                case "alipay":
+                    url = "";
+                    break;
+                default:
+                    return Error<bool>("支付失败");
+
+            }
+            return await _clientServices.OrderCheckout(orderId, CouponsId, type, "", url, UserId);
         }
 
         [HttpPost]
-        [OperationLogFilter("订单管理", "新增预定", ActionType.Add)]
+        [OperationLogFilter("订单管理>订单列表", "新增预定", ActionType.Add)]
         public async Task<ApiResponse<bool>> ReserveOrderAsync([FromBody] sys_reservation orderreservation)
         {
             return await _OrderServices.ReserveOrderAsync(orderreservation,UserId);
+        }
+        [HttpGet]
+        [OperationLogFilter("订单管理>订单列表", "挂单", ActionType.Edit)]
+        public async Task<ApiResponse<bool>> HangOrderAsync(int order)
+        {   
+            return await _OrderServices.HangOrderAsync(order,UserId);
         }
     }
 }

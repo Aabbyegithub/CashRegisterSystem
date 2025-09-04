@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ModelClassLibrary.Model;
 using ModelClassLibrary.Model.Dto.OrderDto;
 using MyNamespace;
 using SqlSugar;
@@ -34,6 +35,7 @@ namespace WebIServices.IServices.OrderIServices
         /// 添加订单
         /// </summary>
         Task<ApiResponse<bool>> AddOrderAsync(sys_order order);
+        Task<ApiResponse<bool>> HangOrderAsync(int order,int userId);
 
         /// <summary>
         /// 删除订单

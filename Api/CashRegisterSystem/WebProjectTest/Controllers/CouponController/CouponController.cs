@@ -21,7 +21,7 @@ namespace WebProjectTest.Controllers
         /// 获取优惠券列表（分页+筛选）
         /// </summary>
         [HttpGet]
-        [OperationLogFilter("营销管理>优惠券管理", "优惠券列表查询", ActionType.Search)]
+        [OperationLogFilter("促销管理>优惠券管理", "优惠券列表查询", ActionType.Search)]
         public async Task<ApiPageResponse<List<sys_coupon>>> GetCouponList(long? storeId, string? name, byte? type, byte? status, int pageIndex = 1, int pageSize = 10)
         {
             RefAsync<int> count = 0;
@@ -32,7 +32,7 @@ namespace WebProjectTest.Controllers
         /// 获取优惠券详情
         /// </summary>
         [HttpGet]
-        [OperationLogFilter("营销管理>优惠券管理", "优惠券详情查询", ActionType.Search)]
+        [OperationLogFilter("促销管理>优惠券管理", "优惠券详情查询", ActionType.Search)]
         public async Task<ApiResponse<sys_coupon>> GetCouponById(long couponId)
         {
             return await _couponService.GetCouponByIdAsync(couponId);
@@ -42,7 +42,7 @@ namespace WebProjectTest.Controllers
         /// 新增优惠券
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("营销管理>优惠券管理", "新增优惠券", ActionType.Add)]
+        [OperationLogFilter("促销管理>优惠券管理", "新增优惠券", ActionType.Add)]
         public async Task<ApiResponse<bool>> AddCoupon([FromBody] sys_coupon coupon)
         {
             return await _couponService.AddCouponAsync(coupon);
@@ -52,7 +52,7 @@ namespace WebProjectTest.Controllers
         /// 编辑优惠券
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("营销管理>优惠券管理", "编辑优惠券", ActionType.Edit)]
+        [OperationLogFilter("促销管理>优惠券管理", "编辑优惠券", ActionType.Edit)]
         public async Task<ApiResponse<bool>> UpdateCoupon([FromBody] sys_coupon coupon)
         {
             return await _couponService.UpdateCouponAsync(coupon);
@@ -63,7 +63,7 @@ namespace WebProjectTest.Controllers
         /// 删除优惠券
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("营销管理>优惠券管理", "删除优惠券", ActionType.Delete)]
+        [OperationLogFilter("促销管理>优惠券管理", "删除优惠券", ActionType.Delete)]
         public async Task<ApiResponse<bool>> DeleteCoupon([FromBody] long couponId)
         {
             return await _couponService.DeleteCouponAsync(couponId);

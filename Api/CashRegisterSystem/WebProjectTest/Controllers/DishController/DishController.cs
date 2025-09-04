@@ -25,7 +25,7 @@ namespace WebProjectTest.Controllers.DishController
         /// <param name="size"></param>
         /// <returns></returns>
         [HttpGet]
-        [OperationLogFilter("系统设置>角色管理", "菜品管理查询", ActionType.Search)]
+        [OperationLogFilter("菜品管理>菜品列表", "菜品列表查询", ActionType.Search)]
         public async Task<ApiPageResponse<List<sys_dish>>> GetDishListAsync(string? dishname, int? type, int page = 0, int size = 10)
         {
             RefAsync<int> count = 0;
@@ -46,7 +46,7 @@ namespace WebProjectTest.Controllers.DishController
         }
 
         [HttpGet]
-        [OperationLogFilter("系统设置>角色管理", "菜品管理查询", ActionType.Search)]
+        [OperationLogFilter("菜品管理>菜品列表", "菜品列表查询", ActionType.Search)]
         public async Task<ApiResponse<List<sys_dish>>> GetAllDishListAsync()
         {
             RefAsync<int> count = 0;
@@ -69,7 +69,7 @@ namespace WebProjectTest.Controllers.DishController
         /// 添加菜品
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("系统设置>角色管理", "新增菜品", ActionType.Add)]
+        [OperationLogFilter("菜品管理>菜品列表", "新增菜品", ActionType.Add)]
         public async Task<ApiResponse<bool>> AddDishAsync([FromBody] sys_dish sys_Dish)
         {
             return    await _DishServices.AddDishAsync(sys_Dish);
@@ -79,7 +79,7 @@ namespace WebProjectTest.Controllers.DishController
         /// 删除菜品
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("系统设置>角色管理", "删除菜品", ActionType.Delete)]
+        [OperationLogFilter("菜品管理>菜品列表", "删除菜品", ActionType.Delete)]
         public async Task<ApiResponse<bool>> DeleteDishAsync([FromBody] List<int> ids)
         {
             return    await _DishServices.DeleteDishAsync(ids);
@@ -89,7 +89,7 @@ namespace WebProjectTest.Controllers.DishController
         /// 修改菜品
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("系统设置>角色管理", "修改菜品", ActionType.Edit)]
+        [OperationLogFilter("菜品管理>菜品列表", "修改菜品", ActionType.Edit)]
         public async Task<ApiResponse<bool>> UpdateDishAsync([FromBody] sys_dish sys_Dish)
         {
            return     await _DishServices.UpdateDishAsync(sys_Dish);

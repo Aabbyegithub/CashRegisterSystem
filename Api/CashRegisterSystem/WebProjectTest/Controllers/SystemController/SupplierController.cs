@@ -20,7 +20,7 @@ namespace CashRegisterSystem.Controllers.System
         /// 获取供应商列表（筛选+分页）
         /// </summary>
         [HttpGet]
-        [OperationLogFilter("系统管理>供应商管理", "供应商列表查询", ActionType.Search)]
+        [OperationLogFilter("系统设置>供应商管理", "供应商列表查询", ActionType.Search)]
         public async Task<ApiPageResponse<List<sys_supplier>>> GetSupplierList(
             string? name,
             byte? status,
@@ -44,7 +44,7 @@ namespace CashRegisterSystem.Controllers.System
         /// 新增供应商
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("系统管理>供应商管理", "新增供应商", ActionType.Add)]
+        [OperationLogFilter("系统设置>供应商管理", "新增供应商", ActionType.Add)]
         public async Task<ApiResponse<bool>> AddSupplier([FromBody] sys_supplier supplier)
         {
             return await _service.AddSupplierAsync(supplier);
@@ -54,7 +54,7 @@ namespace CashRegisterSystem.Controllers.System
         /// 编辑供应商
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("系统管理>供应商管理", "编辑供应商", ActionType.Edit)]
+        [OperationLogFilter("系统设置>供应商管理", "编辑供应商", ActionType.Edit)]
         public async Task<ApiResponse<bool>> UpdateSupplier([FromBody] sys_supplier supplier)
         {
             return await _service.UpdateSupplierAsync(supplier);
@@ -64,7 +64,7 @@ namespace CashRegisterSystem.Controllers.System
         /// 删除供应商
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("系统管理>供应商管理", "删除供应商", ActionType.Delete)]
+        [OperationLogFilter("系统设置>供应商管理", "删除供应商", ActionType.Delete)]
         public async Task<ApiResponse<bool>> DeleteSupplier(long supplierId)
         {
             return await _service.DeleteSupplierAsync(supplierId);

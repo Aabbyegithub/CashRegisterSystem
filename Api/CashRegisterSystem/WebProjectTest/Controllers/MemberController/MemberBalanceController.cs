@@ -21,7 +21,7 @@ namespace WebProjectTest.Controllers.MemberController
         /// 储值记录分页查询
         /// </summary>
         [HttpGet]
-        [OperationLogFilter("会员管理", "储值记录查询", ActionType.Search)]
+        [OperationLogFilter("会员管理>储值记录", "储值记录查询", ActionType.Search)]
         public async Task<ApiPageResponse<List<sys_member_balance>>> GetBalanceRecordListAsync(
             string? keyword, string? startDate, string? endDate, string? operatorId, int page = 1, int size = 10)
         {

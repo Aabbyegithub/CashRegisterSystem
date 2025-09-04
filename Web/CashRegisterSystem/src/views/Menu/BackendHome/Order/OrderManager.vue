@@ -54,8 +54,8 @@
         <el-table-column prop="operator_id" label="操作员" align="center" />
         <el-table-column label="操作" align="center" width="180">
           <template #default="scope">
-            <el-button type="text" style="color: #22A2B6;" @click="showOrderDetails(scope.row)">详情</el-button>
-            <el-button type="primary" size="small" v-if="scope.row.status === 0">去结算</el-button>
+            <el-button type="primary"  size="small" style="background-color: #22A2B6;" @click="showOrderDetails(scope.row)">详情</el-button>
+            <el-button type="warning" size="small" v-if="scope.row.status === 1||scope.row.status === 2" @click="handlePending(scope.row)">挂单</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -111,10 +111,10 @@
       <div class="dialog-section-title">桌台信息</div>
       <el-descriptions :column="2" border>
         <el-descriptions-item label="桌台容量">{{ currentOrder.table?.capacity }}</el-descriptions-item>
-        <!-- 可扩展更多桌台信息 -->
       </el-descriptions>
       <template #footer>
         <el-button @click="showDetailsDialog = false">关闭</el-button>
+        <el-button type="primary" size="small" v-if="currentOrder.status === 1||currentOrder.status === 2 ||currentOrder.status === 5"@click="handlePay(currentOrder.order_id)">去结算</el-button>
       </template>
     </el-dialog>
     <!-- 预定弹窗 -->
@@ -166,7 +166,8 @@ import { ref, onMounted } from 'vue'
 import { getStoreList } from '../../../../api/login'
 import { getStoreTables } from '../../../../api/TableOperation'
 import { dayjs, ElMessage } from 'element-plus';
-import { getAllOrderList, reserveOrder } from '../../../../api/order';
+import { getAllOrderList, handOrder, reserveOrder } from '../../../../api/order';
+import { useRouter } from 'vue-router';
 
 // 假设你有 addReservation、getStoreTables 相关API
 // import { addReservation } from '../../../../api/Reservation';
@@ -176,6 +177,7 @@ const searchTableId = ref('')
 const tableList = ref<{ id: string | number, name: string,status:number }[]>([])
 const storeList = ref<{ id: string | number, name: string }[]>([])
 const selectedStore = ref('')
+const router = useRouter();
 
 const total = ref(0);
 const pageSize = ref(10);
@@ -201,6 +203,9 @@ function refreshOrders() {
 
 function handchange (){
    fetchTableList();
+}
+function handlePay(orderId:any){
+ router.push({ path: '/Layout/OrderDetail', query: { order_id: orderId } });
 }
 
 
@@ -352,6 +357,14 @@ async function submitReservation() {
       ElMessage.error(res?.message || '预定失败');
     }
   });
+}
+
+// 在 <script setup> 区域添加挂单方法
+async function handlePending(row: any) {
+  await handOrder(row.order_id);
+  ElMessage.success(`订单 ${row.order_no} 已挂单`);
+  // 可刷新订单列表或更新状态
+  filterOrders();
 }
 </script>
 

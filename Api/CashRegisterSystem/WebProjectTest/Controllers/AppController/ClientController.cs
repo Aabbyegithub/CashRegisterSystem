@@ -105,7 +105,20 @@ namespace WebProjectTest.Controllers.AppController
         [HttpGet]
         public async Task<ApiResponse<bool>> OrderCheckout(int orderId, int? CouponsId, string type,string Code)
         {
-            return await _clientServices.OrderCheckout(orderId, CouponsId, type,Code,AppSettings.GetConfig("Payment:WeChat:CustomUrl"));
+            var url = "";
+            switch (type)
+            {
+                case "wechat":
+                    url = AppSettings.GetConfig("Payment:WeChat:CustomUrl");
+                    break;
+                case "alipay":
+                    url = "";
+                    break;
+                default:
+                    return Error<bool>("支付失败");
+                    
+            }
+            return await _clientServices.OrderCheckout(orderId, CouponsId, type,Code,url,0);
         }
 
         /// <summary>

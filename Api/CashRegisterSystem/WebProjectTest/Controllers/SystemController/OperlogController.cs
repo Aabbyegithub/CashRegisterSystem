@@ -29,7 +29,7 @@ namespace WebProjectTest.Controllers.SystemController
         /// <param name="Size"></param>
         /// <returns></returns>
         [HttpGet]
-        [OperationLogFilter("系统监控>日志管理", "系统日志分页查询", ActionType.Search)]
+        [OperationLogFilter("系统设置>日志管理", "系统日志分页查询", ActionType.Search)]
         public async Task<ApiPageResponse<List<lq_operationlog>>> GetOperationlogAsync(string? User, ActionType? actionType, string? ActionModel, string? StartTime, string? EndTime, int Page = 1, int Size = 10)
         {
             RefAsync<int> Count = 0;

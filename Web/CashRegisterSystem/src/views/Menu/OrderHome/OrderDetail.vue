@@ -563,8 +563,7 @@ const handlePayConfirm = async () => {
   console.log('支付金额：', toPayAmount.value);
   // 这里可对接实际支付接口
   payDialogVisible.value = false;
-
-  await OrderCheckout(orderid.value as string,selectedPayType.value).then((res:any)=>{
+  await OrderCheckout(orderid.value as string,selectedPayType.value).then(async (res:any)=>{
     if(res.success){
       orderInfo.value.status='已支付'
       console.log('支付接口返回:', res);
@@ -573,8 +572,8 @@ const handlePayConfirm = async () => {
       ElMessage.error(res.message || '支付失败，请稍后重试');
       return;
     }
+    await handlePrint();
 
-    handleReturn();
   }).catch((error)=>{
     ElMessage.error('支付失败，请稍后重试');
     console.error(error);
@@ -613,7 +612,7 @@ const confirmMerge = async () => {
 };
 
 const handleReturn =()=> {
-   router.push('/Layout/Orderhome');
+   window.history.back();
 }
 // 换桌弹窗方法
 const selectTargetTable = (tableValue: string) => {

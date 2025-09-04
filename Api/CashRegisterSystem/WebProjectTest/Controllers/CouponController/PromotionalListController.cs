@@ -22,7 +22,7 @@ namespace WebProjectTest.Controllers
         /// 获取促销活动列表（分页+筛选）
         /// </summary>
         [HttpGet]
-        [OperationLogFilter("营销管理>促销活动", "促销活动列表查询", ActionType.Search)]
+        [OperationLogFilter("促销管理>促销活动", "促销活动列表查询", ActionType.Search)]
         public async Task<ApiPageResponse<List<sys_promotion>>> GetPromotionList(long? storeId, string? name, byte? type, byte? status, int pageIndex = 1, int pageSize = 10)
         {
             RefAsync<int> count = 0;
@@ -33,7 +33,7 @@ namespace WebProjectTest.Controllers
         /// 获取促销活动详情
         /// </summary>
         [HttpGet]
-        [OperationLogFilter("营销管理>促销活动", "促销活动详情查询", ActionType.Search)]
+        [OperationLogFilter("促销管理>促销活动", "促销活动详情查询", ActionType.Search)]
         public async Task<ApiResponse<sys_promotion>> GetPromotionById(long promotionId)
         {
             return await _promotionService.GetPromotionByIdAsync(promotionId);
@@ -43,7 +43,7 @@ namespace WebProjectTest.Controllers
         /// 新增促销活动
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("营销管理>促销活动", "新增促销活动", ActionType.Add)]
+        [OperationLogFilter("促销管理>促销活动", "新增促销活动", ActionType.Add)]
         public async Task<ApiResponse<bool>> AddPromotion([FromBody] sys_promotion promotion)
         {
             return await _promotionService.AddPromotionAsync(promotion);
@@ -53,7 +53,7 @@ namespace WebProjectTest.Controllers
         /// 编辑促销活动
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("营销管理>促销活动", "编辑促销活动", ActionType.Edit)]
+        [OperationLogFilter("促销管理>促销活动", "编辑促销活动", ActionType.Edit)]
         public async Task<ApiResponse<bool>> UpdatePromotion([FromBody] sys_promotion promotion)
         {
             return await _promotionService.UpdatePromotionAsync(promotion);
@@ -63,7 +63,7 @@ namespace WebProjectTest.Controllers
         /// 删除促销活动
         /// </summary>
         [HttpPost]
-        [OperationLogFilter("营销管理>促销活动", "删除促销活动", ActionType.Delete)]
+        [OperationLogFilter("促销管理>促销活动", "删除促销活动", ActionType.Delete)]
         public async Task<ApiResponse<bool>> DeletePromotion([FromBody] long promotionId)
         {
             return await _promotionService.DeletePromotionAsync(promotionId);

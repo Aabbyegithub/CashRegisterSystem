@@ -66,7 +66,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref,onMounted } from 'vue';
+import { ref,onMounted, onUnmounted } from 'vue';
 import { dayjs, ElMessage } from 'element-plus';
 import { getKitchenOrderList, getOrderStatusStats, updateOrderStatus } from  '../../../../api/KitchenManage';
 import { getStoreList } from '../../../../api/login';
@@ -118,13 +118,20 @@ const orders = ref<KitchenOrder[]>([]);
 //     );
 //   });
 // });
+let refreshTimer: number | undefined;
 onMounted(() => {
   fetchOrders();
   fetchStats();
   fetchStoreList();
   fetchkitchenList()
+  refreshTimer = window.setInterval(() => {
+    fetchOrders();
+    fetchStats();
+  }, 60000);
 });
-
+onUnmounted(() => {
+  if (refreshTimer) clearInterval(refreshTimer);
+});
 // 查询订单
 async function fetchOrders() {
   const res:any = await getKitchenOrderList({
