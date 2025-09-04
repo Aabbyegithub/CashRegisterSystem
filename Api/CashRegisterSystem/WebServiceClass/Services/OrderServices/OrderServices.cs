@@ -154,8 +154,8 @@ namespace WebServiceClass.Services.OrderServices
                     type = 2,
                     remark = remark
                 }).ExecuteCommandAsync();
-                var table = await _dal.Db.Queryable<sys_restaurant_table>().FirstAsync(a => a.table_id == newTableId);
-                var order = await _dal.Db.Queryable<sys_order>().Where(a => a.order_id == orderId || a.order_id == table.order_id).ToListAsync();
+                var table = await _dal.Db.Queryable<sys_restaurant_table>().With(SqlWith.UpdLock).FirstAsync(a => a.table_id == newTableId);
+                var order = await _dal.Db.Queryable<sys_order>().With(SqlWith.UpdLock).Where(a => a.order_id == orderId || a.order_id == table.order_id).ToListAsync();
                 await _dal.Db.Updateable<sys_restaurant_table>().SetColumns(a => new sys_restaurant_table { order_id = table.order_id }).Where(a => a.table_id == oldTableId).ExecuteCommandAsync();
                 await _dal.Db.Updateable(new sys_order
                 {
@@ -164,7 +164,7 @@ namespace WebServiceClass.Services.OrderServices
                     payable_amount = order.Sum(o => o.payable_amount),
                 }).ExecuteCommandAsync();
 
-                var orderitem = await _dal.Db.Queryable<sys_order_item>().Where(a => a.order_id == orderId)
+                var orderitem = await _dal.Db.Queryable<sys_order_item>().Where(a => a.order_id == orderId).With(SqlWith.UpdLock)
                     .Select(a => new sys_order_item
                     {
                         item_id = 0,
@@ -211,11 +211,11 @@ namespace WebServiceClass.Services.OrderServices
                     type = 1,
                     remark = remark
                 }).ExecuteCommandAsync();
-                await _dal.Db.Updateable<sys_restaurant_table>()
+                await _dal.Db.Updateable<sys_restaurant_table>().With(SqlWith.UpdLock)
                     .SetColumns(a => new sys_restaurant_table { status = 1, order_id = null }).Where(a => a.table_id == oldTableId).ExecuteCommandAsync();
-                await _dal.Db.Updateable<sys_restaurant_table>()
+                await _dal.Db.Updateable<sys_restaurant_table>().With(SqlWith.UpdLock)
                     .SetColumns(a => new sys_restaurant_table { status = 2, order_id = orderId }).Where(a => a.table_id == newTableId).ExecuteCommandAsync();
-                await _dal.Db.Updateable<sys_order>().SetColumns(a => a.table_id == newTableId).Where(a => a.order_id == orderId).ExecuteCommandAsync();
+                await _dal.Db.Updateable<sys_order>().With(SqlWith.UpdLock).SetColumns(a => a.table_id == newTableId).Where(a => a.order_id == orderId).ExecuteCommandAsync();
 
                 await _dal.Db.Ado.CommitTranAsync();
 
@@ -237,8 +237,8 @@ namespace WebServiceClass.Services.OrderServices
         /// <exception cref="NotImplementedException"></exception>
         public async Task<ApiResponse<bool>> OrderItemRefund(int orderItemId,int userId)
         {
-            await _dal.Db.Updateable<sys_order_item>().SetColumns(a=>new sys_order_item { status = 4,return_audit_id =userId }).Where(a=>a.item_id == orderItemId).ExecuteCommandAsync();
-            await _dal.Db.Updateable<sys_kitchen_order>().SetColumns(a => new sys_kitchen_order { status = 5 }).Where(a => a.item_id == orderItemId).ExecuteCommandAsync();
+            await _dal.Db.Updateable<sys_order_item>().With(SqlWith.UpdLock).SetColumns(a=>new sys_order_item { status = 4,return_audit_id =userId }).Where(a=>a.item_id == orderItemId).ExecuteCommandAsync();
+            await _dal.Db.Updateable<sys_kitchen_order>().With(SqlWith.UpdLock).SetColumns(a => new sys_kitchen_order { status = 5 }).Where(a => a.item_id == orderItemId).ExecuteCommandAsync();
            return Success(true,"退款成功");
         }
 
@@ -252,7 +252,7 @@ namespace WebServiceClass.Services.OrderServices
         {
             try
             {
-                var order = await _dal.Db.Queryable<sys_order>().Where(a => a.order_id == orderId).FirstAsync();
+                var order = await _dal.Db.Queryable<sys_order>().With(SqlWith.UpdLock).Where(a => a.order_id == orderId).FirstAsync();
                 if (order == null)
                 {
                     return Fail<bool>("订单不存在");
@@ -260,13 +260,13 @@ namespace WebServiceClass.Services.OrderServices
                 await _dal.Db.Ado.BeginTranAsync();
                 if (order.status == 1) //待支付状态变为退款
                 {
-                    await _dal.Db.Updateable<sys_order>()
+                    await _dal.Db.Updateable<sys_order>().With(SqlWith.UpdLock)
                     .SetColumns(a => new sys_order { status = 8, operator_id = userId }).Where(a => a.order_id == orderId).ExecuteCommandAsync();
-                    await _dal.Db.Updateable<sys_restaurant_table>()
+                    await _dal.Db.Updateable<sys_restaurant_table>().With(SqlWith.UpdLock)
                         .SetColumns(a => new sys_restaurant_table { status = 1, order_id = null }).Where(a => a.order_id == orderId).ExecuteCommandAsync();
-                    await _dal.Db.Updateable<sys_order_item>()
+                    await _dal.Db.Updateable<sys_order_item>().With(SqlWith.UpdLock)
                         .SetColumns(a => new sys_order_item { status = 4, return_audit_id = userId }).Where(a => a.order_id == orderId).ExecuteCommandAsync();
-                    var itemIds = await _dal.Db.Queryable<sys_order_item>()
+                    var itemIds = await _dal.Db.Queryable<sys_order_item>().With(SqlWith.UpdLock)
                      .Where(a => a.order_id == orderId)
                      .Select(a => a.item_id) // 只选择item_id字段
                      .ToListAsync();
@@ -278,17 +278,17 @@ namespace WebServiceClass.Services.OrderServices
                 }
                 if (order.status == 2) //已下单状态变为取消
                 {
-                    await _dal.Db.Updateable<sys_order>()
+                    await _dal.Db.Updateable<sys_order>().With(SqlWith.UpdLock)
                     .SetColumns(a => new sys_order { status = 4, operator_id = userId }).Where(a => a.order_id == orderId).ExecuteCommandAsync();
-                    await _dal.Db.Updateable<sys_restaurant_table>()
+                    await _dal.Db.Updateable<sys_restaurant_table>().With(SqlWith.UpdLock)
                         .SetColumns(a => new sys_restaurant_table { status = 1, order_id = null }).Where(a => a.order_id == orderId).ExecuteCommandAsync();
-                    await _dal.Db.Updateable<sys_order_item>()
+                    await _dal.Db.Updateable<sys_order_item>().With(SqlWith.UpdLock)
                         .SetColumns(a => new sys_order_item { status = 4, return_audit_id = userId }).Where(a => a.order_id == orderId).ExecuteCommandAsync();
-                    var itemIds = await _dal.Db.Queryable<sys_order_item>()
+                    var itemIds = await _dal.Db.Queryable<sys_order_item>().With(SqlWith.UpdLock)
                      .Where(a => a.order_id == orderId)
                      .Select(a => a.item_id) // 只选择item_id字段
                      .ToListAsync();
-                    await _dal.Db.Updateable<sys_kitchen_order>()
+                    await _dal.Db.Updateable<sys_kitchen_order>().With(SqlWith.UpdLock)
                         .SetColumns(a => new sys_kitchen_order { status = 5 })
                         .In<long>(a => a.item_id,
                         (ISugarQueryable<long>)itemIds)
@@ -296,12 +296,12 @@ namespace WebServiceClass.Services.OrderServices
                 }
                 if (order.status == 6)//预订变为取消
                 {
-                    await _dal.Db.Updateable<sys_order>()
+                    await _dal.Db.Updateable<sys_order>().With(SqlWith.UpdLock)
                     .SetColumns(a => new sys_order { status = 4, operator_id = userId }).Where(a => a.order_id == orderId).ExecuteCommandAsync();
                 }
                 if (order.status == 3) //已完成状态变为退款
                 {
-                    await _dal.Db.Updateable<sys_order>()
+                    await _dal.Db.Updateable<sys_order>().With(SqlWith.UpdLock)
                     .SetColumns(a => new sys_order { status = 8, operator_id = userId }).Where(a => a.order_id == orderId).ExecuteCommandAsync();
 
                     //原路径退款
@@ -327,7 +327,7 @@ namespace WebServiceClass.Services.OrderServices
             try
             {
                 await _dal.Db.Ado.BeginTranAsync();
-                var order = await _dal.Db.Queryable<sys_order>().FirstAsync(a => a.order_id == orderId);
+                var order = await _dal.Db.Queryable<sys_order>().With(SqlWith.UpdLock).FirstAsync(a => a.order_id == orderId);
                 if (order == null)
                 {
                     return Fail<bool>("订单不存在");
@@ -338,22 +338,22 @@ namespace WebServiceClass.Services.OrderServices
                 }
                 order.status = 2; //将订单状态改为已下单
                 order.operator_id = userId;
-                await _dal.Db.Updateable(order).ExecuteCommandAsync();
+                await _dal.Db.Updateable(order).With(SqlWith.UpdLock).ExecuteCommandAsync();
                 //将订单项状态改为未完成
-                await _dal.Db.Updateable<sys_order_item>()
+                await _dal.Db.Updateable<sys_order_item>().With(SqlWith.UpdLock)
                     .SetColumns(a => new sys_order_item { status = 1, return_audit_id = orderId })
                     .Where(a => a.order_id == orderId).ExecuteCommandAsync();
                 //将厨房订单状态改为未完成
-                    var itemIds = await _dal.Db.Queryable<sys_order_item>()
+                    var itemIds = await _dal.Db.Queryable<sys_order_item>().With(SqlWith.UpdLock)
                      .Where(a => a.order_id == orderId)
                      .Select(a => a.item_id) // 只选择item_id字段
                      .ToListAsync();
-                    await _dal.Db.Updateable<sys_kitchen_order>()
+                    await _dal.Db.Updateable<sys_kitchen_order>().With(SqlWith.UpdLock)
                         .SetColumns(a => new sys_kitchen_order { status = 5 })
                         .In<long>(a => a.item_id,
                         (ISugarQueryable<long>)itemIds)
-                        .ExecuteCommandAsync();
-                await _dal.Db.Updateable<sys_restaurant_table>()
+                        .ExecuteCommandAsync(); 
+                await _dal.Db.Updateable<sys_restaurant_table>().With(SqlWith.UpdLock)
                     .SetColumns(a => new sys_restaurant_table { status = 2, order_id = orderId })
                     .Where(a => a.table_id == order.table_id).ExecuteCommandAsync();
                 await _dal.Db.Ado.CommitTranAsync();
@@ -384,16 +384,20 @@ namespace WebServiceClass.Services.OrderServices
             try
             {
                 await _dal.Db.Ado.BeginTranAsync();
-                orderreservation.reservation_no = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+                orderreservation.reservation_no = DateTime.Now.ToString("yyyyMMddHHmmssfff")+new Random().Next(100000, 999999);
                 var ReserveId = await _dal.Db.Insertable(orderreservation).ExecuteReturnBigIdentityAsync();
-                var table = await _dal.Db.Queryable<sys_restaurant_table>()
-                        .Where(a => a.table_id == orderreservation.table_id)
+                var table = await _dal.Db.Queryable<sys_restaurant_table>().With(SqlWith.UpdLock)
+                        .Where(a => a.table_id == orderreservation.table_id && a.status ==1)
                         .FirstAsync();
+                if (table == null)
+                {
+                    throw new Exception("桌台不可用！");
+                }
                 var orderId = await _dal.Db.Insertable(new sys_order
                 {
                     store_id = orderreservation.store_id,
                     table_id = orderreservation.table_id,
-                    order_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(1000, 9999),
+                    order_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") +new Random().Next(100000, 999999),
                     order_type = 1, // 堂食
                     source_type = 3, // 下单方式
                     status = 6,// 已下单
@@ -424,7 +428,7 @@ namespace WebServiceClass.Services.OrderServices
 
         public async Task<ApiResponse<bool>> HangOrderAsync(int order,int userId)
         {
-            await _dal.Db.Updateable<sys_order>().SetColumns(a =>new sys_order { status = 5,operator_id = userId}).Where(a => a.order_id == order).ExecuteCommandAsync();
+            await _dal.Db.Updateable<sys_order>().With(SqlWith.UpdLock).SetColumns(a =>new sys_order { status = 5,operator_id = userId}).Where(a => a.order_id == order).ExecuteCommandAsync();
             return Success(true);
         }
     }

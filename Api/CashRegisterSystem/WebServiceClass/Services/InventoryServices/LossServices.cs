@@ -47,7 +47,7 @@ namespace WebServiceClass.Services.InventoryServices
         public async Task<ApiResponse<bool>> AddLossAsync(sys_inventory_loss loss, int orgId,int userId)
         {
             loss.loss_time = DateTime.Now;loss.store_id = orgId;loss.operator_id = userId;
-            loss.batch_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(1000, 9999);
+            loss.batch_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(100000, 999999);
             var result = await _dal.Db.Insertable(loss).ExecuteCommandAsync() > 0;
             return Success(result, result ? "新增成功" : "新增失败");
         }

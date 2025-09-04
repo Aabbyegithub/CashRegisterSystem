@@ -41,7 +41,7 @@ namespace WebServiceClass.Services.MemberServices
                 return Fail<bool>("手机号已存在");
             member.register_time = System.DateTime.Now;
             member.status = 1;
-            member.member_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(1000, 9999);
+            member.member_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(100000, 999999);
             var result = await _dal.Db.Insertable(member).ExecuteCommandAsync() > 0;
             return Success(result, result ? "新增成功" : "新增失败");
         }

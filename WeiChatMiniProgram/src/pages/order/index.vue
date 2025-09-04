@@ -169,7 +169,7 @@ onShow(() => {
 
 const getOrders = async () => {
   await request({
-    url: `/api/Client/GetTableOrder?store_id=${storeId}&table_id=${tableId}&sourceType=${sourceType.value}`,
+    url: `/api/Client/GetTableOrder?store_id=${storeId || 2}&table_id=${tableId}&sourceType=${sourceType.value}`,
     method: 'GET'
   }).then((res: any) => {
     console.log('获取订单数据', res)

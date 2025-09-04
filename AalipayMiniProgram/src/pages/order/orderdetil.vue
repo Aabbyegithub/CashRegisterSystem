@@ -224,7 +224,7 @@ onShow(() => {
   console.log('onShow订单详情')
   var selectedCoupon = uni.getStorageSync('selectedCoupon')
   if(selectedCoupon && selectedCoupon.id){
-    selectcoupons.value = selectedCoupon.coupon_name+'满   '+selectedCoupon.min_consumption+'减'+selectedCoupon.value
+    selectcoupons.value = selectedCoupon.title+'满   '+selectedCoupon.limit+'减'+selectedCoupon.value
     couponsMoney.value = '已优惠￥'+selectedCoupon.value+'元'
     // 重新计算总价，避免多次减去
     let orderTotal = 0

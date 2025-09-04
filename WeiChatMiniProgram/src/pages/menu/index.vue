@@ -322,8 +322,8 @@ onLoad(() => {
   }else {
     uni.showToast({ title: '未指定桌台', icon: 'none' })
   }
-  getmenuType(storeId) 
-  getmenuList(storeId)
+  getmenuType(storeId || 2) 
+  getmenuList(storeId || 2)
 })
 
 async function getmenuType(storeId: number) {

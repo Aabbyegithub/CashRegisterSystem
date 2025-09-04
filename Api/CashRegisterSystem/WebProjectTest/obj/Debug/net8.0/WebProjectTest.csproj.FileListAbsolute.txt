@@ -333,7 +333,6 @@ D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTes
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\Microsoft.OpenApi.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
-D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\MySqlConnector.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\Newtonsoft.Json.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\Npgsql.dll
@@ -345,7 +344,6 @@ D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTes
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\SQLitePCLRaw.batteries_v2.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\SQLitePCLRaw.core.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\SQLitePCLRaw.provider.e_sqlite3.dll
-D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\SqlSugar.IOC.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\SqlSugar.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\DM.DmProvider.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\Kdbndp.dll
@@ -357,16 +355,12 @@ D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTes
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\System.Diagnostics.PerformanceCounter.dll
-D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\System.DirectoryServices.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\System.DirectoryServices.Protocols.dll
-D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\System.Drawing.Common.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\System.Linq.Dynamic.Core.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\System.Memory.Data.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\System.Runtime.Caching.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
-D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\System.Security.Permissions.dll
-D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\System.Windows.Extensions.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\de\Microsoft.Data.SqlClient.resources.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\es\Microsoft.Data.SqlClient.resources.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\fr\Microsoft.Data.SqlClient.resources.dll
@@ -383,7 +377,6 @@ D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTes
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
-D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\browser-wasm\nativeassets\net8.0\e_sqlite3.a
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\linux-arm\native\libe_sqlite3.so
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\linux-arm64\native\libe_sqlite3.so
@@ -405,15 +398,7 @@ D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTes
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\win-arm64\native\e_sqlite3.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\win-x64\native\e_sqlite3.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\win-x86\native\e_sqlite3.dll
-D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Diagnostics.PerformanceCounter.dll
-D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.DirectoryServices.dll
-D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\linux\lib\net6.0\System.DirectoryServices.Protocols.dll
-D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\osx\lib\net6.0\System.DirectoryServices.Protocols.dll
-D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.DirectoryServices.Protocols.dll
-D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
-D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Runtime.Caching.dll
-D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\ModelClassLibrary.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\WebIServices.dll
 D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\WebServiceClass.dll
@@ -599,3 +584,9 @@ D:\LQProject\WaiBaoPro\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\
 D:\LQProject\WaiBaoPro\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\WebProjectTest.genruntimeconfig.cache
 D:\LQProject\WaiBaoPro\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\ref\WebProjectTest.dll
 D:\LQProject\WaiBaoPro\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\obj\Debug\net8.0\WebProjectTest.MvcApplicationPartsAssemblyInfo.cs
+D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Diagnostics.PerformanceCounter.dll
+D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\linux\lib\net8.0\System.DirectoryServices.Protocols.dll
+D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\osx\lib\net8.0\System.DirectoryServices.Protocols.dll
+D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.DirectoryServices.Protocols.dll
+D:\ProJect\LqProjrctTest\CashRegisterSystem\Api\CashRegisterSystem\WebProjectTest\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll

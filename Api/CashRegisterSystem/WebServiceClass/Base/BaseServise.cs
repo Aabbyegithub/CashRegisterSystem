@@ -1,6 +1,5 @@
 ﻿using ModelClassLibrary.Model;
 using SqlSugar;
-using SqlSugar.IOC;
 using System.Linq.Expressions;
 using System.Reflection;
 using WebIServices.IBase;
@@ -18,15 +17,15 @@ namespace WebServiceClass.Base
         {
             //通过特性拿到ConfigId
             var configId = typeof(T).GetCustomAttribute<TenantAttribute>()?.configId;
-            if (configId != null)
-            {
-                Context = DbScoped.SugarScope.GetConnectionScope(configId);//根据类传入的ConfigId自动选择
-            }
-            else
-            {
-                Context = context ?? DbScoped.SugarScope.GetConnectionScope(0);//没有默认db0
-            }
-            itenant = DbScoped.SugarScope;//处理多租户事务、GetConnection、IsAnyConnection等功能
+            //if (configId != null)
+            //{
+            //    Context = DbScoped.SugarScope.GetConnectionScope(configId);//根据类传入的ConfigId自动选择
+            //}
+            //else
+            //{
+            //    Context = context ?? DbScoped.SugarScope.GetConnectionScope(0);//没有默认db0
+            //}
+            //itenant = DbScoped.SugarScope;//处理多租户事务、GetConnection、IsAnyConnection等功能
             CreateDB(Context,configId.ToString());
         }
         private void CreateDB(ISqlSugarClient client,string configID)

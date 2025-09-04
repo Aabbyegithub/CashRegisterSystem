@@ -71,31 +71,63 @@ namespace WebServiceClass.Services.InventoryServices
             return PageSuccess(list, totalCount);
         }
 
-        public async Task<ApiResponse<bool>> PurchaseMaterialAsync(long materialId, decimal quantity, string remark, int userId,int orgId)
+        public async Task<ApiResponse<bool>> PurchaseMaterialAsync(long materialId, decimal quantity, string remark, int userId, int orgId)
         {
-            // 查询原材料信息
-            var material = await _dal.Db.Queryable<sys_raw_material>().FirstAsync(x => x.material_id == materialId);
-            if (material == null)
-                return Fail<bool>("原材料不存在");
-
-            // 生成采购单
-            var purchaseOrder = new sys_purchase_order
+            if (quantity <= 0)
             {
-                po_no = DateTime.Now.ToString("yyyyMMddHHmmssfff"),
-                store_id = orgId,
-                supplier_id = 0, 
-                order_time = DateTime.Now,
-                expect_arrival_time = DateTime.Now.AddDays(1),
-                actual_arrival_time = null,
-                total_amount = material.purchase_price * quantity,
-                status = 1, // 待确认
-                operator_id = userId, 
-                remark = remark,
-                materialname =material.material_name,
-                quantity =(int) quantity
-            };
-            var result = await _dal.Db.Insertable(purchaseOrder).ExecuteCommandAsync() > 0;
-            return Success(result, result ? "采购单已生成" : "采购失败");
+                return Fail<bool>("采购数量必须大于0");
+            }
+
+            try
+            {
+                await _dal.Db.Ado.BeginTranAsync();
+                var material = await _dal.Db.Queryable<sys_raw_material>()
+                    .With(SqlWith.UpdLock)
+                    .FirstAsync(x => x.material_id == materialId);
+
+                if (material == null)
+                {
+                    await _dal.Db.Ado.RollbackTranAsync();
+                    return Fail<bool>("原材料不存在");
+                }
+
+                string poNo = $"PO{DateTime.Now:yyyyMMddHHmmssfff}{Guid.NewGuid().ToString("N").Substring(0, 6)}";
+
+                // 5. 生成采购单主表记录
+                var purchaseOrder = new sys_purchase_order
+                {
+                    po_no = poNo,
+                    store_id = orgId,
+                    supplier_id = 0, // 可改为参数传入或从物料默认供应商获取
+                    order_time = DateTime.Now,
+                    expect_arrival_time = DateTime.Now.AddDays(1),
+                    actual_arrival_time = null,
+                    total_amount = material.purchase_price * quantity,
+                    status = 1, // 待确认
+                    operator_id = userId,
+                    remark = remark,
+                    materialname = material.material_name,
+                    quantity = (int)quantity
+                };
+
+                // 6. 插入采购单
+                long poId = await _dal.Db.Insertable(purchaseOrder).ExecuteReturnBigIdentityAsync();
+                if (poId <= 0)
+                {
+                    await _dal.Db.Ado.RollbackTranAsync();
+                    return Fail<bool>("采购单生成失败");
+                }
+
+                // 8. 提交事务
+                await _dal.Db.Ado.CommitTranAsync();
+                return Success(true, $"采购单已生成，单号：{poNo}");
+            }
+            catch (Exception ex)
+            {
+                await _dal.Db.Ado.RollbackTranAsync();
+                return Fail<bool>($"采购失败：{ex.InnerException?.Message ?? ex.Message}");
+            }
         }
+
     }
 }

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "91XZuE5mOeOPhBH+mnnpTrAVkm43LjBBCZTrrZQ4nReThh3ia4FZVy4Clk4YIxVHUGxEqbND9gvRWoGx+2d12Q==",
+  "dgSpecHash": "D9AMiuusvKSAN3YA2jf71Lm+/Pl7wsIu0cYZRhoGmx3xrLRgrnfAIeRN2o2/J1xHwNNxOCmkxf42aMBGruxXNw==",
   "success": true,
   "projectFilePath": "D:\\ProJect\\LqProjrctTest\\CashRegisterSystem\\Api\\CashRegisterSystem\\WebServiceClass\\WebServiceClass.csproj",
   "expectedPackageFiles": [
@@ -64,7 +64,6 @@
     "C:\\Users\\luqiang\\.nuget\\packages\\sqlitepclraw.core\\2.1.10\\sqlitepclraw.core.2.1.10.nupkg.sha512",
     "C:\\Users\\luqiang\\.nuget\\packages\\sqlitepclraw.lib.e_sqlite3\\2.1.10\\sqlitepclraw.lib.e_sqlite3.2.1.10.nupkg.sha512",
     "C:\\Users\\luqiang\\.nuget\\packages\\sqlitepclraw.provider.e_sqlite3\\2.1.10\\sqlitepclraw.provider.e_sqlite3.2.1.10.nupkg.sha512",
-    "C:\\Users\\luqiang\\.nuget\\packages\\sqlsugar.ioc\\2.0.0\\sqlsugar.ioc.2.0.0.nupkg.sha512",
     "C:\\Users\\luqiang\\.nuget\\packages\\sqlsugarcore\\5.1.4.193\\sqlsugarcore.5.1.4.193.nupkg.sha512",
     "C:\\Users\\luqiang\\.nuget\\packages\\sqlsugarcore.dm\\8.8.0\\sqlsugarcore.dm.8.8.0.nupkg.sha512",
     "C:\\Users\\luqiang\\.nuget\\packages\\sqlsugarcore.kdbndp\\9.3.7.428\\sqlsugarcore.kdbndp.9.3.7.428.nupkg.sha512",
@@ -104,7 +103,6 @@
     "C:\\Users\\luqiang\\.nuget\\packages\\system.runtime.caching\\8.0.0\\system.runtime.caching.8.0.0.nupkg.sha512",
     "C:\\Users\\luqiang\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.runtime.extensions\\4.3.0\\system.runtime.extensions.4.3.0.nupkg.sha512",
-    "C:\\Users\\luqiang\\.nuget\\packages\\system.runtime.loader\\4.3.0\\system.runtime.loader.4.3.0.nupkg.sha512",
     "C:\\Users\\luqiang\\.nuget\\packages\\system.security.accesscontrol\\6.0.0\\system.security.accesscontrol.6.0.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.security.cryptography.cng\\4.5.0\\system.security.cryptography.cng.4.5.0.nupkg.sha512",
     "C:\\Users\\luqiang\\.nuget\\packages\\system.security.cryptography.protecteddata\\8.0.0\\system.security.cryptography.protecteddata.8.0.0.nupkg.sha512",

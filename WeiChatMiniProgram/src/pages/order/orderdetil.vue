@@ -105,6 +105,7 @@ const coupons = ref([])
 const selectcoupons = ref('')
 const couponsMoney = ref('')
 const selectcouponsId = ref('')
+const code = ref('')
 const payList = ref([
   { value: 'wechat', label: '微信支付', icon: '/static/Vector.png' },
   // { value: 'balance', label: '余额支付', icon: '/static/payFrame(1).png' },
@@ -136,28 +137,40 @@ function addDish() {
   })
 }
 async function checkout() {
-  await request({
-    url: '/api/Client/OrderCheckout',
-    method: 'POST',
-    data: {
-      orderId: orderId.value,
-      type: payType.value,
-      CouponsId: selectcouponsId.value || 0
+  uni.login({
+    success: async (loginRes) => {
+      console.log('登录成功:', loginRes);
+      // 可以将 loginRes.code 发送到后台换取 openId 和 sessionKey
+      code.value = loginRes.code
+        await request({
+          url: '/api/Client/OrderCheckout',
+          method: 'GET',
+          data: {
+            orderId: orderId.value,
+            type: payType.value,
+            CouponsId: selectcouponsId.value || 0,
+            Code: code.value,
+          }
+        }).then((res:any) => {
+          if (res.start == 200) {
+            uni.showToast({ title: '结账成功', icon: 'success' })
+            // 结账成功后，清除已选择的优惠券
+            uni.removeStorageSync('selectedCoupon')
+            // 返回订单列表页
+            uni.navigateBack()
+          } else {
+            uni.showToast({ title: res.message || '结账失败', icon: 'none' })
+          }
+        }).catch(() => {
+          uni.showToast({ title: '结账失败', icon: 'none' })
+        })
+        uni.showToast({ title: '结账成功', icon: 'success' })
+    },
+    fail: (err) => {
+      console.error('登录失败:', err);
     }
-  }).then((res:any) => {
-    if (res.start == 200) {
-      uni.showToast({ title: '结账成功', icon: 'success' })
-      // 结账成功后，清除已选择的优惠券
-      uni.removeStorageSync('selectedCoupon')
-      // 返回订单列表页
-      uni.navigateBack()
-    } else {
-      uni.showToast({ title: res.message || '结账失败', icon: 'none' })
-    }
-  }).catch(() => {
-    uni.showToast({ title: '结账失败', icon: 'none' })
-  })
-  uni.showToast({ title: '结账成功', icon: 'success' })
+  });
+
 }
 async function confirmMerge() {
   if (!mergeSelect.value) return
@@ -224,7 +237,7 @@ onShow(() => {
   console.log('onShow订单详情')
   var selectedCoupon = uni.getStorageSync('selectedCoupon')
   if(selectedCoupon && selectedCoupon.id){
-    selectcoupons.value = selectedCoupon.coupon_name+'满   '+selectedCoupon.min_consumption+'减'+selectedCoupon.value
+    selectcoupons.value = selectedCoupon.title+'满   '+selectedCoupon.limit+'减'+selectedCoupon.value
     couponsMoney.value = '已优惠￥'+selectedCoupon.value+'元'
     // 重新计算总价，避免多次减去
     let orderTotal = 0

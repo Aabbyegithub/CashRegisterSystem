@@ -986,18 +986,6 @@
           }
         }
       },
-      "SqlSugar.IOC/2.0.0": {
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
-          "System.Runtime.Loader": "4.3.0"
-        },
-        "runtime": {
-          "lib/netstandard2.1/SqlSugar.IOC.dll": {
-            "assemblyVersion": "2.0.0.0",
-            "fileVersion": "2.0.0.0"
-          }
-        }
-      },
       "SqlSugarCore/5.1.4.193": {
         "dependencies": {
           "Microsoft.Data.SqlClient": "5.2.2",
@@ -1407,13 +1395,6 @@
           "System.Runtime": "4.3.1"
         }
       },
-      "System.Runtime.Loader/4.3.0": {
-        "dependencies": {
-          "System.IO": "4.3.0",
-          "System.Reflection": "4.3.0",
-          "System.Runtime": "4.3.1"
-        }
-      },
       "System.Security.AccessControl/6.0.0": {},
       "System.Security.Cryptography.Cng/4.5.0": {},
       "System.Security.Cryptography.ProtectedData/8.0.0": {
@@ -1489,7 +1470,6 @@
       },
       "ModelClassLibrary/1.0.0": {
         "dependencies": {
-          "SqlSugar.IOC": "2.0.0",
           "SqlSugarCore": "5.1.4.193"
         },
         "runtime": {
@@ -1942,13 +1922,6 @@
       "path": "sqlitepclraw.provider.e_sqlite3/2.1.10",
       "hashPath": "sqlitepclraw.provider.e_sqlite3.2.1.10.nupkg.sha512"
     },
-    "SqlSugar.IOC/2.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-bRo+0DpzKE34rGCeIvyO9HVcX0jUZ3lQakum2EDjftCFwQPt7bI7JADKfuX9m0t3ApWKfofQKgamz6CTl7jNgg==",
-      "path": "sqlsugar.ioc/2.0.0",
-      "hashPath": "sqlsugar.ioc.2.0.0.nupkg.sha512"
-    },
     "SqlSugarCore/5.1.4.193": {
       "type": "package",
       "serviceable": true,
@@ -2221,13 +2194,6 @@
       "sha512": "sha512-guW0uK0fn5fcJJ1tJVXYd7/1h5F+pea1r7FLSOz/f8vPEqbR2ZAknuRDvTQ8PzAilDveOxNjSfr0CHfIQfFk8g==",
       "path": "system.runtime.extensions/4.3.0",
       "hashPath": "system.runtime.extensions.4.3.0.nupkg.sha512"
-    },
-    "System.Runtime.Loader/4.3.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-DHMaRn8D8YCK2GG2pw+UzNxn/OHVfaWx7OTLBD/hPegHZZgcZh3H6seWegrC4BYwsfuGrywIuT+MQs+rPqRLTQ==",
-      "path": "system.runtime.loader/4.3.0",
-      "hashPath": "system.runtime.loader.4.3.0.nupkg.sha512"
     },
     "System.Security.AccessControl/6.0.0": {
       "type": "package",

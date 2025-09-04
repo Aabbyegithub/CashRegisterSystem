@@ -85,11 +85,15 @@ namespace WebServiceClass.Services.AppServices
             {
                 await _dal.Db.Ado.BeginTranAsync();
                 var table = await _dal.Db.Queryable<sys_restaurant_table>()
-                    .Where(a => a.store_id == store_id && a.table_id == table_id)
+                    .Where(a => a.store_id == store_id && a.table_id == table_id && order_Id == null).With(SqlWith.UpdLock)
                     .FirstAsync();
+                if (table == null)
+                {
+                    Fail<bool>("该桌台有未完成的订单！下单失败");
+                }
                 if (order_Id.HasValue)
                 {
-                    var orderData = await _dal.Db.Queryable<sys_order>().FirstAsync(a=>a.order_id == order_Id);
+                    var orderData = await _dal.Db.Queryable<sys_order>().With(SqlWith.UpdLock).FirstAsync(a=>a.order_id == order_Id);
                     orderData.total_amount = orderData.total_amount + order.Sum(o => decimal.Parse(o.price) * o.qty);
                     orderData.payable_amount = orderData.payable_amount + order.Sum(o => decimal.Parse(o.price) * o.qty);
                     await _dal.Db.Updateable(orderData).ExecuteCommandAsync();
@@ -137,7 +141,7 @@ namespace WebServiceClass.Services.AppServices
                     {
                         store_id = store_id,
                         table_id = table_id,
-                        order_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(1000, 9999),
+                        order_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(100000, 999999),
                         order_type = 1, // 堂食
                         source_type = (byte)sourceType, // 下单方式
                         status = 2,// 已下单
@@ -178,19 +182,19 @@ namespace WebServiceClass.Services.AppServices
                         }
                         var dish = await _dal.Db.Queryable<sys_order_item>().Includes(a=>a.dish,b=>b.dish_kitchen).FirstAsync(a=>a.item_id == itemId);
                         //保存厨房订单
-                        var kitchenOrders = order.Select(o => new sys_kitchen_order
+                        var kitchenOrders = new sys_kitchen_order
                         {
                             item_id = itemId,
                             store_id = store_id,
                             table_no = table?.table_no,
-                            dish_name = o.name,
-                            quantity = o.qty,
+                            dish_name = dish.dish.dish_name,
+                            quantity = item.quantity,
                             kitchen_type = dish.dish.dish_kitchen.kitchen_name,
                             status = 1, // 1-待制作
                             create_time = DateTime.Now,
                             overtime_warn = 0, // 超时预警时间
                             cooking_require = dish.specification
-                        }).ToList();
+                        };
                         await _dal.Db.Insertable(kitchenOrders).ExecuteCommandAsync();
                     }
                     table.order_id = (int)orderId;
@@ -270,10 +274,24 @@ namespace WebServiceClass.Services.AppServices
             try
             {
                 await _dal.Db.Ado.BeginTranAsync();
+
+                var checkOrder = await _dal.Db.Queryable<sys_order>()
+                .With(SqlWith.UpdLock) // 加锁防止并发查询
+                .FirstAsync(a => a.order_id == orderId);
+                if (checkOrder == null)
+                {
+                    await _dal.Db.Ado.RollbackTranAsync();
+                    return Error<bool>("订单不存在");
+                }
+                if (checkOrder.status == 3) // 3代表“已支付”
+                {
+                    await _dal.Db.Ado.RollbackTranAsync();
+                    return Error<bool>("订单已完成结账，无需重复操作");
+                }
                 var Msg = "";var coupon = new sys_coupon();
                 if(CouponsId.HasValue && CouponsId > 0)
                 {
-                     coupon = await _dal.Db.Queryable<sys_coupon>().FirstAsync(a => a.coupon_id == CouponsId);
+                     coupon = await _dal.Db.Queryable<sys_coupon>().With(SqlWith.UpdLock).FirstAsync(a => a.coupon_id == CouponsId);
                     if(coupon != null)
                     {
                         if(coupon.status == 0 || coupon.status == 2)
@@ -282,6 +300,11 @@ namespace WebServiceClass.Services.AppServices
                         }
                         else if(coupon.status == 1)
                         {
+                            if (coupon.total != null && coupon.used >= coupon.total)
+                            {
+                                await _dal.Db.Ado.RollbackTranAsync();
+                                return Error<bool>("优惠券已被抢完，无法使用");
+                            }
                             //更新优惠券状态
                             coupon.used = coupon.used+1;
                             coupon.received = coupon.received+1;
@@ -301,13 +324,13 @@ namespace WebServiceClass.Services.AppServices
                 {
                     case "wechat": //微信
                         decimal service_fee = (decimal)0.00;
-                        var order1 = await _dal.Db.Queryable<sys_order>().Includes(a => a.store).FirstAsync(a => a.order_id == orderId);
+                        var order1 = await _dal.Db.Queryable<sys_order>().Includes(a => a.store).With(SqlWith.UpdLock).FirstAsync(a => a.order_id == orderId);
                         if (order1.table_fee != 0 && order1.payable_amount < order1.table_fee)
                             service_fee = order1.payable_amount * (decimal)0.1;
                         await _dal.Db.Updateable<sys_order>()
                         .SetColumns(a => new sys_order { status = 3, pay_time = DateTime.Now, close_time = DateTime.Now, paymeth = "微信支付",payable_amount = a.payable_amount - coupon.value+ service_fee,service_fee = service_fee,operator_id = userId})
                         .Where(a => a.order_id == orderId).ExecuteCommandAsync();
-                        await _dal.Db.Updateable<sys_restaurant_table>()
+                        await _dal.Db.Updateable<sys_restaurant_table>().With(SqlWith.UpdLock)
                         .SetColumns(a => new sys_restaurant_table { status = 4, order_id = null }).Where(a => a.table_id == order1.table_id).ExecuteCommandAsync();
                         var order = await _dal.Db.Queryable<sys_order>().Includes(a => a.store).FirstAsync(a => a.order_id == orderId);
 
@@ -316,7 +339,7 @@ namespace WebServiceClass.Services.AppServices
                         await _dal.Db.Insertable(new sys_payment
                         {
                             order_id = orderId,
-                            payment_no =  DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(1000, 9999),
+                            payment_no =  DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(100000, 999999),
                             pay_amount = order.payable_amount,
                             pay_type = 1,
                             status = 2,
@@ -335,10 +358,21 @@ namespace WebServiceClass.Services.AppServices
                 await _dal.Db.Ado.CommitTranAsync();
                 return Success(true, "结账成功");   
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                // 回滚事务（必须加，防止事务挂起导致锁未释放）
+                await _dal.Db.Ado.RollbackTranAsync();
+
+                // 识别 MySQL 锁等待超时异常（错误码：1205）
+                if (ex.InnerException != null && ex.InnerException.Message.Contains("1205"))
+                {
+                    return Error<bool>("当前订单正在处理中，请稍后重试");
+                }
+
+                // 其他异常返回通用提示（避免暴露敏感信息）
+                return Error<bool>("结账失败，请联系系统管理员");
+
             }
         }
 
@@ -365,8 +399,8 @@ namespace WebServiceClass.Services.AppServices
                     transfer_time = DateTime.Now,
                     type = 2
                 }).ExecuteCommandAsync();
-                var table = await _dal.Db.Queryable<sys_restaurant_table>().FirstAsync(a=>a.table_id == newTableId);
-                var order = await _dal.Db.Queryable<sys_order>().Where(a=>a.order_id == orderId || a.order_id == table.order_id).ToListAsync();
+                var table = await _dal.Db.Queryable<sys_restaurant_table>().With(SqlWith.UpdLock).FirstAsync(a=>a.table_id == newTableId);
+                var order = await _dal.Db.Queryable<sys_order>().Where(a=>a.order_id == orderId || a.order_id == table.order_id).With(SqlWith.UpdLock).ToListAsync();
                 await _dal.Db.Updateable<sys_restaurant_table>().SetColumns(a =>new sys_restaurant_table { order_id = table.order_id }).Where(a => a.table_id == oldTableId).ExecuteCommandAsync();
                 await _dal.Db.Updateable(new sys_order
                 {
@@ -375,7 +409,7 @@ namespace WebServiceClass.Services.AppServices
                     payable_amount = order.Sum(o => o.payable_amount),
                 }).ExecuteCommandAsync();
 
-                var orderitem = await _dal.Db.Queryable<sys_order_item>().Where(a=>a.order_id==orderId)
+                var orderitem = await _dal.Db.Queryable<sys_order_item>().With(SqlWith.UpdLock).Where(a=>a.order_id==orderId)
                     .Select(a =>new sys_order_item
                     {
                         item_id = 0,
@@ -421,11 +455,11 @@ namespace WebServiceClass.Services.AppServices
                     transfer_time = DateTime.Now,
                     type = 1
                 }).ExecuteCommandAsync();
-                await _dal.Db.Updateable<sys_restaurant_table>()
+                await _dal.Db.Updateable<sys_restaurant_table>().With(SqlWith.UpdLock)
                     .SetColumns(a=>new sys_restaurant_table { status =1,order_id = null }).Where(a=>a.table_id == oldTableId).ExecuteCommandAsync();
-                await _dal.Db.Updateable<sys_restaurant_table>()
+                await _dal.Db.Updateable<sys_restaurant_table>().With(SqlWith.UpdLock)
                     .SetColumns(a => new sys_restaurant_table { status = 2, order_id = orderId }).Where(a => a.table_id == newTableId).ExecuteCommandAsync();
-                await _dal.Db.Updateable<sys_order>().SetColumns(a => a.table_id == newTableId).Where(a => a.order_id == orderId).ExecuteCommandAsync();
+                await _dal.Db.Updateable<sys_order>().With(SqlWith.UpdLock).SetColumns(a => a.table_id == newTableId).Where(a => a.order_id == orderId).ExecuteCommandAsync();
 
                 await _dal.Db.Ado.CommitTranAsync();
 

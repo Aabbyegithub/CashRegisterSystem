@@ -47,7 +47,7 @@ namespace WebServiceClass.Services.CouponServices
 
         public async Task<ApiResponse<bool>> AddCouponAsync(sys_coupon coupon)
         {
-            coupon.coupon_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(1000, 9999);
+            coupon.coupon_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(100000, 999999);
             var result = await _dal.Db.Insertable(coupon).ExecuteCommandAsync() > 0;
             return Success(result, result ? "新增成功" : "新增失败");
         }

@@ -55,10 +55,6 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
-            "SqlSugar.IOC": {
-              "target": "Package",
-              "version": "[2.0.0, )"
-            },
             "SqlSugarCore": {
               "target": "Package",
               "version": "[5.1.4.154, )"
@@ -242,13 +238,9 @@
               "target": "Package",
               "version": "[4.2.2, )"
             },
-            "SqlSugar.IOC": {
-              "target": "Package",
-              "version": "[2.0.0, )"
-            },
             "SqlSugarCore": {
               "target": "Package",
-              "version": "[5.1.4.193, )"
+              "version": "[5.1.4.202, )"
             },
             "StackExchange.Redis": {
               "target": "Package",

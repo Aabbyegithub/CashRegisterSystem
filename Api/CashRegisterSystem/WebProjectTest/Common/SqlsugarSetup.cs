@@ -2,7 +2,6 @@
 using MyNamespace;
 using SqlSugar;
 using SqlSugar.Extensions;
-using SqlSugar.IOC;
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
