@@ -37,7 +37,7 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="创建时间" prop="created_at" align="center" :formatter="(row: { created_at: any; }) => row.created_at || '--'" />
+          <el-table-column label="创建时间" prop="created_at" align="center" />
           <el-table-column label="操作" align="center" width="180">
             <template #default="scope">
               <el-button type="text" style="color: #67c23a;" @click="openEditModal(scope.row)">编辑</el-button>

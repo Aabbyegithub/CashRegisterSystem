@@ -294,10 +294,6 @@ const addQueueRules = {
   phone: [
     { required: true, message: '请输入手机号', trigger: 'blur' },
     { pattern: /^1\d{10}$/, message: '请输入正确的手机号', trigger: 'blur' }
-  ],
-  partySize: [
-    { required: true, message: '请输入用餐人数', trigger: 'blur' },
-    { type: Number, min: 1, message: '人数必须大于0', trigger: 'blur' }
   ]
 };
 

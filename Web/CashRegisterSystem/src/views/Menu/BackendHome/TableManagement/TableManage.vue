@@ -84,7 +84,7 @@
               scope.row.status === 3 ? 'info' :
               scope.row.status === 4 ? 'danger' : undefined
             ">
-              {{ statusOptions.find((a: { value: any; }) => a.value === scope.row.status)?.label || scope.row.status }}
+              {{ statusOptions.find(a => a.value === scope.row.status).label || scope.row.status }}
             </el-tag>
           </template>
         </el-table-column>
@@ -273,7 +273,7 @@ const storeList = ref<any[]>([]);
 //   { label: '方桌', value: '方桌' },
 //   { label: '卡座', value: '卡座' },
 // ]);
-const statusOptions = ref<Options[]>([
+const statusOptions = ref<any[]>([
   { label: '全部', value: '' },
   { label: '空闲', value: 1 },
   { label: '占用', value: 2},

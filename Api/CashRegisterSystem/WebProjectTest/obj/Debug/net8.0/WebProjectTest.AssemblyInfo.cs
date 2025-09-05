@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WebProjectTest")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+58e72acbd665957ecae5b8874de9170e13f65609")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b54dd512004bb6e26b9d32c600ca1ad2eba2393f")]
 [assembly: System.Reflection.AssemblyProductAttribute("WebProjectTest")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WebProjectTest")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

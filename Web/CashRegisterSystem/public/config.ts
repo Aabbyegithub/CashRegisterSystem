@@ -4,7 +4,7 @@ const ENV = import.meta.env.MODE || 'development'
 // API 基础地址
 const API_BASE_URL =
   ENV === 'production'
-    ? 'https://api.yourdomain.com'
+    ? 'http://txsq.eidpb.cn'
     : 'https://localhost:7092'
 
 const APP_CONFIG = {

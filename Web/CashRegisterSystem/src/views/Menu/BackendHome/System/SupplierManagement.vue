@@ -94,7 +94,7 @@ import {
   updateSupplier,
   deleteSupplier,
   type Supplier
-} from '../../../../api/Supplier';
+} from '../../../../api/supplier';
 
 const searchName = ref('');
 const searchStatus = ref('');
