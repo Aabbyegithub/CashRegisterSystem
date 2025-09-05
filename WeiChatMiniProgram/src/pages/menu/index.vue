@@ -37,7 +37,8 @@
           <view class="dish-info">
             <view class="dish-title">{{ dish.name }}</view>
             <view class="dish-desc">{{ dish.desc }}</view>
-            <view class="dish-price">￥{{ dish.price }}</view>
+            <view v-if="dish.spece == 0" class="dish-price">￥{{ dish.price }}</view>
+            <view v-if="dish.spece == 1" class="dish-price"></view>
           </view>
           <!-- spece==0 直接加购逻辑 -->
             <template v-if="dish.spece == 0">
@@ -78,13 +79,13 @@
           <view class="spec-info">
             <view class="spec-title">{{ selectedDish?.name }}</view>
             <view class="spec-desc">已选：{{ selectedSpec }}<span v-if="spicyList.length >0 && specList.length >0">/</span>{{ selectedSpicy }}</view>
-            <view class="spec-price">￥{{ selectedDish?.price }}</view>
+            <view class="spec-price">￥{{ selcetprice }}</view>
           </view>
         </view>
         <view v-if="specList.length>0" class="spec-section">
           <view class="spec-label">份量</view>
           <view class="spec-options">
-            <view v-for="spec in specList" :key="spec" :class="['spec-option', selectedSpec === spec ? 'active' : '']" @click="selectedSpec = spec">{{ spec }}</view>
+            <view v-for="(spec, idx) in specList" :key="spec" :class="['spec-option', selectedSpec === spec ? 'active' : '']" @click="selectSpec(spec, idx)">{{ spec }}</view>
           </view>
         </view>
         <view v-if="spicyList.length>0" class="spec-section">
@@ -133,7 +134,35 @@
             <view class="cart-total-label">合计：</view>
             <view class="cart-total-price">￥{{ cartTotal }}</view>
           </view>
-          <u-button class="cart-btn" type="primary" custom-style="border-radius: 50rpx;background:#0E8A9E;color:#fff;width:120px;height:40px;font-size:28rpx;margin-right:40rpx" @click="submitOrder">下单</u-button>
+          <u-button class="cart-btn" type="primary" custom-style="border-radius: 50rpx;background:#0E8A9E;color:#fff;width:120px;height:40px;font-size:28rpx;margin-right:40rpx" @click="handleOrderClick">下单</u-button>
+        </view>
+      </view>
+    </u-popup>
+    <!-- 会员弹窗 -->
+    <u-popup :show="showMemberDialog" mode="center" @close="showMemberDialog = false">
+      <view class="member-dialog">
+        <view class="member-header">
+          <view class="member-title">确认下单信息</view>
+        </view>
+        <view class="member-content">
+          <view class="member-item">
+            <view class="member-label">是否会员：</view>
+            <view class="member-value">
+              <u-radio-group v-model="isMember">
+                <u-radio :name="true" label="是" />
+                <u-radio :name="false" label="否" />
+              </u-radio-group>
+            </view>
+          </view>
+          <view class="member-item" v-if="isMember === true">
+            <view class="member-label">手机号：</view>
+            <view class="member-value">
+              <u-input v-model="memberPhone" placeholder="会员绑定手机号" />
+            </view>
+          </view>
+        </view>
+        <view class="member-footer">
+          <u-button class="member-btn" type="primary"  custom-style="background:#0E8A9E;" @click="confirmMember()">确认下单</u-button>
         </view>
       </view>
     </u-popup>
@@ -150,7 +179,7 @@
         </view>
       </view>
       <view @click.stop style="display:inline-block">
-        <u-button class="cart-btn" type="primary" custom-style="border-radius: 50rpx;background:#0E8A9E;color:#fff;width:120px;height:40px;font-size:28rpx;margin-right:40rpx"  @click="submitOrder">下单</u-button>
+        <u-button class="cart-btn" type="primary" custom-style="border-radius: 50rpx;background:#0E8A9E;color:#fff;width:120px;height:40px;font-size:28rpx;margin-right:40rpx"  @click="handleOrderClick">下单</u-button>
       </view>
     </view>
   </view>
@@ -164,10 +193,13 @@ const showSpecDialog = ref(false)
 const selectedDish = ref<any>(null)
 const specList = ref<string[]>(['约1000克'])
 const spicyList = ref<string[]>(['不辣', '正常', '中辣', '重辣'])
+const priceList = ref<string[]>([])
 const selectedSpec = ref(specList.value[0])
+const selcetprice = ref(priceList.value[0])
 const selectedSpicy = ref(spicyList.value[0])
 const qty = ref(1)
 const TableId = ref(0)
+  const orderId = uni.getStorageSync('OrderId')
 
 function openSpecDialog(dish: any) {
   // 获取分量规格数组（查出是一个列表）
@@ -176,7 +208,13 @@ function openSpecDialog(dish: any) {
   specList.value =  specArr.map((item: any) => item.spec_name)
   const specyArr = dishes.value.find(d => d.id === dish.id)?.dish_spec.filter((d: any) => d.spec_type === '辣度') || []
   spicyList.value =specyArr.map((item: any) => item.spec_name)
-
+  if(specList.value.length>0){
+    priceList.value = specArr.map((item: any) => item.price_diff)
+    selcetprice.value = priceList.value[0]
+  }else{
+    priceList.value = []
+    selcetprice.value = dish.price
+  }
   selectedDish.value = dish
   showSpecDialog.value = true
   selectedSpec.value = specList.value[0]
@@ -257,7 +295,8 @@ function addToCart() {
       id: dish.id,
       name: dish.name,
       img: dish.img,
-      price: dish.price,
+      price: selcetprice.value,
+      memberprice: selcetprice.value,
       spec: selectedSpec.value,
       spicy: selectedSpicy.value,
       qty: qty.value
@@ -277,6 +316,28 @@ function changeCartQty(item: any, val: number) {
 function calcCartTotal() {
   cartTotal.value = cartList.value.reduce((sum, item) => sum + item.price * item.qty, 0)
 }
+const showMemberDialog = ref(false)
+const isMember = ref(false)
+const memberPhone = ref('')
+
+function handleOrderClick() {
+  if(orderId){
+    submitOrder()
+    return
+  }
+  // 打开会员选择弹窗
+  showMemberDialog.value = true
+}
+
+function confirmMember() {
+  // 校验手机号（如果是会员）
+  if (isMember.value && !/^1[3-9]\d{9}$/.test(memberPhone.value)) {
+    uni.showToast({ title: '请输入正确的手机号', icon: 'none' })
+    return
+  }
+  showMemberDialog.value = false
+  submitOrder()
+}
 async function submitOrder() {
   if (cartList.value.length === 0) {
     uni.showToast({ title: '购物车为空', icon: 'none' })
@@ -288,14 +349,15 @@ async function submitOrder() {
      sourceType = 1
   }
   const { tableId, storeId,people } = uni.getStorageSync('TableInfo') || {}
-  const orderId = uni.getStorageSync('OrderId')
+
   // 提交订单逻辑
   await request({
-    url: `/api/Client/SaveOrder?store_id=${storeId}&table_id=${tableId}&sourceType=${sourceType}&people=${people}&orderId=${orderId}`,
+    url: `/api/Client/SaveOrder?store_id=${storeId}&table_id=${tableId}&sourceType=${sourceType}&people=${people}&orderId=${orderId}` + (isMember.value ? `&memberPhone=${memberPhone.value}` : ''),
     method: 'POST',
     data:  cartList.value.map(item => ({
     ...item,
     price: String(item.price),
+    memberprice: String(item.memberprice || item.price),
     spec: String(item.spec || ''),
     spicy: String(item.spicy || ''),
     qty: Number(item.qty)
@@ -346,6 +408,10 @@ async function getmenuList(storeId: number) {
     }}).then((res: any) => {
       dishes.value = res.response || []
     })
+}
+function selectSpec(spec: string, idx: number) {
+  selectedSpec.value = spec
+  selcetprice.value = priceList.value[idx]
 }
 </script>
 
@@ -683,5 +749,49 @@ async function getmenuList(storeId: number) {
 }
 .cart-btn {
   margin-left: auto;
+}
+/* 会员弹窗样式 */
+.member-dialog {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  width: 60vw;
+  max-width: 500px;
+}
+.member-header {
+  margin-bottom: 20rpx;
+}
+.member-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}
+.member-content {
+  margin-bottom: 20rpx;
+}
+.member-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+.member-label {
+  font-size: 28rpx;
+  color: #333;
+  width: 100px;
+}
+.member-value {
+  flex: 1;
+}
+.member-footer {
+  text-align: center;
+}
+.member-btn {
+  width: 100%;
+  border-radius: 50rpx;
+  background: #0E8A9E;
+  color: #fff;
+  height: 40px;
+  font-size: 28rpx;
 }
 </style>

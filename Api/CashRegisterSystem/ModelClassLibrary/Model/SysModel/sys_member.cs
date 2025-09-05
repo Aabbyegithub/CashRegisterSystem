@@ -80,7 +80,7 @@ namespace MyNamespace
            public long? referrer_id {get;set;}
 
         /// <summary>
-        /// Desc:推荐人会员ID（老带新用）
+        /// Desc:账户余额
         /// Default:
         /// Nullable:True
         /// </summary>           

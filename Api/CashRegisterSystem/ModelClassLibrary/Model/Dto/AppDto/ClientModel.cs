@@ -37,6 +37,7 @@ namespace ModelClassLibrary.Model.Dto.AppDto
         public string Name { get; set; }
         public string Desc { get; set; }
         public decimal Price { get; set; } = 0;
+       public decimal memberprice { get; set; }
         /// <summary>
         /// 是否存在辣度或其他选择
         /// </summary>
@@ -52,6 +53,7 @@ namespace ModelClassLibrary.Model.Dto.AppDto
         public long Id { get; set; }
         public string name { get; set; }
         public string price { get; set; }
+        public string memberprice { get; set; }
         public string spec { get; set; }
         public string spicy { get; set; }
         public int qty { get; set; }

@@ -14,9 +14,9 @@
         <el-form-item label="活动类型">
           <el-select v-model="filterForm.type" placeholder="请选择类型" clearable style="width: 150px;">
             <el-option label="全部" value="" />
-            <el-option label="满减" value="满减" />
-            <el-option label="折扣" value="折扣" />
-            <el-option label="赠品" value="赠品" />
+            <el-option label="满减" value="1" />
+            <el-option label="折扣" value="2" />
+            <el-option label="赠品" value="3" />
           </el-select>
         </el-form-item>
         <el-form-item label="状态">
@@ -55,6 +55,8 @@
             <el-tag :type="statusTagType(scope.row.status)">{{ scope.row.status }}</el-tag>
           </template>
         </el-table-column>
+        <el-table-column prop="min_consumption" label="最低消费金额" min-width="120"  align="center"/>
+        <el-table-column prop="value" label="优惠面值或折扣" min-width="120"  align="center"/>
         <el-table-column label="操作" min-width="100" align="center">
           <template #default="scope">
             <el-button type="primary" size="small" @click="openDialog('edit', scope.row)">编辑</el-button>
@@ -88,9 +90,9 @@
         </el-form-item>
         <el-form-item label="类型" prop="type">
           <el-select v-model="dialogForm.type" placeholder="请选择类型">
-            <el-option label="满减" value="满减" />
-            <el-option label="折扣" value="折扣" />
-            <el-option label="赠品" value="赠品" />
+            <el-option label="满减" value="1" />
+            <el-option label="折扣" value="2" />
+            <el-option label="赠品" value="3" />
           </el-select>
         </el-form-item>
         <el-form-item label="开始时间" prop="startTime">
@@ -101,6 +103,15 @@
         </el-form-item>
         <el-form-item label="适用范围" prop="scope">
           <el-input v-model="dialogForm.scope" placeholder="请输入适用范围" />
+        </el-form-item>
+        <el-form-item v-if="dialogForm.type != '3'" label="最低消费金额" prop="scope">
+          <el-input v-model="dialogForm.min_consumption" placeholder="不填默认折扣支持所有消费" />
+        </el-form-item>
+        <el-form-item v-if="dialogForm.type == '1'" label="优惠面值" prop="value">
+          <el-input v-model="dialogForm.value" placeholder="请输入优惠面值" />
+        </el-form-item>
+        <el-form-item v-if="dialogForm.type == '2'" label="折扣" prop="value">
+          <el-input v-model="dialogForm.value" placeholder="请输入折扣" />
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-select v-model="dialogForm.status" placeholder="请选择状态">
@@ -119,7 +130,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, nextTick } from 'vue';
 import { dayjs, ElMessage, ElMessageBox } from 'element-plus';
 import type { FormInstance, FormRules } from 'element-plus';
 import { getStoreList } from '../../../../api/login';
@@ -142,6 +153,8 @@ interface Promotion {
   end_time: string;
   applicable_scope: string;
   status: string | number;
+  min_consumption?: string;
+  value?: string;
 }
 const promotionList = ref<Promotion[]>([]);
 const total = ref(0);
@@ -162,6 +175,8 @@ const dialogForm = reactive({
   endTime: '',
   scope: '',
   status: '',
+  min_consumption: '',
+  value: '',
 });
 const dialogRules = reactive<FormRules>({
   name: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
@@ -203,11 +218,13 @@ const handleQuery = async () => {
       promotion_id: item.promotion_id,
       store_id: item.store_id,
       promotion_name: item.promotion_name,
-      type: ['满减', '折扣', '赠品'][item.type] ?? item.type,
+      type: ['','满减', '折扣', '赠品'][item.type] ?? item.type,
       start_time: dayjs(item.start_time).format('YYYY-MM-DD HH:mm:ss'),
       end_time: dayjs(item.end_time).format('YYYY-MM-DD HH:mm:ss'),
       applicable_scope: item.applicable_scope,
       status: ['未开始', '进行中', '已结束'][item.status] ?? item.status,
+      min_consumption: item.min_consumption ? item.min_consumption + '元' : '',
+      value: item.type === 1 ? (item.value ? item.value + '元' :'') : (item.type === 2 ? (item.value ? item.value + '折' : '') : ''),
     }));
     total.value = data.count || data.response.length;
   } else {
@@ -243,11 +260,17 @@ const openDialog = (type: 'add' | 'edit', row?: Promotion) => {
       promotion_id: row.promotion_id,
       store_id: row.store_id,
       name: row.promotion_name,
-      type: row.type,
+      type: row.type === '满减' ? '1' : row.type === '折扣' ? '2' : row.type === '赠品' ? '3' : row.type,
       startTime: row.start_time,
       endTime: row.end_time,
       scope: row.applicable_scope,
       status: row.status,
+      min_consumption: row.min_consumption ? row.min_consumption.replace('元','') : '',
+      value: row.value ? (row.type === '折扣' ? row.value.replace('折','') : row.value.replace('元','')) : '',
+    });
+    // 触发 type 的响应式更新，确保表单项立即显示
+    nextTick(() => {
+      dialogForm.type = dialogForm.type;
     });
   } else {
     Object.assign(dialogForm, {
@@ -259,13 +282,15 @@ const openDialog = (type: 'add' | 'edit', row?: Promotion) => {
       endTime: '',
       scope: '',
       status: '',
+      min_consumption: '',
+      value: '',
     });
   }
 };
 const handleDialogConfirm = async () => {
   dialogFormRef.value?.validate(async (valid) => {
     if (valid) {
-      const typeMap: any = { '满减': 0, '折扣': 1, '赠品': 2 };
+      const typeMap: any = { '1': 1, '2': 2, '3': 3 };
       const statusMap: any = { '未开始': 0, '进行中': 1, '已结束': 2 };
       const payload = {
         promotion_id: dialogForm.promotion_id,
@@ -277,6 +302,8 @@ const handleDialogConfirm = async () => {
         rule: '',
         applicable_scope: dialogForm.scope,
         status: statusMap[dialogForm.status] ?? '',
+        min_consumption: dialogForm.min_consumption ? parseFloat(dialogForm.min_consumption) : 0,
+        value: dialogForm.value ? parseFloat(dialogForm.value) : 0,
       };
       let res:any;
       if (dialogForm.promotion_id) {

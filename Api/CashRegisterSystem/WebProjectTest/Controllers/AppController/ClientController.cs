@@ -55,9 +55,9 @@ namespace WebProjectTest.Controllers.AppController
         /// <param name="people"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ApiResponse<bool>> SaveOrderAsync(List<Order> order, int store_id, int table_id, int sourceType, int people, int? orderId)
+        public async Task<ApiResponse<bool>> SaveOrderAsync(List<Order> order, int store_id, int table_id, int sourceType, int people, int? orderId,string?memberPhone)
         {
-            return await _clientServices.SaveOrder(order, store_id, table_id, sourceType, people, orderId);
+            return await _clientServices.SaveOrder(order, store_id, table_id, sourceType, people, orderId,memberPhone);
         }
 
         /// <summary>

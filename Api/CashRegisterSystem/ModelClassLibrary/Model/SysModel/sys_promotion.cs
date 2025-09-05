@@ -73,6 +73,9 @@ namespace MyNamespace
            /// </summary>           
            public string? applicable_scope {get;set;}
 
+           public decimal? min_consumption {get;set;}
+           public decimal? value {get;set;}
+
            /// <summary>
            /// Desc:状态（1-可用；0-未开始 2过期）
            /// Default:

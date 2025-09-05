@@ -42,7 +42,7 @@ namespace WebIServices.IServices.ClientIServices
         /// <param name="sourceType"></param>
         /// <param name="people"></param>
         /// <returns></returns>
-        Task<ApiResponse<bool>> SaveOrder(List<Order> order, int store_id, int table_id, int sourceType, int people, int? orderId);
+        Task<ApiResponse<bool>> SaveOrder(List<Order> order, int store_id, int table_id, int sourceType, int people, int? orderId,string? memberPhone);
 
         /// <summary>
         /// 获取桌台订单

@@ -57,7 +57,8 @@ namespace WebServiceClass.Services.AppServices
                       Name = a.dish_name,
                       Desc = a.description,
                       DishCategoryType = a.category_id,
-                      Price = a.member_price,
+                      Price = a.price,
+                      memberprice = a.member_price,
                       Spece = a.dish_spec.Count() > 0 ? 1 : 0,
                       Img = a.image_url,
                       dish_spec = a.dish_spec
@@ -79,7 +80,7 @@ namespace WebServiceClass.Services.AppServices
             return Success(res, "菜品类型获取成功");
         }
 
-        public async Task<ApiResponse<bool>> SaveOrder(List<Order> order, int store_id, int table_id, int sourceType, int people,int? order_Id)
+        public async Task<ApiResponse<bool>> SaveOrder(List<Order> order, int store_id, int table_id, int sourceType, int people,int? order_Id,string?memberPhone)
         {
             try
             {
@@ -87,15 +88,19 @@ namespace WebServiceClass.Services.AppServices
                 var table = await _dal.Db.Queryable<sys_restaurant_table>()
                     .Where(a => a.store_id == store_id && a.table_id == table_id && order_Id == null).With(SqlWith.UpdLock)
                     .FirstAsync();
+
                 if (table == null)
                 {
                     Fail<bool>("该桌台有未完成的订单！下单失败");
                 }
+                 var member = await _dal.Db.Queryable<sys_member>().FirstAsync(a => a.phone == memberPhone && a.status ==1);
                 if (order_Id.HasValue)
                 {
                     var orderData = await _dal.Db.Queryable<sys_order>().With(SqlWith.UpdLock).FirstAsync(a=>a.order_id == order_Id);
-                    orderData.total_amount = orderData.total_amount + order.Sum(o => decimal.Parse(o.price) * o.qty);
-                    orderData.payable_amount = orderData.payable_amount + order.Sum(o => decimal.Parse(o.price) * o.qty);
+                    orderData.total_amount = orderData.total_amount + 
+                        (orderData.member_id.HasValue ?  order.Sum(o => decimal.Parse(o.memberprice) * o.qty) :  order.Sum(o => decimal.Parse(o.price) * o.qty));
+                    orderData.payable_amount = orderData.payable_amount + 
+                        (orderData.member_id.HasValue ?  order.Sum(o => decimal.Parse(o.memberprice) * o.qty) :  order.Sum(o => decimal.Parse(o.price) * o.qty));
                     await _dal.Db.Updateable(orderData).ExecuteCommandAsync();
 
                     var orderItems = order.Select(o => new sys_order_item
@@ -103,8 +108,8 @@ namespace WebServiceClass.Services.AppServices
                         order_id =(int) order_Id,
                         dish_id = o.Id,
                         quantity = o.qty,
-                        unit_price = decimal.Parse(o.price),
-                        total_price = decimal.Parse(o.price) * o.qty,
+                        unit_price = member == null ? decimal.Parse(o.price) : decimal.Parse(o.memberprice),
+                        total_price = member == null ? decimal.Parse(o.price) * o.qty : decimal.Parse(o.memberprice) * o.qty,
                         specification = $"{o.spec},{o.spicy}",
                         status = 1, // 状态 1-待制作
                         is_rush = 0,
@@ -135,20 +140,21 @@ namespace WebServiceClass.Services.AppServices
                 }
                 else
                 {
-
+                   
 
                     var orderId = await _dal.Db.Insertable(new sys_order
                     {
                         store_id = store_id,
                         table_id = table_id,
+                        member_id = member?.member_id,
                         order_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(100000, 999999),
                         order_type = 1, // 堂食
                         source_type = (byte)sourceType, // 下单方式
                         status = 2,// 已下单
                         discount_amount = 0, // 优惠金额
                         service_fee = 0, // 服务费
-                        total_amount = order.Sum(o => decimal.Parse(o.price) * o.qty),
-                        payable_amount = order.Sum(o => decimal.Parse(o.price) * o.qty),
+                        total_amount = member == null ? order.Sum(o => decimal.Parse(o.price) * o.qty) :  order.Sum(o => decimal.Parse(o.memberprice) * o.qty),
+                        payable_amount =  member == null ? order.Sum(o => decimal.Parse(o.price) * o.qty) :  order.Sum(o => decimal.Parse(o.memberprice) * o.qty),
                         table_fee = table.min_consumption, // 桌台费
                         start_time = DateTime.Now,
                         is_split = 0, // 是否分单
@@ -166,8 +172,8 @@ namespace WebServiceClass.Services.AppServices
                         order_id = orderId,
                         dish_id = o.Id,
                         quantity = o.qty,
-                        unit_price = decimal.Parse(o.price),
-                        total_price = decimal.Parse(o.price) * o.qty,
+                        unit_price =member == null ? decimal.Parse(o.price) : decimal.Parse(o.memberprice),
+                        total_price =member == null ? decimal.Parse(o.price) * o.qty : decimal.Parse(o.memberprice) * o.qty,
                         specification = $"{o.spec},{o.spicy}",
                         status = 1, // 状态 1-待制作
                         is_rush = 0,
@@ -275,20 +281,20 @@ namespace WebServiceClass.Services.AppServices
             {
                 await _dal.Db.Ado.BeginTranAsync();
 
-                var checkOrder = await _dal.Db.Queryable<sys_order>()
+                var order1 = await _dal.Db.Queryable<sys_order>()
                 .With(SqlWith.UpdLock) // 加锁防止并发查询
                 .FirstAsync(a => a.order_id == orderId);
-                if (checkOrder == null)
+                if (order1 == null)
                 {
                     await _dal.Db.Ado.RollbackTranAsync();
                     return Error<bool>("订单不存在");
                 }
-                if (checkOrder.status == 3) // 3代表“已支付”
+                if (order1.status == 3) // 3代表“已支付”
                 {
                     await _dal.Db.Ado.RollbackTranAsync();
                     return Error<bool>("订单已完成结账，无需重复操作");
                 }
-                var Msg = "";var coupon = new sys_coupon();
+                var Msg = "OK";var coupon = new sys_coupon();var remark = "";
                 if(CouponsId.HasValue && CouponsId > 0)
                 {
                      coupon = await _dal.Db.Queryable<sys_coupon>().With(SqlWith.UpdLock).FirstAsync(a => a.coupon_id == CouponsId);
@@ -305,6 +311,7 @@ namespace WebServiceClass.Services.AppServices
                                 await _dal.Db.Ado.RollbackTranAsync();
                                 return Error<bool>("优惠券已被抢完，无法使用");
                             }
+                            remark += $"优惠卷-{coupon.value}";
                             //更新优惠券状态
                             coupon.used = coupon.used+1;
                             coupon.received = coupon.received+1;
@@ -320,40 +327,103 @@ namespace WebServiceClass.Services.AppServices
                         Msg = "优惠券不存在";
                     }
                 }
+
+                decimal service_fee = (decimal)0.00; var member = new sys_member(); string res = "";decimal promotionValue = (decimal)0.00;
+
+                //查询是否有活动
+                var promotion = await _dal.Db.Queryable<sys_promotion>().FirstAsync(a => a.status == 1 && order1.created_at >= a.start_time && order1.created_at <= a.end_time);
+                if (promotion != null)
+                {
+                    if (promotion.type == 1 && order1.total_amount >= promotion.min_consumption)
+                    {
+                       promotionValue =(decimal) promotion.value;  remark += $"活动-{promotion.start_time}-{promotion.end_time}-{promotion.promotion_name}-{ promotion.value}";
+                    }
+
+                    if(promotion.type == 2 && promotion.min_consumption.HasValue&& order1.total_amount >= promotion.min_consumption){
+                        promotionValue =(decimal)(order1.total_amount * (1 - promotion.value/100)); 
+                        remark += $"活动-{promotion.start_time}-{promotion.end_time}-{promotion.promotion_name}-{ promotion.value}折";
+                    }
+                    if(promotion.type == 2 && !promotion.min_consumption.HasValue)
+                    {
+                         promotionValue =(decimal)(order1.total_amount * (1 - promotion.value/100));
+                         remark += $"活动-{promotion.start_time}-{promotion.end_time}-{promotion.promotion_name}-{ promotion.value}折";
+                    }
+                }
+
+                if (order1.table_fee != 0 && order1.payable_amount < order1.table_fee)
+                    service_fee = order1.payable_amount * (decimal)0.1;
+                await _dal.Db.Updateable<sys_order>()
+                .SetColumns(a => new sys_order { status = 3, pay_time = DateTime.Now, close_time = DateTime.Now, 
+                    paymeth =GetPaymentMethod(type),payable_amount = (a.payable_amount - coupon.value + service_fee-promotionValue), service_fee = service_fee, operator_id = userId })
+                .Where(a => a.order_id == orderId).ExecuteCommandAsync();
+                await _dal.Db.Updateable<sys_restaurant_table>().With(SqlWith.UpdLock)
+                .SetColumns(a => new sys_restaurant_table { status = 4, order_id = null }).Where(a => a.table_id == order1.table_id).ExecuteCommandAsync();
+                var order = await _dal.Db.Queryable<sys_order>().Includes(a => a.store).FirstAsync(a => a.order_id == orderId);
+                if (order.member_id.HasValue)
+                {
+                    member = await _dal.Db.Queryable<sys_member>().With(SqlWith.UpdLock).FirstAsync(a => a.member_id == order.member_id && a.status == 1);
+
+                }
+                decimal pay = order.payable_amount;
+                //查询是否有活动
+
+
+                //会员优先扣除充值金额
+                if (member != null)
+                {
+
+                    if (member.balance >= order.payable_amount)
+                    {
+                        member.balance = member.balance - order.payable_amount;
+                        member.total_points = member.total_points + (int)order.payable_amount;
+                        pay = 0;
+                        remark += $"会员支付-{order.payable_amount}";
+                    }
+                    else
+                    {
+                        member.balance = 0;
+                        pay = order.payable_amount - (decimal)member.balance;
+                        member.total_points = member.total_points + (int)member.balance;
+                         remark += $"会员支付-{member.balance}";
+                    }
+
+                }
                 switch (type)
                 {
                     case "wechat": //微信
-                        decimal service_fee = (decimal)0.00;
-                        var order1 = await _dal.Db.Queryable<sys_order>().Includes(a => a.store).With(SqlWith.UpdLock).FirstAsync(a => a.order_id == orderId);
-                        if (order1.table_fee != 0 && order1.payable_amount < order1.table_fee)
-                            service_fee = order1.payable_amount * (decimal)0.1;
-                        await _dal.Db.Updateable<sys_order>()
-                        .SetColumns(a => new sys_order { status = 3, pay_time = DateTime.Now, close_time = DateTime.Now, paymeth = "微信支付",payable_amount = a.payable_amount - coupon.value+ service_fee,service_fee = service_fee,operator_id = userId})
-                        .Where(a => a.order_id == orderId).ExecuteCommandAsync();
-                        await _dal.Db.Updateable<sys_restaurant_table>().With(SqlWith.UpdLock)
-                        .SetColumns(a => new sys_restaurant_table { status = 4, order_id = null }).Where(a => a.table_id == order1.table_id).ExecuteCommandAsync();
-                        var order = await _dal.Db.Queryable<sys_order>().Includes(a => a.store).FirstAsync(a => a.order_id == orderId);
 
-                        var res = await WeChatPayHelper.CallCustomerUnifiedRechargeApi(url, "餐饮收银", "餐饮收银订单支付", order?.order_no, order.payable_amount, Code, order.store?.store_code, 0);
-                        //支付记录
-                        await _dal.Db.Insertable(new sys_payment
+                        if (pay!=0)
                         {
-                            order_id = orderId,
-                            payment_no =  DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(100000, 999999),
-                            pay_amount = order.payable_amount,
-                            pay_type = 1,
-                            status = 2,
-                            pay_time = DateTime.Now,
-                            coupon_id = coupon?.coupon_id
-
-                        }).ExecuteCommandAsync();
-                        Msg = res;
+                              res = await WeChatPayHelper.CallCustomerUnifiedRechargeApi(url, "餐饮收银", "餐饮收银订单支付", order?.order_no, pay, Code, order.store?.store_code, 0);
+                             remark += $"微信支付-{pay}";
+                        }
+                        if (res !="OK")
+                        {
+                            Msg = res;
+                        }
                         break;
                     case "alipay": //支付宝
 
                         break;
                     default:
                         break;
+                }
+                //支付记录
+                await _dal.Db.Insertable(new sys_payment
+                {
+                    order_id = orderId,
+                    payment_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(100000, 999999),
+                    pay_amount = order.payable_amount,
+                    pay_type = 1,
+                    status = 2,
+                    pay_time = DateTime.Now,
+                    coupon_id = coupon?.coupon_id,
+                    remark = $"支付方式：{remark}"
+
+                }).ExecuteCommandAsync();
+                if (Msg !="OK")
+                {
+                    throw new Exception(Msg);
                 }
                 await _dal.Db.Ado.CommitTranAsync();
                 return Success(true, "结账成功");   
@@ -371,20 +441,32 @@ namespace WebServiceClass.Services.AppServices
                 }
 
                 // 其他异常返回通用提示（避免暴露敏感信息）
-                return Error<bool>("结账失败，请联系系统管理员");
+                return Error<bool>($"结账失败，请联系系统管理员{ex.Message}");
 
             }
         }
 
-        /// <summary>
-        /// 并桌--不更新桌台状态
-        /// </summary>
-        /// <param name="oldTableId"></param>
-        /// <param name="newTableId"></param>
-        /// <param name="orderId"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task<ApiResponse<bool>> MergeTables(int oldTableId, int newTableId, int orderId)
+        private string GetPaymentMethod(string type)
+        {
+            return type switch
+            {
+                "wechat" => "微信支付",
+                "alipay" => "支付宝支付",
+                "cash" => "现金支付",
+                "unionpay" => "银联支付", // 便于扩展新支付方式
+                _ => "未知支付方式"
+            };
+        }
+
+/// <summary>
+/// 并桌--不更新桌台状态
+/// </summary>
+/// <param name="oldTableId"></param>
+/// <param name="newTableId"></param>
+/// <param name="orderId"></param>
+/// <returns></returns>
+/// <exception cref="NotImplementedException"></exception>
+public async Task<ApiResponse<bool>> MergeTables(int oldTableId, int newTableId, int orderId)
         {
             try
             {

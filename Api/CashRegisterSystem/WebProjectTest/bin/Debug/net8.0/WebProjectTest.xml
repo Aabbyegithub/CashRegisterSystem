@@ -72,7 +72,7 @@
             <param name="store_id"></param>
             <returns></returns>
         </member>
-        <member name="M:WebProjectTest.Controllers.AppController.ClientController.SaveOrderAsync(System.Collections.Generic.List{ModelClassLibrary.Model.Dto.AppDto.Order},System.Int32,System.Int32,System.Int32,System.Int32,System.Nullable{System.Int32})">
+        <member name="M:WebProjectTest.Controllers.AppController.ClientController.SaveOrderAsync(System.Collections.Generic.List{ModelClassLibrary.Model.Dto.AppDto.Order},System.Int32,System.Int32,System.Int32,System.Int32,System.Nullable{System.Int32},System.String)">
             <summary>
             下单
             </summary>
