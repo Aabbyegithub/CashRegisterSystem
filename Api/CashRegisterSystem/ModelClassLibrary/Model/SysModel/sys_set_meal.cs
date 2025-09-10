@@ -85,6 +85,14 @@ namespace MyNamespace
            /// Nullable:False
            /// </summary>           
            public DateTime end_time {get;set;}
+           public string? image_url { get;set;}
+
+
+        [SugarColumn(IsIgnore = true)]
+        public List<sys_set_meal_item> meal_item { get; set; }
+
+        [Navigate(NavigateType.OneToMany, nameof(meal_id), nameof(sys_set_meal_item.meal_id))]//一对一 
+        public List<sys_set_meal_item>? item { get; set; }
 
     }
 }

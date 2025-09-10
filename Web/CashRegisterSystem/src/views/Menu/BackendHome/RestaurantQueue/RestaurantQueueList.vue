@@ -1,5 +1,34 @@
 <template>
   <div class="table-management-container">
+
+        <!-- 统计卡片区 -->
+    <div class="stats-container">
+      <div class="stat-card stat-waiting">
+        <div class="stat-content">
+          <div class="stat-label">当前等待</div>
+          <div class="stat-value waiting">{{ stats.waitingCount }}</div>
+          <div class="stat-desc">桌台不足 建议分流</div>
+        </div>
+      </div>
+      <div class="stat-card stat-time">
+        <div class="stat-content">
+          <div class="stat-label">平均等待时间</div>
+          <div class="stat-value time">{{ stats.averageWaitTime }}<span class="stat-unit">分钟</span></div>
+        </div>
+      </div>
+      <div class="stat-card stat-total">
+        <div class="stat-content">
+          <div class="stat-label">今日累计排队</div>
+          <div class="stat-value total">{{ stats.totalToday }}</div>
+        </div>
+      </div>
+      <div class="stat-card stat-rate">
+        <div class="stat-content">
+          <div class="stat-label">过号率</div>
+          <div class="stat-value rate">{{ stats.skippedRate }}<span class="stat-unit">%</span></div>
+        </div>
+      </div>
+    </div>
     <!-- 筛选区域 -->
     <el-form class="filter-bar" :inline="true" @submit.prevent>
       <el-form-item label="门店：">
@@ -24,49 +53,21 @@
       <el-form-item>
         <el-input v-model="searchKeyword" placeholder="搜索手机号/姓名..." clearable @keyup.enter="loadQueueData" style="width:200px;" />
       </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="loadQueueData">查询</el-button>
-      </el-form-item>
-      <el-form-item>
+      <el-form-item class="action-buttons">
+        <el-button type="primary" style="background-color: #22A2B6;" @click="loadQueueData">查询</el-button>
         <el-button @click="handleReset">重置</el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="showAddQueueModal = true">新增排队</el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="loadQueueData">刷新</el-button>
+        <el-button @click="showAddQueueModal = true">新增排队</el-button>
       </el-form-item>
     </el-form>
-
-    <!-- 统计卡片区 -->
-    <div class="stats-container">
-      <div class="stat-card">
-        <div class="stat-label">当前等待</div>
-        <div class="stat-value waiting">{{ stats.waitingCount }}</div>
-        <div class="stat-desc">桌台不足，建议分流</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">平均等待时间</div>
-        <div class="stat-value time">{{ stats.averageWaitTime }}分钟</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">今日累计排队</div>
-        <div class="stat-value total">{{ stats.totalToday }}</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">过号率</div>
-        <div class="stat-value rate">{{ stats.skippedRate }}%</div>
-      </div>
-    </div>
 
     <!-- 排队列表区域 -->
     <div class="table-list">
       <el-table :data="queueList" border style="width: 100%;height: 48vh;" :header-cell-style="{ background: '#f8f9fa', color: '#606266' }">
         <el-table-column type="index" label="序号" width="60" align="center" />
-        <el-table-column prop="queue_no" label="排队号" align="center">
-          <template #default="scope">
+        <el-table-column prop="queue_no" label="排队号" align="center" width="100" >
+          <!-- <template #default="scope">
             <el-tag type="primary">{{ scope.row.queue_no }}</el-tag>
-          </template>
+          </template> -->
         </el-table-column>
         <!-- <el-table-column prop="customerName" label="姓名" align="center" />
         <el-table-column prop="phone" label="手机号" align="center">
@@ -74,10 +75,10 @@
             {{ formatPhone(scope.row.phone) }}
           </template>
         </el-table-column> -->
-        <el-table-column prop="party_size" label="人数" align="center">
-          <template #default="scope">
+        <el-table-column prop="party_size" label="用餐人数" align="center" width="100" >
+          <!-- <template #default="scope">
             <el-tag>{{ scope.row.party_size }}</el-tag>
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column prop="createTime" label="排队时间" align="center">
           <template #default="scope">
@@ -96,23 +97,42 @@
         </el-table-column>
         <el-table-column prop="status" label="状态" align="center">
           <template #default="scope">
-            <el-tag :type="
-              scope.row.status === '1' ? 'success' :
-              scope.row.status === '2' ? 'warning' :
-              scope.row.status === '4' ? 'info' :
-              scope.row.status === '3' ? 'danger' :
-              scope.row.status === '5' ? 'danger' : undefined
-            ">
+            <el-tag
+              effect="plain"
+              :type="scope.row.status === 1 ? 'info'
+                : scope.row.status === 2 ? 'info'
+                : scope.row.status === 4 ? 'success'
+                : scope.row.status === 3 ? 'danger'
+                : scope.row.status === 5 ? 'danger'
+                : undefined"
+              class="custom-status-tag"
+            >
               {{ statusMap[scope.row.status] }}
             </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="250">
           <template #default="scope">
-            <el-button type="primary" size="small" @click="callQueue1(scope.row)" :disabled="scope.row.status !==1">叫号</el-button>
-            <!-- <el-button type="success" size="small" @click="assignTable(scope.row)" :disabled="!['waiting', 'called'].includes(scope.row.status)">安排桌台</el-button> -->
-            <el-button type="info" size="small" @click="skipQueue1(scope.row)" :disabled="![1, 2].includes(scope.row.status)">过号</el-button>
-            <el-button type="danger" size="small" @click="cancelQueue1(scope.row)" :disabled="![1, 2].includes(scope.row.status)">取消</el-button>
+            <span
+              class="table-action call"
+              @click="callQueue1(scope.row)"
+              :style="{ color: scope.row.status === 1 ? '#22A2B6' : '#ccc', cursor: scope.row.status === 1 ? 'pointer' : 'not-allowed' }"
+              :aria-disabled="scope.row.status !== 1"
+            >叫号</span>
+            <span class="table-action-divider">|</span>
+            <span
+              class="table-action skip"
+              @click="skipQueue1(scope.row)"
+              :style="{ color: [1,2].includes(scope.row.status) ? '#22A2B6' : '#ccc', cursor: [1,2].includes(scope.row.status) ? 'pointer' : 'not-allowed' }"
+              :aria-disabled="![1,2].includes(scope.row.status)"
+            >过号</span>
+            <span class="table-action-divider">|</span>
+            <span
+              class="table-action cancel"
+              @click="cancelQueue1(scope.row)"
+              :style="{ color: [1,2].includes(scope.row.status) ? '#22A2B6' : '#ccc', cursor: [1,2].includes(scope.row.status) ? 'pointer' : 'not-allowed' }"
+              :aria-disabled="![1,2].includes(scope.row.status)"
+            >删除</span>
           </template>
         </el-table-column>
       </el-table>
@@ -344,6 +364,8 @@ const handlePageChange = (val: number) => {
 
 // 叫号操作
 const callQueue1 = async (queue: any) => {
+  console.log(queue);
+  if (queue.status !== 1) return;
   const res:any = await callQueue({ queueId: queue.queue_id });
   if (res.success) {
     ElMessage.success('已叫号');
@@ -374,6 +396,7 @@ const confirmAssignTable = async () => {
 
 // 过号操作
 const skipQueue1 = async (queue: any) => {
+  if (![1,2].includes(queue.status)) return;
   const res:any = await skipQueue({ queueId: queue.queue_id });
   if (res.success) {
     ElMessage.success('已过号');
@@ -385,6 +408,7 @@ const skipQueue1 = async (queue: any) => {
 
 // 取消排队
 const cancelQueue1 = async (queue: any) => {
+  if (![1,2].includes(queue.status)) return;
   const res:any = await cancelQueue({ queueId: queue.queue_id });
   if (res.success) {
     ElMessage.success('已取消');
@@ -534,7 +558,10 @@ onUnmounted(() => {
 
 .action-buttons {
   display: flex;
-  gap: 12px;
+  justify-content: flex-end;
+  gap: 8px;
+  /* width: 100%; */
+  margin-left: auto;
 }
 
 .btn {
@@ -570,52 +597,98 @@ onUnmounted(() => {
 
 .stats-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: 18px;
+  margin-bottom: 18px;
 }
-
 .stat-card {
+  position: relative;
   flex: 1;
   min-width: 180px;
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  height: 110px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1.5px dashed #bfc7d1;
+  box-shadow: none;
+  padding: 18px 18px 12px 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  overflow: hidden;
+    background-repeat: no-repeat;
+  background-size: cover;      /* 保证图片铺满卡片且不超出 */
+  background-position: center; /* 图片居中显示 */
 }
-
+.stat-content {
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  height: 100%;
+}
 .stat-label {
-  font-size: 14px;
-  color: #4E5969;
-  margin-bottom: 8px;
+  font-size: 16px;
+  color: #222;
+  margin-bottom: 2px;
+  font-weight: 500;
 }
-
 .stat-value {
-  font-size: 24px;
-  font-weight: 600;
-  color: #1D2129;
-  margin-bottom: 4px;
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 2px;
+  margin-top: 2px;
+  letter-spacing: 1px;
 }
-
-.stat-value.waiting {
-  color: #FF4D4F;
+.stat-value.waiting { color: #165dff; }
+.stat-value.time { color: #faad14; }
+.stat-value.total { color: #ff4d4f; }
+.stat-value.rate { color: #22a2b6; }
+.stat-unit {
+  font-size: 16px;
+  font-weight: normal;
+  margin-left: 2px;
+  color: #faad14;
 }
-
-.stat-value.time {
-  color: #FAAD14;
-}
-
-.stat-value.total {
-  color: #52C41A;
-}
-
-.stat-value.rate {
-  color: #165DFF;
-}
-
 .stat-desc {
-  font-size: 12px;
-  color: #86909C;
+  font-size: 13px;
+  color: #888;
+  margin-top: 2px;
+}
+.stat-bg-img {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  width: 54px;
+  height: 54px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  border: 1.5px dashed #bfc7d1;
+  border-radius: 8px;
+  z-index: 1;
+}
+.stat-card.stat-waiting { background-image: url('/src/assets/等待.png'); }
+.stat-card.stat-time { background-image: url('/src/assets/等待时间.png');}
+.stat-card.stat-total { background-image: url('/src/assets/排队.png'); }
+.stat-card.stat-rate { background-image: url('/src/assets/过号率.png');}
+
+@media (max-width: 1200px) {
+  .stats-container {
+    flex-wrap: wrap;
+  }
+  .stat-card {
+    flex: 1 1 45%;
+  }
+}
+@media (max-width: 768px) {
+  .stats-container {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .stat-card {
+    min-width: 100%;
+    height: auto;
+  }
 }
 
 .queue-table-container {
@@ -1037,14 +1110,35 @@ onUnmounted(() => {
 }
 
 /* Element Plus 表格美化 */
-.el-table th {
-  text-align: center !important;
-  font-size: 15px;
-  font-weight: 500;
+.el-table {
+  /* border: 1.5px dashed #bfc7d1 !important; */
+  border-radius: 8px !important;
+  background: #fff !important;
+  box-shadow: none !important;
 }
+
+.el-table th {
+  background: #f8f9fa !important;
+  color: #222 !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  border-bottom: 1.5px dashed #bfc7d1 !important;
+  height: 48px !important;
+}
+
 .el-table td {
-  text-align: center !important;
-  font-size: 14px;
+  font-size: 15px !important;
+  color: #222 !important;
+  border-bottom: 1px solid #f0f3fa !important;
+  height: 44px !important;
+}
+
+.el-table__body tr {
+  height: 48px !important;
+}
+
+.el-table__header tr {
+  height: 48px !important;
 }
 .el-tag {
   border-radius: 8px !important;
@@ -1100,8 +1194,11 @@ onUnmounted(() => {
   }
   
   .action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
     width: 100%;
-    justify-content: flex-start;
+   margin-left: auto;
   }
   
   .stat-card {
@@ -1123,7 +1220,54 @@ onUnmounted(() => {
   }
   
   .modal-dialog {
-    width: 90%;
+    width: 90%
   }
+}
+.table-action {
+  font-size: 15px;
+  color: #22A2B6;
+  cursor: pointer;
+  padding: 0 6px;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  outline: none;
+}
+.table-action:hover {
+  color: #165dff;
+  text-decoration: underline;
+}
+.table-action[disabled] {
+  color: #ccc !important;
+  cursor: not-allowed !important;
+  text-decoration: none;
+}
+.table-action-divider {
+  color: #bbb;
+  margin: 0 2px;
+}
+
+.custom-status-tag {
+  border-radius: 8px !important;
+  font-size: 16px !important;
+  padding: 4px 18px !important;
+  font-weight: 500;
+  background: #fff !important;
+  border-width: 2px !important;
+}
+.el-tag--plain.el-tag--success {
+  color: #22b26b !important;
+  border-color: #22b26b !important;
+  background: #E2FFE3 !important;
+}
+.el-tag--plain.el-tag--info {
+  color: #409eff !important;
+  border-color: #409eff !important;
+  background: #E5E9FF !important;
+}
+.el-tag--plain.el-tag--danger {
+  color: #ff4d4f !important;
+  border-color: #ff4d4f !important;
+  background: #FFEFED !important;
 }
 </style>

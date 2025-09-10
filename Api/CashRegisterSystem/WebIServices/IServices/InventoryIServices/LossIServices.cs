@@ -29,6 +29,10 @@ namespace WebIServices.IServices.InventoryIServices
         /// </summary>
         Task<ApiResponse<bool>> AddLossAsync(sys_inventory_loss loss,int orgId,int userId);
 
+        Task<ApiResponse<bool>> UpdateLossAsync(sys_inventory_loss loss, int userId);
+
+        Task<ApiResponse<bool>> DelLossDetailAsync(long lossId);
+
         /// <summary>
         /// 获取损耗详情
         /// </summary>

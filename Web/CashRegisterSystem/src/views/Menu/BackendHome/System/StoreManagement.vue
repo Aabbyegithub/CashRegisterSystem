@@ -184,6 +184,7 @@ function openEditModal(store?: any) {
   } else {
     editForm.store_id = '';
     editForm.store_name = '';
+    editForm.store_code = '';
     editForm.address = '';
     editForm.phone = '';
     editForm.business_hours = '';

@@ -45,7 +45,9 @@ namespace ModelClassLibrary.Model.Dto.AppDto
         public string Img { get; set; }
 
         public long DishCategoryType { get; set; }
+        public int Type { get; set; }
        public List<sys_dish_spec> dish_spec{ get; set; }
+       public List<sys_set_meal_item> meal_item{ get; set; }
     }
 
     public class Order
@@ -57,6 +59,8 @@ namespace ModelClassLibrary.Model.Dto.AppDto
         public string spec { get; set; }
         public string spicy { get; set; }
         public int qty { get; set; }
+
+        public int type { get; set; }
     }
 
     public class OrderDetail

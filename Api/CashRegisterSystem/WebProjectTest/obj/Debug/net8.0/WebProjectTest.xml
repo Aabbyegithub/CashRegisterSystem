@@ -396,7 +396,7 @@
             切换会员状态（冻结/解冻）
             </summary>
         </member>
-        <member name="M:WebProjectTest.Controllers.MemberController.MemberController.AddBalanceAsync(MyNamespace.sys_member_balance)">
+        <member name="M:WebProjectTest.Controllers.MemberController.MemberController.AddBalanceAsync(System.Int64,System.Decimal,System.Decimal,System.String)">
             <summary>
             新增会员储值记录
             </summary>
@@ -872,6 +872,21 @@
             <summary>
             新增损耗记录
             </summary>
+        </member>
+        <member name="M:CashRegisterSystem.Controllers.Inventory.InventoryLossController.UpdateLossAsync(MyNamespace.sys_inventory_loss)">
+            <summary>
+            修改损耗记录
+            </summary>
+            <param name="loss"></param>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CashRegisterSystem.Controllers.Inventory.InventoryLossController.DelLossDetailAsync(System.Int64)">
+            <summary>
+            删除损耗记录
+            </summary>
+            <param name="lossId"></param>
+            <returns></returns>
         </member>
         <member name="M:CashRegisterSystem.Controllers.Inventory.InventoryLossController.GetLossDetail(System.Int64)">
             <summary>

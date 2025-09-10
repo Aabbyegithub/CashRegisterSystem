@@ -18,3 +18,11 @@ export function getLossDetail(lossId: number) {
 export function addLoss(data: any) {
   return axios.post('/api/InventoryLoss/AddLoss', data);
 }
+
+export function updateLoss(data: any) {
+  return axios.post('/api/InventoryLoss/UpdateLoss', data);
+}
+
+export function delLossDetail(lossId: number) {
+  return axios.get(`/api/InventoryLoss/DelLossDetail?lossId=${lossId}`);
+}

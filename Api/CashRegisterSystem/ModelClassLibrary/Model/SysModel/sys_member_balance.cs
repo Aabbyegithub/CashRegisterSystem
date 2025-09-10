@@ -29,13 +29,14 @@ namespace MyNamespace
            /// Nullable:False
            /// </summary>           
            public long member_id {get;set;}
+        public string balance_no { get; set; }
 
-           /// <summary>
-           /// Desc:当前余额
-           /// Default:0.00
-           /// Nullable:False
-           /// </summary>           
-           public decimal balance {get;set;}
+        /// <summary>
+        /// Desc:当前余额
+        /// Default:0.00
+        /// Nullable:False
+        /// </summary>           
+        public decimal balance {get;set;}
 
            /// <summary>
            /// Desc:充值金额

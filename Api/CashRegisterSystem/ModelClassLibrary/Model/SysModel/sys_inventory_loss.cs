@@ -42,7 +42,7 @@ namespace MyNamespace
            /// Default:
            /// Nullable:False
            /// </summary>           
-           public string batch_no {get;set;} = null!;
+           public string? batch_no {get;set;}
 
            /// <summary>
            /// Desc:损耗数量
@@ -71,6 +71,7 @@ namespace MyNamespace
            /// Nullable:False
            /// </summary>           
            public DateTime loss_time {get;set;}
+           public DateTime? updatetime { get;set;}
 
            /// <summary>
            /// Desc:操作员工ID
@@ -78,6 +79,7 @@ namespace MyNamespace
            /// Nullable:False
            /// </summary>           
            public long operator_id {get;set;}
+           public long? updateuser_id { get;set;}
 
 
         [Navigate(NavigateType.OneToOne, nameof(operator_id), nameof(sys_staff.staff_id))]//一对一 

@@ -137,9 +137,11 @@ function addDish() {
   })
 }
 async function checkout() {
+        uni.showLoading({ title: '结算中...' })
   uni.login({
     success: async (loginRes) => {
       console.log('登录成功:', loginRes);
+
       // 可以将 loginRes.code 发送到后台换取 openId 和 sessionKey
       code.value = loginRes.code
         await request({
@@ -152,7 +154,8 @@ async function checkout() {
             Code: code.value,
           }
         }).then((res:any) => {
-          if (res.start == 200) {
+          uni.hideLoading()
+          if (res.start === 200) {
             uni.showToast({ title: '结账成功', icon: 'success' })
             // 结账成功后，清除已选择的优惠券
             uni.removeStorageSync('selectedCoupon')
@@ -162,11 +165,12 @@ async function checkout() {
             uni.showToast({ title: res.message || '结账失败', icon: 'none' })
           }
         }).catch(() => {
+          uni.hideLoading()
           uni.showToast({ title: '结账失败', icon: 'none' })
         })
-        uni.showToast({ title: '结账成功', icon: 'success' })
     },
     fail: (err) => {
+      uni.hideLoading()
       console.error('登录失败:', err);
     }
   });

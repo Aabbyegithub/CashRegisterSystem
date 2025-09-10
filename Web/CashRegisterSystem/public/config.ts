@@ -5,7 +5,7 @@ const ENV = import.meta.env.MODE || 'development'
 const API_BASE_URL =
   ENV === 'production'
     ? 'http://txsq.eidpb.cn'
-    : 'https://localhost:7092'
+    : 'http://169.254.188.119:7092'// 'http://mpvk8690901.vicp.fun:12575'
 
 const APP_CONFIG = {
   env: ENV,

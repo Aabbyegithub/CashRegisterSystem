@@ -36,9 +36,11 @@
       <el-table-column prop="loss_time" label="损耗时间" align="center" />
       <el-table-column prop="operator" label="操作人" align="center" />
       <el-table-column prop="remark" label="备注" align="center" />
-      <el-table-column label="操作" align="center" width="120">
+      <el-table-column label="操作" align="center" width="180">
         <template #default="scope">
           <el-button type="text" class="table-btn-edit" @click="openDetailDialog(scope.row)">详情</el-button>
+          <el-button type="text" class="table-btn-edit" @click="openEditDialog(scope.row)">编辑</el-button>
+          <el-button type="text" class="table-btn-edit" style="color:#ff4d4f;" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -98,12 +100,38 @@
         <el-button @click="detailDialogVisible = false">关闭</el-button>
       </template>
     </el-dialog>
+    <el-dialog v-model="editDialogVisible" title="编辑损耗记录" width="400px" :close-on-click-modal="false">
+      <el-form :model="editForm" label-width="90px">
+        <el-form-item label="原材料">
+          <el-select v-model="editForm.material_id" placeholder="请选择原材料">
+            <el-option v-for="m in materialList" :key="m.material_id" :label="m.material_name" :value="m.material_id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="损耗类型">
+          <el-select v-model="editForm.loss_type" placeholder="请选择类型">
+            <el-option value="报损" label="报损" />
+            <el-option value="过期" label="过期" />
+            <el-option value="丢失" label="丢失" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="损耗数量">
+          <el-input-number v-model="editForm.quantity" :min="1" :max="99999" style="width: 100%;" />
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input v-model="editForm.remark" type="textarea" placeholder="请输入备注" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="editDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="handleEditConfirm">确认修改</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { getStoreList } from '../../../../api/login';
-import { getLossList, getLossDetail, addLoss } from '../../../../api/InventoryLoss';
+import { getLossList, getLossDetail, addLoss, updateLoss, delLossDetail } from '../../../../api/InventoryLoss';
 import { ElMessage } from 'element-plus';
 import { getAllRawMaterialList } from '../../../../api/RawMaterial';
 
@@ -132,6 +160,14 @@ const addForm = ref({
 const detailDialogVisible = ref(false);
 const detailForm = ref({
   material_name: '',
+  loss_type: '',
+  quantity: 1,
+  remark: ''
+});
+const editDialogVisible = ref(false);
+const editForm = ref({
+  loss_id: '',
+  material_id: '',
   loss_type: '',
   quantity: 1,
   remark: ''
@@ -234,6 +270,47 @@ async function openDetailDialog(row: any) {
   detailForm.value.quantity = item.loss_quantity;
   detailForm.value.remark = item.loss_reason || '';
   detailDialogVisible.value = true;
+}
+function openEditDialog(row: any) {
+  editForm.value = {
+    loss_id: row.loss_id,
+    material_id: row.material_id,
+    loss_type: row.loss_type,
+    quantity: row.quantity,
+    remark: row.remark
+  };
+  editDialogVisible.value = true;
+}
+async function handleEditConfirm() {
+  // 损耗类型映射
+  const typeMap: any = { '报损': 0, '过期': 1, '丢失': 2 };
+  const payload = {
+    ...editForm.value,
+    loss_id: Number(editForm.value.loss_id),
+    loss_type: typeMap[editForm.value.loss_type],
+    loss_quantity: editForm.value.quantity,
+    loss_reason: editForm.value.remark,
+  };
+  const res:any = await updateLoss(payload);
+  if (res?.success) {
+    ElMessage.success('修改成功');
+    editDialogVisible.value = false;
+    handleQuery();
+  } else {
+    ElMessage.error(res?.message || '修改失败');
+  }
+}
+async function handleDelete(row: any) {
+  if (!row.loss_id) return;
+  if (confirm('确定要删除该损耗记录吗？')) {
+    const res:any = await delLossDetail(row.loss_id);
+    if (res?.success) {
+      ElMessage.success('删除成功');
+      handleQuery();
+    } else {
+      ElMessage.error(res?.message || '删除失败');
+    }
+  }
 }
 
 onMounted(() => {

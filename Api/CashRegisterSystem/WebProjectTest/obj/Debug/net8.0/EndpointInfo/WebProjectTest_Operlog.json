@@ -5,6 +5,98 @@
     "version": "Operlog"
   },
   "paths": {
+    "/api/Operlog/GetOperationlog": {
+      "get": {
+        "tags": [
+          "Operlog"
+        ],
+        "summary": "获取操作日志",
+        "parameters": [
+          {
+            "name": "User",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "actionType",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "$ref": "#/components/schemas/ActionType"
+            }
+          },
+          {
+            "name": "ActionModel",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartTime",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "EndTime",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "Size",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/lq_operationlogListApiPageResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/lq_operationlogListApiPageResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/lq_operationlogListApiPageResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Operlog/SaveOperationlog": {
       "post": {
         "tags": [
@@ -137,6 +229,185 @@
           "actionTime": {
             "type": "string",
             "format": "date-time"
+          },
+          "staff": {
+            "$ref": "#/components/schemas/sys_staff"
+          }
+        },
+        "additionalProperties": false
+      },
+      "lq_operationlogListApiPageResponse": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "response": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/lq_operationlog"
+            },
+            "nullable": true
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "sys_role": {
+        "type": "object",
+        "properties": {
+          "role_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "role_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "sys_staff": {
+        "type": "object",
+        "properties": {
+          "staff_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "store_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "salt": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "position": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isDelete": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "last_login_time": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "staff_role": {
+            "$ref": "#/components/schemas/sys_staff_role"
+          },
+          "store": {
+            "$ref": "#/components/schemas/sys_store"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "additionalProperties": false
+      },
+      "sys_staff_role": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "staff_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "role_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "role": {
+            "$ref": "#/components/schemas/sys_role"
+          }
+        },
+        "additionalProperties": false
+      },
+      "sys_store": {
+        "type": "object",
+        "properties": {
+          "store_id": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "store_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "business_hours": {
+            "type": "string",
+            "nullable": true
+          },
+          "total_tables": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "store_code": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

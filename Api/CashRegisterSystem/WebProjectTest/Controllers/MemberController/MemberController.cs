@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MyNamespace;
 using SqlSugar;
+using WebIServices.IBase;
 using WebIServices.IServices.MemberIServices;
+using WebProjectTest.Common;
 using WebProjectTest.Common.Filter;
 using WebProjectTest.Controllers.SystemController;
-using static WebProjectTest.Common.Message;
-using WebIServices.IBase;
 using static ModelClassLibrary.Model.CommonEnmFixts;
-using MyNamespace;
+using static WebProjectTest.Common.Message;
 
 namespace WebProjectTest.Controllers.MemberController
 {
@@ -75,9 +76,22 @@ namespace WebProjectTest.Controllers.MemberController
         /// </summary>
         [HttpPost]
         [OperationLogFilter("会员管理>会员列表", "会员储值", ActionType.Add)]
-        public async Task<ApiResponse<bool>> AddBalanceAsync([FromBody] sys_member_balance balance)
+        public async Task<ApiResponse<bool>> AddBalanceAsync(long member_id, decimal recharge_amount, decimal give_amount, string type)
         {
-            return await _memberServices.AddBalanceAsync(balance);
+            var url = "";
+            switch (type)
+            {
+                case "wechat":
+                    url = AppSettings.GetConfig("Payment:WeChat:CustomUrl");
+                    break;
+                case "alipay":
+                    url = "";
+                    break;
+                default:
+                    return Error<bool>("支付失败");
+
+            }
+            return await _memberServices.AddBalanceAsync(member_id, recharge_amount, give_amount,type, url, UserId);
         }
 
         /// <summary>

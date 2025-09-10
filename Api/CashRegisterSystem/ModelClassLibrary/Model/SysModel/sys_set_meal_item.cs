@@ -29,7 +29,7 @@ namespace MyNamespace
         /// Default:
         /// Nullable:False
         /// </summary>           
-        public long meal_id { get; set; }
+        public long? meal_id { get; set; }
 
         /// <summary>
         /// Desc:包含菜品ID

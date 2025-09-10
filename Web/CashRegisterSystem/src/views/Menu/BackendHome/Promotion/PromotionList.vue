@@ -39,7 +39,7 @@
 
     <!-- 表格区 -->
     <div class="table-card">
-      <el-table :data="promotionList" border stripe style="width: 100%;height: 67vh;">
+      <el-table :data="promotionList" border stripe style="width: 100%;height: 67vh;" class="custom-table">
         <el-table-column label="门店名称" prop="store_id" align="center">
             <template #default="scope">
              {{ storeList.find(cat => cat.id === scope.row.store_id)?.name || '' }}
@@ -57,10 +57,10 @@
         </el-table-column>
         <el-table-column prop="min_consumption" label="最低消费金额" min-width="120"  align="center"/>
         <el-table-column prop="value" label="优惠面值或折扣" min-width="120"  align="center"/>
-        <el-table-column label="操作" min-width="100" align="center">
+        <el-table-column label="操作" min-width="150" align="center">
           <template #default="scope">
-            <el-button type="primary" size="small" @click="openDialog('edit', scope.row)">编辑</el-button>
-            <el-button type="danger" size="small" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button type="text"  class="table-btn-edit" size="small" @click="openDialog('edit', scope.row)">编辑</el-button>
+            <el-button type="text" class="table-btn-status" size="small" @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -372,5 +372,11 @@ async function fetchStoreList() {
   display: flex;
   justify-content: flex-end;
   padding: 16px 0 0 0;
+}
+.custom-table .table-btn-edit {
+  color: #409eff;
+}
+.custom-table .table-btn-status {
+  color: #fc0303;
 }
 </style>

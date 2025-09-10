@@ -144,7 +144,7 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue';
 import { dayjs, ElMessage } from 'element-plus';
-import { getMemberPageList, addMember, updateMember, toggleMemberStatus } from '../../../../api/member';
+import { getMemberPageList, addMember, updateMember, toggleMemberStatus, addMemberBalance } from '../../../../api/member';
 
 interface Member {
   member_id: number;
@@ -172,7 +172,11 @@ const addForm = ref({
   birthday: '',
   referrer_id: undefined as number | undefined
 });
-
+const paymentMap : Record<number | string, string>= {
+  1: 'wechat',
+  2: 'alipay',
+  3: '现金'
+}
 
 const searchPhone = ref('');
 const searchName = ref('');
@@ -225,14 +229,31 @@ const openBalanceDialog = (row: Member) => {
   };
   showBalanceDialog.value = true;
 };
-const handleBalance = () => {
+const handleBalance = async () => {
   if (!currentMemberId || !balanceForm.value.recharge_amount) {
     ElMessage.warning('请填写充值金额');
     return;
   }
-  // 此处可扩展为储值记录写入
-  showBalanceDialog.value = false;
-  ElMessage.success('储值成功');
+  const params = {
+    balance_id: 0,
+    member_id: currentMemberId,
+    balance: 0,
+    recharge_amount: balanceForm.value.recharge_amount,
+    give_amount: balanceForm.value.give_amount,
+    recharge_time: new Date().toISOString(),
+    payment_id: balanceForm.value.payment_id,
+    operator_id: 0, // 可根据实际登录员工ID赋值
+    operatorName: {}, // 可根据实际登录员工信息赋值
+    member: {} // 可根据当前会员信息赋值
+  };
+  const res: any = await addMemberBalance(currentMemberId,balanceForm.value.recharge_amount,balanceForm.value.give_amount,paymentMap[balanceForm.value.payment_id] || '未知支付方式'); // 示例调用
+  if (res?.success) {
+    ElMessage.success('储值成功');
+    showBalanceDialog.value = false;
+    handleQuery();
+  } else {
+    ElMessage.error(res?.message || '储值失败');
+  }
 };
 
 const openEditDialog = (row: Member) => {

@@ -44,6 +44,31 @@ namespace CashRegisterSystem.Controllers.Inventory
         }
 
         /// <summary>
+        /// 修改损耗记录
+        /// </summary>
+        /// <param name="loss"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [OperationLogFilter("库存管理>损耗管理", "修改损耗记录", ActionType.Add)]
+        public async Task<ApiResponse<bool>> UpdateLossAsync([FromBody] sys_inventory_loss loss)
+        {
+            return await _service.UpdateLossAsync(loss, UserId);
+        }
+
+        /// <summary>
+        /// 删除损耗记录
+        /// </summary>
+        /// <param name="lossId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [OperationLogFilter("库存管理>损耗管理", "删除损耗记录", ActionType.Add)]
+        public async Task<ApiResponse<bool>> DelLossDetailAsync(long lossId)
+        {
+            return await _service.DelLossDetailAsync(lossId);
+        }
+
+        /// <summary>
         /// 获取损耗详情
         /// </summary>
         [HttpGet]

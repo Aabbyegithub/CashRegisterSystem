@@ -125,10 +125,11 @@ namespace WebServiceClass.Helper.WeChat
         }
 
 
-        public static async Task<string> CallCustomerUnifiedRechargeApi(string url, string attach, string description, string outTradeNo, decimal total, string code, string storeNum, long userId)
+        public static async Task<string> CallCustomerUnifiedRechargeApi(string url, string attach, string description, string outTradeNo, int total, string code, string storeNum, long userId)
         {
             var payload = new
             {
+                temp='1',
                 attach,
                 description,
                 out_trade_no = outTradeNo,

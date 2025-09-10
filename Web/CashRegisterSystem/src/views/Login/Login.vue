@@ -49,7 +49,7 @@
             <el-input 
               v-model="form.username" 
               placeholder="请输入账号" 
-              prefix-icon="el-icon-user"
+              :prefix-icon="User"
             />
           </el-form-item>
           <el-form-item label="密码" prop="password">
@@ -57,7 +57,7 @@
               v-model="form.password" 
               type="password" 
               placeholder="请输入密码" 
-              prefix-icon="el-icon-lock"
+              :prefix-icon="Lock"
               :show-password="true"
               @keyup.enter="submit"
             />
@@ -128,7 +128,7 @@ import { ElMessage, ElForm, ElFormItem, ElInput, ElButton, ElCheckbox } from 'el
 import { useRouter } from 'vue-router'
 // 假设 api 模块，需根据实际调整
 import { getStoreList, loginApi } from '../../api/login' 
-
+import { User,Lock } from '@element-plus/icons-vue'
 const router = useRouter()
 const formRef = ref<InstanceType<typeof ElForm>>()
 const loading = ref(false)

@@ -341,6 +341,11 @@
         "Name": "orderId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
+      },
+      {
+        "Name": "memberPhone",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
@@ -892,6 +897,125 @@
     ]
   },
   {
+    "ContainingType": "CashRegisterSystem.Controllers.Dish.DishConfigController",
+    "Method": "AddFormula",
+    "RelativePath": "api/DishConfig/AddFormula",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "formula",
+        "Type": "MyNamespace.sys_dish_formula",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CashRegisterSystem.Controllers.Dish.DishConfigController",
+    "Method": "DeleteFormula",
+    "RelativePath": "api/DishConfig/DeleteFormula",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "formulaId",
+        "Type": "System.Int64",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CashRegisterSystem.Controllers.Dish.DishConfigController",
+    "Method": "GetFormulaList",
+    "RelativePath": "api/DishConfig/GetFormulaList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dishId",
+        "Type": "System.Nullable\u00601[[System.Int64, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "materialId",
+        "Type": "System.Nullable\u00601[[System.Int64, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageIndex",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiPageResponse\u00601[[System.Collections.Generic.List\u00601[[MyNamespace.sys_dish_formula, ModelClassLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CashRegisterSystem.Controllers.Dish.DishConfigController",
+    "Method": "UpdateFormula",
+    "RelativePath": "api/DishConfig/UpdateFormula",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "formula",
+        "Type": "MyNamespace.sys_dish_formula",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "WebProjectTest.Controllers.DishController.DishSpecificationsController",
     "Method": "AddSpec",
     "RelativePath": "api/DishSpecifications/AddSpec",
@@ -951,6 +1075,32 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Collections.Generic.List\u00601[[MyNamespace.sys_dish_spec, ModelClassLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.DishController.DishSpecificationsController",
+    "Method": "GetDishSpecListAsync",
+    "RelativePath": "api/DishSpecifications/GetDishSpecList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dishId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": [
       {
         "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Collections.Generic.List\u00601[[MyNamespace.sys_dish_spec, ModelClassLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
@@ -1223,6 +1373,32 @@
   },
   {
     "ContainingType": "CashRegisterSystem.Controllers.Inventory.InventoryLossController",
+    "Method": "DelLossDetailAsync",
+    "RelativePath": "api/InventoryLoss/DelLossDetail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "lossId",
+        "Type": "System.Int64",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CashRegisterSystem.Controllers.Inventory.InventoryLossController",
     "Method": "GetLossDetail",
     "RelativePath": "api/InventoryLoss/GetLossDetail",
     "HttpMethod": "GET",
@@ -1284,6 +1460,32 @@
     "ReturnTypes": [
       {
         "Type": "WebProjectTest.Common.Message\u002BApiPageResponse\u00601[[System.Collections.Generic.List\u00601[[MyNamespace.sys_inventory_loss, ModelClassLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CashRegisterSystem.Controllers.Inventory.InventoryLossController",
+    "Method": "UpdateLossAsync",
+    "RelativePath": "api/InventoryLoss/UpdateLoss",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "loss",
+        "Type": "MyNamespace.sys_inventory_loss",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1539,9 +1741,24 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "balance",
-        "Type": "MyNamespace.sys_member_balance",
-        "IsRequired": true
+        "Name": "member_id",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "recharge_amount",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "give_amount",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "type",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
@@ -1784,6 +2001,62 @@
   },
   {
     "ContainingType": "WebProjectTest.Controllers.SystemController.OperlogController",
+    "Method": "GetOperationlogAsync",
+    "RelativePath": "api/Operlog/GetOperationlog",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "User",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "actionType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ActionModel",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "StartTime",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "EndTime",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Size",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiPageResponse\u00601[[System.Collections.Generic.List\u00601[[MyNamespace.lq_operationlog, ModelClassLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.SystemController.OperlogController",
     "Method": "SaveOperationlogAsync",
     "RelativePath": "api/Operlog/SaveOperationlog",
     "HttpMethod": "POST",
@@ -2001,6 +2274,32 @@
     "ReturnTypes": [
       {
         "Type": "WebProjectTest.Common.Message\u002BApiPageResponse\u00601[[System.Collections.Generic.List\u00601[[MyNamespace.sys_order, ModelClassLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.OrderController.OrderController",
+    "Method": "HangOrderAsync",
+    "RelativePath": "api/Order/HangOrder",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "order",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -3672,6 +3971,171 @@
     ]
   },
   {
+    "ContainingType": "CashRegisterSystem.Controllers.System.SupplierController",
+    "Method": "AddSupplier",
+    "RelativePath": "api/Supplier/AddSupplier",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "supplier",
+        "Type": "MyNamespace.sys_supplier",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CashRegisterSystem.Controllers.System.SupplierController",
+    "Method": "DeleteSupplier",
+    "RelativePath": "api/Supplier/DeleteSupplier",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "supplierId",
+        "Type": "System.Int64",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CashRegisterSystem.Controllers.System.SupplierController",
+    "Method": "GetAllSupplierList",
+    "RelativePath": "api/Supplier/GetAllSupplierList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Collections.Generic.List\u00601[[MyNamespace.sys_supplier, ModelClassLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CashRegisterSystem.Controllers.System.SupplierController",
+    "Method": "GetSupplierDetail",
+    "RelativePath": "api/Supplier/GetSupplierDetail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "supplierId",
+        "Type": "System.Int64",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[MyNamespace.sys_supplier, ModelClassLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CashRegisterSystem.Controllers.System.SupplierController",
+    "Method": "GetSupplierList",
+    "RelativePath": "api/Supplier/GetSupplierList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "status",
+        "Type": "System.Nullable\u00601[[System.Byte, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageIndex",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiPageResponse\u00601[[System.Collections.Generic.List\u00601[[MyNamespace.sys_supplier, ModelClassLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CashRegisterSystem.Controllers.System.SupplierController",
+    "Method": "UpdateSupplier",
+    "RelativePath": "api/Supplier/UpdateSupplier",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "supplier",
+        "Type": "MyNamespace.sys_supplier",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "WebProjectTest.Controllers.TableManagController.TableController",
     "Method": "AddTableAsync",
     "RelativePath": "api/Table/AddTable",
@@ -3853,6 +4317,120 @@
   },
   {
     "ContainingType": "WebProjectTest.Controllers.TaskController.TaskController",
+    "Method": "AddTimerTask",
+    "RelativePath": "api/Task/AddTimerTask",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "task",
+        "Type": "MyNamespace.sys_timertask",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.TaskController.TaskController",
+    "Method": "DeleteTimerTask",
+    "RelativePath": "api/Task/DeleteTimerTask",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "taskId",
+        "Type": "System.Int64",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.TaskController.TaskController",
+    "Method": "GetTimerTaskDetail",
+    "RelativePath": "api/Task/GetTimerTaskDetail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "taskId",
+        "Type": "System.Int64",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[MyNamespace.sys_timertask, ModelClassLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.TaskController.TaskController",
+    "Method": "GetTimerTaskList",
+    "RelativePath": "api/Task/GetTimerTaskList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "jobName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageIndex",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiPageResponse\u00601[[System.Collections.Generic.List\u00601[[MyNamespace.sys_timertask, ModelClassLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.TaskController.TaskController",
     "Method": "PauseJobAsync",
     "RelativePath": "api/Task/PauseJob",
     "HttpMethod": "POST",
@@ -3960,6 +4538,32 @@
     "ReturnTypes": [
       {
         "Type": "System.String",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebProjectTest.Controllers.TaskController.TaskController",
+    "Method": "UpdateTimerTask",
+    "RelativePath": "api/Task/UpdateTimerTask",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "task",
+        "Type": "MyNamespace.sys_timertask",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",

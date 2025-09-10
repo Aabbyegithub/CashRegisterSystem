@@ -61,9 +61,26 @@ namespace WebServiceClass.Services.AppServices
                       memberprice = a.member_price,
                       Spece = a.dish_spec.Count() > 0 ? 1 : 0,
                       Img = a.image_url,
-                      dish_spec = a.dish_spec
+                      dish_spec = a.dish_spec,
+                      Type = 0
                   }).ToListAsync();
-            return Success(res, "菜品获取成功");
+            //增加套餐
+            var meal = await _dal.Db.Queryable<sys_set_meal>().Includes(a=>a.item).Where(a => a.store_id == store_id)
+                .Select(a => new DishList
+                {
+                    Id = a.meal_id,
+                    Name = a.meal_name,
+                    Desc = a.description,
+                    DishCategoryType = a.is_fixed == 1 ? 99 : 100,
+                    Price = a.price,
+                    memberprice = a.price,
+                    Spece = a.is_fixed == 1 ? 0 : 1,
+                    Img = a.image_url,
+                    meal_item = a.item,
+                    Type = 1
+                }).ToListAsync();
+            var result = res.Concat(meal).ToList();
+            return Success(result, "菜品获取成功");
         }
 
         public async Task<ApiResponse<List<DishCategory>>> GetDishType(int store_id)
@@ -75,6 +92,8 @@ namespace WebServiceClass.Services.AppServices
                      Id = a.category_id,
                      Name = a.category_name,
                  }).ToListAsync();
+            res.Add(new DishCategory { Id = 99,Name = "固定套餐"});
+            res.Add(new DishCategory { Id = 100,Name = "组合套餐"});
             if (res.Count > 0)
                 res.FirstOrDefault().active = true;
             return Success(res, "菜品类型获取成功");
@@ -86,7 +105,7 @@ namespace WebServiceClass.Services.AppServices
             {
                 await _dal.Db.Ado.BeginTranAsync();
                 var table = await _dal.Db.Queryable<sys_restaurant_table>()
-                    .Where(a => a.store_id == store_id && a.table_id == table_id && order_Id == null).With(SqlWith.UpdLock)
+                    .Where(a =>  a.table_id == table_id).With(SqlWith.UpdLock)
                     .FirstAsync();
 
                 if (table == null)
@@ -369,7 +388,7 @@ namespace WebServiceClass.Services.AppServices
 
 
                 //会员优先扣除充值金额
-                if (member != null)
+                if (member != null && member.member_id !=0)
                 {
 
                     if (member.balance >= order.payable_amount)
@@ -388,13 +407,15 @@ namespace WebServiceClass.Services.AppServices
                     }
 
                 }
+                byte pay_type = 0;
                 switch (type)
                 {
                     case "wechat": //微信
 
                         if (pay!=0)
                         {
-                              res = await WeChatPayHelper.CallCustomerUnifiedRechargeApi(url, "餐饮收银", "餐饮收银订单支付", order?.order_no, pay, Code, order.store?.store_code, 0);
+                            pay_type = 1;
+                              res = await WeChatPayHelper.CallCustomerUnifiedRechargeApi(url, "餐饮收银", "餐饮收银订单支付", order?.order_no, (int)pay, Code, order.store?.store_code, 0);
                              remark += $"微信支付-{pay}";
                         }
                         if (res !="OK")
@@ -414,7 +435,7 @@ namespace WebServiceClass.Services.AppServices
                     order_id = orderId,
                     payment_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(100000, 999999),
                     pay_amount = order.payable_amount,
-                    pay_type = 1,
+                    pay_type = pay_type,
                     status = 2,
                     pay_time = DateTime.Now,
                     coupon_id = coupon?.coupon_id,

@@ -84,7 +84,7 @@ namespace MyNamespace
         /// 门店编码
         /// </summary>
 
-        public string store_code { get;set;} = null!;
+        public string? store_code { get;set;}
 
     }
 }

@@ -33,7 +33,7 @@
               @click="handleMenuClick(item.key)"
             >
               <img :src="item.icon" :alt="item.title" class="menu-icon" />
-              <span :class="{ 'hidden-text': isCollapsed }">{{ item.title }}</span>
+              <span :class="{ 'hidden-text': isCollapsed }" style="color: black;">{{ item.title }}</span>
             </li>
           </ul>
         </div>
@@ -171,7 +171,7 @@ onMounted(async () => {
 
 .backend-sidebar {
  width: 220px;
- background-color: #2C3E50;
+ background-color: #ffffff;
  color: #ECF0F1;
  height: 100%;
  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
@@ -251,12 +251,12 @@ onMounted(async () => {
   width: 20px;
   height: 20px;
   margin-right: 10px;
-  filter: invert(1);
+  /* filter: invert(1); */
 }
 
 .group-title {
   font-size: 14px;
-  color: #BDC3C7;
+  color: #0a0b0b;
   padding: 10px 0;
   margin: 0;
   transition: opacity 0.3s ease;
@@ -266,7 +266,7 @@ onMounted(async () => {
 .group-arrow {
   width: 20px;
   height: 20px;
-  filter: invert(0.7);
+  /* filter: invert(0.7); */
   transition: transform 0.3s ease;
   margin-left: 5px;
 }
@@ -318,7 +318,7 @@ onMounted(async () => {
   width: 20px;
   height: 20px;
   margin-right: 10px;
-  filter: invert(1);
+  /* filter: invert(1); */
 }
 
 .hidden-text {

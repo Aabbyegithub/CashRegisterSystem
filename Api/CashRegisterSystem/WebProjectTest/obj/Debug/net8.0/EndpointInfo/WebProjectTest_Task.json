@@ -5,6 +5,103 @@
     "version": "Task"
   },
   "paths": {
+    "/api/Task/GetTimerTaskList": {
+      "get": {
+        "tags": [
+          "Task"
+        ],
+        "summary": "获取定时任务列表（筛选+分页）",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageIndex",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/sys_timertaskListApiPageResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sys_timertaskListApiPageResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sys_timertaskListApiPageResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Task/GetTimerTaskDetail": {
+      "get": {
+        "tags": [
+          "Task"
+        ],
+        "summary": "获取定时任务详情",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/sys_timertaskApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sys_timertaskApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sys_timertaskApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Task/StartTask": {
       "post": {
         "tags": [
@@ -237,9 +334,280 @@
           }
         }
       }
+    },
+    "/api/Task/AddTimerTask": {
+      "post": {
+        "tags": [
+          "Task"
+        ],
+        "summary": "新增定时任务",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/sys_timertask"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/sys_timertask"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/sys_timertask"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Task/UpdateTimerTask": {
+      "post": {
+        "tags": [
+          "Task"
+        ],
+        "summary": "编辑定时任务",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/sys_timertask"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/sys_timertask"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/sys_timertask"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Task/DeleteTimerTask": {
+      "post": {
+        "tags": [
+          "Task"
+        ],
+        "summary": "删除定时任务",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
+    "schemas": {
+      "BooleanApiResponse": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "response": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "sys_timertask": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "timerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "timerClass": {
+            "type": "string",
+            "nullable": true
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "beginTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "addUser": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "orgId": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "isStart": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "isDelete": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "corn": {
+            "type": "string",
+            "nullable": true
+          },
+          "startNumber": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "sys_timertaskApiResponse": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "response": {
+            "$ref": "#/components/schemas/sys_timertask"
+          }
+        },
+        "additionalProperties": false
+      },
+      "sys_timertaskListApiPageResponse": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "response": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/sys_timertask"
+            },
+            "nullable": true
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
     "securitySchemes": {
       "oauth2": {
         "type": "apiKey",

@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebIServices.IBase;
 using WebIServices.IServices.MemberIServices;
+using WebServiceClass.Helper.WeChat;
+using static Azure.Core.HttpHeader;
+using static Dm.net.buffer.ByteArrayBuffer;
 using static WebProjectTest.Common.Message;
 
 namespace WebServiceClass.Services.MemberServices
@@ -61,19 +64,64 @@ namespace WebServiceClass.Services.MemberServices
             return Success(result, result ? "操作成功" : "操作失败");
         }
 
-        public async Task<ApiResponse<bool>> AddBalanceAsync(sys_member_balance balance)
+        public async Task<ApiResponse<bool>> AddBalanceAsync(long member_id,decimal recharge_amount,decimal give_amount,string type,string url, int userId)
         {
-            balance.recharge_time = System.DateTime.Now;
-            var result = await _dal.Db.Insertable(balance).ExecuteCommandAsync() > 0;
-            if (result)
+            try
             {
+                await _dal.Db.Ado.BeginTranAsync();
+                var member = await _dal.Db.Queryable<sys_member>().With(SqlWith.UpdLock).FirstAsync(a=>a.member_id== member_id);
+                if (member == null) throw new Exception("会员不存在");
+
                 // 更新会员余额
                 await _dal.Db.Updateable<sys_member>()
-                    .SetColumns(x => x.balance == x.balance + balance.recharge_amount + balance.give_amount)
-                    .Where(x => x.member_id == balance.member_id)
-                    .ExecuteCommandAsync();
+                        .SetColumns(x => x.balance == x.balance + recharge_amount + give_amount)
+                        .Where(x => x.member_id == member_id)
+                        .ExecuteCommandAsync();
+                string balance_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(100000, 999999);
+                var result = await _dal.Db.Insertable(new sys_member_balance
+                {
+                    member_id = member_id,
+                    balance_no = balance_no,
+                    balance = (decimal)member?.balance,
+                    recharge_amount = recharge_amount,
+                    give_amount = give_amount,
+                    recharge_time = DateTime.Now,
+                    operator_id = userId
+                }).ExecuteReturnBigIdentityAsync();
+                byte pay_type = 0;
+                switch (type)
+                {
+                    case "wechat": //微信
+                        pay_type = 1;
+                          var  res = await WeChatPayHelper.CallCustomerUnifiedRechargeApi(url, "餐饮收银", "餐饮收银订单支付", balance_no, (int)recharge_amount, "", "", userId);
+                        break;
+                    case "alipay": //支付宝
+
+                        break;
+                    default:
+                        break;
+                }
+                //支付记录
+                await _dal.Db.Insertable(new sys_payment
+                {
+                    order_id = result,
+                    payment_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(100000, 999999),
+                    pay_amount = recharge_amount,
+                    pay_type = pay_type,
+                    status = 2,
+                    pay_time = DateTime.Now,
+
+                }).ExecuteCommandAsync();
+                await _dal.Db.Ado.CommitTranAsync();
+
+                return Success(true,"储值成功");
             }
-            return Success(result, result ? "储值成功" : "储值失败");
+            catch (Exception e)
+            {
+                await _dal.Db.Ado.RollbackTranAsync();
+                return Fail<bool>($"储值失败-{e.Message}");
+            }
+
         }
 
         public async Task<sys_member?> GetMemberByIdAsync(long memberId)

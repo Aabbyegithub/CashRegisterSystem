@@ -1,18 +1,36 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import copy from 'vite-plugin-copy'; // 引入插件
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [vue(),
-    copy({
+  plugins: [
+    vue(),
+    viteStaticCopy({
       targets: [
         {
-          src: 'src/assets/**/*.{png,jpg,jpeg,gif}', // 匹配 src/assets 下所有图片格式
-          dest: 'dist/assets', // 复制到 dist/assets（与后端路径替换后的目标目录一致）
-          // 可选：保持原文件结构（如 src/assets/icons/xxx.png → dist/assets/icons/xxx.png）
-          // flatten: false 
+          src: 'src/assets/**/*', // 复制所有资源文件
+          dest: 'assets'          // 目标目录
         }
       ]
-    })],
+    })
+  ],
+  server: {
+    host: '0.0.0.0', // 允许外部访问
+    port: 3000,      // 端口号
+    open: true,      // 自动打开浏览器
+    cors: true,      // 启用CORS
+    allowedHosts: [
+      'mpvk8690901.vicp.fun',  // 花生壳域名
+      'localhost',              // 本地访问
+      '.vicp.fun'              // 允许所有vicp.fun子域名
+    ],
+    proxy: {
+      '/api': {
+        target: 'http://mpvk8690901.vicp.fun:12575', // 代理到您的后端地址
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '/api') // 保持路径不变
+      }
+    }
+  }
 })

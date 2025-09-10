@@ -1,3 +1,4 @@
+import { pa } from 'element-plus/es/locales.mjs';
 import axios from '../common/axios';
 
 // 分页查询会员
@@ -22,4 +23,8 @@ export function toggleMemberStatus(params: { memberId: number; status: number })
 
 export function getBalanceRecordList(params: { page: number; size: number; keyword?: string; startDate?: string; endDate?: string; operatorId?: string }) {
   return axios.get('/api/MemberBalance/GetBalanceRecordList', { params });
+}
+
+export function addMemberBalance(member_id:number, recharge_amount:number, give_amount:number,type:string) {
+  return axios.post('/api/Member/AddBalance', {param: { member_id, recharge_amount, give_amount, type }});
 }

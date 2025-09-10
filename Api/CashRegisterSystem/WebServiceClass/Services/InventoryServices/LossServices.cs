@@ -52,6 +52,26 @@ namespace WebServiceClass.Services.InventoryServices
             return Success(result, result ? "新增成功" : "新增失败");
         }
 
+        public async Task<ApiResponse<bool>> UpdateLossAsync(sys_inventory_loss loss,int userId)
+        {
+            
+            await _dal.Db.Updateable<sys_inventory_loss>().SetColumns(a=>new sys_inventory_loss
+            {
+                loss_type = loss.loss_type,
+                loss_quantity = loss.loss_quantity,
+                loss_reason = loss.loss_reason,
+                updateuser_id = userId,
+                updatetime = DateTime.Now
+            }).Where(a=>a.loss_id == loss.loss_id).ExecuteCommandAsync();
+            return Success(true, "更新成功" );
+        }
+
+        public async Task<ApiResponse<bool>> DelLossDetailAsync(long lossId)
+        {
+            var entity = await _dal.Db.Deleteable<sys_inventory_loss>().Where(x => x.loss_id == lossId).ExecuteCommandAsync();
+            return  Success(true, "删除成功");
+        }
+
         public async Task<ApiResponse<sys_inventory_loss>> GetLossDetailAsync(long lossId)
         {
             var entity = await _dal.Db.Queryable<sys_inventory_loss>().FirstAsync(x => x.loss_id == lossId);

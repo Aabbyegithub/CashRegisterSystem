@@ -43,22 +43,50 @@ namespace WebServiceClass.Services.DishServices
         // 获取套餐详情
         public async Task<ApiResponse<sys_set_meal>> GetMealByIdAsync(long mealId)
         {
-            var meal = await _dal.Db.Queryable<sys_set_meal>().FirstAsync(x => x.meal_id == mealId);
+            var meal = await _dal.Db.Queryable<sys_set_meal>().Includes(a=>a.item).FirstAsync(x => x.meal_id == mealId);
             return meal != null ? Success(meal, "获取成功") : Fail<sys_set_meal>("未找到套餐");
         }
 
         // 新增套餐
         public async Task<ApiResponse<bool>> AddMealAsync(sys_set_meal meal)
         {
-            var result = await _dal.Db.Insertable(meal).ExecuteCommandAsync() > 0;
-            return Success(result, result ? "新增成功" : "新增失败");
+            try
+            {
+                await _dal.Db.Ado.BeginTranAsync();
+                var result = await _dal.Db.Insertable(meal).ExecuteReturnBigIdentityAsync();
+                meal.meal_item.ForEach(item => item.meal_id = result);
+                await _dal.Db.Insertable(meal.meal_item).ExecuteCommandAsync();
+                await _dal.Db.Ado.CommitTranAsync();
+                return Success(true, "新增成功");
+            }
+            catch (Exception)
+            {
+                await _dal.Db.Ado.RollbackTranAsync();
+                return Fail<bool>( "新增失败");
+            }
         }
 
         // 修改套餐
         public async Task<ApiResponse<bool>> UpdateMealAsync(sys_set_meal meal)
         {
-            var result = await _dal.Db.Updateable(meal).ExecuteCommandAsync() > 0;
-            return Success(result, result ? "修改成功" : "修改失败");
+            try
+            {
+                await _dal.Db.Ado.BeginTranAsync();
+                await _dal.Db.Updateable(meal).ExecuteCommandAsync();
+                var insert = meal.meal_item.Where(a => a.item_id == 0).ToList();
+                var update = meal.meal_item.Where(a => a.item_id != 0).ToList();
+                await _dal.Db.Updateable(update).ExecuteCommandAsync();
+                await _dal.Db.Insertable(insert).ExecuteCommandAsync();
+                await _dal.Db.Ado.CommitTranAsync();
+                return Success(true, "修改成功");
+            }
+            catch (Exception)
+            {
+
+                await _dal.Db.Ado.RollbackTranAsync();
+                return Fail<bool>("修改失败");
+            }
+
         }
 
         // 删除套餐

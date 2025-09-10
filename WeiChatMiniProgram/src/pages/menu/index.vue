@@ -8,70 +8,98 @@
       @search="handleSearch"
     />
     <view class="main-content" :style="'height: calc(100vh - 93px' + (cartList.length > 0 ? ' - 60px' : '') + ');'">
-      <view class="sidebar">
-        <view
-          v-for="item in categories"
-          :key="item.id"
-          :class="['sidebar-item', item.active ? 'active' : '']"
-          @click="selectCategory(item.id)"
-        >
-          {{ item.name }}
-        </view>
-      </view>
-      <view class="dish-list">
-        <view v-for="dish in dishes" :key="dish.id" class="dish-item">
-         <u-image
-            :src="dish.img"
-            width="80px"
-            height="80px"
-            radius="10rpx"
-            lazy-load
-          >
-            <template #loading>
-              <image src=""/>
-            </template>
-            <template #error>
-              <image src="https://jebben.cn/posts/%E7%BD%91%E9%A1%B5%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD%E5%A4%B1%E8%B4%A5%E6%95%99%E4%BD%A05%E7%A7%8D%E6%96%B9%E6%B3%95%E5%AE%8C%E7%BE%8E%E5%BA%94%E5%AF%B9/cover.png" style="width:80px;height:80px;" />
-            </template>
-          </u-image>
-          <view class="dish-info">
-            <view class="dish-title">{{ dish.name }}</view>
-            <view class="dish-desc">{{ dish.desc }}</view>
-            <view v-if="dish.spece == 0" class="dish-price">￥{{ dish.price }}</view>
-            <view v-if="dish.spece == 1" class="dish-price"></view>
+      <u-cate-tab
+        :tabList="cateList"
+        :current="activeCateIndex"
+        @change="onCateChange"
+        left-width="120rpx"
+        right-padding="20"
+        bg-color="#f5f5f5"
+      >
+        <template  #pageItem="{pageItem}">
+          <view class="dish-list">
+            <view
+              :key="pageItem.id"
+              class="dish-item"
+            >
+              <u-image
+                :src="pageItem.img"
+                width="80px"
+                height="80px"
+                radius="10rpx"
+                lazy-load
+              >
+                <template #loading>
+                  <image src=""/>
+                </template>
+                <template #error>
+                  <image src="https://jebben.cn/posts/%E7%BD%91%E9%A1%B5%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD%E5%A4%B1%E8%B4%A5%E6%95%99%E4%BD%A05%E7%A7%8D%E6%96%B9%E6%B3%95%E5%AE%8C%E7%BE%8E%E5%BA%94%E5%AF%B9/cover.png" style="width:80px;height:80px;" />
+                </template>
+              </u-image>
+              <view class="dish-info">
+                <view class="dish-title">
+                  {{ pageItem.name }}
+                  <span v-if="pageItem.dishType === '套餐'" style="color:#F04216;font-size:22rpx;border:1px solid #F04216;border-radius:8rpx;padding:2px 8px;margin-left:8px;">套餐</span>
+                </view>
+                <view class="dish-desc">{{ pageItem.desc }}</view>
+                <view v-if="pageItem.dishType === '套餐' && pageItem.setMealDetail" class="dish-setmeal-detail">
+                  <view v-for="item in pageItem.setMealDetail" :key="item" style="color:#888;font-size:20rpx;">{{ item }}</view>
+                </view>
+                <view v-if="pageItem.spece == 0" class="dish-price">￥{{ pageItem.price }}</view>
+                <view v-if="pageItem.spece == 1" class="dish-price"></view>
+              </view>
+              <!-- spece==0 直接加购逻辑 -->
+              <template v-if="pageItem.spece == 0">
+                <template v-if="getCartQty(pageItem.id) > 0">
+                  <u-icon
+                    size="24"
+                    name="minus-circle"
+                    custom-style="width:50px;float:right;color:#0E8A9E;margin-right:-40px;margin-bottom:-60px"
+                    @click="changeCartQtySimple(pageItem, -1)"
+                  ></u-icon>
+                  <view
+                    style="width:50px;float:right;margin-right:-20px;margin-bottom:-60px;padding: 5px;text-align:center;"
+                  >{{ getCartQty(pageItem.id) }}</view>
+                  <u-icon
+                    size="24"
+                    name="plus-circle-fill"
+                    custom-style="width:50px;float:right;color:#0E8A9E;margin-right:-30px;margin-bottom:-60px"
+                    @click="changeCartQtySimple(pageItem, 1)"
+                  ></u-icon>
+                </template>
+                <template v-else>
+                  <u-icon
+                    size="24"
+                    name="plus-circle-fill"
+                    custom-style="width:50px;float:right;color:#0E8A9E;margin-right:-30px;margin-bottom:-60px"
+                    @click="changeCartQtySimple(pageItem, 1)"
+                  ></u-icon>
+                </template>
+              </template>
+              <u-button v-if="pageItem.spece == 1 && pageItem.type === 0" size="mini" custom-style="width:50px;float:right;color:#ffffff;background:#0E8A9E;border-radius: 20rpx;margin-bottom:-60px" @click="openSpecDialog(pageItem)">选规格</u-button>
+              <u-button v-if="pageItem.spece == 1 && pageItem.type === 1" size="mini" custom-style="width:50px;float:right;color:#ffffff;background:#0E8A9E;border-radius: 20rpx;margin-bottom:-60px" @click="openMealDialog(pageItem)">选规格</u-button>
+            </view>
           </view>
-          <!-- spece==0 直接加购逻辑 -->
-            <template v-if="dish.spece == 0">
-              <template v-if="getCartQty(dish.id) > 0">
-                <u-icon
-                  size="24"
-                  name="minus-circle"
-                  custom-style="width:50px;float:right;color:#0E8A9E;margin-right:-40px;margin-bottom:-60px"
-                  @click="changeCartQtySimple(dish, -1)"
-                ></u-icon>
-                <view
-                  style="width:50px;float:right;margin-right:-20px;margin-bottom:-60px;padding: 5px;text-align:center;"
-                >{{ getCartQty(dish.id) }}</view>
-                <u-icon
-                  size="24"
-                  name="plus-circle-fill"
-                  custom-style="width:50px;float:right;color:#0E8A9E;margin-right:-30px;margin-bottom:-60px"
-                  @click="changeCartQtySimple(dish, 1)"
-                ></u-icon>
-              </template>
-              <template v-else>
-                <u-icon
-                  size="24"
-                  name="plus-circle-fill"
-                  custom-style="width:50px;float:right;color:#0E8A9E;margin-right:-30px;margin-bottom:-60px"
-                  @click="changeCartQtySimple(dish, 1)"
-                ></u-icon>
-              </template>
-            </template>
-          <u-button v-if="dish.spece == 1" size="mini" custom-style="width:50px;float:right;color:#ffffff;background:#0E8A9E;border-radius: 20rpx;margin-bottom:-60px" @click="openSpecDialog(dish)">选规格</u-button>
+        </template>
+      </u-cate-tab>
+      <!-- 规格弹窗、购物车弹窗、会员弹窗、底部购物车栏 保持原样 -->
+    <!-- 底部购物车栏，直接展示在 main-content 下方 -->
+    </view>
+    <view class="cart-bar" v-if="cartList.length > 0" @click.self="showCartDialog = true">
+      <view class="cart-left">
+        <view class="cart-icon-box">
+          <image class="cart-icon" src="/src/static/Group.png" />
+          <view v-if="cartList.length > 0" class="cart-badge">{{ cartList.length }}</view>
+        </view>
+        <view class="cart-price-box">
+          <view class="cart-price">￥{{ cartTotal }}</view>
         </view>
       </view>
-    <!-- 规格弹窗 -->
+      <view @click.stop style="display:inline-block">
+        <u-button class="cart-btn" type="primary" custom-style="border-radius: 50rpx;background:#0E8A9E;color:#fff;width:120px;height:40px;font-size:28rpx;margin-right:40rpx"  @click="handleOrderClick">下单</u-button>
+      </view>
+    </view>
+        <!-- 规格弹窗 -->
     <u-popup :show="showSpecDialog" mode="bottom" @close="showSpecDialog = false">
       <view class="spec-dialog">
         <view class="spec-header">
@@ -166,27 +194,45 @@
         </view>
       </view>
     </u-popup>
-    <!-- 底部购物车栏，直接展示在 main-content 下方 -->
-    </view>
-    <view class="cart-bar" v-if="cartList.length > 0" @click.self="showCartDialog = true">
-      <view class="cart-left">
-        <view class="cart-icon-box">
-          <image class="cart-icon" src="/src/static/Group.png" />
-          <view v-if="cartList.length > 0" class="cart-badge">{{ cartList.length }}</view>
+    <!-- 选规格弹窗 -->
+    <u-popup :show="showMealDialog" mode="bottom" @close="showMealDialog = false">
+      <view class="meal-dialog">
+        <!-- 顶部信息 -->
+        <view class="meal-header" style="display:flex;align-items:center;">
+          <image :src="selectedDish?.img" style="width:100px;height:100px;border-radius:10rpx;margin-right:20rpx;" />
+          <view style="flex:1;">
+            <view style="font-size:32rpx;font-weight:bold;">{{ selectedDish?.name }}</view>
+            <view style="color:#888;font-size:24rpx;margin:8rpx 0;">
+              已选:
+              <span v-for="(opts, type) in selectedMeals" :key="type">
+                {{ opts.join('/') }} /
+              </span>
+            </view>
+            <view style="font-size:28rpx;color:#222;font-weight:bold;">￥{{ selectedDish?.price }}</view>
+          </view>
         </view>
-        <view class="cart-price-box">
-          <view class="cart-price">￥{{ cartTotal }}</view>
+        <!-- 循环类型和选项 -->
+        <view class="meal-content">
+          <view v-for="(typeObj, idx) in selectedDish?.mealTypes || []" :key="typeObj.type" class="spec-section">
+            <view class="spec-label">{{ typeObj.type }}[{{ typeObj.limit }}]选择</view>
+            <view class="spec-options">
+              <view
+                v-for="opt in typeObj.options"
+                :key="opt"
+                :class="['spec-option', selectedMeals[typeObj.type]?.includes(opt) ? 'active' : '']"
+                @click="toggleMeal(typeObj.type, opt, typeObj.limit)"
+              >{{ opt }}</view>
+            </view>
+          </view>
         </view>
+        <u-button custom-style="width:90%;margin:30px auto 0;border-radius: 50rpx;background:#0E8A9E;color:#ffffff;" @click="confirmMeal">加入购物车</u-button>
       </view>
-      <view @click.stop style="display:inline-block">
-        <u-button class="cart-btn" type="primary" custom-style="border-radius: 50rpx;background:#0E8A9E;color:#fff;width:120px;height:40px;font-size:28rpx;margin-right:40rpx"  @click="handleOrderClick">下单</u-button>
-      </view>
-    </view>
+    </u-popup>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 // 规格弹窗相关
 const showSpecDialog = ref(false)
@@ -230,6 +276,27 @@ import { request } from '@/utitl/request'
 const searchValue = ref('')
 const categories = ref<any[]>([])
 const dishes = ref<any[]>([])
+const cateList = ref<any[]>([])
+const dishList = ref<any[]>([])
+const activeCateIndex = ref(0)
+
+// 分类切换
+function onCateChange(index: number) {
+  activeCateIndex.value = index
+}
+
+// 当前分类下菜品
+const dishesByCate = computed(() => {
+  console.log('cateList', cateList.value)
+    console.log('dishList', dishList.value)
+  if (!cateList.value.length) return []
+  const catId = cateList.value[activeCateIndex.value]?.id
+  console.log('catId', catId)
+  const result = dishList.value.filter(d => d.dishCategoryType === catId)
+  console.log('筛选结果', result)
+  return result
+
+})
 
 function selectCategory(id: number) {
   categories.value.forEach(item => item.active = item.id === id)
@@ -376,7 +443,7 @@ async function submitOrder() {
   })
 }
 
-onLoad(() => {
+onLoad(async () => {
   const { tableId, storeId,people } = uni.getStorageSync('TableInfo') || {}
   if (tableId) {
     // 获取桌台ID
@@ -384,8 +451,8 @@ onLoad(() => {
   }else {
     uni.showToast({ title: '未指定桌台', icon: 'none' })
   }
-  getmenuType(storeId || 2) 
-  getmenuList(storeId || 2)
+  await getmenuType(storeId || 2) 
+  await getmenuList(storeId || 2)
 })
 
 async function getmenuType(storeId: number) {
@@ -396,6 +463,7 @@ async function getmenuType(storeId: number) {
       store_id: storeId
     }}).then((res: any) => {
       categories.value = res.response || []
+      // cateList.value = res.response || []
     })
 }
 
@@ -407,19 +475,102 @@ async function getmenuList(storeId: number) {
       store_id: storeId
     }}).then((res: any) => {
       dishes.value = res.response || []
+      dishList.value = res.response || []
+      cateList.value = categories.value.map(cat => ({
+      id: cat.id,
+      name: cat.name,
+      title: cat.name,
+      children: dishes.value.filter(d => d.dishCategoryType === cat.id)
+    }))
+    nextTick(() => {
+      // 强制组件更新
+    });
+    console.log('处理后的分类列表（含children）：', cateList.value);
     })
 }
 function selectSpec(spec: string, idx: number) {
   selectedSpec.value = spec
   selcetprice.value = priceList.value[idx]
 }
+const showMealDialog = ref(false)
+// 选中的每个类型的选项
+const selectedMeals = ref<Record<string, string>>({})
+
+function openMealDialog(dish: any) {
+  selectedDish.value = dish
+  showMealDialog.value = true
+  // 初始化每个类型的选项为空
+  selectedMeals.value = {}
+  dish.mealTypes?.forEach(typeObj => {
+    selectedMeals.value[typeObj.type] = ''
+  })
+}
+
+function toggleMeal(type: string, opt: string, limit: number) {
+  const selected = selectedMeals.value[type] || []
+  if (selected.includes(opt)) {
+    // 如果已选中，移除
+    selectedMeals.value[type] = selected.filter((item: string) => item !== opt)
+  } else {
+    // 如果未选中，判断是否超过限制
+    if (selected.length < limit) {
+      selectedMeals.value[type].push(opt)
+    } else {
+      uni.showToast({ title: `最多选择${limit}个`, icon: 'none' })
+    }
+  }
+}
+
+function confirmMeal() {
+  // 处理 selectedMeals.value，提交到购物车或其它逻辑
+  showMealDialog.value = false
+  uni.showToast({ title: '已选择套餐', icon: 'success' })
+}
 </script>
 
 <style>
 .menu-container {
   background: #f5f5f5;
-  height: 100vh
+  height: 100vh;
 }
+
+.dish-item {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 15rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.05);
+  padding: 20rpx;
+
+/* width: calc(100vw - 250rpx); */
+}
+.dish-info {
+  flex: 1;
+  margin-left: 10px;
+}
+.dish-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+}
+.dish-desc {
+  font-size: 18rpx;
+  color: #F04216;
+  margin: 8rpx 0;
+}
+.dish-price {
+  font-size: 28rpx;
+  color: #222222;
+  font-weight: bold;
+  margin-top: 30px;
+}
+.dish-setmeal-detail {
+  margin-top: 6px;
+  background: #fff7f2;
+  border-radius: 8rpx;
+  padding: 6px 12px;
+}
+
 /* 规格弹窗样式 */
 .spec-dialog {
   background: #fff;
@@ -483,13 +634,13 @@ function selectSpec(spec: string, idx: number) {
   font-size: 28rpx;
   width: 120rpx;
   text-align: center;
-  /* border: 1px solid #F04216; */
   margin-bottom: 10rpx;
+  cursor: pointer;
 }
 .spec-option.active {
   background: #fff2ee;
-  color: #F04216;
-  border: 2px solid #F04216;
+  color: #0E8A9E;
+  border: 2px solid #0E8A9E;
 }
 .spec-qty {
   display: flex;
@@ -534,8 +685,8 @@ function selectSpec(spec: string, idx: number) {
   display: flex;
   flex-direction: column;
   gap: 20rpx;
-  overflow-y: auto;
-  overflow-x: hidden;
+  /* overflow-y: auto; */
+  /* overflow-x: hidden; */
   width: calc(100vw - 150px);
 }
 .dish-item {
@@ -750,48 +901,23 @@ function selectSpec(spec: string, idx: number) {
 .cart-btn {
   margin-left: auto;
 }
-/* 会员弹窗样式 */
-.member-dialog {
+.meal-dialog {
   background: #fff;
   border-radius: 20rpx;
   padding: 30rpx;
-  width: 60vw;
+  width: 90vw;
   max-width: 500px;
 }
-.member-header {
-  margin-bottom: 20rpx;
-}
-.member-title {
+.meal-header {
   font-size: 32rpx;
   font-weight: bold;
   color: #333;
-  text-align: center;
-}
-.member-content {
   margin-bottom: 20rpx;
 }
-.member-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15rpx;
+.meal-content {
+  margin-bottom: 20rpx;
 }
-.member-label {
-  font-size: 28rpx;
-  color: #333;
-  width: 100px;
-}
-.member-value {
-  flex: 1;
-}
-.member-footer {
-  text-align: center;
-}
-.member-btn {
-  width: 100%;
-  border-radius: 50rpx;
-  background: #0E8A9E;
-  color: #fff;
-  height: 40px;
-  font-size: 28rpx;
+.meal-option {
+  margin-bottom: 10rpx;
 }
 </style>
