@@ -25,14 +25,14 @@
       <el-table-column prop="phone" label="手机号" align="center" />
       <el-table-column prop="recharge_amount" label="充值金额" align="center" />
       <el-table-column prop="give_amount" label="赠送金额" align="center" />
-      <el-table-column prop="balance" label="当前余额" align="center" />
+      <el-table-column prop="balance" label="当前余额" align="center"/>
       <el-table-column prop="recharge_time" label="充值时间" align="center" />
-      <el-table-column prop="payment_id" label="支付方式" align="center">
+      <!-- <el-table-column prop="payment_id" label="支付方式" align="center">
         <template #default="scope">
           <span class="table-btn-balance">{{ paymentMap[scope.row.payment_id] }}</span>
         </template>
-      </el-table-column>
-      <el-table-column prop="operator_id" label="操作员工" align="center" />
+      </el-table-column> -->
+      <el-table-column prop="operator_name" label="操作员工" align="center"/>
     </el-table>
     <!-- <div v-if="filteredRecords.length === 0" class="empty-row">
       <el-empty description="暂无储值记录" />
@@ -99,14 +99,19 @@ const handleQuery = async () => {
     params.startDate = new Date(searchDate.value[0]).toISOString();
     params.endDate = new Date(searchDate.value[1]).toISOString();
   }
-  const res = await getBalanceRecordList(params);
-  if (res?.data?.success) {
-    recordList.value = (res.data.response || []).map((r: any) => ({
+  const res:any = await getBalanceRecordList(params);
+  if (res?.success) {
+    recordList.value = (res.response || []).map((r: any) => ({
       ...r,
       recharge_time: r.recharge_time ? r.recharge_time.replace('T', ' ').slice(0, 19) : '',
-      operator_name: r.operatorName?.name || '-'
+      operator_name: r.operatorName?.name || '-',
+      balance: parseFloat(r.member?.balance.toFixed(2)),
+      recharge_amount: parseFloat(r.recharge_amount.toFixed(2)),
+      member_no: r.member?.member_no || '-',
+      name: r.member?.name || '-',
+      phone: r.member?.phone || '-',
     }));
-    total.value = res.data.count || 0;
+    total.value = res.count || 0;
   } else {
     recordList.value = [];
     total.value = 0;

@@ -26,5 +26,5 @@ export function getBalanceRecordList(params: { page: number; size: number; keywo
 }
 
 export function addMemberBalance(member_id:number, recharge_amount:number, give_amount:number,type:string) {
-  return axios.post('/api/Member/AddBalance', {param: { member_id, recharge_amount, give_amount, type }});
+  return axios.post('/api/Member/AddBalance', null,{params: { member_id, recharge_amount, give_amount, type }});
 }

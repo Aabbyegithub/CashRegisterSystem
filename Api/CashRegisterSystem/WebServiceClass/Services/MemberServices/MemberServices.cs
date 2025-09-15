@@ -78,16 +78,7 @@ namespace WebServiceClass.Services.MemberServices
                         .Where(x => x.member_id == member_id)
                         .ExecuteCommandAsync();
                 string balance_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(100000, 999999);
-                var result = await _dal.Db.Insertable(new sys_member_balance
-                {
-                    member_id = member_id,
-                    balance_no = balance_no,
-                    balance = (decimal)member?.balance,
-                    recharge_amount = recharge_amount,
-                    give_amount = give_amount,
-                    recharge_time = DateTime.Now,
-                    operator_id = userId
-                }).ExecuteReturnBigIdentityAsync();
+
                 byte pay_type = 0;
                 switch (type)
                 {
@@ -102,16 +93,26 @@ namespace WebServiceClass.Services.MemberServices
                         break;
                 }
                 //支付记录
-                await _dal.Db.Insertable(new sys_payment
+                var payId = await _dal.Db.Insertable(new sys_payment
                 {
-                    order_id = result,
                     payment_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(100000, 999999),
                     pay_amount = recharge_amount,
                     pay_type = pay_type,
                     status = 2,
                     pay_time = DateTime.Now,
+                }).ExecuteReturnBigIdentityAsync();
 
-                }).ExecuteCommandAsync();
+                var result = await _dal.Db.Insertable(new sys_member_balance
+                {
+                    member_id = member_id,
+                    balance_no = balance_no,
+                    balance = member.balance.HasValue ? member.balance.Value : 0,
+                    recharge_amount = recharge_amount,
+                    give_amount = give_amount,
+                    recharge_time = DateTime.Now,
+                    operator_id = userId,
+                    payment_id = payId
+                }).ExecuteReturnBigIdentityAsync();
                 await _dal.Db.Ado.CommitTranAsync();
 
                 return Success(true,"储值成功");

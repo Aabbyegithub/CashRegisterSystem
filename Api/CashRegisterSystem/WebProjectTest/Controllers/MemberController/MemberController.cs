@@ -87,6 +87,9 @@ namespace WebProjectTest.Controllers.MemberController
                 case "alipay":
                     url = "";
                     break;
+                case "现金":
+                    url = "";
+                    break;
                 default:
                     return Error<bool>("支付失败");
 

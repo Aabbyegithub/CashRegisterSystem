@@ -84,7 +84,7 @@ namespace MyNamespace
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public decimal? balance { get; set; }
+        public decimal? balance { get; set; } = 0;
 
     }
 }
