@@ -1,6 +1,6 @@
 // config.ts
 // 配置文件，定义基础请求地址等
-export const BASE_URL = 'http://mpvk8690901.vicp.fun:12575'; // 请根据实际情况修改
+export const BASE_URL = 'http://192.168.74.1:7092'; // 请根据实际情况修改
 
 export const TIMEOUT = 10000; // 请求超时时间（毫秒）
 

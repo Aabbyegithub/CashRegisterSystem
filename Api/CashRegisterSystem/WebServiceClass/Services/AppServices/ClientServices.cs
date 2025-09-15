@@ -65,7 +65,7 @@ namespace WebServiceClass.Services.AppServices
                       Type = 0
                   }).ToListAsync();
             //增加套餐
-            var meal = await _dal.Db.Queryable<sys_set_meal>().Includes(a=>a.item).Where(a => a.store_id == store_id)
+            var meal = await _dal.Db.Queryable<sys_set_meal>().Includes(a=>a.item).Where(a => a.store_id == store_id && a.status ==1)
                 .Select(a => new DishList
                 {
                     Id = a.meal_id,
@@ -92,8 +92,10 @@ namespace WebServiceClass.Services.AppServices
                      Id = a.category_id,
                      Name = a.category_name,
                  }).ToListAsync();
-            res.Add(new DishCategory { Id = 99,Name = "固定套餐"});
-            res.Add(new DishCategory { Id = 100,Name = "组合套餐"});
+            if( await _dal.Db.Queryable<sys_set_meal>().Where(a => a.store_id == store_id && a.status == 1 && a.is_fixed ==0).CountAsync() >0)
+                res.Add(new DishCategory { Id = 99,Name = "固定套餐"});
+            if( await _dal.Db.Queryable<sys_set_meal>().Where(a => a.store_id == store_id && a.status == 1 && a.is_fixed ==1).CountAsync() >0)
+                res.Add(new DishCategory { Id = 100,Name = "组合套餐"});
             if (res.Count > 0)
                 res.FirstOrDefault().active = true;
             return Success(res, "菜品类型获取成功");
@@ -129,7 +131,7 @@ namespace WebServiceClass.Services.AppServices
                         quantity = o.qty,
                         unit_price = member == null ? decimal.Parse(o.price) : decimal.Parse(o.memberprice),
                         total_price = member == null ? decimal.Parse(o.price) * o.qty : decimal.Parse(o.memberprice) * o.qty,
-                        specification = $"{o.spec},{o.spicy}",
+                        specification = !string.IsNullOrWhiteSpace(o.spec) ? $"{o.spec},{o.spicy}" : o.spicy,
                         status = 1, // 状态 1-待制作
                         is_rush = 0,
                     }).ToList();
@@ -193,7 +195,7 @@ namespace WebServiceClass.Services.AppServices
                         quantity = o.qty,
                         unit_price =member == null ? decimal.Parse(o.price) : decimal.Parse(o.memberprice),
                         total_price =member == null ? decimal.Parse(o.price) * o.qty : decimal.Parse(o.memberprice) * o.qty,
-                        specification = $"{o.spec},{o.spicy}",
+                        specification = !string.IsNullOrWhiteSpace(o.spec) ? $"{o.spec},{o.spicy}" : o.spicy,
                         status = 1, // 状态 1-待制作
                         is_rush = 0,
                     }).ToList();
@@ -376,7 +378,7 @@ namespace WebServiceClass.Services.AppServices
                     paymeth =GetPaymentMethod(type),payable_amount = (a.payable_amount - coupon.value + service_fee-promotionValue), service_fee = service_fee, operator_id = userId })
                 .Where(a => a.order_id == orderId).ExecuteCommandAsync();
                 await _dal.Db.Updateable<sys_restaurant_table>().With(SqlWith.UpdLock)
-                .SetColumns(a => new sys_restaurant_table { status = 4, order_id = null }).Where(a => a.table_id == order1.table_id).ExecuteCommandAsync();
+                .SetColumns(a => new sys_restaurant_table { status = 4, order_id = null,lastUseTime = DateTime.Now }).Where(a => a.table_id == order1.table_id).ExecuteCommandAsync();
                 var order = await _dal.Db.Queryable<sys_order>().Includes(a => a.store).FirstAsync(a => a.order_id == orderId);
                 if (order.member_id.HasValue)
                 {
@@ -415,13 +417,13 @@ namespace WebServiceClass.Services.AppServices
                         if (pay!=0)
                         {
                             pay_type = 1;
-                              res = await WeChatPayHelper.CallCustomerUnifiedRechargeApi(url, "餐饮收银", "餐饮收银订单支付", order?.order_no, (int)pay, Code, order.store?.store_code, 0);
+                              //res = await WeChatPayHelper.CallCustomerUnifiedRechargeApi(url, "餐饮收银", "餐饮收银订单支付", order?.order_no, (int)pay, Code, order.store?.store_code, 0);
                              remark += $"微信支付-{pay}";
                         }
-                        if (res !="OK")
-                        {
-                            Msg = res;
-                        }
+                        //if (res !="OK")
+                        //{
+                        //    Msg = res;
+                        //}
                         break;
                     case "alipay": //支付宝
 

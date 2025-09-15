@@ -10,21 +10,23 @@
         <el-option label="暂停" :value="2" />
       </el-select>
       <el-button type="primary" @click="fetchList">查询</el-button>
+      <el-button type="success" @click="AllTaskStart">全部启动</el-button>
+      <el-button type="danger" @click="AllTaskStop">全部停止</el-button>
       <el-button @click="openAddDialog" style="margin-left:auto;">新增定时任务</el-button>
     </div>
     <!-- 列表区 -->
     <el-table :data="taskList" style="margin-top:18px; height: 68vh;" border>
       <el-table-column prop="timerName" label="定时器名称" />
-      <el-table-column prop="timerClass" label="服务类" />
-      <el-table-column prop="corn" label="运行时段" />
-      <el-table-column prop="startNumber" label="运行次数" />
-      <el-table-column prop="isStart" label="状态">
+      <el-table-column prop="timerClass" label="服务类" width="200"/>
+      <el-table-column prop="corn" label="运行时段" width="150"/>
+      <el-table-column prop="startNumber" label="运行次数" width="100"/>
+      <el-table-column prop="isStart" label="状态" width="100">
         <template #default="scope">
           <el-tag :type="statusTagType(scope.row.isStart)">{{ statusText(scope.row.isStart) }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="createTime" label="创建时间" />
-      <el-table-column label="操作" width="260">
+      <el-table-column prop="createTime" label="创建时间" width="200"/>
+      <el-table-column label="操作" width="330">
         <template #default="scope">
           <el-button size="small" @click="openDetailDialog(scope.row)">详情</el-button>
           <el-button size="small" @click="openEditDialog(scope.row)">编辑</el-button>
@@ -99,59 +101,26 @@ import {
   stopTask,
   pauseJob,
   resumeJob,
-  AddTask
+  AddTask,
+  removeJob
 } from '../../../../api/timertask';
-export interface TimerTask {
-  id: number;
-  timerName: string;
-  timerClass: string;
-  createTime: string | null;
-  beginTime: string | null;
-  endTime: string | null;
-  addUser: number;
-  orgId: number;
-  isStart: number;
-  isDelete: number;
-  corn: string;
-  startNumber: number;
-}
 const searchName = ref('');
 const searchStatus = ref('');
-const taskList = ref<TimerTask[]>([]);
+const taskList = ref<any[]>([]);
 const total = ref(0);
 const pageSize = ref(10);
 const currentPage = ref(1);
 const editDialogVisible = ref(false);
 const editMode = ref<'add'|'edit'>('add');
-const editForm = ref<TimerTask>({
+const editForm = ref<any>({
   id: 0,
   timerName: '',
   timerClass: '',
-  createTime: '',
-  beginTime: '',
-  endTime: '',
-  addUser: 0,
-  orgId: 0,
-  isStart: 0,
-  isDelete: 0,
   corn: '',
   startNumber: 0
 });
 const detailDialogVisible = ref(false);
-const detail = ref<TimerTask>({
-  id: 0,
-  timerName: '',
-  timerClass: '',
-  createTime: '',
-  beginTime: '',
-  endTime: '',
-  addUser: 0,
-  orgId: 0,
-  isStart: 0,
-  isDelete: 0,
-  corn: '',
-  startNumber: 0
-});
+const detail = ref<any>({});
 
 function statusText(val:number) {
   if(val===0) return '未启动';
@@ -195,23 +164,36 @@ function openAddDialog() {
     id: 0,
     timerName: '',
     timerClass: '',
-    createTime: '',
-    beginTime: '',
-    endTime: '',
-    addUser: 0,
-    orgId: 0,
-    isStart: 0,
-    isDelete: 0,
     corn: '',
     startNumber: 0
   };
   editDialogVisible.value = true;
 }
-function openEditDialog(row:TimerTask) {
+function openEditDialog(row:any) {
   editMode.value = 'edit';
   editForm.value = { ...row };
   editDialogVisible.value = true;
 }
+async function AllTaskStart() {
+  const res:any = await startTask();
+  if(res?.success) {
+    ElMessage.success('全部启动成功');
+    fetchList();
+  } else {
+    ElMessage.error(res?.message||'全部启动失败');
+  }
+}
+
+async function AllTaskStop() {
+  const res:any = await stopTask();
+  if(res?.success) {
+    ElMessage.success('全部停止成功');
+    fetchList();
+  } else {
+    ElMessage.error(res?.message||'全部停止失败');
+  }
+}
+
 async function handleEditConfirm() {
   if(editMode.value==='add') {
     const res:any = await addTimerTask(editForm.value);
@@ -223,7 +205,13 @@ async function handleEditConfirm() {
       ElMessage.error(res?.message||'新增失败');
     }
   } else {
-    const res:any = await updateTimerTask(editForm.value);
+    const play = {
+      id: editForm.value.id,
+      timerName : editForm.value.timerName,
+      timerClass : editForm.value.timerClass,
+      corn : editForm.value.corn
+    }
+    const res:any = await updateTimerTask(play);
     if(res?.success) {
       ElMessage.success('编辑成功');
       editDialogVisible.value = false;
@@ -233,7 +221,7 @@ async function handleEditConfirm() {
     }
   }
 }
-function openDetailDialog(row:TimerTask) {
+function openDetailDialog(row:any) {
   getTimerTaskDetail(row.id).then((res:any)=>{
     if(res?.success) {
       detail.value = res.response;
@@ -244,7 +232,7 @@ function openDetailDialog(row:TimerTask) {
     }
   });
 }
-async function handleDelete(row:TimerTask) {
+async function handleDelete(row:any) {
   const res:any = await deleteTimerTask(row.id);
   if(res?.success) {
     ElMessage.success('删除成功');
@@ -253,7 +241,7 @@ async function handleDelete(row:TimerTask) {
     ElMessage.error(res?.message||'删除失败');
   }
 }
-async function handleStart(row:TimerTask) {
+async function handleStart(row:any) {
   const res:any = await AddTask(row.id,row.timerClass,row.corn);
   if(res?.success) {
     ElMessage.success('启动成功');
@@ -262,7 +250,7 @@ async function handleStart(row:TimerTask) {
     ElMessage.error(res?.message||'启动失败');
   }
 }
-async function handlePause(row:TimerTask) {
+async function handlePause(row:any) {
   const res:any = await pauseJob(row.id);
   if(res?.success) {
     ElMessage.success('暂停成功');
@@ -271,7 +259,7 @@ async function handlePause(row:TimerTask) {
     ElMessage.error(res?.message||'暂停失败');
   }
 }
-async function handleResume(row:TimerTask) {
+async function handleResume(row:any) {
   const res:any = await resumeJob(row.id);
   if(res?.success) {
     ElMessage.success('恢复成功');
@@ -280,8 +268,8 @@ async function handleResume(row:TimerTask) {
     ElMessage.error(res?.message||'恢复失败');
   }
 }
-async function handleStop(row:TimerTask) {
-  const res:any = await stopTask(row.id);
+async function handleStop(row:any) {
+  const res:any = await removeJob(row.id);
   if(res?.success) {
     ElMessage.success('停止成功');
     fetchList();

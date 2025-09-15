@@ -77,14 +77,13 @@ namespace MyNamespace
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public int? IsStart { get; set; }
-
+        public int? IsStart { get; set; } = 0;
         /// <summary>
         /// Desc:是否删除：0，删除，1，运行
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public int? isDelete { get; set; }
+        public int? isDelete { get; set; } = 1;
 
         /// <summary>
         /// Desc:设置运行时段

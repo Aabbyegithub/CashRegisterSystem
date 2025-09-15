@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using MyNamespace;
 using Quartz;
 using Quartz.Impl;
+using Quartz.Impl.Matchers;
 using System.Reflection;
 using WebIServices.IBase;
 using WebServiceClass.Helper;
@@ -20,9 +21,17 @@ namespace WebServiceClass.QuartzTask
             _scheduler = factory.GetScheduler().Result;
             _cancellationTokenSource = new CancellationTokenSource();
             _serviceScopeFactory = serviceScopeFactory;
+
+            // 1. 创建监听器实例（注入依赖容器）
+            var taskRunListener = new TaskRunListener(serviceScopeFactory);
+            // 2. 注册监听器：监听所有任务（或指定任务组，此处全局监听）
+            _scheduler.ListenerManager.AddJobListener(
+                taskRunListener,
+                GroupMatcher<JobKey>.AnyGroup() // 匹配所有任务组
+            );
             // 配置Quartz使用我们的依赖注入容器
-             //_scheduler.Context.Put("ServiceScopeFactory", _serviceScopeFactory);
-             _scheduler.JobFactory = new ScopedJobFactory(serviceScopeFactory);
+            //_scheduler.Context.Put("ServiceScopeFactory", _serviceScopeFactory);
+            _scheduler.JobFactory = new ScopedJobFactory(serviceScopeFactory);
         }
 
         /// <summary>
@@ -65,7 +74,7 @@ namespace WebServiceClass.QuartzTask
 
                         // 配置Job和Trigger
                         var job = JobBuilder.Create(itemJob)
-                                            .WithIdentity(itemJob.Name)
+                                            .WithIdentity(itemTimer.Id.ToString())
                                             .Build();
                         var trigger = TriggerBuilder.Create()
                                                     //.WithSimpleSchedule(x => x

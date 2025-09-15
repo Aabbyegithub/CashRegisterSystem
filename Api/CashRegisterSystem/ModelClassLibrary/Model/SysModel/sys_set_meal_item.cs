@@ -22,7 +22,7 @@ namespace MyNamespace
         /// Nullable:False
         /// </summary>           
         [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
-        public long item_id { get; set; }
+        public long? item_id { get; set; }
 
         /// <summary>
         /// Desc:所属套餐ID

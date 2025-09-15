@@ -93,6 +93,13 @@ namespace MyNamespace
         /// </summary>  
         public string desc {get;set;}
 
+        /// <summary>
+        /// Desc:桌台描述
+        /// Default:CURRENT_TIMESTAMP
+        /// Nullable:False
+        /// </summary>  
+        public DateTime? lastUseTime { get; set; }
+
         [Navigate(NavigateType.OneToOne, nameof(order_id), nameof(sys_order.order_id))]//一对一 
         public sys_order? order { get; set; }
 

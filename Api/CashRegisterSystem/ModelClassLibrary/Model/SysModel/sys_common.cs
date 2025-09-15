@@ -42,7 +42,9 @@ namespace MyNamespace
            /// Default:
            /// Nullable:True
            /// </summary>           
-           public string? value {get;set;}
+           public string? keymchcode {get;set;}
+           public string? keyvalue {get;set;}
+           public string? url {get;set;}
 
     }
 }

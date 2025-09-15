@@ -26,7 +26,7 @@ namespace WebProjectTest.Controllers.TaskController
         /// <returns></returns>
         [HttpPost]
         [OperationLogFilter("系统设置>定时器管理", "启动定时服务", ActionType.Open)]
-        public async Task<string> StartTaskAsync()
+        public async Task<ApiResponse<string>> StartTaskAsync()
         {
             return await _taskService.StartAsync(new CancellationToken());
 
@@ -38,7 +38,7 @@ namespace WebProjectTest.Controllers.TaskController
         /// <returns></returns>
         [HttpPost]
         [OperationLogFilter("系统设置>定时器管理", "启动定时服务", ActionType.Close)]
-        public async Task<string> StopTaskAsync()
+        public async Task<ApiResponse<string>> StopTaskAsync()
         {
             return await _taskService.StopAsync(new CancellationToken());
 
@@ -50,7 +50,7 @@ namespace WebProjectTest.Controllers.TaskController
         /// <returns></returns>
         [HttpPost]
         [OperationLogFilter("系统设置>定时器管理", "启动定时服务", ActionType.Add)]
-        public async Task<string> AddJobAsync(string jobId, string jobName, string cronExpression)
+        public async Task<ApiResponse<string>> AddJobAsync(string jobId, string jobName, string cronExpression)
         {
             return await _taskService.AddJobAsync(jobId, jobName, cronExpression, default);
 
@@ -63,7 +63,7 @@ namespace WebProjectTest.Controllers.TaskController
         /// <returns></returns>
         [HttpPost]
         [OperationLogFilter("系统设置>定时器管理", "启动定时服务", ActionType.Remove)]
-        public async Task<string> RemoveJobAsync(string jobId)
+        public async Task<ApiResponse<string>> RemoveJobAsync(string jobId)
         {
             return await _taskService.RemoveJobAsync(jobId, default);
 
@@ -76,7 +76,7 @@ namespace WebProjectTest.Controllers.TaskController
         /// <returns></returns>
         [HttpPost]
         [OperationLogFilter("系统设置>定时器管理", "启动定时服务", ActionType.Pause)]
-        public async Task<string> PauseJobAsync(string jobId)
+        public async Task<ApiResponse<string>> PauseJobAsync(string jobId)
         {
             return await _taskService.PauseJobAsync(jobId, default);
 
@@ -89,7 +89,7 @@ namespace WebProjectTest.Controllers.TaskController
         /// <returns></returns>
         [HttpPost]
         [OperationLogFilter("系统设置>定时器管理", "启动定时服务", ActionType.Open)]
-        public async Task<string> ResumeJobAsync(string jobId)
+        public async Task<ApiResponse<string>> ResumeJobAsync(string jobId)
         {
             return await _taskService.ResumeJobAsync(jobId, default);
 

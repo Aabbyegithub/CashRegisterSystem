@@ -28,6 +28,8 @@
         <view class="order-item-price">￥{{ item.price }}</view>
         <!-- <view v-if="item.detail" class="order-item-detail" v-html="item.detail"></view> -->
       </view>
+    </view>
+    <view class="order-list">
       <view v-if="coupons.length>0" class="order-coupon" @click="handleCunpon">
         <view class="order-coupon-label">选择优惠券 <span style="color:#F04216">·</span></view>
         <view class="order-coupon-info">{{ selectcoupons }}</view>
@@ -369,6 +371,7 @@ async function GetTables(store_id: number) {
   margin: 20rpx 20rpx 0 20rpx;
   padding: 30rpx 20rpx 20rpx 20rpx;
   max-height: 300px;
+  overflow-y: auto;
 }
 .order-item {
   display: flex;
@@ -401,7 +404,7 @@ async function GetTables(store_id: number) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 20px;
+  margin-top: 10px;
   font-size: 26rpx;
 }
 .order-coupon-label {

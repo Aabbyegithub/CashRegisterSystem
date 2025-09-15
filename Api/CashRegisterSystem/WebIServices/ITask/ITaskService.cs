@@ -18,14 +18,14 @@ namespace WebIServices.ITask
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<string> StartAsync(CancellationToken cancellationToken);
+        Task<ApiResponse<string>> StartAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// 关闭调度任务
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<string> StopAsync(CancellationToken cancellationToken);
+        Task<ApiResponse<string>> StopAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// 添加一个调度任务
@@ -36,7 +36,7 @@ namespace WebIServices.ITask
         /// <param name="cronExpression"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<string> AddJobAsync(string jobId, string jobName, string cronExpression, CancellationToken cancellationToken);
+        Task<ApiResponse<string>> AddJobAsync(string jobId, string jobName, string cronExpression, CancellationToken cancellationToken);
 
         /// <summary>
         /// 移除一个调度任务
@@ -44,7 +44,7 @@ namespace WebIServices.ITask
         /// <param name="jobId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<string> RemoveJobAsync(string jobId, CancellationToken cancellationToken);
+        Task<ApiResponse<string>> RemoveJobAsync(string jobId, CancellationToken cancellationToken);
 
         /// <summary>
         /// 暂停一个调度任务
@@ -52,7 +52,7 @@ namespace WebIServices.ITask
         /// <param name="jobId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<string> PauseJobAsync(string jobId, CancellationToken cancellationToken);
+        Task<ApiResponse<string>> PauseJobAsync(string jobId, CancellationToken cancellationToken);
 
         /// <summary>
         /// 恢复该调度任务的运行
@@ -60,7 +60,7 @@ namespace WebIServices.ITask
         /// <param name="jobId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<string> ResumeJobAsync(string jobId, CancellationToken cancellationToken);
+        Task<ApiResponse<string>> ResumeJobAsync(string jobId, CancellationToken cancellationToken);
         
          Task<ApiPageResponse<List<sys_timertask>>> GetTimerTaskListAsync(string? jobName, int pageIndex, int pageSize, RefAsync<int> totalCount);
         Task<ApiResponse<bool>> AddTimerTaskAsync(sys_timertask task);

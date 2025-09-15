@@ -427,7 +427,8 @@ async function submitOrder() {
     memberprice: String(item.memberprice || item.price),
     spec: String(item.spec || ''),
     spicy: String(item.spicy || ''),
-    qty: Number(item.qty)
+    qty: Number(item.qty),
+    type:Number(item.type)
   }))
   }).then((res: any) => {
     if (res.start == 200) {
@@ -727,6 +728,14 @@ function confirmMeal() {
 }
 /* 购物车弹窗样式 */
 .cart-dialog {
+  background: #fff;
+  border-radius: 30rpx 30rpx 0 0;
+  padding: 30rpx 20rpx 20rpx 20rpx;
+  width: 100vw;
+  max-width: 600px;
+}
+
+.member-dialog {
   background: #fff;
   border-radius: 30rpx 30rpx 0 0;
   padding: 30rpx 20rpx 20rpx 20rpx;

@@ -118,18 +118,18 @@
             <el-option v-for="store in storeList" :key="store.id" :value="store.id" :label="store.name">{{ store.name }}</el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="菜品名称">
+        <el-form-item label="菜品名称" required>
           <el-input v-model="form.dish_name" />
         </el-form-item>
-        <el-form-item label="分类">
+        <el-form-item label="分类" required>
           <el-select v-model="form.category_id" placeholder="请选择菜品分类" >
             <el-option v-for="store in dishcatageList" :key="store.id" :value="store.id" :label="store.name">{{ store.name }}</el-option>
          </el-select>
         </el-form-item>
-        <el-form-item label="价格">
+        <el-form-item label="价格" required>
           <el-input v-model.number="form.price" />
         </el-form-item>
-        <el-form-item label="会员价">
+        <el-form-item label="会员价" required>
           <el-input v-model.number="form.member_price" />
         </el-form-item>
         <el-form-item label="推荐">
@@ -147,7 +147,7 @@
         <el-form-item label="描述">
           <el-input v-model="form.description" />
         </el-form-item>
-        <el-form-item label="图片">
+        <el-form-item label="图片" required>
           <el-upload
             class="avatar-uploader"
             :action="uploadUrl"
@@ -165,10 +165,10 @@
             <el-option label="禁用" :value="0" />
           </el-select>
         </el-form-item>
-        <el-form-item label="烹饪时长(分钟)">
+        <el-form-item label="烹饪时长(分钟)" required>
           <el-input v-model.number="form.cooking_time" />
         </el-form-item>
-        <el-form-item label="制作厨房">
+        <el-form-item label="制作厨房" required>
           <el-select v-model="form.kitchen_id" placeholder="请选择制作厨房" >
             <el-option v-for="kitchen in kitchenList" :key="kitchen.id" :value="kitchen.id" :label="kitchen.name">{{ kitchen.name }}</el-option>
          </el-select>
@@ -188,18 +188,18 @@
             <el-option v-for="store in storeList" :key="store.id" :value="store.id" :label="store.name">{{ store.name }}</el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="菜品名称">
+        <el-form-item label="菜品名称" required>
           <el-input v-model="form.dish_name" />
         </el-form-item>
-        <el-form-item label="分类">
+        <el-form-item label="分类" required>
             <el-select v-model="form.category_id" placeholder="请选择菜品分类" class="filter-item">
                 <el-option v-for="store in dishcatageList" :key="store.id" :value="store.id" :label="store.name">{{ store.name }}</el-option>
             </el-select>
         </el-form-item>
-        <el-form-item label="价格">
+        <el-form-item label="价格" required>
           <el-input v-model.number="form.price" />
         </el-form-item>
-        <el-form-item label="会员价">
+        <el-form-item label="会员价" required>
           <el-input v-model.number="form.member_price" />
         </el-form-item>
         <el-form-item label="推荐">
@@ -217,7 +217,7 @@
         <el-form-item label="描述">
           <el-input v-model="form.description" />
         </el-form-item>
-        <el-form-item label="图片">
+        <el-form-item label="图片" required>
           <el-upload
             class="avatar-uploader"
             action="api/Img/UpImg" 
@@ -235,10 +235,10 @@
             <el-option label="禁用" :value="0" />
           </el-select>
         </el-form-item>
-        <el-form-item label="烹饪时长(分钟)">
+        <el-form-item label="烹饪时长(分钟)" required>
           <el-input v-model.number="form.cooking_time" />
         </el-form-item>
-        <el-form-item label="制作厨房">
+        <el-form-item label="制作厨房" required>
           <el-select v-model="form.kitchen_id" placeholder="请选择制作厨房" >
             <el-option v-for="kitchen in kitchenList" :key="kitchen.id" :value="kitchen.id" :label="kitchen.name">{{ kitchen.name }}</el-option>
          </el-select>

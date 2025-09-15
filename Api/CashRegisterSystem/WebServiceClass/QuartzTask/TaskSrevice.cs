@@ -12,6 +12,8 @@ using WebServiceClass.Helper;
 using static WebProjectTest.Common.Message;
 using MyNamespace;
 using SqlSugar.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using Quartz.Impl.Matchers;
 
 namespace WebServiceClass.QuartzTask
 {
@@ -22,24 +24,33 @@ namespace WebServiceClass.QuartzTask
         private readonly Dictionary<string, IJobDetail> _jobs = new Dictionary<string, IJobDetail>();
         private readonly Dictionary<string, ITrigger> _triggers = new Dictionary<string, ITrigger>();
         private readonly ISqlHelper _dal;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public TaskSrevice(ISqlHelper dal)
+        public TaskSrevice(ISqlHelper dal,IServiceScopeFactory serviceScopeFactory)
         {
             var factory = new StdSchedulerFactory();
             _scheduler = factory.GetScheduler().Result;
             _cancellationTokenSource = new CancellationTokenSource();
             _dal = dal;
+            // 1. 创建监听器实例（注入依赖容器）
+            var taskRunListener = new TaskRunListener(serviceScopeFactory);
+            // 2. 注册监听器：监听所有任务（或指定任务组，此处全局监听）
+            _scheduler.ListenerManager.AddJobListener(
+                taskRunListener,
+                GroupMatcher<JobKey>.AnyGroup() // 匹配所有任务组
+            );
+            _scheduler.JobFactory = new ScopedJobFactory(serviceScopeFactory);
         }
         /// <summary>
         /// 开始定时任务
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<string> StartAsync(CancellationToken cancellationToken)
+        public async Task<ApiResponse<string>> StartAsync(CancellationToken cancellationToken)
         {
             var TimerTask = await _dal.Db.Queryable<sys_timertask>()
             .Where(a => DateTime.Now >= a.BeginTime && DateTime.Now < a.EndTime)
-            .Where(a => a.isDelete == 1 && a.IsStart == 1)
+            .Where(a => a.isDelete == 1 && (a.IsStart == 0|| a.IsStart == 2))
             .ToListAsync();
 
             if (TimerTask.Count == 0)
@@ -50,7 +61,7 @@ namespace WebServiceClass.QuartzTask
                     customLogger.LogInfo("没有需要启动的定时任务");
                     
                 }
-                return "没有需要启动的定时任务";
+                return Fail<string>("没有需要启动的定时任务");
             }
             else
             {
@@ -64,9 +75,10 @@ namespace WebServiceClass.QuartzTask
                         Console.WriteLine($"定时服务：{itemTimer.TimerClass}找不到工作类");
                         continue;
                     }
+
                     // 配置Job和Trigger
                     var job = JobBuilder.Create(itemJob)
-                                        .WithIdentity(itemJob.Name)
+                                        .WithIdentity(itemTimer.Id.ToString())
                                         .Build();
                     var trigger = TriggerBuilder.Create()
                                                 //.WithSimpleSchedule(x => x
@@ -75,18 +87,23 @@ namespace WebServiceClass.QuartzTask
                                                 .WithIdentity($"{itemJob.Name}-trigger")
                                                 .WithCronSchedule(itemTimer.Corn)
                                                 .Build();
-
+                    _jobs[itemTimer.Id.ToString()] = job;
+                    _triggers[itemTimer.Id.ToString()] = trigger;
                     await _scheduler.ScheduleJob(job, trigger, cancellationToken);
+                    Console.WriteLine($"成功注册任务: {itemJob.Name}, Cron: {itemTimer.Corn}");
                 }
                 // 启动调度器
                 await _scheduler.Start(cancellationToken);
+                await _dal.Db.Updateable<sys_timertask>().SetColumns(a => new sys_timertask { IsStart = 1 }) .Where(a => DateTime.Now >= a.BeginTime && DateTime.Now < a.EndTime)
+                        .Where(a => a.isDelete == 1 && (a.IsStart == 0 || a.IsStart == 2))
+                        .ExecuteCommandAsync();
                 Console.WriteLine($"定时任务已经启动");
                 using (var customLogger = new LoggerHelper(moduleName: "TaskLogger",logFileName:"定时任务日志"))
                 {
                     customLogger.LogInfo("定时任务已经启动");
 
                 }
-                return "定时任务开始执行";
+                return Success("定时任务开始执行");
             }
             
         }
@@ -96,7 +113,7 @@ namespace WebServiceClass.QuartzTask
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<string> StopAsync(CancellationToken cancellationToken)
+        public async Task<ApiResponse<string>> StopAsync(CancellationToken cancellationToken)
         {
             if (_scheduler.IsStarted)
             {
@@ -105,13 +122,17 @@ namespace WebServiceClass.QuartzTask
             }
 
             _cancellationTokenSource.Cancel();
+
+            var TimerTask = await _dal.Db.Updateable<sys_timertask>().SetColumns(a=>new sys_timertask { IsStart = 0})
+                .Where(a => a.isDelete == 1 &&( a.IsStart == 1|| a.IsStart ==2))
+                .ExecuteCommandAsync();
             Console.WriteLine($"定时任务已经停止");
             using (var customLogger = new LoggerHelper(moduleName: "TaskLogger",logFileName:"定时任务日志"))
             {
                 customLogger.LogInfo("定时任务全部关闭");
 
             }
-            return "定时任务全部关闭";
+            return Success("定时任务全部关闭");
             //if (_scheduler.IsStarted)
             //{
             //    // 如果你想等待所有作业完成
@@ -157,12 +178,12 @@ namespace WebServiceClass.QuartzTask
         /// <param name="cronExpression"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<string> AddJobAsync(string jobId,string jobName, string cronExpression, CancellationToken cancellationToken)
+        public async Task<ApiResponse<string>> AddJobAsync(string jobId,string jobName, string cronExpression, CancellationToken cancellationToken)
         {
             var Job = Assembly.Load($"WebTaskClass");
             var Jobclass = Job.GetTypes().FirstOrDefault(type => type.Name == jobName);
             // 创建JobDetail
-            if (Jobclass == null) { Console.WriteLine($"未找到该定时任务"); return "未找到该定时任务"; }
+            if (Jobclass == null) { Console.WriteLine($"未找到该定时任务"); return Fail<string>("未找到该定时任务"); }
             var job = JobBuilder.Create(Job.GetTypes().FirstOrDefault(type =>type.Name == jobName))
                                 .WithIdentity(jobId)
                                 .Build();
@@ -187,7 +208,7 @@ namespace WebServiceClass.QuartzTask
                 customLogger.LogInfo("添加一个新的定时任务，重新启动定时器");
 
             }
-            return "已添加！！！重新启动定时器";
+            return Success("已添加！！！重新启动定时器");
         }
 
         /// <summary>
@@ -196,15 +217,15 @@ namespace WebServiceClass.QuartzTask
         /// <param name="jobId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<string> RemoveJobAsync(string jobId, CancellationToken cancellationToken)
+        public async Task<ApiResponse<string>> RemoveJobAsync(string jobId, CancellationToken cancellationToken)
         {
-            if (_jobs.ContainsKey(jobId))
+            var jobKey = new JobKey(jobId);
+            var triggerKey = new TriggerKey($"{jobId}-trigger");
+            if (await _scheduler.CheckExists(triggerKey) || await _scheduler.CheckExists(jobKey, cancellationToken))
             {
-                var job = _jobs[jobId];
-                var triggerKey = new TriggerKey($"{jobId}-trigger");
                 await _scheduler.PauseTrigger(triggerKey, cancellationToken);
                 await _scheduler.UnscheduleJob(triggerKey, cancellationToken);
-                await _scheduler.DeleteJob(job.Key, cancellationToken);
+                await _scheduler.DeleteJob(jobKey, cancellationToken);
 
                 _jobs.Remove(jobId);
                 _triggers.Remove(jobId);
@@ -215,10 +236,10 @@ namespace WebServiceClass.QuartzTask
 
                 }
                  await _dal.Db.Updateable<sys_timertask>().SetColumns(a => a.IsStart == 0).Where(a => a.Id == jobId.ObjToInt()).ExecuteCommandAsync();
-                return $"该定时任务已经移除";
+                return Success("该定时任务已经移除");
             }else
             {
-                 return $"该定时任务未运行";
+                 return Fail<string>( $"该定时任务未运行");
             }
         }
 
@@ -228,21 +249,24 @@ namespace WebServiceClass.QuartzTask
         /// <param name="jobId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<string> PauseJobAsync(string jobId, CancellationToken cancellationToken)
+        public async Task<ApiResponse<string>> PauseJobAsync(string jobId, CancellationToken cancellationToken)
         {
+             var jobKey = new JobKey(jobId);
             var triggerKey = new TriggerKey($"{jobId}-trigger");
-            if (await _scheduler.CheckExists(triggerKey))
+            if (await _scheduler.CheckExists(triggerKey) || await _scheduler.CheckExists(jobKey, cancellationToken))
             {
                 await _scheduler.PauseTrigger(triggerKey, cancellationToken);
+                await _scheduler.UnscheduleJob(triggerKey, cancellationToken);
+                 await _scheduler.PauseJob(jobKey, cancellationToken);
                 Console.WriteLine($"Job with ID '{jobId}' paused.");
                 Console.WriteLine($"该{jobId}定时任务已经暂停");
                  await _dal.Db.Updateable<sys_timertask>().SetColumns(a => a.IsStart == 2).Where(a => a.Id == jobId.ObjToInt()).ExecuteCommandAsync();
-                return $"该定时任务已经暂停";
+                return Success("该定时任务已经暂停");
             }
             else
             {
                 Console.WriteLine($"Job with ID '{jobId}' not found.");
-                return $"该找到该任务";
+                return Fail<string>($"没找到该任务"); 
             }
         }
 
@@ -252,20 +276,25 @@ namespace WebServiceClass.QuartzTask
         /// <param name="jobId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<string> ResumeJobAsync(string jobId, CancellationToken cancellationToken)
+        public async Task<ApiResponse<string>> ResumeJobAsync(string jobId, CancellationToken cancellationToken)
         {
+            var jobKey = new JobKey(jobId);
             var triggerKey = new TriggerKey($"{jobId}-trigger");
-            if (await _scheduler.CheckExists(triggerKey))
+            if (await _scheduler.CheckExists(triggerKey) || await _scheduler.CheckExists(jobKey, cancellationToken))
             {
                 await _scheduler.ResumeTrigger(triggerKey, cancellationToken);
+                await _scheduler.ResumeJob(jobKey, cancellationToken);
+                var TimerTask = await _dal.Db.Updateable<sys_timertask>().SetColumns(a => new sys_timertask { IsStart = 1 })
+                    .Where(a => a.Id == jobId.ObjToInt())
+                    .ExecuteCommandAsync();
                 Console.WriteLine($"Job with ID '{jobId}' resumed.");
                 Console.WriteLine($"该{jobId}定时任务已经恢复");
-                return $"该定时任务已经恢复";
+               return Success("该定时任务已经恢复");
             }
             else
             {
                 Console.WriteLine($"Job with ID '{jobId}' not found.");
-                 return $"该找到该任务";
+                 return Fail<string>($"该找到该任务");
             }
         }
 

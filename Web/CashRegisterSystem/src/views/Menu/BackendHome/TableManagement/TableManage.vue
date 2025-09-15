@@ -103,11 +103,11 @@
           label="桌台描述"
           align="center"
         />
-        <!-- <el-table-column
+        <el-table-column
           prop="lastUseTime"
           label="最后使用时间"
           align="center"
-        /> -->
+        />
         <el-table-column
           label="操作"
           align="center"
@@ -148,12 +148,12 @@
     <!-- 新增弹窗 -->
     <el-dialog v-model="addDialogVisible" width="500" title="新增桌台">
       <el-form :model="form" label-width="120px">
-        <el-form-item label="门店">
+        <el-form-item label="门店" required>
           <el-select v-model="form.store_id" placeholder="请选择门店">
             <el-option v-for="store in storeList" :key="store.id" :value="store.id" :label="store.name">{{ store.name }}</el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="桌台编号">
+        <el-form-item label="桌台编号" required>
           <el-input v-model="form.table_no" />
         </el-form-item>
         <!-- <el-form-item label="桌台类型">
@@ -166,7 +166,7 @@
             />
           </el-select>  
         </el-form-item> -->
-        <el-form-item label="桌台状态">
+        <el-form-item label="桌台状态" required>
           <el-select v-model="form.status" placeholder="请选择桌台状态">
             <el-option
               v-for="item in statusOptions"
@@ -176,7 +176,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="容纳人数">
+        <el-form-item label="容纳人数" required>
           <el-input v-model.number="form.capacity" />
         </el-form-item>
         <el-form-item label="桌台描述">
@@ -185,9 +185,9 @@
         <el-form-item label="包间最低消费">
           <el-input v-model="form.min_consumption" />
         </el-form-item>
-        <el-form-item label="最后使用时间">
+        <!-- <el-form-item label="最后使用时间">
           <el-input v-model="form.lastUseTime" />
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <template #footer>
         <el-button  class="cancel-btn" @click="addDialogVisible = false">取消</el-button>
@@ -198,12 +198,12 @@
     <!-- 编辑弹窗 -->
     <el-dialog v-model="editDialogVisible"width="500" title="编辑桌台">
       <el-form :model="form" label-width="120px">
-        <el-form-item label="门店">
+        <el-form-item label="门店" required>
           <el-select v-model="form.store_id" placeholder="请选择门店">
             <el-option v-for="store in storeList" :key="store.id" :value="store.id" :label="store.name">{{ store.name }}</el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="桌台编号">
+        <el-form-item label="桌台编号" required>
           <el-input v-model="form.table_no" disabled />
         </el-form-item>
         <!-- <el-form-item label="桌台类型">
@@ -216,7 +216,7 @@
             />
           </el-select>
         </el-form-item> -->
-        <el-form-item label="桌台状态">
+        <el-form-item label="桌台状态" required>
           <el-select v-model="form.status">
             <el-option
               v-for="item in statusOptions"
@@ -226,7 +226,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="容纳人数">
+        <el-form-item label="容纳人数" required>
           <el-input v-model.number="form.capacity" />
         </el-form-item>
         <el-form-item label="包间最低消费">
@@ -235,9 +235,9 @@
         <el-form-item label="桌台描述">
           <el-input v-model="form.desc" />
         </el-form-item>
-        <el-form-item label="最后使用时间">
+        <!-- <el-form-item label="最后使用时间">
           <el-input v-model="form.lastUseTime" />
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <template #footer>
         <el-button class="cancel-btn" @click="editDialogVisible = false">取消</el-button>

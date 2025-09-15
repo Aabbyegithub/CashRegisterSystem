@@ -554,7 +554,7 @@ const handleSave = async () => {
       form.value.meal_item = form.value.groups.flatMap((group:any) =>
         group.items.map((item:any) => ({
             dish_id: item.dish_id,
-            spec_id: item.spec_id,
+            spec_id: item.spec_id || 0,
             quantity: item.quantity,
             meal_group: group.groupName || ''
         }))

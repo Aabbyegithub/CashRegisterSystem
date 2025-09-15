@@ -70,23 +70,23 @@
             <el-option v-for="store in storeList" :key="store.id" :value="store.id" :label="store.name">{{ store.name }}</el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="原材料名称">
+        <el-form-item label="原材料名称" required>
           <el-input v-model="form.material_name" placeholder="请输入原材料名称" />
         </el-form-item>
-        <el-form-item label="分类">
+        <el-form-item label="分类" required>
           <el-select v-model="form.category" placeholder="请选择分类">
             <el-option value="生鲜" label="生鲜" />
             <el-option value="调料" label="调料" />
             <el-option value="粮油" label="粮油" />
           </el-select>
         </el-form-item>
-        <el-form-item label="单位">
+        <el-form-item label="单位" required>
           <el-input v-model="form.unit" placeholder="如kg/个/升" />
         </el-form-item>
-        <el-form-item label="采购单价">
+        <el-form-item label="采购单价" required>
           <el-input v-model.number="form.purchase_price" type="number" placeholder="请输入采购单价" />
         </el-form-item>
-        <el-form-item label="预警阈值">
+        <el-form-item label="预警阈值"required>
           <el-input v-model.number="form.warning_threshold" type="number" placeholder="请输入预警阈值" />
         </el-form-item>
         <el-form-item label="状态">
