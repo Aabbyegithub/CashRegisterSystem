@@ -2396,7 +2396,7 @@
     "Parameters": [
       {
         "Name": "orderItemId",
-        "Type": "System.Int32",
+        "Type": "System.String",
         "IsRequired": false
       }
     ],
@@ -4305,7 +4305,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.String",
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -4445,7 +4445,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.String",
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -4471,7 +4471,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.String",
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -4497,7 +4497,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.String",
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -4517,7 +4517,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.String",
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -4537,7 +4537,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.String",
+        "Type": "WebProjectTest.Common.Message\u002BApiResponse\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",

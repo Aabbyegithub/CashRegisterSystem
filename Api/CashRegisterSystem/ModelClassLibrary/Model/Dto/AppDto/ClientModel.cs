@@ -60,7 +60,7 @@ namespace ModelClassLibrary.Model.Dto.AppDto
         public string spicy { get; set; }
         public int qty { get; set; }
 
-        public int Type { get; set; }
+        //public int Type { get; set; }
     }
 
     public class OrderDetail

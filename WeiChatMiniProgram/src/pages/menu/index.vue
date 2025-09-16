@@ -233,7 +233,7 @@
 
 <script setup lang="ts">
 import { ref, computed, nextTick } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 // 规格弹窗相关
 const showSpecDialog = ref(false)
 const selectedDish = ref<any>(null)
@@ -245,7 +245,7 @@ const selcetprice = ref(priceList.value[0])
 const selectedSpicy = ref(spicyList.value[0])
 const qty = ref(1)
 const TableId = ref(0)
-  const orderId = uni.getStorageSync('OrderId')
+const orderId = ref(0)
 
 function openSpecDialog(dish: any) {
   // 获取分量规格数组（查出是一个列表）
@@ -419,7 +419,7 @@ async function submitOrder() {
 
   // 提交订单逻辑
   await request({
-    url: `/api/Client/SaveOrder?store_id=${storeId}&table_id=${tableId}&sourceType=${sourceType}&people=${people}&orderId=${orderId}` + (isMember.value ? `&memberPhone=${memberPhone.value}` : ''),
+    url: `/api/Client/SaveOrder?store_id=${storeId}&table_id=${tableId}&sourceType=${sourceType}&people=${people}&orderId=${orderId.value}` + (isMember.value ? `&memberPhone=${memberPhone.value}` : ''),
     method: 'POST',
     data:  cartList.value.map(item => ({
     ...item,
@@ -443,7 +443,9 @@ async function submitOrder() {
     uni.showToast({ title: '网络错误，请稍后再试', icon: 'none' })
   })
 }
-
+onShow(() => {
+  orderId.value = uni.getStorageSync('OrderId') || 0
+})
 onLoad(async () => {
   const { tableId, storeId,people } = uni.getStorageSync('TableInfo') || {}
   if (tableId) {
@@ -502,7 +504,7 @@ function openMealDialog(dish: any) {
   showMealDialog.value = true
   // 初始化每个类型的选项为空
   selectedMeals.value = {}
-  dish.mealTypes?.forEach(typeObj => {
+  dish.mealTypes?.forEach((typeObj:any) => {
     selectedMeals.value[typeObj.type] = ''
   })
 }

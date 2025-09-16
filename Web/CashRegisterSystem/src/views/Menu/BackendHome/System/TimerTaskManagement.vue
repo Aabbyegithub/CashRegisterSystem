@@ -16,17 +16,18 @@
     </div>
     <!-- 列表区 -->
     <el-table :data="taskList" style="margin-top:18px; height: 68vh;" border>
-      <el-table-column prop="timerName" label="定时器名称" />
+      <el-table-column prop="timerName" label="定时器名称" width="200"/>
       <el-table-column prop="timerClass" label="服务类" width="200"/>
       <el-table-column prop="corn" label="运行时段" width="150"/>
       <el-table-column prop="startNumber" label="运行次数" width="100"/>
+      <el-table-column prop="lastRunTime" label="最后运行时间" width="160"/>
       <el-table-column prop="isStart" label="状态" width="100">
         <template #default="scope">
           <el-tag :type="statusTagType(scope.row.isStart)">{{ statusText(scope.row.isStart) }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="createTime" label="创建时间" width="200"/>
-      <el-table-column label="操作" width="330">
+      <el-table-column prop="createTime" label="创建时间" width="160"/>
+      <el-table-column label="操作" >
         <template #default="scope">
           <el-button size="small" @click="openDetailDialog(scope.row)">详情</el-button>
           <el-button size="small" @click="openEditDialog(scope.row)">编辑</el-button>
@@ -146,6 +147,7 @@ async function fetchList() {
     taskList.value = res.response || [];
     taskList.value.forEach(item=>{
       item.createTime = dayjs(item.createTime).format('YYYY-MM-DD HH:mm:ss');
+      item.lastRunTime = item.lastRunTime ? dayjs(item.lastRunTime).format('YYYY-MM-DD HH:mm:ss') : '-';
     });
     total.value = res.count || 0;
   }

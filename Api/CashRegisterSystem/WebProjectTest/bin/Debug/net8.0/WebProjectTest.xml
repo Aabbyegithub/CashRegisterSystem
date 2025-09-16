@@ -437,7 +437,7 @@
             并桌
             </summary>
         </member>
-        <member name="M:WebProjectTest.Controllers.OrderController.OrderController.OrderItemRefundAsync(System.Int32)">
+        <member name="M:WebProjectTest.Controllers.OrderController.OrderController.OrderItemRefundAsync(System.String)">
             <summary>
             订单子项退款    
             </summary>

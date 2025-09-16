@@ -378,7 +378,7 @@ const handleChangeTable = () => {
 
 const handlePay = () => {
   payDialogVisible.value = true; // 打开支付弹窗
-  toPayAmount.value = tableInfo.value.totalAmount; // 初始化待支付金额
+  toPayAmount.value = tableInfo.value.receivedAmount; // 初始化待支付金额
   console.log('点击收款');
   // 收款逻辑
 };
@@ -422,7 +422,7 @@ const handleRedo = async () => {
 
 const handleItemRefund = async (row: any) => {
   console.log('点击品项退款', row);
-  await refundOrderItem(row.id).then((res:any)=>{
+  await refundOrderItem(row.orderItemId).then((res:any)=>{
     if(res.success){
       console.log('品项退款接口返回:', res);
       ElMessage.success('品项退款成功');
@@ -534,7 +534,7 @@ const handleKeypadClick = (val: string | number) => {
     inputAmount.value += val;
   }
   // 实时更新待支付金额（如果需要手动输入金额）
-  toPayAmount.value = Number(inputAmount.value) || tableInfo.value.totalAmount;
+  toPayAmount.value = Number(inputAmount.value) || tableInfo.value.receivedAmount;
 };
 
 // 金额输入框事件（防止非数字输入）
@@ -545,7 +545,7 @@ const handleAmountInput = (val: string) => {
 // 清空按钮事件
 const handleClear = () => { 
   inputAmount.value = '￥';
-  toPayAmount.value = tableInfo.value.totalAmount;
+  toPayAmount.value = tableInfo.value.receivedAmount;
 };
 
 // 关闭弹窗事件
@@ -553,7 +553,7 @@ const handlePayDialogClose = () => {
   payDialogVisible.value = false;
   // 重置状态
   inputAmount.value = '￥';
-  toPayAmount.value = tableInfo.value.totalAmount;
+  toPayAmount.value = tableInfo.value.receivedAmount;
   selectedPayType.value = 'wechat';
 };
 

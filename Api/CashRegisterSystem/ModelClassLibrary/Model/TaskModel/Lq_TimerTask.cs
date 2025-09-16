@@ -99,6 +99,7 @@ namespace MyNamespace
         /// Nullable:True
         /// </summary>           
         public long? StartNumber { get; set; }
+        public DateTime? lastRunTime { get; set; }
 
     }
 }

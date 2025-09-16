@@ -31,7 +31,7 @@ namespace ModelClassLibrary.Model.Dto.OrderDto
 
     public class detail
     {
-        public int orderItemId { get; set; }
+        public string orderItemId { get; set; }
         public string name { get; set; }
         public decimal price { get; set; }
         public int quantity { get; set; }

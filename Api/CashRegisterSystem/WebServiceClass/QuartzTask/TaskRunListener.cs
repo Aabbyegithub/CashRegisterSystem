@@ -4,6 +4,7 @@ using WebServiceClass.Helper;
 using WebIServices.IBase;
 using Microsoft.Extensions.DependencyInjection;
 using MyNamespace;
+using SqlSugar.Extensions;
 
 namespace WebServiceClass.QuartzTask
 {
@@ -41,18 +42,14 @@ namespace WebServiceClass.QuartzTask
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var _dal = scope.ServiceProvider.GetRequiredService<ISqlHelper>();
-                var taskName = context.JobDetail.Key.Name;
+                var taskId = context.JobDetail.Key.Name;
                 var endTime = DateTime.Now;
                 var runStatus = jobException == null ? 1 : 0; // 1=成功，0=失败
                 var errorMsg = jobException?.ToString() ?? "";
 
-                // 1. 查询当前任务ID和已运行次数
-                var taskInfo = await _dal.Db.Queryable<sys_timertask>()
-                    .Where(t => t.TimerClass.Contains(taskName))
-                    .Select(t =>  t.Id )
-                    .FirstAsync();
-
-                await _dal.Db.Updateable<sys_timertask>().SetColumns(a => new sys_timertask { StartNumber = a.StartNumber + 1 }).Where(a => a.Id == taskInfo).ExecuteCommandAsync();
+                await _dal.Db.Updateable<sys_timertask>()
+                    .SetColumns(a => new sys_timertask { StartNumber = a.StartNumber + 1 ,lastRunTime = DateTime.Now})
+                    .Where(a => a.Id == taskId.ObjToInt()).ExecuteCommandAsync();
 
             }
         }

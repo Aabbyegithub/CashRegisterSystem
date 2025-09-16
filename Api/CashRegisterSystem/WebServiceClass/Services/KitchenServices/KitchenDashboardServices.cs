@@ -84,13 +84,13 @@ namespace WebServiceClass.Services.KitchenServices
                     return Fail<bool>("厨房订单不存在，操作失败");
                 }
 
-                // 2. 校验状态流转合法性（仅允许业务规则内的状态更新）
-                if (!validStatusTransitions.TryGetValue(kitchenOrder.status, out var allowedTargetStatuses)
-                    || !allowedTargetStatuses.Contains(status))
-                {
-                    await _dal.Db.Ado.RollbackTranAsync();
-                    return Fail<bool>($"当前订单状态为【{GetStatusName(kitchenOrder.status)}】，不允许更新为【{GetStatusName(status)}】");
-                }
+                //// 2. 校验状态流转合法性（仅允许业务规则内的状态更新）
+                //if (!validStatusTransitions.TryGetValue(kitchenOrder.status, out var allowedTargetStatuses)
+                //    || !allowedTargetStatuses.Contains(status))
+                //{
+                //    await _dal.Db.Ado.RollbackTranAsync();
+                //    return Fail<bool>($"当前订单状态为【{GetStatusName(kitchenOrder.status)}】，不允许更新为【{GetStatusName(status)}】");
+                //}
                 if (status == 2 || status == 3)
                 {
                     result = await _dal.Db.Updateable<sys_kitchen_order>()
@@ -152,6 +152,17 @@ namespace WebServiceClass.Services.KitchenServices
                                 await _dal.Db.Updateable(deductedInventories).ExecuteCommandAsync();
                             }
                         }
+                        result = await _dal.Db.Updateable<sys_kitchen_order>()
+                                .SetColumns(x => new sys_kitchen_order
+                                {
+                                    status = (byte)status,
+                                    picker_id = userid,
+                                    pick_time = DateTime.Now
+                                })
+                                .Where(x => x.kitchen_id == kitchenOrderId)
+                                .ExecuteCommandAsync();
+                        await _dal.Db.Updateable<sys_order_item>()
+                            .SetColumns(a => new sys_order_item { status = 3 }).Where(a => a.item_id == kitchen.item_id).ExecuteCommandAsync();
                     }
                 }
                 if (status == 4)
@@ -165,6 +176,9 @@ namespace WebServiceClass.Services.KitchenServices
                         })
                         .Where(x => x.kitchen_id == kitchenOrderId)
                         .ExecuteCommandAsync();
+                    var kitchenorder = await _dal.Db.Queryable<sys_kitchen_order>().FirstAsync(a=>a.kitchen_id == kitchenOrderId);
+                    await _dal.Db.Updateable<sys_order_item>()
+                        .SetColumns(a => new sys_order_item { status = 3 }).Where(a => a.item_id == kitchenorder.item_id).ExecuteCommandAsync();
                 }
                   await _dal.Db.Ado.CommitTranAsync();
                 return Success(result > 0, result > 0 ? "操作成功" : "操作失败");

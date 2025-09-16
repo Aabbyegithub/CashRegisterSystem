@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : MySql测试数据库
+ Source Server         : localhostMysql
  Source Server Type    : MySQL
- Source Server Version : 80036 (8.0.36)
+ Source Server Version : 80042
  Source Host           : localhost:3306
  Source Schema         : cashiersystem
 
  Target Server Type    : MySQL
- Target Server Version : 80036 (8.0.36)
+ Target Server Version : 80042
  File Encoding         : 65001
 
- Date: 04/09/2025 17:20:51
+ Date: 17/09/2025 00:34:45
 */
 
 SET NAMES utf8mb4;
@@ -29,13 +29,14 @@ CREATE TABLE `sys_backup`  (
   `backup_remark` varchar(5000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
   `backup_sum` int NULL DEFAULT NULL COMMENT '备份订单数',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '备份记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '备份记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_backup
 -- ----------------------------
 INSERT INTO `sys_backup` VALUES (1, '手动备份-2025-09-02 15:36:12', '2025-09-02 15:36:13', 0, '备份失败--Cannot deserialize the current JSON array (e.g. [1,2,3]) into type \'MyNamespace.sys_order_backup\' because the type requires a JSON object (e.g. {\"name\":\"value\"}) to deserialize correctly.\r\nTo fix this error either change the JSON to a JSON object (e.g. {\"name\":\"value\"}) or change the deserialized type to an array or a type that implements a collection interface (e.g. ICollection, IList) like List<T> that can be deserialized from a JSON array. JsonArrayAttribute can also be added to the type to force it to deserialize from a JSON array.\r\nPath \'\', line 1, position 1.', NULL);
 INSERT INTO `sys_backup` VALUES (2, '手动备份-2025-09-02 15:39:56', '2025-09-02 15:39:57', 1, '备份成功--已结算订单1', 1);
+INSERT INTO `sys_backup` VALUES (3, '手动备份-2025-09-16 18:46:54', '2025-09-16 18:46:55', 1, '备份成功--已结算订单0', 0);
 
 -- ----------------------------
 -- Table structure for sys_bill
@@ -57,12 +58,12 @@ CREATE TABLE `sys_bill`  (
   `invoice_status` tinyint NOT NULL DEFAULT 0 COMMENT '发票状态（0-未开；1-已开电子发票）',
   `invoice_no` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '电子发票号码（可空）',
   PRIMARY KEY (`bill_id`) USING BTREE,
-  UNIQUE INDEX `uk_bill_no`(`bill_no` ASC) USING BTREE,
-  INDEX `idx_bill_order`(`order_id` ASC) USING BTREE,
-  INDEX `idx_bill_parent`(`parent_bill_id` ASC) USING BTREE,
-  INDEX `idx_bill_type`(`bill_type` ASC) USING BTREE,
-  INDEX `idx_bill_close_time`(`close_time` ASC) USING BTREE,
-  INDEX `idx_bill_invoice`(`invoice_status` ASC) USING BTREE,
+  UNIQUE INDEX `uk_bill_no`(`bill_no`) USING BTREE,
+  INDEX `idx_bill_order`(`order_id`) USING BTREE,
+  INDEX `idx_bill_parent`(`parent_bill_id`) USING BTREE,
+  INDEX `idx_bill_type`(`bill_type`) USING BTREE,
+  INDEX `idx_bill_close_time`(`close_time`) USING BTREE,
+  INDEX `idx_bill_invoice`(`invoice_status`) USING BTREE,
   CONSTRAINT `fk_bill_order` FOREIGN KEY (`order_id`) REFERENCES `sys_order` (`order_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '账单表' ROW_FORMAT = DYNAMIC;
 
@@ -80,7 +81,7 @@ CREATE TABLE `sys_common`  (
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '名称',
   `value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '值',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_common
@@ -106,18 +107,18 @@ CREATE TABLE `sys_coupon`  (
   `used` int NULL DEFAULT NULL COMMENT '已使用',
   `received` int NULL DEFAULT NULL COMMENT '已领取',
   PRIMARY KEY (`coupon_id`) USING BTREE,
-  UNIQUE INDEX `uk_coupon_no`(`coupon_no` ASC) USING BTREE,
-  INDEX `idx_coupon_store`(`store_id` ASC) USING BTREE,
-  INDEX `idx_coupon_type`(`type` ASC) USING BTREE,
-  INDEX `idx_coupon_status`(`status` ASC) USING BTREE,
-  INDEX `idx_coupon_valid`(`valid_start` ASC, `valid_end` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = DYNAMIC;
+  UNIQUE INDEX `uk_coupon_no`(`coupon_no`) USING BTREE,
+  INDEX `idx_coupon_store`(`store_id`) USING BTREE,
+  INDEX `idx_coupon_type`(`type`) USING BTREE,
+  INDEX `idx_coupon_status`(`status`) USING BTREE,
+  INDEX `idx_coupon_valid`(`valid_start`, `valid_end`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_coupon
 -- ----------------------------
 INSERT INTO `sys_coupon` VALUES (1, 2, '', '新客优惠', 0, 200.00, 1000.00, '2025-08-29 00:00:00', '2025-09-20 00:00:00', 1, '', NULL, NULL, NULL);
-INSERT INTO `sys_coupon` VALUES (5, 2, '202509011447456637286', '新客专享', 2, 10.00, 50.00, '2025-08-29 00:00:00', '2025-10-01 00:00:00', 1, '', NULL, NULL, NULL);
+INSERT INTO `sys_coupon` VALUES (5, 2, '202509011447456637286', '新客专享', 2, 10.00, 50.00, '2025-08-29 00:00:00', '2025-10-01 00:00:00', 1, '', NULL, 1, 1);
 
 -- ----------------------------
 -- Table structure for sys_dish
@@ -140,13 +141,13 @@ CREATE TABLE `sys_dish`  (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `kitchen_id` int NOT NULL COMMENT '制作厨房',
   PRIMARY KEY (`dish_id`) USING BTREE,
-  INDEX `idx_dish_category`(`category_id` ASC) USING BTREE,
-  INDEX `idx_dish_name`(`dish_name` ASC) USING BTREE,
-  INDEX `idx_dish_status`(`status` ASC) USING BTREE,
-  INDEX `idx_dish_recommend`(`is_recommend` ASC) USING BTREE,
-  INDEX `idx_dish_temporary`(`is_temporary` ASC) USING BTREE,
+  INDEX `idx_dish_category`(`category_id`) USING BTREE,
+  INDEX `idx_dish_name`(`dish_name`) USING BTREE,
+  INDEX `idx_dish_status`(`status`) USING BTREE,
+  INDEX `idx_dish_recommend`(`is_recommend`) USING BTREE,
+  INDEX `idx_dish_temporary`(`is_temporary`) USING BTREE,
   CONSTRAINT `fk_dish_category` FOREIGN KEY (`category_id`) REFERENCES `sys_dish_category` (`category_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜品信息表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜品信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_dish
@@ -154,6 +155,8 @@ CREATE TABLE `sys_dish`  (
 INSERT INTO `sys_dish` VALUES (2, 2, NULL, '烧鸭', 45.00, 45.00, 1, 0, '招牌特色菜', 'https://localhost:7092/20250816/a8e35a05-72e4-459e-9cf7-35c37c0289a2.png', 1, 60, '2025-08-16 14:09:20', '2025-08-16 14:09:20', 1);
 INSERT INTO `sys_dish` VALUES (3, 1, 2, '油麦菜', 15.00, 10.00, 1, 1, '季节菜', 'https://localhost:7092/20250816/b4f5b2bb-e207-44fc-a2b1-835f8c0958d2.jpg', 1, 0, '2025-08-16 14:13:30', '2025-08-16 14:13:30', 2);
 INSERT INTO `sys_dish` VALUES (4, 2, 2, '烤猪排', 45.00, 30.00, 1, 0, '', 'https://localhost:7092/20250904/fcb654e0-8e19-4612-bdf5-5b084ebbeb3e.jpg', 1, 20, '2025-09-04 14:06:29', '2025-09-04 14:06:29', 1);
+INSERT INTO `sys_dish` VALUES (5, 1, NULL, '111', 111.00, 111.00, 0, 0, '111', 'http://169.254.188.119:7092/20250915/91959e68-c741-4766-8a65-879da956cd6a.jpg', 1, 23, '2025-09-15 21:33:42', '2025-09-15 21:33:42', 1);
+INSERT INTO `sys_dish` VALUES (6, 1, NULL, '2222', 1111.00, 111.00, 0, 0, '112122', 'http://mpvk8690901.vicp.fun:12575/20250916/e6206b57-da39-4909-930d-9d120ef4d3fb.png', 1, 24, '2025-09-16 18:28:38', '2025-09-16 18:28:38', 3);
 
 -- ----------------------------
 -- Table structure for sys_dish_category
@@ -166,9 +169,9 @@ CREATE TABLE `sys_dish_category`  (
   `sort_order` int NOT NULL DEFAULT 0 COMMENT '排序序号（小在前）',
   `status` tinyint NOT NULL DEFAULT 1 COMMENT '状态（1-启用；0-禁用）',
   PRIMARY KEY (`category_id`) USING BTREE,
-  INDEX `idx_category_store`(`store_id` ASC) USING BTREE,
+  INDEX `idx_category_store`(`store_id`) USING BTREE,
   CONSTRAINT `fk_category_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜品分类表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜品分类表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_dish_category
@@ -188,9 +191,9 @@ CREATE TABLE `sys_dish_formula`  (
   `consumption` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '消耗数量（如\"200g\"）',
   `loss_rate` decimal(5, 2) NOT NULL DEFAULT 0.00 COMMENT '损耗率（如0.05=5%）',
   PRIMARY KEY (`formula_id`) USING BTREE,
-  INDEX `idx_formula_dish`(`dish_id` ASC) USING BTREE,
-  INDEX `idx_formula_material`(`material_id` ASC) USING BTREE,
-  INDEX `fk_formula_spec`(`spec_id` ASC) USING BTREE,
+  INDEX `idx_formula_dish`(`dish_id`) USING BTREE,
+  INDEX `idx_formula_material`(`material_id`) USING BTREE,
+  INDEX `fk_formula_spec`(`spec_id`) USING BTREE,
   CONSTRAINT `fk_formula_dish` FOREIGN KEY (`dish_id`) REFERENCES `sys_dish` (`dish_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `fk_formula_material` FOREIGN KEY (`material_id`) REFERENCES `sys_raw_material` (`material_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜品配方表（原材料消耗规则）' ROW_FORMAT = DYNAMIC;
@@ -212,7 +215,7 @@ CREATE TABLE `sys_dish_spec`  (
   `price_diff` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '价格',
   `sort_order` int NOT NULL DEFAULT 0 COMMENT '排序序号',
   PRIMARY KEY (`spec_id`) USING BTREE,
-  INDEX `idx_spec_dish`(`dish_id` ASC) USING BTREE,
+  INDEX `idx_spec_dish`(`dish_id`) USING BTREE,
   CONSTRAINT `fk_spec_dish` FOREIGN KEY (`dish_id`) REFERENCES `sys_dish` (`dish_id`) ON DELETE CASCADE ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜品规格表' ROW_FORMAT = DYNAMIC;
 
@@ -240,22 +243,23 @@ CREATE TABLE `sys_inventory`  (
   `lock_quantity` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '锁定数量（已下单未出库）',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
   PRIMARY KEY (`inventory_id`) USING BTREE,
-  INDEX `idx_inventory_store`(`store_id` ASC) USING BTREE,
-  INDEX `idx_inventory_material`(`material_id` ASC) USING BTREE,
-  INDEX `idx_inventory_batch`(`batch_no` ASC) USING BTREE,
-  INDEX `idx_inventory_purchase`(`purchase_time` ASC) USING BTREE,
-  INDEX `idx_inventory_expiry`(`expiry_date` ASC) USING BTREE,
-  INDEX `idx_inventory_supplier`(`supplier_id` ASC) USING BTREE,
-  INDEX `idx_material_expiry`(`material_id` ASC, `expiry_date` ASC) USING BTREE,
+  INDEX `idx_inventory_store`(`store_id`) USING BTREE,
+  INDEX `idx_inventory_material`(`material_id`) USING BTREE,
+  INDEX `idx_inventory_batch`(`batch_no`) USING BTREE,
+  INDEX `idx_inventory_purchase`(`purchase_time`) USING BTREE,
+  INDEX `idx_inventory_expiry`(`expiry_date`) USING BTREE,
+  INDEX `idx_inventory_supplier`(`supplier_id`) USING BTREE,
+  INDEX `idx_material_expiry`(`material_id`, `expiry_date`) USING BTREE,
   CONSTRAINT `fk_inventory_material` FOREIGN KEY (`material_id`) REFERENCES `sys_raw_material` (`material_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_inventory_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_inventory
 -- ----------------------------
 INSERT INTO `sys_inventory` VALUES (1, 2, 2, '111', 20.00, 100.00, 80.00, '2025-09-03 15:17:38', '2025-09-03 15:17:45', 1, 10.00, '2025-09-03 15:18:08');
 INSERT INTO `sys_inventory` VALUES (5, 1, 2, '20250903164455999', 100.00, 100.00, 0.00, '2025-09-03 16:44:56', '1900-01-01 00:00:00', 201, 0.00, '1900-01-01 00:00:00');
+INSERT INTO `sys_inventory` VALUES (6, 1, 2, '20250916182730833', 10.00, 10.00, 0.00, '2025-09-16 18:27:31', '1900-01-01 00:00:00', 2, 0.00, '1900-01-01 00:00:00');
 
 -- ----------------------------
 -- Table structure for sys_inventory_loss
@@ -271,12 +275,14 @@ CREATE TABLE `sys_inventory_loss`  (
   `loss_reason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '损耗原因',
   `loss_time` datetime NOT NULL COMMENT '登记时间',
   `operator_id` bigint NULL DEFAULT NULL COMMENT '操作员工ID',
+  `updatetime` datetime NULL DEFAULT NULL COMMENT '更新时间',
+  `updateuser_id` bigint NULL DEFAULT NULL COMMENT '更新人',
   PRIMARY KEY (`loss_id`) USING BTREE,
-  INDEX `idx_loss_store`(`store_id` ASC) USING BTREE,
-  INDEX `idx_loss_material`(`material_id` ASC) USING BTREE,
-  INDEX `idx_loss_batch`(`batch_no` ASC) USING BTREE,
-  INDEX `idx_loss_type`(`loss_type` ASC) USING BTREE,
-  INDEX `idx_loss_time`(`loss_time` ASC) USING BTREE,
+  INDEX `idx_loss_store`(`store_id`) USING BTREE,
+  INDEX `idx_loss_material`(`material_id`) USING BTREE,
+  INDEX `idx_loss_batch`(`batch_no`) USING BTREE,
+  INDEX `idx_loss_type`(`loss_type`) USING BTREE,
+  INDEX `idx_loss_time`(`loss_time`) USING BTREE,
   CONSTRAINT `fk_loss_material` FOREIGN KEY (`material_id`) REFERENCES `sys_raw_material` (`material_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_loss_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存损耗表' ROW_FORMAT = DYNAMIC;
@@ -284,7 +290,7 @@ CREATE TABLE `sys_inventory_loss`  (
 -- ----------------------------
 -- Records of sys_inventory_loss
 -- ----------------------------
-INSERT INTO `sys_inventory_loss` VALUES (1, 1, 2, '202509031439016021381', 5.00, 0, 'text', '2025-09-03 14:39:02', 2);
+INSERT INTO `sys_inventory_loss` VALUES (1, 1, 2, '202509031439016021381', 6.00, 0, 'text', '2025-09-03 14:39:02', 2, '2025-09-13 17:58:16', 2);
 
 -- ----------------------------
 -- Table structure for sys_kitchen
@@ -297,7 +303,7 @@ CREATE TABLE `sys_kitchen`  (
   `kitchen_description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '描述',
   `store_id` bigint NULL DEFAULT NULL COMMENT '所属门店',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '厨房管理表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '厨房管理表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_kitchen
@@ -314,7 +320,7 @@ CREATE TABLE `sys_kitchen_order`  (
   `kitchen_id` bigint NOT NULL AUTO_INCREMENT COMMENT '厨房订单ID（主键）',
   `item_id` bigint NOT NULL COMMENT '关联订单明细ID',
   `store_id` bigint NOT NULL COMMENT '门店ID',
-  `table_no` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '桌台编号（冗余，方便打印）',
+  `table_no` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '桌台编号（冗余，方便打印）',
   `dish_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '菜品名称（冗余）',
   `spec_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '规格名称（冗余）',
   `quantity` int NOT NULL DEFAULT 1 COMMENT '数量',
@@ -328,22 +334,24 @@ CREATE TABLE `sys_kitchen_order`  (
   `cook_id` bigint NULL DEFAULT NULL COMMENT '厨师ID（可空）',
   `picker_id` bigint NULL DEFAULT NULL COMMENT '取餐员ID（可空）',
   PRIMARY KEY (`kitchen_id`) USING BTREE,
-  UNIQUE INDEX `uk_kitchen_item`(`item_id` ASC) USING BTREE,
-  INDEX `idx_kitchen_store`(`store_id` ASC) USING BTREE,
-  INDEX `idx_kitchen_type`(`kitchen_type` ASC) USING BTREE,
-  INDEX `idx_kitchen_status`(`status` ASC) USING BTREE,
-  INDEX `idx_kitchen_time`(`create_time` ASC) USING BTREE,
-  INDEX `idx_kitchen_overtime`(`overtime_warn` ASC) USING BTREE,
-  INDEX `idx_store_kitchen_status_time`(`store_id` ASC, `kitchen_type` ASC, `status` ASC, `create_time` ASC) USING BTREE,
+  UNIQUE INDEX `uk_kitchen_item`(`item_id`) USING BTREE,
+  INDEX `idx_kitchen_store`(`store_id`) USING BTREE,
+  INDEX `idx_kitchen_type`(`kitchen_type`) USING BTREE,
+  INDEX `idx_kitchen_status`(`status`) USING BTREE,
+  INDEX `idx_kitchen_time`(`create_time`) USING BTREE,
+  INDEX `idx_kitchen_overtime`(`overtime_warn`) USING BTREE,
+  INDEX `idx_store_kitchen_status_time`(`store_id`, `kitchen_type`, `status`, `create_time`) USING BTREE,
   CONSTRAINT `fk_kitchen_item` FOREIGN KEY (`item_id`) REFERENCES `sys_order_item` (`item_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `fk_kitchen_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '厨房订单表（KDS系统同步）' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 48 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '厨房订单表（KDS系统同步）' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_kitchen_order
 -- ----------------------------
-INSERT INTO `sys_kitchen_order` VALUES (4, 4, 2, 'A01', '烧鸭', NULL, 1, NULL, '热菜', 1, '2025-08-19 14:29:03', NULL, NULL, 0, NULL, NULL);
-INSERT INTO `sys_kitchen_order` VALUES (6, 6, 2, 'A01', '油麦菜', NULL, 1, NULL, '热菜', 1, '2025-08-19 15:21:18', NULL, NULL, 0, NULL, NULL);
+INSERT INTO `sys_kitchen_order` VALUES (55, 58, 2, 'A01', '油麦菜', NULL, 1, '', '凉菜厨房', 5, '2025-09-16 23:20:45', NULL, NULL, 1, NULL, NULL);
+INSERT INTO `sys_kitchen_order` VALUES (56, 59, 2, 'A01', '油麦菜', NULL, 1, NULL, '热菜', 5, '2025-09-16 23:20:53', NULL, NULL, 1, NULL, NULL);
+INSERT INTO `sys_kitchen_order` VALUES (57, 60, 2, 'A01', '油麦菜', NULL, 1, NULL, '热菜', 5, '2025-09-16 23:21:00', NULL, NULL, 1, NULL, NULL);
+INSERT INTO `sys_kitchen_order` VALUES (58, 61, 2, 'A01', '111', NULL, 1, NULL, '热菜', 5, '2025-09-16 23:21:41', NULL, NULL, 1, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_kitchen_order_backup
@@ -367,13 +375,13 @@ CREATE TABLE `sys_kitchen_order_backup`  (
   `cook_id` bigint NULL DEFAULT NULL COMMENT '厨师ID（可空）',
   `picker_id` bigint NULL DEFAULT NULL COMMENT '取餐员ID（可空）',
   PRIMARY KEY (`kitchen_id`) USING BTREE,
-  UNIQUE INDEX `uk_kitchen_item`(`item_id` ASC) USING BTREE,
-  INDEX `idx_kitchen_store`(`store_id` ASC) USING BTREE,
-  INDEX `idx_kitchen_type`(`kitchen_type` ASC) USING BTREE,
-  INDEX `idx_kitchen_status`(`status` ASC) USING BTREE,
-  INDEX `idx_kitchen_time`(`create_time` ASC) USING BTREE,
-  INDEX `idx_kitchen_overtime`(`overtime_warn` ASC) USING BTREE,
-  INDEX `idx_store_kitchen_status_time`(`store_id` ASC, `kitchen_type` ASC, `status` ASC, `create_time` ASC) USING BTREE,
+  UNIQUE INDEX `uk_kitchen_item`(`item_id`) USING BTREE,
+  INDEX `idx_kitchen_store`(`store_id`) USING BTREE,
+  INDEX `idx_kitchen_type`(`kitchen_type`) USING BTREE,
+  INDEX `idx_kitchen_status`(`status`) USING BTREE,
+  INDEX `idx_kitchen_time`(`create_time`) USING BTREE,
+  INDEX `idx_kitchen_overtime`(`overtime_warn`) USING BTREE,
+  INDEX `idx_store_kitchen_status_time`(`store_id`, `kitchen_type`, `status`, `create_time`) USING BTREE,
   CONSTRAINT `sys_kitchen_order_backup_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `sys_order_item` (`item_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `sys_kitchen_order_backup_ibfk_2` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '厨房订单表（KDS系统同步）' ROW_FORMAT = DYNAMIC;
@@ -381,8 +389,6 @@ CREATE TABLE `sys_kitchen_order_backup`  (
 -- ----------------------------
 -- Records of sys_kitchen_order_backup
 -- ----------------------------
-INSERT INTO `sys_kitchen_order_backup` VALUES (9, 4, 2, 'A01', '烧鸭', NULL, 1, NULL, '热菜', 1, '2025-08-19 14:29:03', NULL, NULL, 0, NULL, NULL);
-INSERT INTO `sys_kitchen_order_backup` VALUES (10, 6, 2, 'A01', '油麦菜', NULL, 1, NULL, '热菜', 1, '2025-08-19 15:21:18', NULL, NULL, 0, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_member
@@ -400,19 +406,21 @@ CREATE TABLE `sys_member`  (
   `referrer_id` bigint NULL DEFAULT NULL COMMENT '推荐人会员ID（老带新用）',
   `balance` decimal(10, 2) NULL DEFAULT NULL,
   PRIMARY KEY (`member_id`) USING BTREE,
-  UNIQUE INDEX `uk_member_no`(`member_no` ASC) USING BTREE,
-  UNIQUE INDEX `uk_member_phone`(`phone` ASC) USING BTREE,
-  INDEX `idx_member_status`(`status` ASC) USING BTREE,
-  INDEX `idx_member_register`(`register_time` ASC) USING BTREE,
-  INDEX `idx_member_birthday`(`birthday` ASC) USING BTREE,
-  INDEX `idx_member_referrer`(`referrer_id` ASC) USING BTREE,
+  UNIQUE INDEX `uk_member_no`(`member_no`) USING BTREE,
+  UNIQUE INDEX `uk_member_phone`(`phone`) USING BTREE,
+  INDEX `idx_member_status`(`status`) USING BTREE,
+  INDEX `idx_member_register`(`register_time`) USING BTREE,
+  INDEX `idx_member_birthday`(`birthday`) USING BTREE,
+  INDEX `idx_member_referrer`(`referrer_id`) USING BTREE,
   CONSTRAINT `fk_member_referrer` FOREIGN KEY (`referrer_id`) REFERENCES `sys_member` (`member_id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '会员表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '会员表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_member
 -- ----------------------------
-INSERT INTO `sys_member` VALUES (1, '202508301047284391139', '15235060638', '张科国', '2025-08-18', '2025-08-30 10:47:27', 1, 0, NULL, NULL);
+INSERT INTO `sys_member` VALUES (1, '202508301047284391139', '15235060638', '张科国', '2025-08-18', '2025-08-30 10:47:27', 1, 0, NULL, 100.00);
+INSERT INTO `sys_member` VALUES (2, '20250912140658516439824', '2', '2', '2025-10-02', '2025-09-12 14:06:59', 1, 0, NULL, 55.00);
+INSERT INTO `sys_member` VALUES (3, '20250915144432291122521', '1', '1', '2025-09-08', '2025-09-15 14:44:32', 1, 0, NULL, 100.00);
 
 -- ----------------------------
 -- Table structure for sys_member_balance
@@ -427,17 +435,25 @@ CREATE TABLE `sys_member_balance`  (
   `recharge_time` datetime NOT NULL COMMENT '充值时间',
   `payment_id` bigint NOT NULL COMMENT '关联支付记录ID',
   `operator_id` bigint NOT NULL COMMENT '操作员工ID',
+  `balance_no` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`balance_id`) USING BTREE,
-  INDEX `idx_balance_member`(`member_id` ASC) USING BTREE,
-  INDEX `idx_balance_time`(`recharge_time` ASC) USING BTREE,
-  INDEX `fk_balance_payment`(`payment_id` ASC) USING BTREE,
+  INDEX `idx_balance_member`(`member_id`) USING BTREE,
+  INDEX `idx_balance_time`(`recharge_time`) USING BTREE,
+  INDEX `fk_balance_payment`(`payment_id`) USING BTREE,
   CONSTRAINT `fk_balance_member` FOREIGN KEY (`member_id`) REFERENCES `sys_member` (`member_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `fk_balance_payment` FOREIGN KEY (`payment_id`) REFERENCES `sys_payment` (`payment_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '会员储值记录表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '会员储值记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_member_balance
 -- ----------------------------
+INSERT INTO `sys_member_balance` VALUES (2, 1, 0.00, 100.00, 0.00, '2025-09-15 21:55:16', 56, 2, '20250915215508259244080');
+INSERT INTO `sys_member_balance` VALUES (3, 1, 0.00, 100.00, 0.00, '2025-09-15 22:00:09', 57, 2, '20250915220008350490165');
+INSERT INTO `sys_member_balance` VALUES (4, 1, 0.00, 100.00, 0.00, '2025-09-15 22:21:30', 58, 2, '20250915222129383644471');
+INSERT INTO `sys_member_balance` VALUES (5, 2, 0.00, 11.00, 0.00, '2025-09-15 23:28:10', 59, 2, '20250915232806400897233');
+INSERT INTO `sys_member_balance` VALUES (6, 2, 0.00, 11.00, 0.00, '2025-09-15 23:28:10', 60, 2, '20250915232809789487893');
+INSERT INTO `sys_member_balance` VALUES (7, 2, 22.00, 33.00, 0.00, '2025-09-15 23:29:25', 61, 2, '20250915232925224544284');
+INSERT INTO `sys_member_balance` VALUES (8, 3, 0.00, 100.00, 0.00, '2025-09-16 18:25:35', 62, 2, '20250916182534077126598');
 
 -- ----------------------------
 -- Table structure for sys_operationlog
@@ -457,8 +473,8 @@ CREATE TABLE `sys_operationlog`  (
   `UpUserId` int NOT NULL COMMENT '更新人',
   `UpTime` datetime NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`Id`) USING BTREE,
-  INDEX `index`(`UserId` ASC, `ActionType` ASC, `ModuleName` ASC, `OrgId` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3182 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统操作日志' ROW_FORMAT = DYNAMIC;
+  INDEX `index`(`UserId`, `ActionType`, `ModuleName`, `OrgId`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 6852 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统操作日志' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_operationlog
@@ -3644,6 +3660,3728 @@ INSERT INTO `sys_operationlog` VALUES (3178, 2, 1, '订单管理', '订单结账
 INSERT INTO `sys_operationlog` VALUES (3179, 2, 4, '订单管理', '查询订单列表', '2025-09-04 16:41:33', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-04 16:41:33', 2, '2025-09-04 16:41:33');
 INSERT INTO `sys_operationlog` VALUES (3180, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-04 16:41:36', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-04 16:41:36', 2, '2025-09-04 16:41:36');
 INSERT INTO `sys_operationlog` VALUES (3181, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-04 16:41:36', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-04 16:41:36', 2, '2025-09-04 16:41:36');
+INSERT INTO `sys_operationlog` VALUES (3182, 2, 10, '系统登陆', '人员登陆', '2025-09-05 08:50:05', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-05 08:50:05', 2, '2025-09-05 08:50:05');
+INSERT INTO `sys_operationlog` VALUES (3183, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-05 08:50:17', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:17', 2, '2025-09-05 08:50:17');
+INSERT INTO `sys_operationlog` VALUES (3184, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-05 08:50:17', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:17', 2, '2025-09-05 08:50:17');
+INSERT INTO `sys_operationlog` VALUES (3185, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-05 08:50:17', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:17', 2, '2025-09-05 08:50:17');
+INSERT INTO `sys_operationlog` VALUES (3186, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-05 08:50:23', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:23', 2, '2025-09-05 08:50:23');
+INSERT INTO `sys_operationlog` VALUES (3187, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-05 08:50:23', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:23', 2, '2025-09-05 08:50:23');
+INSERT INTO `sys_operationlog` VALUES (3188, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 08:50:32', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:32', 2, '2025-09-05 08:50:32');
+INSERT INTO `sys_operationlog` VALUES (3189, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 08:50:32', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:32', 2, '2025-09-05 08:50:32');
+INSERT INTO `sys_operationlog` VALUES (3190, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 08:50:32', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:32', 2, '2025-09-05 08:50:32');
+INSERT INTO `sys_operationlog` VALUES (3191, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 08:50:32', '{\"storeId\":null}', 1, 2, '2025-09-05 08:50:32', 2, '2025-09-05 08:50:32');
+INSERT INTO `sys_operationlog` VALUES (3192, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 08:50:32', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:32', 2, '2025-09-05 08:50:32');
+INSERT INTO `sys_operationlog` VALUES (3193, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 08:50:32', '{\"storeId\":null}', 1, 2, '2025-09-05 08:50:32', 2, '2025-09-05 08:50:32');
+INSERT INTO `sys_operationlog` VALUES (3194, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 08:50:32', '{\"storeId\":null}', 1, 2, '2025-09-05 08:50:32', 2, '2025-09-05 08:50:32');
+INSERT INTO `sys_operationlog` VALUES (3195, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 08:50:32', '{\"storeId\":null}', 1, 2, '2025-09-05 08:50:32', 2, '2025-09-05 08:50:32');
+INSERT INTO `sys_operationlog` VALUES (3196, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 08:50:37', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-05 08:50:37', 2, '2025-09-05 08:50:37');
+INSERT INTO `sys_operationlog` VALUES (3197, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 08:50:37', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-05 08:50:37', 2, '2025-09-05 08:50:37');
+INSERT INTO `sys_operationlog` VALUES (3198, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 08:50:37', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-05 08:50:37', 2, '2025-09-05 08:50:37');
+INSERT INTO `sys_operationlog` VALUES (3199, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 08:50:37', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-05 08:50:37', 2, '2025-09-05 08:50:37');
+INSERT INTO `sys_operationlog` VALUES (3200, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 08:50:37', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-05 08:50:37', 2, '2025-09-05 08:50:37');
+INSERT INTO `sys_operationlog` VALUES (3201, 2, 4, '菜品管理>配方管理', '配方列表查询', '2025-09-05 08:50:42', '{\"dishId\":3,\"pageIndex\":1,\"pageSize\":9999}', 1, 2, '2025-09-05 08:50:42', 2, '2025-09-05 08:50:42');
+INSERT INTO `sys_operationlog` VALUES (3202, 2, 4, '菜品管理>配方管理', '配方列表查询', '2025-09-05 08:50:45', '{\"dishId\":4,\"pageIndex\":1,\"pageSize\":9999}', 1, 2, '2025-09-05 08:50:45', 2, '2025-09-05 08:50:45');
+INSERT INTO `sys_operationlog` VALUES (3203, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-05 08:50:49', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:49', 2, '2025-09-05 08:50:49');
+INSERT INTO `sys_operationlog` VALUES (3204, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-05 08:50:49', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:49', 2, '2025-09-05 08:50:49');
+INSERT INTO `sys_operationlog` VALUES (3205, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-05 08:50:49', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:49', 2, '2025-09-05 08:50:49');
+INSERT INTO `sys_operationlog` VALUES (3206, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-05 08:50:49', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:49', 2, '2025-09-05 08:50:49');
+INSERT INTO `sys_operationlog` VALUES (3207, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-05 08:50:49', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:49', 2, '2025-09-05 08:50:49');
+INSERT INTO `sys_operationlog` VALUES (3208, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-05 08:50:49', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:49', 2, '2025-09-05 08:50:49');
+INSERT INTO `sys_operationlog` VALUES (3209, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 08:50:50', '{}', 1, 2, '2025-09-05 08:50:50', 2, '2025-09-05 08:50:50');
+INSERT INTO `sys_operationlog` VALUES (3210, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-05 08:50:50', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:50:50', 2, '2025-09-05 08:50:50');
+INSERT INTO `sys_operationlog` VALUES (3211, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 08:50:50', '{}', 1, 2, '2025-09-05 08:50:50', 2, '2025-09-05 08:50:50');
+INSERT INTO `sys_operationlog` VALUES (3212, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 08:50:50', '{}', 1, 2, '2025-09-05 08:50:50', 2, '2025-09-05 08:50:50');
+INSERT INTO `sys_operationlog` VALUES (3213, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-05 08:50:50', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:50:50', 2, '2025-09-05 08:50:50');
+INSERT INTO `sys_operationlog` VALUES (3214, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 08:50:50', '{}', 1, 2, '2025-09-05 08:50:50', 2, '2025-09-05 08:50:50');
+INSERT INTO `sys_operationlog` VALUES (3215, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-05 08:50:50', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:50:50', 2, '2025-09-05 08:50:50');
+INSERT INTO `sys_operationlog` VALUES (3216, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 08:50:50', '{}', 1, 2, '2025-09-05 08:50:50', 2, '2025-09-05 08:50:50');
+INSERT INTO `sys_operationlog` VALUES (3217, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-05 08:50:50', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:50:50', 2, '2025-09-05 08:50:50');
+INSERT INTO `sys_operationlog` VALUES (3218, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 08:50:50', '{}', 1, 2, '2025-09-05 08:50:50', 2, '2025-09-05 08:50:50');
+INSERT INTO `sys_operationlog` VALUES (3219, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 08:50:50', '{}', 1, 2, '2025-09-05 08:50:50', 2, '2025-09-05 08:50:50');
+INSERT INTO `sys_operationlog` VALUES (3220, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-05 08:50:50', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:50:50', 2, '2025-09-05 08:50:50');
+INSERT INTO `sys_operationlog` VALUES (3221, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-05 08:50:50', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:50:50', 2, '2025-09-05 08:50:50');
+INSERT INTO `sys_operationlog` VALUES (3222, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-05 08:50:51', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:50:51', 2, '2025-09-05 08:50:51');
+INSERT INTO `sys_operationlog` VALUES (3223, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 08:50:52', '{}', 1, 2, '2025-09-05 08:50:52', 2, '2025-09-05 08:50:52');
+INSERT INTO `sys_operationlog` VALUES (3224, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 08:50:52', '{}', 1, 2, '2025-09-05 08:50:52', 2, '2025-09-05 08:50:52');
+INSERT INTO `sys_operationlog` VALUES (3225, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-05 08:50:52', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:50:52', 2, '2025-09-05 08:50:52');
+INSERT INTO `sys_operationlog` VALUES (3226, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 08:50:52', '{}', 1, 2, '2025-09-05 08:50:52', 2, '2025-09-05 08:50:52');
+INSERT INTO `sys_operationlog` VALUES (3227, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 08:50:52', '{}', 1, 2, '2025-09-05 08:50:52', 2, '2025-09-05 08:50:52');
+INSERT INTO `sys_operationlog` VALUES (3228, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-05 08:50:52', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:50:52', 2, '2025-09-05 08:50:52');
+INSERT INTO `sys_operationlog` VALUES (3229, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 08:50:52', '{}', 1, 2, '2025-09-05 08:50:52', 2, '2025-09-05 08:50:52');
+INSERT INTO `sys_operationlog` VALUES (3230, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 08:50:52', '{}', 1, 2, '2025-09-05 08:50:52', 2, '2025-09-05 08:50:52');
+INSERT INTO `sys_operationlog` VALUES (3231, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-05 08:50:52', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:50:52', 2, '2025-09-05 08:50:52');
+INSERT INTO `sys_operationlog` VALUES (3232, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 08:50:52', '{}', 1, 2, '2025-09-05 08:50:52', 2, '2025-09-05 08:50:52');
+INSERT INTO `sys_operationlog` VALUES (3233, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-05 08:50:52', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:50:52', 2, '2025-09-05 08:50:52');
+INSERT INTO `sys_operationlog` VALUES (3234, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 08:50:52', '{}', 1, 2, '2025-09-05 08:50:52', 2, '2025-09-05 08:50:52');
+INSERT INTO `sys_operationlog` VALUES (3235, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-05 08:50:52', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:50:52', 2, '2025-09-05 08:50:52');
+INSERT INTO `sys_operationlog` VALUES (3236, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-05 08:50:52', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:50:52', 2, '2025-09-05 08:50:52');
+INSERT INTO `sys_operationlog` VALUES (3237, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-05 08:50:52', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:50:52', 2, '2025-09-05 08:50:52');
+INSERT INTO `sys_operationlog` VALUES (3238, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-05 08:50:52', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:50:52', 2, '2025-09-05 08:50:52');
+INSERT INTO `sys_operationlog` VALUES (3239, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-05 08:50:56', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:56', 2, '2025-09-05 08:50:56');
+INSERT INTO `sys_operationlog` VALUES (3240, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-05 08:50:56', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:56', 2, '2025-09-05 08:50:56');
+INSERT INTO `sys_operationlog` VALUES (3241, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-05 08:50:56', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:56', 2, '2025-09-05 08:50:56');
+INSERT INTO `sys_operationlog` VALUES (3242, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-05 08:50:57', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:57', 2, '2025-09-05 08:50:57');
+INSERT INTO `sys_operationlog` VALUES (3243, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-05 08:50:57', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:57', 2, '2025-09-05 08:50:57');
+INSERT INTO `sys_operationlog` VALUES (3244, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-05 08:50:57', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:57', 2, '2025-09-05 08:50:57');
+INSERT INTO `sys_operationlog` VALUES (3245, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-05 08:50:57', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:57', 2, '2025-09-05 08:50:57');
+INSERT INTO `sys_operationlog` VALUES (3246, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-05 08:50:57', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:57', 2, '2025-09-05 08:50:57');
+INSERT INTO `sys_operationlog` VALUES (3247, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-05 08:50:57', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:50:57', 2, '2025-09-05 08:50:57');
+INSERT INTO `sys_operationlog` VALUES (3248, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3249, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3250, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3251, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3252, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3253, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3254, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3255, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3256, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3257, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3258, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3259, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3260, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3261, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3262, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3263, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3264, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3265, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3266, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3267, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3268, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3269, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3270, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3271, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3272, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3273, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3274, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3275, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3276, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3277, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-05 08:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-05 08:51:00', 2, '2025-09-05 08:51:00');
+INSERT INTO `sys_operationlog` VALUES (3278, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-05 08:51:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:02', 2, '2025-09-05 08:51:02');
+INSERT INTO `sys_operationlog` VALUES (3279, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-05 08:51:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:02', 2, '2025-09-05 08:51:02');
+INSERT INTO `sys_operationlog` VALUES (3280, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-05 08:51:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:02', 2, '2025-09-05 08:51:02');
+INSERT INTO `sys_operationlog` VALUES (3281, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-05 08:51:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:02', 2, '2025-09-05 08:51:02');
+INSERT INTO `sys_operationlog` VALUES (3282, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-05 08:51:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:02', 2, '2025-09-05 08:51:02');
+INSERT INTO `sys_operationlog` VALUES (3283, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-05 08:51:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:02', 2, '2025-09-05 08:51:02');
+INSERT INTO `sys_operationlog` VALUES (3284, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-05 08:51:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:02', 2, '2025-09-05 08:51:02');
+INSERT INTO `sys_operationlog` VALUES (3285, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-05 08:51:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:02', 2, '2025-09-05 08:51:02');
+INSERT INTO `sys_operationlog` VALUES (3286, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-05 08:51:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:02', 2, '2025-09-05 08:51:02');
+INSERT INTO `sys_operationlog` VALUES (3287, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-05 08:51:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:02', 2, '2025-09-05 08:51:02');
+INSERT INTO `sys_operationlog` VALUES (3288, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-05 08:51:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:02', 2, '2025-09-05 08:51:02');
+INSERT INTO `sys_operationlog` VALUES (3289, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-05 08:51:04', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:04', 2, '2025-09-05 08:51:04');
+INSERT INTO `sys_operationlog` VALUES (3290, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-05 08:51:04', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:04', 2, '2025-09-05 08:51:04');
+INSERT INTO `sys_operationlog` VALUES (3291, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-05 08:51:04', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:04', 2, '2025-09-05 08:51:04');
+INSERT INTO `sys_operationlog` VALUES (3292, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-05 08:51:04', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:04', 2, '2025-09-05 08:51:04');
+INSERT INTO `sys_operationlog` VALUES (3293, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-05 08:51:04', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:04', 2, '2025-09-05 08:51:04');
+INSERT INTO `sys_operationlog` VALUES (3294, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-05 08:51:04', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:04', 2, '2025-09-05 08:51:04');
+INSERT INTO `sys_operationlog` VALUES (3295, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-05 08:51:04', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:04', 2, '2025-09-05 08:51:04');
+INSERT INTO `sys_operationlog` VALUES (3296, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-05 08:51:04', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:04', 2, '2025-09-05 08:51:04');
+INSERT INTO `sys_operationlog` VALUES (3297, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-05 08:51:04', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:04', 2, '2025-09-05 08:51:04');
+INSERT INTO `sys_operationlog` VALUES (3298, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-05 08:51:04', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:04', 2, '2025-09-05 08:51:04');
+INSERT INTO `sys_operationlog` VALUES (3299, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-05 08:51:04', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:04', 2, '2025-09-05 08:51:04');
+INSERT INTO `sys_operationlog` VALUES (3300, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-05 08:51:04', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:04', 2, '2025-09-05 08:51:04');
+INSERT INTO `sys_operationlog` VALUES (3301, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-05 08:51:07', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:07', 2, '2025-09-05 08:51:07');
+INSERT INTO `sys_operationlog` VALUES (3302, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-05 08:51:07', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:07', 2, '2025-09-05 08:51:07');
+INSERT INTO `sys_operationlog` VALUES (3303, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-05 08:51:08', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:08', 2, '2025-09-05 08:51:08');
+INSERT INTO `sys_operationlog` VALUES (3304, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-05 08:51:08', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:08', 2, '2025-09-05 08:51:08');
+INSERT INTO `sys_operationlog` VALUES (3305, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-05 08:51:08', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:08', 2, '2025-09-05 08:51:08');
+INSERT INTO `sys_operationlog` VALUES (3306, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-05 08:51:08', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:08', 2, '2025-09-05 08:51:08');
+INSERT INTO `sys_operationlog` VALUES (3307, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-05 08:51:08', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:08', 2, '2025-09-05 08:51:08');
+INSERT INTO `sys_operationlog` VALUES (3308, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-05 08:51:08', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:08', 2, '2025-09-05 08:51:08');
+INSERT INTO `sys_operationlog` VALUES (3309, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-05 08:51:08', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:08', 2, '2025-09-05 08:51:08');
+INSERT INTO `sys_operationlog` VALUES (3310, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-05 08:51:08', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:08', 2, '2025-09-05 08:51:08');
+INSERT INTO `sys_operationlog` VALUES (3311, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-05 08:51:08', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:08', 2, '2025-09-05 08:51:08');
+INSERT INTO `sys_operationlog` VALUES (3312, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-05 08:51:08', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:08', 2, '2025-09-05 08:51:08');
+INSERT INTO `sys_operationlog` VALUES (3313, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-05 08:51:08', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:08', 2, '2025-09-05 08:51:08');
+INSERT INTO `sys_operationlog` VALUES (3314, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-05 08:51:16', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:16', 2, '2025-09-05 08:51:16');
+INSERT INTO `sys_operationlog` VALUES (3315, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-05 08:51:16', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:16', 2, '2025-09-05 08:51:16');
+INSERT INTO `sys_operationlog` VALUES (3316, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-05 08:51:16', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:16', 2, '2025-09-05 08:51:16');
+INSERT INTO `sys_operationlog` VALUES (3317, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-05 08:51:16', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:16', 2, '2025-09-05 08:51:16');
+INSERT INTO `sys_operationlog` VALUES (3318, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-05 08:51:16', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:16', 2, '2025-09-05 08:51:16');
+INSERT INTO `sys_operationlog` VALUES (3319, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-05 08:51:16', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:16', 2, '2025-09-05 08:51:16');
+INSERT INTO `sys_operationlog` VALUES (3320, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-05 08:51:16', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:16', 2, '2025-09-05 08:51:16');
+INSERT INTO `sys_operationlog` VALUES (3321, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-05 08:51:16', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:16', 2, '2025-09-05 08:51:16');
+INSERT INTO `sys_operationlog` VALUES (3322, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-05 08:51:16', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:16', 2, '2025-09-05 08:51:16');
+INSERT INTO `sys_operationlog` VALUES (3323, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-05 08:51:16', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:16', 2, '2025-09-05 08:51:16');
+INSERT INTO `sys_operationlog` VALUES (3324, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-05 08:51:16', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:16', 2, '2025-09-05 08:51:16');
+INSERT INTO `sys_operationlog` VALUES (3325, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-05 08:51:16', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:16', 2, '2025-09-05 08:51:16');
+INSERT INTO `sys_operationlog` VALUES (3326, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-05 08:51:16', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:16', 2, '2025-09-05 08:51:16');
+INSERT INTO `sys_operationlog` VALUES (3327, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-05 08:51:16', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:16', 2, '2025-09-05 08:51:16');
+INSERT INTO `sys_operationlog` VALUES (3328, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-05 08:51:24', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:24', 2, '2025-09-05 08:51:24');
+INSERT INTO `sys_operationlog` VALUES (3329, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-05 08:51:25', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:25', 2, '2025-09-05 08:51:25');
+INSERT INTO `sys_operationlog` VALUES (3330, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-05 08:51:25', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:25', 2, '2025-09-05 08:51:25');
+INSERT INTO `sys_operationlog` VALUES (3331, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-05 08:51:25', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:25', 2, '2025-09-05 08:51:25');
+INSERT INTO `sys_operationlog` VALUES (3332, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-05 08:51:25', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:25', 2, '2025-09-05 08:51:25');
+INSERT INTO `sys_operationlog` VALUES (3333, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-05 08:51:25', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:25', 2, '2025-09-05 08:51:25');
+INSERT INTO `sys_operationlog` VALUES (3334, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-05 08:51:25', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:25', 2, '2025-09-05 08:51:25');
+INSERT INTO `sys_operationlog` VALUES (3335, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-05 08:51:25', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:25', 2, '2025-09-05 08:51:25');
+INSERT INTO `sys_operationlog` VALUES (3336, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-05 08:51:25', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:25', 2, '2025-09-05 08:51:25');
+INSERT INTO `sys_operationlog` VALUES (3337, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-05 08:51:25', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:25', 2, '2025-09-05 08:51:25');
+INSERT INTO `sys_operationlog` VALUES (3338, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-05 08:51:25', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:25', 2, '2025-09-05 08:51:25');
+INSERT INTO `sys_operationlog` VALUES (3339, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-05 08:51:25', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:25', 2, '2025-09-05 08:51:25');
+INSERT INTO `sys_operationlog` VALUES (3340, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-05 08:51:25', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:25', 2, '2025-09-05 08:51:25');
+INSERT INTO `sys_operationlog` VALUES (3341, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-05 08:51:25', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:25', 2, '2025-09-05 08:51:25');
+INSERT INTO `sys_operationlog` VALUES (3342, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-05 08:51:25', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:25', 2, '2025-09-05 08:51:25');
+INSERT INTO `sys_operationlog` VALUES (3343, 2, 4, '库存管理>采购单管理', '采购单详情', '2025-09-05 08:51:30', '{\"poId\":3}', 1, 2, '2025-09-05 08:51:30', 2, '2025-09-05 08:51:30');
+INSERT INTO `sys_operationlog` VALUES (3344, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-05 08:51:37', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:37', 2, '2025-09-05 08:51:37');
+INSERT INTO `sys_operationlog` VALUES (3345, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-05 08:51:38', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:38', 2, '2025-09-05 08:51:38');
+INSERT INTO `sys_operationlog` VALUES (3346, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-05 08:51:38', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:38', 2, '2025-09-05 08:51:38');
+INSERT INTO `sys_operationlog` VALUES (3347, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-05 08:51:38', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:38', 2, '2025-09-05 08:51:38');
+INSERT INTO `sys_operationlog` VALUES (3348, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-05 08:51:38', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:38', 2, '2025-09-05 08:51:38');
+INSERT INTO `sys_operationlog` VALUES (3349, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-05 08:51:38', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:38', 2, '2025-09-05 08:51:38');
+INSERT INTO `sys_operationlog` VALUES (3350, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-05 08:51:38', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:38', 2, '2025-09-05 08:51:38');
+INSERT INTO `sys_operationlog` VALUES (3351, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-05 08:51:38', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:38', 2, '2025-09-05 08:51:38');
+INSERT INTO `sys_operationlog` VALUES (3352, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-05 08:51:38', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:38', 2, '2025-09-05 08:51:38');
+INSERT INTO `sys_operationlog` VALUES (3353, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-05 08:51:38', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:38', 2, '2025-09-05 08:51:38');
+INSERT INTO `sys_operationlog` VALUES (3354, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-05 08:51:38', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:38', 2, '2025-09-05 08:51:38');
+INSERT INTO `sys_operationlog` VALUES (3355, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-05 08:51:38', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:38', 2, '2025-09-05 08:51:38');
+INSERT INTO `sys_operationlog` VALUES (3356, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-05 08:51:38', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:38', 2, '2025-09-05 08:51:38');
+INSERT INTO `sys_operationlog` VALUES (3357, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-05 08:51:38', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:38', 2, '2025-09-05 08:51:38');
+INSERT INTO `sys_operationlog` VALUES (3358, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-05 08:51:38', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:38', 2, '2025-09-05 08:51:38');
+INSERT INTO `sys_operationlog` VALUES (3359, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-05 08:51:38', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:38', 2, '2025-09-05 08:51:38');
+INSERT INTO `sys_operationlog` VALUES (3360, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 08:51:47', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:47', 2, '2025-09-05 08:51:47');
+INSERT INTO `sys_operationlog` VALUES (3361, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 08:51:47', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:47', 2, '2025-09-05 08:51:47');
+INSERT INTO `sys_operationlog` VALUES (3362, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 08:51:47', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:47', 2, '2025-09-05 08:51:47');
+INSERT INTO `sys_operationlog` VALUES (3363, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 08:51:47', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:47', 2, '2025-09-05 08:51:47');
+INSERT INTO `sys_operationlog` VALUES (3364, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 08:51:47', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:47', 2, '2025-09-05 08:51:47');
+INSERT INTO `sys_operationlog` VALUES (3365, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 08:51:47', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:47', 2, '2025-09-05 08:51:47');
+INSERT INTO `sys_operationlog` VALUES (3366, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 08:51:47', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:47', 2, '2025-09-05 08:51:47');
+INSERT INTO `sys_operationlog` VALUES (3367, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 08:51:47', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:47', 2, '2025-09-05 08:51:47');
+INSERT INTO `sys_operationlog` VALUES (3368, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 08:51:47', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:47', 2, '2025-09-05 08:51:47');
+INSERT INTO `sys_operationlog` VALUES (3369, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 08:51:47', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:47', 2, '2025-09-05 08:51:47');
+INSERT INTO `sys_operationlog` VALUES (3370, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 08:51:47', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:47', 2, '2025-09-05 08:51:47');
+INSERT INTO `sys_operationlog` VALUES (3371, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 08:51:47', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:47', 2, '2025-09-05 08:51:47');
+INSERT INTO `sys_operationlog` VALUES (3372, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 08:51:47', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:47', 2, '2025-09-05 08:51:47');
+INSERT INTO `sys_operationlog` VALUES (3373, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 08:51:47', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:47', 2, '2025-09-05 08:51:47');
+INSERT INTO `sys_operationlog` VALUES (3374, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 08:51:47', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:47', 2, '2025-09-05 08:51:47');
+INSERT INTO `sys_operationlog` VALUES (3375, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 08:51:47', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:47', 2, '2025-09-05 08:51:47');
+INSERT INTO `sys_operationlog` VALUES (3376, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 08:51:47', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:47', 2, '2025-09-05 08:51:47');
+INSERT INTO `sys_operationlog` VALUES (3377, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-05 08:51:50', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:50', 2, '2025-09-05 08:51:50');
+INSERT INTO `sys_operationlog` VALUES (3378, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-05 08:51:50', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:50', 2, '2025-09-05 08:51:50');
+INSERT INTO `sys_operationlog` VALUES (3379, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-05 08:51:50', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:50', 2, '2025-09-05 08:51:50');
+INSERT INTO `sys_operationlog` VALUES (3380, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-05 08:51:50', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:50', 2, '2025-09-05 08:51:50');
+INSERT INTO `sys_operationlog` VALUES (3381, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-05 08:51:50', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:50', 2, '2025-09-05 08:51:50');
+INSERT INTO `sys_operationlog` VALUES (3382, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-05 08:51:50', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:50', 2, '2025-09-05 08:51:50');
+INSERT INTO `sys_operationlog` VALUES (3383, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-05 08:51:50', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:50', 2, '2025-09-05 08:51:50');
+INSERT INTO `sys_operationlog` VALUES (3384, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-05 08:51:50', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:50', 2, '2025-09-05 08:51:50');
+INSERT INTO `sys_operationlog` VALUES (3385, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-05 08:51:50', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:50', 2, '2025-09-05 08:51:50');
+INSERT INTO `sys_operationlog` VALUES (3386, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-05 08:51:50', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:50', 2, '2025-09-05 08:51:50');
+INSERT INTO `sys_operationlog` VALUES (3387, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-05 08:51:50', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:50', 2, '2025-09-05 08:51:50');
+INSERT INTO `sys_operationlog` VALUES (3388, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-05 08:51:50', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:50', 2, '2025-09-05 08:51:50');
+INSERT INTO `sys_operationlog` VALUES (3389, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-05 08:51:50', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:50', 2, '2025-09-05 08:51:50');
+INSERT INTO `sys_operationlog` VALUES (3390, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-05 08:51:50', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:50', 2, '2025-09-05 08:51:50');
+INSERT INTO `sys_operationlog` VALUES (3391, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-05 08:51:50', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:50', 2, '2025-09-05 08:51:50');
+INSERT INTO `sys_operationlog` VALUES (3392, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-05 08:51:50', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:50', 2, '2025-09-05 08:51:50');
+INSERT INTO `sys_operationlog` VALUES (3393, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-05 08:51:50', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:50', 2, '2025-09-05 08:51:50');
+INSERT INTO `sys_operationlog` VALUES (3394, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-05 08:51:50', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:51:50', 2, '2025-09-05 08:51:50');
+INSERT INTO `sys_operationlog` VALUES (3395, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 08:51:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:55', 2, '2025-09-05 08:51:55');
+INSERT INTO `sys_operationlog` VALUES (3396, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 08:51:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:55', 2, '2025-09-05 08:51:55');
+INSERT INTO `sys_operationlog` VALUES (3397, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 08:51:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:55', 2, '2025-09-05 08:51:55');
+INSERT INTO `sys_operationlog` VALUES (3398, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 08:51:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:55', 2, '2025-09-05 08:51:55');
+INSERT INTO `sys_operationlog` VALUES (3399, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 08:51:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:55', 2, '2025-09-05 08:51:55');
+INSERT INTO `sys_operationlog` VALUES (3400, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 08:51:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:55', 2, '2025-09-05 08:51:55');
+INSERT INTO `sys_operationlog` VALUES (3401, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 08:51:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:55', 2, '2025-09-05 08:51:55');
+INSERT INTO `sys_operationlog` VALUES (3402, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 08:51:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:55', 2, '2025-09-05 08:51:55');
+INSERT INTO `sys_operationlog` VALUES (3403, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 08:51:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:55', 2, '2025-09-05 08:51:55');
+INSERT INTO `sys_operationlog` VALUES (3404, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 08:51:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:55', 2, '2025-09-05 08:51:55');
+INSERT INTO `sys_operationlog` VALUES (3405, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 08:51:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:55', 2, '2025-09-05 08:51:55');
+INSERT INTO `sys_operationlog` VALUES (3406, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 08:51:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:55', 2, '2025-09-05 08:51:55');
+INSERT INTO `sys_operationlog` VALUES (3407, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 08:51:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:55', 2, '2025-09-05 08:51:55');
+INSERT INTO `sys_operationlog` VALUES (3408, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 08:51:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:55', 2, '2025-09-05 08:51:55');
+INSERT INTO `sys_operationlog` VALUES (3409, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 08:51:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:55', 2, '2025-09-05 08:51:55');
+INSERT INTO `sys_operationlog` VALUES (3410, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 08:51:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:55', 2, '2025-09-05 08:51:55');
+INSERT INTO `sys_operationlog` VALUES (3411, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 08:51:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:55', 2, '2025-09-05 08:51:55');
+INSERT INTO `sys_operationlog` VALUES (3412, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 08:51:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:55', 2, '2025-09-05 08:51:55');
+INSERT INTO `sys_operationlog` VALUES (3413, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 08:51:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:55', 2, '2025-09-05 08:51:55');
+INSERT INTO `sys_operationlog` VALUES (3414, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-05 08:51:59', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:59', 2, '2025-09-05 08:51:59');
+INSERT INTO `sys_operationlog` VALUES (3415, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-05 08:51:59', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:51:59', 2, '2025-09-05 08:51:59');
+INSERT INTO `sys_operationlog` VALUES (3416, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-05 08:52:00', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:00', 2, '2025-09-05 08:52:00');
+INSERT INTO `sys_operationlog` VALUES (3417, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-05 08:52:00', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:00', 2, '2025-09-05 08:52:00');
+INSERT INTO `sys_operationlog` VALUES (3418, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-05 08:52:00', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:00', 2, '2025-09-05 08:52:00');
+INSERT INTO `sys_operationlog` VALUES (3419, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-05 08:52:00', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:00', 2, '2025-09-05 08:52:00');
+INSERT INTO `sys_operationlog` VALUES (3420, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-05 08:52:00', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:00', 2, '2025-09-05 08:52:00');
+INSERT INTO `sys_operationlog` VALUES (3421, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-05 08:52:00', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:00', 2, '2025-09-05 08:52:00');
+INSERT INTO `sys_operationlog` VALUES (3422, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-05 08:52:00', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:00', 2, '2025-09-05 08:52:00');
+INSERT INTO `sys_operationlog` VALUES (3423, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-05 08:52:00', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:00', 2, '2025-09-05 08:52:00');
+INSERT INTO `sys_operationlog` VALUES (3424, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-05 08:52:00', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:00', 2, '2025-09-05 08:52:00');
+INSERT INTO `sys_operationlog` VALUES (3425, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-05 08:52:00', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:00', 2, '2025-09-05 08:52:00');
+INSERT INTO `sys_operationlog` VALUES (3426, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-05 08:52:00', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:00', 2, '2025-09-05 08:52:00');
+INSERT INTO `sys_operationlog` VALUES (3427, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-05 08:52:00', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:00', 2, '2025-09-05 08:52:00');
+INSERT INTO `sys_operationlog` VALUES (3428, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-05 08:52:00', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:00', 2, '2025-09-05 08:52:00');
+INSERT INTO `sys_operationlog` VALUES (3429, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-05 08:52:00', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:00', 2, '2025-09-05 08:52:00');
+INSERT INTO `sys_operationlog` VALUES (3430, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-05 08:52:00', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:00', 2, '2025-09-05 08:52:00');
+INSERT INTO `sys_operationlog` VALUES (3431, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-05 08:52:00', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:00', 2, '2025-09-05 08:52:00');
+INSERT INTO `sys_operationlog` VALUES (3432, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-05 08:52:00', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:00', 2, '2025-09-05 08:52:00');
+INSERT INTO `sys_operationlog` VALUES (3433, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-05 08:52:00', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:00', 2, '2025-09-05 08:52:00');
+INSERT INTO `sys_operationlog` VALUES (3434, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3435, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3436, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3437, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3438, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3439, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3440, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3441, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3442, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3443, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3444, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3445, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3446, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3447, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3448, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3449, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3450, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3451, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3452, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3453, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3454, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-05 08:52:11', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:11', 2, '2025-09-05 08:52:11');
+INSERT INTO `sys_operationlog` VALUES (3455, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:16', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:16', 2, '2025-09-05 08:52:16');
+INSERT INTO `sys_operationlog` VALUES (3456, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:16', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:16', 2, '2025-09-05 08:52:16');
+INSERT INTO `sys_operationlog` VALUES (3457, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:16', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:16', 2, '2025-09-05 08:52:16');
+INSERT INTO `sys_operationlog` VALUES (3458, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:17', 2, '2025-09-05 08:52:17');
+INSERT INTO `sys_operationlog` VALUES (3459, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:17', 2, '2025-09-05 08:52:17');
+INSERT INTO `sys_operationlog` VALUES (3460, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:17', 2, '2025-09-05 08:52:17');
+INSERT INTO `sys_operationlog` VALUES (3461, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:17', 2, '2025-09-05 08:52:17');
+INSERT INTO `sys_operationlog` VALUES (3462, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:17', 2, '2025-09-05 08:52:17');
+INSERT INTO `sys_operationlog` VALUES (3463, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:17', 2, '2025-09-05 08:52:17');
+INSERT INTO `sys_operationlog` VALUES (3464, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:17', 2, '2025-09-05 08:52:17');
+INSERT INTO `sys_operationlog` VALUES (3465, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:17', 2, '2025-09-05 08:52:17');
+INSERT INTO `sys_operationlog` VALUES (3466, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:17', 2, '2025-09-05 08:52:17');
+INSERT INTO `sys_operationlog` VALUES (3467, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:17', 2, '2025-09-05 08:52:17');
+INSERT INTO `sys_operationlog` VALUES (3468, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:17', 2, '2025-09-05 08:52:17');
+INSERT INTO `sys_operationlog` VALUES (3469, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:17', 2, '2025-09-05 08:52:17');
+INSERT INTO `sys_operationlog` VALUES (3470, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:17', 2, '2025-09-05 08:52:17');
+INSERT INTO `sys_operationlog` VALUES (3471, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:17', 2, '2025-09-05 08:52:17');
+INSERT INTO `sys_operationlog` VALUES (3472, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:17', 2, '2025-09-05 08:52:17');
+INSERT INTO `sys_operationlog` VALUES (3473, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:17', 2, '2025-09-05 08:52:17');
+INSERT INTO `sys_operationlog` VALUES (3474, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:17', 2, '2025-09-05 08:52:17');
+INSERT INTO `sys_operationlog` VALUES (3475, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:17', 2, '2025-09-05 08:52:17');
+INSERT INTO `sys_operationlog` VALUES (3476, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-05 08:52:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:17', 2, '2025-09-05 08:52:17');
+INSERT INTO `sys_operationlog` VALUES (3477, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3478, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3479, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3480, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3481, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3482, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3483, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3484, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3485, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3486, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3487, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3488, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3489, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3490, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3491, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3492, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3493, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3494, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3495, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3496, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3497, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3498, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3499, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-05 08:52:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:28', 2, '2025-09-05 08:52:28');
+INSERT INTO `sys_operationlog` VALUES (3500, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:30', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:30', 2, '2025-09-05 08:52:30');
+INSERT INTO `sys_operationlog` VALUES (3501, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:30', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:30', 2, '2025-09-05 08:52:30');
+INSERT INTO `sys_operationlog` VALUES (3502, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:30', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:30', 2, '2025-09-05 08:52:30');
+INSERT INTO `sys_operationlog` VALUES (3503, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:30', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:30', 2, '2025-09-05 08:52:30');
+INSERT INTO `sys_operationlog` VALUES (3504, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:31', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:31', 2, '2025-09-05 08:52:31');
+INSERT INTO `sys_operationlog` VALUES (3505, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:31', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:31', 2, '2025-09-05 08:52:31');
+INSERT INTO `sys_operationlog` VALUES (3506, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:31', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:31', 2, '2025-09-05 08:52:31');
+INSERT INTO `sys_operationlog` VALUES (3507, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:31', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:31', 2, '2025-09-05 08:52:31');
+INSERT INTO `sys_operationlog` VALUES (3508, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:31', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:31', 2, '2025-09-05 08:52:31');
+INSERT INTO `sys_operationlog` VALUES (3509, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:31', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:31', 2, '2025-09-05 08:52:31');
+INSERT INTO `sys_operationlog` VALUES (3510, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:31', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:31', 2, '2025-09-05 08:52:31');
+INSERT INTO `sys_operationlog` VALUES (3511, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:31', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:31', 2, '2025-09-05 08:52:31');
+INSERT INTO `sys_operationlog` VALUES (3512, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:31', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:31', 2, '2025-09-05 08:52:31');
+INSERT INTO `sys_operationlog` VALUES (3513, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:31', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:31', 2, '2025-09-05 08:52:31');
+INSERT INTO `sys_operationlog` VALUES (3514, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:31', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:31', 2, '2025-09-05 08:52:31');
+INSERT INTO `sys_operationlog` VALUES (3515, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:31', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:31', 2, '2025-09-05 08:52:31');
+INSERT INTO `sys_operationlog` VALUES (3516, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:31', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:31', 2, '2025-09-05 08:52:31');
+INSERT INTO `sys_operationlog` VALUES (3517, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:31', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:31', 2, '2025-09-05 08:52:31');
+INSERT INTO `sys_operationlog` VALUES (3518, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:31', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:31', 2, '2025-09-05 08:52:31');
+INSERT INTO `sys_operationlog` VALUES (3519, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:31', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:31', 2, '2025-09-05 08:52:31');
+INSERT INTO `sys_operationlog` VALUES (3520, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:31', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:31', 2, '2025-09-05 08:52:31');
+INSERT INTO `sys_operationlog` VALUES (3521, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:31', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:31', 2, '2025-09-05 08:52:31');
+INSERT INTO `sys_operationlog` VALUES (3522, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:31', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:31', 2, '2025-09-05 08:52:31');
+INSERT INTO `sys_operationlog` VALUES (3523, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-05 08:52:31', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 08:52:31', 2, '2025-09-05 08:52:31');
+INSERT INTO `sys_operationlog` VALUES (3524, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3525, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3526, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3527, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3528, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3529, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3530, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3531, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3532, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3533, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3534, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3535, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3536, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3537, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3538, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3539, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3540, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3541, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3542, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3543, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3544, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3545, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3546, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3547, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3548, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-05 08:52:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:38', 2, '2025-09-05 08:52:38');
+INSERT INTO `sys_operationlog` VALUES (3549, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3550, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3551, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3552, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3553, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3554, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3555, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3556, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3557, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3558, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3559, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3560, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3561, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3562, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3563, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3564, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3565, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3566, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3567, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3568, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3569, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3570, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3571, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:42', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:42', 2, '2025-09-05 08:52:42');
+INSERT INTO `sys_operationlog` VALUES (3572, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:43', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:43', 2, '2025-09-05 08:52:43');
+INSERT INTO `sys_operationlog` VALUES (3573, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:43', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:43', 2, '2025-09-05 08:52:43');
+INSERT INTO `sys_operationlog` VALUES (3574, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-05 08:52:43', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 08:52:43', 2, '2025-09-05 08:52:43');
+INSERT INTO `sys_operationlog` VALUES (3575, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:45', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:45', 2, '2025-09-05 08:52:45');
+INSERT INTO `sys_operationlog` VALUES (3576, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:45', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:45', 2, '2025-09-05 08:52:45');
+INSERT INTO `sys_operationlog` VALUES (3577, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:45', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:45', 2, '2025-09-05 08:52:45');
+INSERT INTO `sys_operationlog` VALUES (3578, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:45', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:45', 2, '2025-09-05 08:52:45');
+INSERT INTO `sys_operationlog` VALUES (3579, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:45', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:45', 2, '2025-09-05 08:52:45');
+INSERT INTO `sys_operationlog` VALUES (3580, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:45', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:45', 2, '2025-09-05 08:52:45');
+INSERT INTO `sys_operationlog` VALUES (3581, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:45', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:45', 2, '2025-09-05 08:52:45');
+INSERT INTO `sys_operationlog` VALUES (3582, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:45', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:45', 2, '2025-09-05 08:52:45');
+INSERT INTO `sys_operationlog` VALUES (3583, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:45', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:45', 2, '2025-09-05 08:52:45');
+INSERT INTO `sys_operationlog` VALUES (3584, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:45', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:45', 2, '2025-09-05 08:52:45');
+INSERT INTO `sys_operationlog` VALUES (3585, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:46', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:46', 2, '2025-09-05 08:52:46');
+INSERT INTO `sys_operationlog` VALUES (3586, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:46', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:46', 2, '2025-09-05 08:52:46');
+INSERT INTO `sys_operationlog` VALUES (3587, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:46', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:46', 2, '2025-09-05 08:52:46');
+INSERT INTO `sys_operationlog` VALUES (3588, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:46', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:46', 2, '2025-09-05 08:52:46');
+INSERT INTO `sys_operationlog` VALUES (3589, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:46', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:46', 2, '2025-09-05 08:52:46');
+INSERT INTO `sys_operationlog` VALUES (3590, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:46', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:46', 2, '2025-09-05 08:52:46');
+INSERT INTO `sys_operationlog` VALUES (3591, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:46', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:46', 2, '2025-09-05 08:52:46');
+INSERT INTO `sys_operationlog` VALUES (3592, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:46', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:46', 2, '2025-09-05 08:52:46');
+INSERT INTO `sys_operationlog` VALUES (3593, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:46', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:46', 2, '2025-09-05 08:52:46');
+INSERT INTO `sys_operationlog` VALUES (3594, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:46', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:46', 2, '2025-09-05 08:52:46');
+INSERT INTO `sys_operationlog` VALUES (3595, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:46', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:46', 2, '2025-09-05 08:52:46');
+INSERT INTO `sys_operationlog` VALUES (3596, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:46', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:46', 2, '2025-09-05 08:52:46');
+INSERT INTO `sys_operationlog` VALUES (3597, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:46', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:46', 2, '2025-09-05 08:52:46');
+INSERT INTO `sys_operationlog` VALUES (3598, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:46', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:46', 2, '2025-09-05 08:52:46');
+INSERT INTO `sys_operationlog` VALUES (3599, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:46', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:46', 2, '2025-09-05 08:52:46');
+INSERT INTO `sys_operationlog` VALUES (3600, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:46', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:46', 2, '2025-09-05 08:52:46');
+INSERT INTO `sys_operationlog` VALUES (3601, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-05 08:52:46', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-05 08:52:46', 2, '2025-09-05 08:52:46');
+INSERT INTO `sys_operationlog` VALUES (3602, 2, 11, '账号登出', '人员退出系统', '2025-09-05 08:52:54', '{}', 1, 2, '2025-09-05 08:52:54', 2, '2025-09-05 08:52:54');
+INSERT INTO `sys_operationlog` VALUES (3603, 6, 10, '系统登陆', '人员登陆', '2025-09-05 08:53:03', '账号：lq,员工姓名：lq', 2, 6, '2025-09-05 08:53:03', 6, '2025-09-05 08:53:03');
+INSERT INTO `sys_operationlog` VALUES (3604, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-05 08:53:03', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-05 08:53:03', 6, '2025-09-05 08:53:03');
+INSERT INTO `sys_operationlog` VALUES (3605, 6, 11, '账号登出', '人员退出系统', '2025-09-05 08:53:19', '{}', 2, 6, '2025-09-05 08:53:19', 6, '2025-09-05 08:53:19');
+INSERT INTO `sys_operationlog` VALUES (3606, 6, 10, '系统登陆', '人员登陆', '2025-09-05 08:55:11', '账号：lq,员工姓名：lq', 2, 6, '2025-09-05 08:55:11', 6, '2025-09-05 08:55:11');
+INSERT INTO `sys_operationlog` VALUES (3607, 6, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 08:55:18', '{}', 2, 6, '2025-09-05 08:55:18', 6, '2025-09-05 08:55:18');
+INSERT INTO `sys_operationlog` VALUES (3608, 6, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 08:55:19', '{}', 2, 6, '2025-09-05 08:55:19', 6, '2025-09-05 08:55:19');
+INSERT INTO `sys_operationlog` VALUES (3609, 6, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 08:55:49', '{}', 2, 6, '2025-09-05 08:55:49', 6, '2025-09-05 08:55:49');
+INSERT INTO `sys_operationlog` VALUES (3610, 6, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 08:55:49', '{}', 2, 6, '2025-09-05 08:55:49', 6, '2025-09-05 08:55:49');
+INSERT INTO `sys_operationlog` VALUES (3611, 6, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 08:56:19', '{}', 2, 6, '2025-09-05 08:56:19', 6, '2025-09-05 08:56:19');
+INSERT INTO `sys_operationlog` VALUES (3612, 6, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 08:56:19', '{}', 2, 6, '2025-09-05 08:56:19', 6, '2025-09-05 08:56:19');
+INSERT INTO `sys_operationlog` VALUES (3613, 6, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 08:56:49', '{}', 2, 6, '2025-09-05 08:56:49', 6, '2025-09-05 08:56:49');
+INSERT INTO `sys_operationlog` VALUES (3614, 6, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 08:56:49', '{}', 2, 6, '2025-09-05 08:56:49', 6, '2025-09-05 08:56:49');
+INSERT INTO `sys_operationlog` VALUES (3615, 6, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 08:57:19', '{}', 2, 6, '2025-09-05 08:57:19', 6, '2025-09-05 08:57:19');
+INSERT INTO `sys_operationlog` VALUES (3616, 6, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 08:57:19', '{}', 2, 6, '2025-09-05 08:57:19', 6, '2025-09-05 08:57:19');
+INSERT INTO `sys_operationlog` VALUES (3617, 6, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 08:57:49', '{}', 2, 6, '2025-09-05 08:57:49', 6, '2025-09-05 08:57:49');
+INSERT INTO `sys_operationlog` VALUES (3618, 6, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 08:57:49', '{}', 2, 6, '2025-09-05 08:57:49', 6, '2025-09-05 08:57:49');
+INSERT INTO `sys_operationlog` VALUES (3619, 6, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 08:58:19', '{}', 2, 6, '2025-09-05 08:58:19', 6, '2025-09-05 08:58:19');
+INSERT INTO `sys_operationlog` VALUES (3620, 6, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 08:58:19', '{}', 2, 6, '2025-09-05 08:58:19', 6, '2025-09-05 08:58:19');
+INSERT INTO `sys_operationlog` VALUES (3621, 6, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 09:01:46', '{}', 2, 6, '2025-09-05 09:01:46', 6, '2025-09-05 09:01:46');
+INSERT INTO `sys_operationlog` VALUES (3622, 6, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 09:01:46', '{}', 2, 6, '2025-09-05 09:01:46', 6, '2025-09-05 09:01:46');
+INSERT INTO `sys_operationlog` VALUES (3623, 6, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 09:02:21', '{}', 2, 6, '2025-09-05 09:02:21', 6, '2025-09-05 09:02:21');
+INSERT INTO `sys_operationlog` VALUES (3624, 6, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 09:02:21', '{}', 2, 6, '2025-09-05 09:02:21', 6, '2025-09-05 09:02:21');
+INSERT INTO `sys_operationlog` VALUES (3625, 6, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 09:02:59', '{}', 2, 6, '2025-09-05 09:02:59', 6, '2025-09-05 09:02:59');
+INSERT INTO `sys_operationlog` VALUES (3626, 6, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 09:03:19', '{}', 2, 6, '2025-09-05 09:03:19', 6, '2025-09-05 09:03:19');
+INSERT INTO `sys_operationlog` VALUES (3627, 6, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 09:03:29', '{}', 2, 6, '2025-09-05 09:03:29', 6, '2025-09-05 09:03:29');
+INSERT INTO `sys_operationlog` VALUES (3628, 6, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 09:03:29', '{}', 2, 6, '2025-09-05 09:03:29', 6, '2025-09-05 09:03:29');
+INSERT INTO `sys_operationlog` VALUES (3629, 2, 10, '系统登陆', '人员登陆', '2025-09-05 10:08:35', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-05 10:08:35', 2, '2025-09-05 10:08:35');
+INSERT INTO `sys_operationlog` VALUES (3630, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 10:08:49', '{}', 1, 2, '2025-09-05 10:08:49', 2, '2025-09-05 10:08:49');
+INSERT INTO `sys_operationlog` VALUES (3631, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 10:08:49', '{}', 1, 2, '2025-09-05 10:08:49', 2, '2025-09-05 10:08:49');
+INSERT INTO `sys_operationlog` VALUES (3632, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 10:09:20', '{}', 1, 2, '2025-09-05 10:09:20', 2, '2025-09-05 10:09:20');
+INSERT INTO `sys_operationlog` VALUES (3633, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 10:09:20', '{}', 1, 2, '2025-09-05 10:09:20', 2, '2025-09-05 10:09:20');
+INSERT INTO `sys_operationlog` VALUES (3634, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 10:09:50', '{}', 1, 2, '2025-09-05 10:09:50', 2, '2025-09-05 10:09:50');
+INSERT INTO `sys_operationlog` VALUES (3635, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 10:09:50', '{}', 1, 2, '2025-09-05 10:09:50', 2, '2025-09-05 10:09:50');
+INSERT INTO `sys_operationlog` VALUES (3636, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 10:10:41', '{}', 1, 2, '2025-09-05 10:10:41', 2, '2025-09-05 10:10:41');
+INSERT INTO `sys_operationlog` VALUES (3637, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 10:10:41', '{}', 1, 2, '2025-09-05 10:10:41', 2, '2025-09-05 10:10:41');
+INSERT INTO `sys_operationlog` VALUES (3638, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 10:11:41', '{}', 1, 2, '2025-09-05 10:11:41', 2, '2025-09-05 10:11:41');
+INSERT INTO `sys_operationlog` VALUES (3639, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 10:11:41', '{}', 1, 2, '2025-09-05 10:11:41', 2, '2025-09-05 10:11:41');
+INSERT INTO `sys_operationlog` VALUES (3640, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 10:12:41', '{}', 1, 2, '2025-09-05 10:12:41', 2, '2025-09-05 10:12:41');
+INSERT INTO `sys_operationlog` VALUES (3641, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 10:12:41', '{}', 1, 2, '2025-09-05 10:12:41', 2, '2025-09-05 10:12:41');
+INSERT INTO `sys_operationlog` VALUES (3642, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-05 10:13:41', '{}', 1, 2, '2025-09-05 10:13:41', 2, '2025-09-05 10:13:41');
+INSERT INTO `sys_operationlog` VALUES (3643, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-05 10:13:41', '{}', 1, 2, '2025-09-05 10:13:41', 2, '2025-09-05 10:13:41');
+INSERT INTO `sys_operationlog` VALUES (3644, 2, 10, '系统登陆', '人员登陆', '2025-09-05 14:42:53', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-05 14:42:53', 2, '2025-09-05 14:42:53');
+INSERT INTO `sys_operationlog` VALUES (3645, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 14:42:58', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 14:42:58', 2, '2025-09-05 14:42:58');
+INSERT INTO `sys_operationlog` VALUES (3646, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 14:42:58', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 14:42:58', 2, '2025-09-05 14:42:58');
+INSERT INTO `sys_operationlog` VALUES (3647, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 14:50:05', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-05 14:50:05', 2, '2025-09-05 14:50:05');
+INSERT INTO `sys_operationlog` VALUES (3648, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 14:50:05', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-05 14:50:05', 2, '2025-09-05 14:50:05');
+INSERT INTO `sys_operationlog` VALUES (3649, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 14:50:05', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-05 14:50:05', 2, '2025-09-05 14:50:05');
+INSERT INTO `sys_operationlog` VALUES (3650, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 14:58:43', '{}', 1, 2, '2025-09-05 14:58:43', 2, '2025-09-05 14:58:43');
+INSERT INTO `sys_operationlog` VALUES (3651, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 14:58:43', '{}', 1, 2, '2025-09-05 14:58:43', 2, '2025-09-05 14:58:43');
+INSERT INTO `sys_operationlog` VALUES (3652, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-05 14:58:43', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 14:58:43', 2, '2025-09-05 14:58:43');
+INSERT INTO `sys_operationlog` VALUES (3653, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 14:58:43', '{}', 1, 2, '2025-09-05 14:58:43', 2, '2025-09-05 14:58:43');
+INSERT INTO `sys_operationlog` VALUES (3654, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 14:58:43', '{}', 1, 2, '2025-09-05 14:58:43', 2, '2025-09-05 14:58:43');
+INSERT INTO `sys_operationlog` VALUES (3655, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-05 14:58:43', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 14:58:43', 2, '2025-09-05 14:58:43');
+INSERT INTO `sys_operationlog` VALUES (3656, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-05 14:58:43', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 14:58:43', 2, '2025-09-05 14:58:43');
+INSERT INTO `sys_operationlog` VALUES (3657, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-05 14:58:43', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 14:58:43', 2, '2025-09-05 14:58:43');
+INSERT INTO `sys_operationlog` VALUES (3658, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 15:11:11', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-05 15:11:11', 2, '2025-09-05 15:11:11');
+INSERT INTO `sys_operationlog` VALUES (3659, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 15:11:11', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-05 15:11:11', 2, '2025-09-05 15:11:11');
+INSERT INTO `sys_operationlog` VALUES (3660, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 15:11:11', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-05 15:11:11', 2, '2025-09-05 15:11:11');
+INSERT INTO `sys_operationlog` VALUES (3661, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-05 15:11:11', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-05 15:11:11', 2, '2025-09-05 15:11:11');
+INSERT INTO `sys_operationlog` VALUES (3662, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 15:53:14', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 15:53:14', 2, '2025-09-05 15:53:14');
+INSERT INTO `sys_operationlog` VALUES (3663, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 15:53:14', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 15:53:14', 2, '2025-09-05 15:53:14');
+INSERT INTO `sys_operationlog` VALUES (3664, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 15:53:15', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 15:53:15', 2, '2025-09-05 15:53:15');
+INSERT INTO `sys_operationlog` VALUES (3665, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-05 15:53:15', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-05 15:53:15', 2, '2025-09-05 15:53:15');
+INSERT INTO `sys_operationlog` VALUES (3666, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:12:04', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:12:04', 2, '2025-09-05 16:12:04');
+INSERT INTO `sys_operationlog` VALUES (3667, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:12:04', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:12:04', 2, '2025-09-05 16:12:04');
+INSERT INTO `sys_operationlog` VALUES (3668, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:12:04', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:12:04', 2, '2025-09-05 16:12:04');
+INSERT INTO `sys_operationlog` VALUES (3669, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:12:04', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:12:04', 2, '2025-09-05 16:12:04');
+INSERT INTO `sys_operationlog` VALUES (3670, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:12:04', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:12:04', 2, '2025-09-05 16:12:04');
+INSERT INTO `sys_operationlog` VALUES (3671, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:16:37', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:16:37', 2, '2025-09-05 16:16:37');
+INSERT INTO `sys_operationlog` VALUES (3672, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:23:43', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:23:43', 2, '2025-09-05 16:23:43');
+INSERT INTO `sys_operationlog` VALUES (3673, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:25:33', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:25:33', 2, '2025-09-05 16:25:33');
+INSERT INTO `sys_operationlog` VALUES (3674, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:25:53', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:25:53', 2, '2025-09-05 16:25:53');
+INSERT INTO `sys_operationlog` VALUES (3675, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:25:54', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:25:54', 2, '2025-09-05 16:25:54');
+INSERT INTO `sys_operationlog` VALUES (3676, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:26:13', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:26:13', 2, '2025-09-05 16:26:13');
+INSERT INTO `sys_operationlog` VALUES (3677, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:26:44', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:26:44', 2, '2025-09-05 16:26:44');
+INSERT INTO `sys_operationlog` VALUES (3678, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:27:27', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:27:27', 2, '2025-09-05 16:27:27');
+INSERT INTO `sys_operationlog` VALUES (3679, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:32:31', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:32:31', 2, '2025-09-05 16:32:31');
+INSERT INTO `sys_operationlog` VALUES (3680, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:32:51', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:32:51', 2, '2025-09-05 16:32:51');
+INSERT INTO `sys_operationlog` VALUES (3681, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:33:06', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:33:06', 2, '2025-09-05 16:33:06');
+INSERT INTO `sys_operationlog` VALUES (3682, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:34:23', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:34:23', 2, '2025-09-05 16:34:23');
+INSERT INTO `sys_operationlog` VALUES (3683, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:36:03', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:36:03', 2, '2025-09-05 16:36:03');
+INSERT INTO `sys_operationlog` VALUES (3684, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:37:47', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:37:47', 2, '2025-09-05 16:37:47');
+INSERT INTO `sys_operationlog` VALUES (3685, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:40:30', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:40:30', 2, '2025-09-05 16:40:30');
+INSERT INTO `sys_operationlog` VALUES (3686, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:41:59', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:41:59', 2, '2025-09-05 16:41:59');
+INSERT INTO `sys_operationlog` VALUES (3687, 2, 1, '促销管理>促销活动', '编辑促销活动', '2025-09-05 16:42:11', '{\"promotion\":{\"promotion_id\":1,\"store_id\":2,\"promotion_name\":\"满200减20\",\"type\":1,\"start_time\":\"2025-08-12T00:00:00\",\"end_time\":\"2025-08-28T00:00:00\",\"rule\":{\"ValueKind\":3},\"applicable_scope\":\"111\",\"status\":1}}', 1, 2, '2025-09-05 16:42:11', 2, '2025-09-05 16:42:11');
+INSERT INTO `sys_operationlog` VALUES (3688, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:42:11', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:42:11', 2, '2025-09-05 16:42:11');
+INSERT INTO `sys_operationlog` VALUES (3689, 2, 10, '系统登陆', '人员登陆', '2025-09-05 16:43:00', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-05 16:43:00', 2, '2025-09-05 16:43:00');
+INSERT INTO `sys_operationlog` VALUES (3690, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:43:27', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:43:27', 2, '2025-09-05 16:43:27');
+INSERT INTO `sys_operationlog` VALUES (3691, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:43:27', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:43:27', 2, '2025-09-05 16:43:27');
+INSERT INTO `sys_operationlog` VALUES (3692, 2, 1, '促销管理>促销活动', '编辑促销活动', '2025-09-05 16:43:37', '{\"promotion\":{\"promotion_id\":1,\"store_id\":2,\"promotion_name\":\"满200减20\",\"type\":1,\"start_time\":\"2025-08-12T00:00:00\",\"end_time\":\"2025-08-28T00:00:00\",\"rule\":{\"ValueKind\":3},\"applicable_scope\":\"111\",\"min_consumption\":null,\"value\":null,\"status\":1}}', 1, 2, '2025-09-05 16:43:37', 2, '2025-09-05 16:43:37');
+INSERT INTO `sys_operationlog` VALUES (3693, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:43:37', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:43:37', 2, '2025-09-05 16:43:37');
+INSERT INTO `sys_operationlog` VALUES (3694, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:43:39', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:43:39', 2, '2025-09-05 16:43:39');
+INSERT INTO `sys_operationlog` VALUES (3695, 2, 1, '促销管理>促销活动', '编辑促销活动', '2025-09-05 16:43:57', '{\"promotion\":{\"promotion_id\":1,\"store_id\":2,\"promotion_name\":\"满200减20\",\"type\":1,\"start_time\":\"2025-08-12T00:00:00\",\"end_time\":\"2025-08-28T00:00:00\",\"rule\":{\"ValueKind\":3},\"applicable_scope\":\"111\",\"min_consumption\":null,\"value\":null,\"status\":1}}', 1, 2, '2025-09-05 16:43:57', 2, '2025-09-05 16:43:57');
+INSERT INTO `sys_operationlog` VALUES (3696, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:43:57', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:43:57', 2, '2025-09-05 16:43:57');
+INSERT INTO `sys_operationlog` VALUES (3697, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:44:21', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:44:21', 2, '2025-09-05 16:44:21');
+INSERT INTO `sys_operationlog` VALUES (3698, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:44:21', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:44:21', 2, '2025-09-05 16:44:21');
+INSERT INTO `sys_operationlog` VALUES (3699, 2, 1, '促销管理>促销活动', '编辑促销活动', '2025-09-05 16:44:30', '{\"promotion\":{\"promotion_id\":1,\"store_id\":2,\"promotion_name\":\"满200减20\",\"type\":1,\"start_time\":\"2025-08-12T00:00:00\",\"end_time\":\"2025-08-28T00:00:00\",\"rule\":{\"ValueKind\":3},\"applicable_scope\":\"111\",\"min_consumption\":1000.0,\"value\":200.0,\"status\":1}}', 1, 2, '2025-09-05 16:44:30', 2, '2025-09-05 16:44:30');
+INSERT INTO `sys_operationlog` VALUES (3700, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:44:30', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:44:30', 2, '2025-09-05 16:44:30');
+INSERT INTO `sys_operationlog` VALUES (3701, 2, 1, '促销管理>促销活动', '编辑促销活动', '2025-09-05 16:44:47', '{\"promotion\":{\"promotion_id\":3,\"store_id\":2,\"promotion_name\":\"11\",\"type\":2,\"start_time\":\"2025-08-04T00:00:00\",\"end_time\":\"2025-08-06T00:00:00\",\"rule\":{\"ValueKind\":3},\"applicable_scope\":\"111\",\"min_consumption\":0.0,\"value\":95.0,\"status\":0}}', 1, 2, '2025-09-05 16:44:47', 2, '2025-09-05 16:44:47');
+INSERT INTO `sys_operationlog` VALUES (3702, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-05 16:44:47', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-05 16:44:47', 2, '2025-09-05 16:44:47');
+INSERT INTO `sys_operationlog` VALUES (3703, 2, 10, '系统登陆', '人员登陆', '2025-09-12 12:43:16', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-12 12:43:16', 2, '2025-09-12 12:43:16');
+INSERT INTO `sys_operationlog` VALUES (3704, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 12:43:22', '{}', 1, 2, '2025-09-12 12:43:22', 2, '2025-09-12 12:43:22');
+INSERT INTO `sys_operationlog` VALUES (3705, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 12:43:22', '{}', 1, 2, '2025-09-12 12:43:22', 2, '2025-09-12 12:43:22');
+INSERT INTO `sys_operationlog` VALUES (3706, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 12:43:52', '{}', 1, 2, '2025-09-12 12:43:52', 2, '2025-09-12 12:43:52');
+INSERT INTO `sys_operationlog` VALUES (3707, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 12:43:52', '{}', 1, 2, '2025-09-12 12:43:52', 2, '2025-09-12 12:43:52');
+INSERT INTO `sys_operationlog` VALUES (3708, 2, 10, '系统登陆', '人员登陆', '2025-09-12 14:04:57', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-12 14:04:57', 2, '2025-09-12 14:04:57');
+INSERT INTO `sys_operationlog` VALUES (3709, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-12 14:05:02', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-12 14:05:02', 2, '2025-09-12 14:05:02');
+INSERT INTO `sys_operationlog` VALUES (3710, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-12 14:05:03', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-12 14:05:03', 2, '2025-09-12 14:05:03');
+INSERT INTO `sys_operationlog` VALUES (3711, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-12 14:05:08', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:05:08', 2, '2025-09-12 14:05:08');
+INSERT INTO `sys_operationlog` VALUES (3712, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-12 14:05:08', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:05:08', 2, '2025-09-12 14:05:08');
+INSERT INTO `sys_operationlog` VALUES (3713, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-12 14:05:08', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:05:08', 2, '2025-09-12 14:05:08');
+INSERT INTO `sys_operationlog` VALUES (3714, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-12 14:05:19', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:05:19', 2, '2025-09-12 14:05:19');
+INSERT INTO `sys_operationlog` VALUES (3715, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-12 14:05:19', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:05:19', 2, '2025-09-12 14:05:19');
+INSERT INTO `sys_operationlog` VALUES (3716, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-12 14:05:19', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:05:19', 2, '2025-09-12 14:05:19');
+INSERT INTO `sys_operationlog` VALUES (3717, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-12 14:05:19', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:05:19', 2, '2025-09-12 14:05:19');
+INSERT INTO `sys_operationlog` VALUES (3718, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-12 14:05:24', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:24', 2, '2025-09-12 14:05:24');
+INSERT INTO `sys_operationlog` VALUES (3719, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-12 14:05:25', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:25', 2, '2025-09-12 14:05:25');
+INSERT INTO `sys_operationlog` VALUES (3720, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-12 14:05:25', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:25', 2, '2025-09-12 14:05:25');
+INSERT INTO `sys_operationlog` VALUES (3721, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-12 14:05:25', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:25', 2, '2025-09-12 14:05:25');
+INSERT INTO `sys_operationlog` VALUES (3722, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-12 14:05:25', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:25', 2, '2025-09-12 14:05:25');
+INSERT INTO `sys_operationlog` VALUES (3723, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:05:26', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:26', 2, '2025-09-12 14:05:26');
+INSERT INTO `sys_operationlog` VALUES (3724, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:05:26', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:26', 2, '2025-09-12 14:05:26');
+INSERT INTO `sys_operationlog` VALUES (3725, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:05:27', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:27', 2, '2025-09-12 14:05:27');
+INSERT INTO `sys_operationlog` VALUES (3726, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:05:27', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:27', 2, '2025-09-12 14:05:27');
+INSERT INTO `sys_operationlog` VALUES (3727, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:05:27', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:27', 2, '2025-09-12 14:05:27');
+INSERT INTO `sys_operationlog` VALUES (3728, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:05:28', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:28', 2, '2025-09-12 14:05:28');
+INSERT INTO `sys_operationlog` VALUES (3729, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-12 14:05:33', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:33', 2, '2025-09-12 14:05:33');
+INSERT INTO `sys_operationlog` VALUES (3730, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-12 14:05:33', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:33', 2, '2025-09-12 14:05:33');
+INSERT INTO `sys_operationlog` VALUES (3731, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-12 14:05:33', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:33', 2, '2025-09-12 14:05:33');
+INSERT INTO `sys_operationlog` VALUES (3732, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-12 14:05:34', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:34', 2, '2025-09-12 14:05:34');
+INSERT INTO `sys_operationlog` VALUES (3733, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-12 14:05:34', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:34', 2, '2025-09-12 14:05:34');
+INSERT INTO `sys_operationlog` VALUES (3734, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-12 14:05:34', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:34', 2, '2025-09-12 14:05:34');
+INSERT INTO `sys_operationlog` VALUES (3735, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-12 14:05:34', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:34', 2, '2025-09-12 14:05:34');
+INSERT INTO `sys_operationlog` VALUES (3736, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-12 14:05:37', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:37', 2, '2025-09-12 14:05:37');
+INSERT INTO `sys_operationlog` VALUES (3737, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-12 14:05:37', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:37', 2, '2025-09-12 14:05:37');
+INSERT INTO `sys_operationlog` VALUES (3738, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-12 14:05:37', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:37', 2, '2025-09-12 14:05:37');
+INSERT INTO `sys_operationlog` VALUES (3739, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-12 14:05:37', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:37', 2, '2025-09-12 14:05:37');
+INSERT INTO `sys_operationlog` VALUES (3740, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-12 14:05:37', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:37', 2, '2025-09-12 14:05:37');
+INSERT INTO `sys_operationlog` VALUES (3741, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-12 14:05:37', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:37', 2, '2025-09-12 14:05:37');
+INSERT INTO `sys_operationlog` VALUES (3742, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-12 14:05:38', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:38', 2, '2025-09-12 14:05:38');
+INSERT INTO `sys_operationlog` VALUES (3743, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-12 14:05:38', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:05:38', 2, '2025-09-12 14:05:38');
+INSERT INTO `sys_operationlog` VALUES (3744, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-12 14:05:44', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:05:44', 2, '2025-09-12 14:05:44');
+INSERT INTO `sys_operationlog` VALUES (3745, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-12 14:05:44', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:05:44', 2, '2025-09-12 14:05:44');
+INSERT INTO `sys_operationlog` VALUES (3746, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-12 14:05:44', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:05:44', 2, '2025-09-12 14:05:44');
+INSERT INTO `sys_operationlog` VALUES (3747, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-12 14:05:44', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:05:44', 2, '2025-09-12 14:05:44');
+INSERT INTO `sys_operationlog` VALUES (3748, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-12 14:05:45', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:05:45', 2, '2025-09-12 14:05:45');
+INSERT INTO `sys_operationlog` VALUES (3749, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-12 14:05:45', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:05:45', 2, '2025-09-12 14:05:45');
+INSERT INTO `sys_operationlog` VALUES (3750, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-12 14:05:45', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:05:45', 2, '2025-09-12 14:05:45');
+INSERT INTO `sys_operationlog` VALUES (3751, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-12 14:05:45', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:05:45', 2, '2025-09-12 14:05:45');
+INSERT INTO `sys_operationlog` VALUES (3752, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-12 14:05:45', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:05:45', 2, '2025-09-12 14:05:45');
+INSERT INTO `sys_operationlog` VALUES (3753, 2, 3, '促销管理>优惠券管理', '新增优惠券', '2025-09-12 14:05:56', '{\"coupon\":{\"coupon_id\":0,\"store_id\":2,\"coupon_no\":\"20250912140556001715466\",\"coupon_name\":\"1\",\"type\":1,\"value\":1.0,\"min_consumption\":1.0,\"valid_start\":\"2025-09-19T00:00:00\",\"valid_end\":\"2025-10-16T00:00:00\",\"status\":0,\"applicable_dishes\":\"\",\"total\":1,\"received\":0,\"used\":0}}', 1, 2, '2025-09-12 14:05:56', 2, '2025-09-12 14:05:56');
+INSERT INTO `sys_operationlog` VALUES (3754, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-12 14:05:58', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:05:58', 2, '2025-09-12 14:05:58');
+INSERT INTO `sys_operationlog` VALUES (3755, 2, 2, '促销管理>优惠券管理', '删除优惠券', '2025-09-12 14:06:01', '{\"couponId\":6}', 1, 2, '2025-09-12 14:06:01', 2, '2025-09-12 14:06:01');
+INSERT INTO `sys_operationlog` VALUES (3756, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-12 14:06:01', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:06:01', 2, '2025-09-12 14:06:01');
+INSERT INTO `sys_operationlog` VALUES (3757, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 14:06:03', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:06:03', 2, '2025-09-12 14:06:03');
+INSERT INTO `sys_operationlog` VALUES (3758, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 14:06:03', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:06:03', 2, '2025-09-12 14:06:03');
+INSERT INTO `sys_operationlog` VALUES (3759, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 14:06:04', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:06:04', 2, '2025-09-12 14:06:04');
+INSERT INTO `sys_operationlog` VALUES (3760, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 14:06:04', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:06:04', 2, '2025-09-12 14:06:04');
+INSERT INTO `sys_operationlog` VALUES (3761, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 14:06:04', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:06:04', 2, '2025-09-12 14:06:04');
+INSERT INTO `sys_operationlog` VALUES (3762, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 14:06:04', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:06:04', 2, '2025-09-12 14:06:04');
+INSERT INTO `sys_operationlog` VALUES (3763, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 14:06:04', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:06:04', 2, '2025-09-12 14:06:04');
+INSERT INTO `sys_operationlog` VALUES (3764, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 14:06:04', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:06:04', 2, '2025-09-12 14:06:04');
+INSERT INTO `sys_operationlog` VALUES (3765, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 14:06:04', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:06:04', 2, '2025-09-12 14:06:04');
+INSERT INTO `sys_operationlog` VALUES (3766, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 14:06:04', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:06:04', 2, '2025-09-12 14:06:04');
+INSERT INTO `sys_operationlog` VALUES (3767, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:06:46', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:46', 2, '2025-09-12 14:06:46');
+INSERT INTO `sys_operationlog` VALUES (3768, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:06:47', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:47', 2, '2025-09-12 14:06:47');
+INSERT INTO `sys_operationlog` VALUES (3769, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:06:47', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:47', 2, '2025-09-12 14:06:47');
+INSERT INTO `sys_operationlog` VALUES (3770, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:06:47', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:47', 2, '2025-09-12 14:06:47');
+INSERT INTO `sys_operationlog` VALUES (3771, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:06:47', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:47', 2, '2025-09-12 14:06:47');
+INSERT INTO `sys_operationlog` VALUES (3772, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:06:47', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:47', 2, '2025-09-12 14:06:47');
+INSERT INTO `sys_operationlog` VALUES (3773, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:06:48', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:48', 2, '2025-09-12 14:06:48');
+INSERT INTO `sys_operationlog` VALUES (3774, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:06:48', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:48', 2, '2025-09-12 14:06:48');
+INSERT INTO `sys_operationlog` VALUES (3775, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:06:48', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:48', 2, '2025-09-12 14:06:48');
+INSERT INTO `sys_operationlog` VALUES (3776, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:06:49', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:49', 2, '2025-09-12 14:06:49');
+INSERT INTO `sys_operationlog` VALUES (3777, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:06:49', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:49', 2, '2025-09-12 14:06:49');
+INSERT INTO `sys_operationlog` VALUES (3778, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:06:49', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:49', 2, '2025-09-12 14:06:49');
+INSERT INTO `sys_operationlog` VALUES (3779, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:06:49', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:49', 2, '2025-09-12 14:06:49');
+INSERT INTO `sys_operationlog` VALUES (3780, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:06:49', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:49', 2, '2025-09-12 14:06:49');
+INSERT INTO `sys_operationlog` VALUES (3781, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:06:50', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:50', 2, '2025-09-12 14:06:50');
+INSERT INTO `sys_operationlog` VALUES (3782, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:06:50', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:50', 2, '2025-09-12 14:06:50');
+INSERT INTO `sys_operationlog` VALUES (3783, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:06:50', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:50', 2, '2025-09-12 14:06:50');
+INSERT INTO `sys_operationlog` VALUES (3784, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:06:50', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:50', 2, '2025-09-12 14:06:50');
+INSERT INTO `sys_operationlog` VALUES (3785, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:06:50', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:50', 2, '2025-09-12 14:06:50');
+INSERT INTO `sys_operationlog` VALUES (3786, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:06:50', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:50', 2, '2025-09-12 14:06:50');
+INSERT INTO `sys_operationlog` VALUES (3787, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:06:50', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:50', 2, '2025-09-12 14:06:50');
+INSERT INTO `sys_operationlog` VALUES (3788, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:06:50', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:50', 2, '2025-09-12 14:06:50');
+INSERT INTO `sys_operationlog` VALUES (3789, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:06:51', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:51', 2, '2025-09-12 14:06:51');
+INSERT INTO `sys_operationlog` VALUES (3790, 2, 3, '会员管理>会员列表', '新增会员', '2025-09-12 14:06:59', '{\"member\":{\"member_id\":0,\"member_no\":\"20250912140658516439824\",\"phone\":\"2\",\"name\":\"2\",\"birthday\":\"2025-10-02T16:00:00Z\",\"register_time\":\"2025-09-12T14:06:58.5163789+08:00\",\"status\":1,\"total_points\":0,\"referrer_id\":null,\"balance\":null}}', 1, 2, '2025-09-12 14:06:59', 2, '2025-09-12 14:06:59');
+INSERT INTO `sys_operationlog` VALUES (3791, 2, 3, '会员管理>会员列表', '新增会员', '2025-09-12 14:06:59', '{\"member\":{\"member_id\":0,\"member_no\":null,\"phone\":\"2\",\"name\":\"2\",\"birthday\":\"2025-10-02T16:00:00Z\",\"register_time\":\"2025-09-12T06:06:58.723Z\",\"status\":1,\"total_points\":0,\"referrer_id\":null,\"balance\":null}}', 1, 2, '2025-09-12 14:06:59', 2, '2025-09-12 14:06:59');
+INSERT INTO `sys_operationlog` VALUES (3792, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:06:59', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:06:59', 2, '2025-09-12 14:06:59');
+INSERT INTO `sys_operationlog` VALUES (3793, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:07:15', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:15', 2, '2025-09-12 14:07:15');
+INSERT INTO `sys_operationlog` VALUES (3794, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:07:15', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:15', 2, '2025-09-12 14:07:15');
+INSERT INTO `sys_operationlog` VALUES (3795, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:07:15', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:15', 2, '2025-09-12 14:07:15');
+INSERT INTO `sys_operationlog` VALUES (3796, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:07:15', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:15', 2, '2025-09-12 14:07:15');
+INSERT INTO `sys_operationlog` VALUES (3797, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:07:16', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:16', 2, '2025-09-12 14:07:16');
+INSERT INTO `sys_operationlog` VALUES (3798, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:07:16', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:16', 2, '2025-09-12 14:07:16');
+INSERT INTO `sys_operationlog` VALUES (3799, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:07:16', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:16', 2, '2025-09-12 14:07:16');
+INSERT INTO `sys_operationlog` VALUES (3800, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:07:16', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:16', 2, '2025-09-12 14:07:16');
+INSERT INTO `sys_operationlog` VALUES (3801, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:07:16', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:16', 2, '2025-09-12 14:07:16');
+INSERT INTO `sys_operationlog` VALUES (3802, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:07:17', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:17', 2, '2025-09-12 14:07:17');
+INSERT INTO `sys_operationlog` VALUES (3803, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:07:17', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:17', 2, '2025-09-12 14:07:17');
+INSERT INTO `sys_operationlog` VALUES (3804, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:07:18', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:18', 2, '2025-09-12 14:07:18');
+INSERT INTO `sys_operationlog` VALUES (3805, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:07:18', '{\"keyword\":\"2\",\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:18', 2, '2025-09-12 14:07:18');
+INSERT INTO `sys_operationlog` VALUES (3806, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-12 14:07:20', '{\"keyword\":\"2\",\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:20', 2, '2025-09-12 14:07:20');
+INSERT INTO `sys_operationlog` VALUES (3807, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:07:37', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:37', 2, '2025-09-12 14:07:37');
+INSERT INTO `sys_operationlog` VALUES (3808, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:07:37', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:37', 2, '2025-09-12 14:07:37');
+INSERT INTO `sys_operationlog` VALUES (3809, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:07:38', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:38', 2, '2025-09-12 14:07:38');
+INSERT INTO `sys_operationlog` VALUES (3810, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:07:38', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:38', 2, '2025-09-12 14:07:38');
+INSERT INTO `sys_operationlog` VALUES (3811, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:07:38', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:38', 2, '2025-09-12 14:07:38');
+INSERT INTO `sys_operationlog` VALUES (3812, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:07:38', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:38', 2, '2025-09-12 14:07:38');
+INSERT INTO `sys_operationlog` VALUES (3813, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:07:38', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:38', 2, '2025-09-12 14:07:38');
+INSERT INTO `sys_operationlog` VALUES (3814, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:07:39', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:39', 2, '2025-09-12 14:07:39');
+INSERT INTO `sys_operationlog` VALUES (3815, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:07:39', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:39', 2, '2025-09-12 14:07:39');
+INSERT INTO `sys_operationlog` VALUES (3816, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:07:39', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:39', 2, '2025-09-12 14:07:39');
+INSERT INTO `sys_operationlog` VALUES (3817, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:07:39', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:39', 2, '2025-09-12 14:07:39');
+INSERT INTO `sys_operationlog` VALUES (3818, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 14:07:39', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:07:39', 2, '2025-09-12 14:07:39');
+INSERT INTO `sys_operationlog` VALUES (3819, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-12 14:07:54', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:54', 2, '2025-09-12 14:07:54');
+INSERT INTO `sys_operationlog` VALUES (3820, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-12 14:07:54', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:54', 2, '2025-09-12 14:07:54');
+INSERT INTO `sys_operationlog` VALUES (3821, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-12 14:07:54', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:54', 2, '2025-09-12 14:07:54');
+INSERT INTO `sys_operationlog` VALUES (3822, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-12 14:07:54', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:54', 2, '2025-09-12 14:07:54');
+INSERT INTO `sys_operationlog` VALUES (3823, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-12 14:07:55', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:55', 2, '2025-09-12 14:07:55');
+INSERT INTO `sys_operationlog` VALUES (3824, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-12 14:07:55', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:55', 2, '2025-09-12 14:07:55');
+INSERT INTO `sys_operationlog` VALUES (3825, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-12 14:07:55', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:55', 2, '2025-09-12 14:07:55');
+INSERT INTO `sys_operationlog` VALUES (3826, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-12 14:07:55', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:55', 2, '2025-09-12 14:07:55');
+INSERT INTO `sys_operationlog` VALUES (3827, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-12 14:07:55', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:55', 2, '2025-09-12 14:07:55');
+INSERT INTO `sys_operationlog` VALUES (3828, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-12 14:07:55', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:55', 2, '2025-09-12 14:07:55');
+INSERT INTO `sys_operationlog` VALUES (3829, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-12 14:07:56', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:56', 2, '2025-09-12 14:07:56');
+INSERT INTO `sys_operationlog` VALUES (3830, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-12 14:07:57', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:57', 2, '2025-09-12 14:07:57');
+INSERT INTO `sys_operationlog` VALUES (3831, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-12 14:07:57', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:57', 2, '2025-09-12 14:07:57');
+INSERT INTO `sys_operationlog` VALUES (3832, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-12 14:07:58', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:58', 2, '2025-09-12 14:07:58');
+INSERT INTO `sys_operationlog` VALUES (3833, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-12 14:07:58', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:58', 2, '2025-09-12 14:07:58');
+INSERT INTO `sys_operationlog` VALUES (3834, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-12 14:07:58', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:58', 2, '2025-09-12 14:07:58');
+INSERT INTO `sys_operationlog` VALUES (3835, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-12 14:07:58', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:58', 2, '2025-09-12 14:07:58');
+INSERT INTO `sys_operationlog` VALUES (3836, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-12 14:07:59', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:59', 2, '2025-09-12 14:07:59');
+INSERT INTO `sys_operationlog` VALUES (3837, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-12 14:07:59', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:59', 2, '2025-09-12 14:07:59');
+INSERT INTO `sys_operationlog` VALUES (3838, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-12 14:07:59', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:59', 2, '2025-09-12 14:07:59');
+INSERT INTO `sys_operationlog` VALUES (3839, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-12 14:07:59', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:59', 2, '2025-09-12 14:07:59');
+INSERT INTO `sys_operationlog` VALUES (3840, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-12 14:07:59', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:59', 2, '2025-09-12 14:07:59');
+INSERT INTO `sys_operationlog` VALUES (3841, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-12 14:07:59', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:07:59', 2, '2025-09-12 14:07:59');
+INSERT INTO `sys_operationlog` VALUES (3842, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-12 14:08:00', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:00', 2, '2025-09-12 14:08:00');
+INSERT INTO `sys_operationlog` VALUES (3843, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-12 14:08:00', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:00', 2, '2025-09-12 14:08:00');
+INSERT INTO `sys_operationlog` VALUES (3844, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-12 14:08:00', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:00', 2, '2025-09-12 14:08:00');
+INSERT INTO `sys_operationlog` VALUES (3845, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-12 14:08:00', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:00', 2, '2025-09-12 14:08:00');
+INSERT INTO `sys_operationlog` VALUES (3846, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-12 14:08:00', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:00', 2, '2025-09-12 14:08:00');
+INSERT INTO `sys_operationlog` VALUES (3847, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-12 14:08:01', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:01', 2, '2025-09-12 14:08:01');
+INSERT INTO `sys_operationlog` VALUES (3848, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-12 14:08:01', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:01', 2, '2025-09-12 14:08:01');
+INSERT INTO `sys_operationlog` VALUES (3849, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-12 14:08:01', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:01', 2, '2025-09-12 14:08:01');
+INSERT INTO `sys_operationlog` VALUES (3850, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-12 14:08:01', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:01', 2, '2025-09-12 14:08:01');
+INSERT INTO `sys_operationlog` VALUES (3851, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-12 14:08:02', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:02', 2, '2025-09-12 14:08:02');
+INSERT INTO `sys_operationlog` VALUES (3852, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-12 14:08:02', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:02', 2, '2025-09-12 14:08:02');
+INSERT INTO `sys_operationlog` VALUES (3853, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 14:08:02', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:02', 2, '2025-09-12 14:08:02');
+INSERT INTO `sys_operationlog` VALUES (3854, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-12 14:08:02', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:02', 2, '2025-09-12 14:08:02');
+INSERT INTO `sys_operationlog` VALUES (3855, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 14:08:02', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:02', 2, '2025-09-12 14:08:02');
+INSERT INTO `sys_operationlog` VALUES (3856, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-12 14:08:03', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:03', 2, '2025-09-12 14:08:03');
+INSERT INTO `sys_operationlog` VALUES (3857, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 14:08:03', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:03', 2, '2025-09-12 14:08:03');
+INSERT INTO `sys_operationlog` VALUES (3858, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 14:08:03', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:03', 2, '2025-09-12 14:08:03');
+INSERT INTO `sys_operationlog` VALUES (3859, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-12 14:08:03', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:03', 2, '2025-09-12 14:08:03');
+INSERT INTO `sys_operationlog` VALUES (3860, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-12 14:08:03', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:03', 2, '2025-09-12 14:08:03');
+INSERT INTO `sys_operationlog` VALUES (3861, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 14:08:03', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:03', 2, '2025-09-12 14:08:03');
+INSERT INTO `sys_operationlog` VALUES (3862, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 14:08:04', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:04', 2, '2025-09-12 14:08:04');
+INSERT INTO `sys_operationlog` VALUES (3863, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-12 14:08:04', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:04', 2, '2025-09-12 14:08:04');
+INSERT INTO `sys_operationlog` VALUES (3864, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 14:08:04', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:04', 2, '2025-09-12 14:08:04');
+INSERT INTO `sys_operationlog` VALUES (3865, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-12 14:08:04', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:04', 2, '2025-09-12 14:08:04');
+INSERT INTO `sys_operationlog` VALUES (3866, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 14:08:05', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:05', 2, '2025-09-12 14:08:05');
+INSERT INTO `sys_operationlog` VALUES (3867, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-12 14:08:05', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:05', 2, '2025-09-12 14:08:05');
+INSERT INTO `sys_operationlog` VALUES (3868, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 14:08:05', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:05', 2, '2025-09-12 14:08:05');
+INSERT INTO `sys_operationlog` VALUES (3869, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-12 14:08:05', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:05', 2, '2025-09-12 14:08:05');
+INSERT INTO `sys_operationlog` VALUES (3870, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 14:08:05', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:05', 2, '2025-09-12 14:08:05');
+INSERT INTO `sys_operationlog` VALUES (3871, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 14:08:05', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:05', 2, '2025-09-12 14:08:05');
+INSERT INTO `sys_operationlog` VALUES (3872, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 14:08:05', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:05', 2, '2025-09-12 14:08:05');
+INSERT INTO `sys_operationlog` VALUES (3873, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 14:08:05', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:05', 2, '2025-09-12 14:08:05');
+INSERT INTO `sys_operationlog` VALUES (3874, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 14:08:06', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:06', 2, '2025-09-12 14:08:06');
+INSERT INTO `sys_operationlog` VALUES (3875, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 14:08:06', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:06', 2, '2025-09-12 14:08:06');
+INSERT INTO `sys_operationlog` VALUES (3876, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 14:08:06', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:06', 2, '2025-09-12 14:08:06');
+INSERT INTO `sys_operationlog` VALUES (3877, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-12 14:08:08', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-12 14:08:08', 2, '2025-09-12 14:08:08');
+INSERT INTO `sys_operationlog` VALUES (3878, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:08', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:08', 2, '2025-09-12 14:08:08');
+INSERT INTO `sys_operationlog` VALUES (3879, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-12 14:08:08', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-12 14:08:08', 2, '2025-09-12 14:08:08');
+INSERT INTO `sys_operationlog` VALUES (3880, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:08', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:08', 2, '2025-09-12 14:08:08');
+INSERT INTO `sys_operationlog` VALUES (3881, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-12 14:08:08', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-12 14:08:08', 2, '2025-09-12 14:08:08');
+INSERT INTO `sys_operationlog` VALUES (3882, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:08', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:08', 2, '2025-09-12 14:08:08');
+INSERT INTO `sys_operationlog` VALUES (3883, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:08', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:08', 2, '2025-09-12 14:08:08');
+INSERT INTO `sys_operationlog` VALUES (3884, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-12 14:08:08', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-12 14:08:08', 2, '2025-09-12 14:08:08');
+INSERT INTO `sys_operationlog` VALUES (3885, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-12 14:08:08', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-12 14:08:08', 2, '2025-09-12 14:08:08');
+INSERT INTO `sys_operationlog` VALUES (3886, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:08', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:08', 2, '2025-09-12 14:08:08');
+INSERT INTO `sys_operationlog` VALUES (3887, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:09', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:09', 2, '2025-09-12 14:08:09');
+INSERT INTO `sys_operationlog` VALUES (3888, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-12 14:08:09', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-12 14:08:09', 2, '2025-09-12 14:08:09');
+INSERT INTO `sys_operationlog` VALUES (3889, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-12 14:08:09', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-12 14:08:09', 2, '2025-09-12 14:08:09');
+INSERT INTO `sys_operationlog` VALUES (3890, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:09', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:09', 2, '2025-09-12 14:08:09');
+INSERT INTO `sys_operationlog` VALUES (3891, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:09', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:09', 2, '2025-09-12 14:08:09');
+INSERT INTO `sys_operationlog` VALUES (3892, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-12 14:08:09', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-12 14:08:09', 2, '2025-09-12 14:08:09');
+INSERT INTO `sys_operationlog` VALUES (3893, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:09', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:09', 2, '2025-09-12 14:08:09');
+INSERT INTO `sys_operationlog` VALUES (3894, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-12 14:08:09', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-12 14:08:09', 2, '2025-09-12 14:08:09');
+INSERT INTO `sys_operationlog` VALUES (3895, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-12 14:08:09', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-12 14:08:09', 2, '2025-09-12 14:08:09');
+INSERT INTO `sys_operationlog` VALUES (3896, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:09', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:09', 2, '2025-09-12 14:08:09');
+INSERT INTO `sys_operationlog` VALUES (3897, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-12 14:08:09', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-12 14:08:09', 2, '2025-09-12 14:08:09');
+INSERT INTO `sys_operationlog` VALUES (3898, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:09', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:09', 2, '2025-09-12 14:08:09');
+INSERT INTO `sys_operationlog` VALUES (3899, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-12 14:08:10', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-12 14:08:10', 2, '2025-09-12 14:08:10');
+INSERT INTO `sys_operationlog` VALUES (3900, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:10', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:10', 2, '2025-09-12 14:08:10');
+INSERT INTO `sys_operationlog` VALUES (3901, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-12 14:08:10', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-12 14:08:10', 2, '2025-09-12 14:08:10');
+INSERT INTO `sys_operationlog` VALUES (3902, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:10', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:10', 2, '2025-09-12 14:08:10');
+INSERT INTO `sys_operationlog` VALUES (3903, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:10', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:10', 2, '2025-09-12 14:08:10');
+INSERT INTO `sys_operationlog` VALUES (3904, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-12 14:08:10', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-12 14:08:10', 2, '2025-09-12 14:08:10');
+INSERT INTO `sys_operationlog` VALUES (3905, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-12 14:08:10', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-12 14:08:10', 2, '2025-09-12 14:08:10');
+INSERT INTO `sys_operationlog` VALUES (3906, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:10', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:10', 2, '2025-09-12 14:08:10');
+INSERT INTO `sys_operationlog` VALUES (3907, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-12 14:08:10', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-12 14:08:10', 2, '2025-09-12 14:08:10');
+INSERT INTO `sys_operationlog` VALUES (3908, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:10', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:10', 2, '2025-09-12 14:08:10');
+INSERT INTO `sys_operationlog` VALUES (3909, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-12 14:08:10', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-12 14:08:10', 2, '2025-09-12 14:08:10');
+INSERT INTO `sys_operationlog` VALUES (3910, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:10', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:10', 2, '2025-09-12 14:08:10');
+INSERT INTO `sys_operationlog` VALUES (3911, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:10', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:10', 2, '2025-09-12 14:08:10');
+INSERT INTO `sys_operationlog` VALUES (3912, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:11', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:11', 2, '2025-09-12 14:08:11');
+INSERT INTO `sys_operationlog` VALUES (3913, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:11', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:11', 2, '2025-09-12 14:08:11');
+INSERT INTO `sys_operationlog` VALUES (3914, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:11', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:11', 2, '2025-09-12 14:08:11');
+INSERT INTO `sys_operationlog` VALUES (3915, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:11', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:11', 2, '2025-09-12 14:08:11');
+INSERT INTO `sys_operationlog` VALUES (3916, 2, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-12 14:08:11', '{\"kitchenOrderId\":16,\"status\":2}', 1, 2, '2025-09-12 14:08:11', 2, '2025-09-12 14:08:11');
+INSERT INTO `sys_operationlog` VALUES (3917, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:11', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:11', 2, '2025-09-12 14:08:11');
+INSERT INTO `sys_operationlog` VALUES (3918, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:11', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:11', 2, '2025-09-12 14:08:11');
+INSERT INTO `sys_operationlog` VALUES (3919, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:11', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:11', 2, '2025-09-12 14:08:11');
+INSERT INTO `sys_operationlog` VALUES (3920, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:12', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:12', 2, '2025-09-12 14:08:12');
+INSERT INTO `sys_operationlog` VALUES (3921, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:12', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:12', 2, '2025-09-12 14:08:12');
+INSERT INTO `sys_operationlog` VALUES (3922, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:12', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:12', 2, '2025-09-12 14:08:12');
+INSERT INTO `sys_operationlog` VALUES (3923, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:12', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:12', 2, '2025-09-12 14:08:12');
+INSERT INTO `sys_operationlog` VALUES (3924, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:12', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:12', 2, '2025-09-12 14:08:12');
+INSERT INTO `sys_operationlog` VALUES (3925, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:12', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:12', 2, '2025-09-12 14:08:12');
+INSERT INTO `sys_operationlog` VALUES (3926, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:13', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:13', 2, '2025-09-12 14:08:13');
+INSERT INTO `sys_operationlog` VALUES (3927, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:13', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:13', 2, '2025-09-12 14:08:13');
+INSERT INTO `sys_operationlog` VALUES (3928, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-12 14:08:13', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-12 14:08:13', 2, '2025-09-12 14:08:13');
+INSERT INTO `sys_operationlog` VALUES (3929, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-12 14:08:19', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:19', 2, '2025-09-12 14:08:19');
+INSERT INTO `sys_operationlog` VALUES (3930, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-12 14:08:19', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:19', 2, '2025-09-12 14:08:19');
+INSERT INTO `sys_operationlog` VALUES (3931, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-12 14:08:19', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:19', 2, '2025-09-12 14:08:19');
+INSERT INTO `sys_operationlog` VALUES (3932, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-12 14:08:19', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:19', 2, '2025-09-12 14:08:19');
+INSERT INTO `sys_operationlog` VALUES (3933, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-12 14:08:19', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:19', 2, '2025-09-12 14:08:19');
+INSERT INTO `sys_operationlog` VALUES (3934, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-12 14:08:19', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:19', 2, '2025-09-12 14:08:19');
+INSERT INTO `sys_operationlog` VALUES (3935, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-12 14:08:19', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:19', 2, '2025-09-12 14:08:19');
+INSERT INTO `sys_operationlog` VALUES (3936, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-12 14:08:20', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:20', 2, '2025-09-12 14:08:20');
+INSERT INTO `sys_operationlog` VALUES (3937, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-12 14:08:20', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:20', 2, '2025-09-12 14:08:20');
+INSERT INTO `sys_operationlog` VALUES (3938, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-12 14:08:20', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:20', 2, '2025-09-12 14:08:20');
+INSERT INTO `sys_operationlog` VALUES (3939, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-12 14:08:20', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:20', 2, '2025-09-12 14:08:20');
+INSERT INTO `sys_operationlog` VALUES (3940, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-12 14:08:20', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:20', 2, '2025-09-12 14:08:20');
+INSERT INTO `sys_operationlog` VALUES (3941, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-12 14:08:20', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:20', 2, '2025-09-12 14:08:20');
+INSERT INTO `sys_operationlog` VALUES (3942, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-12 14:08:21', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:21', 2, '2025-09-12 14:08:21');
+INSERT INTO `sys_operationlog` VALUES (3943, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-12 14:08:22', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:22', 2, '2025-09-12 14:08:22');
+INSERT INTO `sys_operationlog` VALUES (3944, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-12 14:08:22', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:22', 2, '2025-09-12 14:08:22');
+INSERT INTO `sys_operationlog` VALUES (3945, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-12 14:08:23', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:23', 2, '2025-09-12 14:08:23');
+INSERT INTO `sys_operationlog` VALUES (3946, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-12 14:08:23', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:23', 2, '2025-09-12 14:08:23');
+INSERT INTO `sys_operationlog` VALUES (3947, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-12 14:08:23', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:23', 2, '2025-09-12 14:08:23');
+INSERT INTO `sys_operationlog` VALUES (3948, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-12 14:08:23', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:23', 2, '2025-09-12 14:08:23');
+INSERT INTO `sys_operationlog` VALUES (3949, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-12 14:08:23', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:23', 2, '2025-09-12 14:08:23');
+INSERT INTO `sys_operationlog` VALUES (3950, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-12 14:08:23', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:23', 2, '2025-09-12 14:08:23');
+INSERT INTO `sys_operationlog` VALUES (3951, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-12 14:08:23', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:23', 2, '2025-09-12 14:08:23');
+INSERT INTO `sys_operationlog` VALUES (3952, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-12 14:08:24', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:24', 2, '2025-09-12 14:08:24');
+INSERT INTO `sys_operationlog` VALUES (3953, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-12 14:08:24', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:24', 2, '2025-09-12 14:08:24');
+INSERT INTO `sys_operationlog` VALUES (3954, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-12 14:08:24', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:24', 2, '2025-09-12 14:08:24');
+INSERT INTO `sys_operationlog` VALUES (3955, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-12 14:08:24', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:24', 2, '2025-09-12 14:08:24');
+INSERT INTO `sys_operationlog` VALUES (3956, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-12 14:08:25', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:25', 2, '2025-09-12 14:08:25');
+INSERT INTO `sys_operationlog` VALUES (3957, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-12 14:08:25', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:25', 2, '2025-09-12 14:08:25');
+INSERT INTO `sys_operationlog` VALUES (3958, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-12 14:08:25', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:25', 2, '2025-09-12 14:08:25');
+INSERT INTO `sys_operationlog` VALUES (3959, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-12 14:08:25', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:25', 2, '2025-09-12 14:08:25');
+INSERT INTO `sys_operationlog` VALUES (3960, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-12 14:08:25', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:25', 2, '2025-09-12 14:08:25');
+INSERT INTO `sys_operationlog` VALUES (3961, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-12 14:08:25', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:25', 2, '2025-09-12 14:08:25');
+INSERT INTO `sys_operationlog` VALUES (3962, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-12 14:08:26', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:26', 2, '2025-09-12 14:08:26');
+INSERT INTO `sys_operationlog` VALUES (3963, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-12 14:08:29', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:29', 2, '2025-09-12 14:08:29');
+INSERT INTO `sys_operationlog` VALUES (3964, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-12 14:08:29', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:29', 2, '2025-09-12 14:08:29');
+INSERT INTO `sys_operationlog` VALUES (3965, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-12 14:08:29', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:29', 2, '2025-09-12 14:08:29');
+INSERT INTO `sys_operationlog` VALUES (3966, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-12 14:08:29', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:29', 2, '2025-09-12 14:08:29');
+INSERT INTO `sys_operationlog` VALUES (3967, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-12 14:08:29', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:29', 2, '2025-09-12 14:08:29');
+INSERT INTO `sys_operationlog` VALUES (3968, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-12 14:08:29', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:29', 2, '2025-09-12 14:08:29');
+INSERT INTO `sys_operationlog` VALUES (3969, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-12 14:08:29', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:29', 2, '2025-09-12 14:08:29');
+INSERT INTO `sys_operationlog` VALUES (3970, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-12 14:08:30', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:30', 2, '2025-09-12 14:08:30');
+INSERT INTO `sys_operationlog` VALUES (3971, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-12 14:08:30', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:30', 2, '2025-09-12 14:08:30');
+INSERT INTO `sys_operationlog` VALUES (3972, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-12 14:08:30', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:30', 2, '2025-09-12 14:08:30');
+INSERT INTO `sys_operationlog` VALUES (3973, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-12 14:08:30', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:30', 2, '2025-09-12 14:08:30');
+INSERT INTO `sys_operationlog` VALUES (3974, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-12 14:08:30', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:30', 2, '2025-09-12 14:08:30');
+INSERT INTO `sys_operationlog` VALUES (3975, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-12 14:08:30', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:30', 2, '2025-09-12 14:08:30');
+INSERT INTO `sys_operationlog` VALUES (3976, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-12 14:08:31', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:31', 2, '2025-09-12 14:08:31');
+INSERT INTO `sys_operationlog` VALUES (3977, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-12 14:08:31', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:31', 2, '2025-09-12 14:08:31');
+INSERT INTO `sys_operationlog` VALUES (3978, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-12 14:08:31', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:31', 2, '2025-09-12 14:08:31');
+INSERT INTO `sys_operationlog` VALUES (3979, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-12 14:08:32', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:32', 2, '2025-09-12 14:08:32');
+INSERT INTO `sys_operationlog` VALUES (3980, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-12 14:08:32', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:32', 2, '2025-09-12 14:08:32');
+INSERT INTO `sys_operationlog` VALUES (3981, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-12 14:08:32', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:32', 2, '2025-09-12 14:08:32');
+INSERT INTO `sys_operationlog` VALUES (3982, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-12 14:08:32', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:32', 2, '2025-09-12 14:08:32');
+INSERT INTO `sys_operationlog` VALUES (3983, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-12 14:08:32', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:32', 2, '2025-09-12 14:08:32');
+INSERT INTO `sys_operationlog` VALUES (3984, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-12 14:08:33', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:33', 2, '2025-09-12 14:08:33');
+INSERT INTO `sys_operationlog` VALUES (3985, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-12 14:08:33', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:33', 2, '2025-09-12 14:08:33');
+INSERT INTO `sys_operationlog` VALUES (3986, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:38', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:38', 2, '2025-09-12 14:08:38');
+INSERT INTO `sys_operationlog` VALUES (3987, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:38', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:38', 2, '2025-09-12 14:08:38');
+INSERT INTO `sys_operationlog` VALUES (3988, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:39', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:39', 2, '2025-09-12 14:08:39');
+INSERT INTO `sys_operationlog` VALUES (3989, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:39', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:39', 2, '2025-09-12 14:08:39');
+INSERT INTO `sys_operationlog` VALUES (3990, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:39', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:39', 2, '2025-09-12 14:08:39');
+INSERT INTO `sys_operationlog` VALUES (3991, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:39', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:39', 2, '2025-09-12 14:08:39');
+INSERT INTO `sys_operationlog` VALUES (3992, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:39', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:39', 2, '2025-09-12 14:08:39');
+INSERT INTO `sys_operationlog` VALUES (3993, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:39', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:39', 2, '2025-09-12 14:08:39');
+INSERT INTO `sys_operationlog` VALUES (3994, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:39', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:39', 2, '2025-09-12 14:08:39');
+INSERT INTO `sys_operationlog` VALUES (3995, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:40', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:40', 2, '2025-09-12 14:08:40');
+INSERT INTO `sys_operationlog` VALUES (3996, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:40', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:40', 2, '2025-09-12 14:08:40');
+INSERT INTO `sys_operationlog` VALUES (3997, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:40', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:40', 2, '2025-09-12 14:08:40');
+INSERT INTO `sys_operationlog` VALUES (3998, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:40', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:40', 2, '2025-09-12 14:08:40');
+INSERT INTO `sys_operationlog` VALUES (3999, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:41', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:41', 2, '2025-09-12 14:08:41');
+INSERT INTO `sys_operationlog` VALUES (4000, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:41', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:41', 2, '2025-09-12 14:08:41');
+INSERT INTO `sys_operationlog` VALUES (4001, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:41', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:41', 2, '2025-09-12 14:08:41');
+INSERT INTO `sys_operationlog` VALUES (4002, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:42', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:42', 2, '2025-09-12 14:08:42');
+INSERT INTO `sys_operationlog` VALUES (4003, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:42', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:42', 2, '2025-09-12 14:08:42');
+INSERT INTO `sys_operationlog` VALUES (4004, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:42', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:42', 2, '2025-09-12 14:08:42');
+INSERT INTO `sys_operationlog` VALUES (4005, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:42', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:42', 2, '2025-09-12 14:08:42');
+INSERT INTO `sys_operationlog` VALUES (4006, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:44', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:44', 2, '2025-09-12 14:08:44');
+INSERT INTO `sys_operationlog` VALUES (4007, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:44', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 14:08:44', 2, '2025-09-12 14:08:44');
+INSERT INTO `sys_operationlog` VALUES (4008, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:44', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:44', 2, '2025-09-12 14:08:44');
+INSERT INTO `sys_operationlog` VALUES (4009, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:44', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:44', 2, '2025-09-12 14:08:44');
+INSERT INTO `sys_operationlog` VALUES (4010, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:44', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:44', 2, '2025-09-12 14:08:44');
+INSERT INTO `sys_operationlog` VALUES (4011, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:44', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:44', 2, '2025-09-12 14:08:44');
+INSERT INTO `sys_operationlog` VALUES (4012, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:44', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:44', 2, '2025-09-12 14:08:44');
+INSERT INTO `sys_operationlog` VALUES (4013, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:45', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:45', 2, '2025-09-12 14:08:45');
+INSERT INTO `sys_operationlog` VALUES (4014, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:45', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:45', 2, '2025-09-12 14:08:45');
+INSERT INTO `sys_operationlog` VALUES (4015, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:45', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:45', 2, '2025-09-12 14:08:45');
+INSERT INTO `sys_operationlog` VALUES (4016, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:45', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:45', 2, '2025-09-12 14:08:45');
+INSERT INTO `sys_operationlog` VALUES (4017, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:45', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:45', 2, '2025-09-12 14:08:45');
+INSERT INTO `sys_operationlog` VALUES (4018, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:45', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:45', 2, '2025-09-12 14:08:45');
+INSERT INTO `sys_operationlog` VALUES (4019, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:45', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:45', 2, '2025-09-12 14:08:45');
+INSERT INTO `sys_operationlog` VALUES (4020, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:45', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:45', 2, '2025-09-12 14:08:45');
+INSERT INTO `sys_operationlog` VALUES (4021, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:45', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:45', 2, '2025-09-12 14:08:45');
+INSERT INTO `sys_operationlog` VALUES (4022, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:46', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:46', 2, '2025-09-12 14:08:46');
+INSERT INTO `sys_operationlog` VALUES (4023, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:46', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:46', 2, '2025-09-12 14:08:46');
+INSERT INTO `sys_operationlog` VALUES (4024, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:46', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:46', 2, '2025-09-12 14:08:46');
+INSERT INTO `sys_operationlog` VALUES (4025, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:46', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:46', 2, '2025-09-12 14:08:46');
+INSERT INTO `sys_operationlog` VALUES (4026, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:49', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:49', 2, '2025-09-12 14:08:49');
+INSERT INTO `sys_operationlog` VALUES (4027, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:49', '{}', 1, 2, '2025-09-12 14:08:49', 2, '2025-09-12 14:08:49');
+INSERT INTO `sys_operationlog` VALUES (4028, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 14:08:49', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:49', 2, '2025-09-12 14:08:49');
+INSERT INTO `sys_operationlog` VALUES (4029, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-12 14:08:49', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:08:49', 2, '2025-09-12 14:08:49');
+INSERT INTO `sys_operationlog` VALUES (4030, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:49', '{}', 1, 2, '2025-09-12 14:08:49', 2, '2025-09-12 14:08:49');
+INSERT INTO `sys_operationlog` VALUES (4031, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 14:08:49', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:49', 2, '2025-09-12 14:08:49');
+INSERT INTO `sys_operationlog` VALUES (4032, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:49', '{}', 1, 2, '2025-09-12 14:08:49', 2, '2025-09-12 14:08:49');
+INSERT INTO `sys_operationlog` VALUES (4033, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 14:08:49', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:49', 2, '2025-09-12 14:08:49');
+INSERT INTO `sys_operationlog` VALUES (4034, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:49', '{}', 1, 2, '2025-09-12 14:08:49', 2, '2025-09-12 14:08:49');
+INSERT INTO `sys_operationlog` VALUES (4035, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 14:08:49', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:49', 2, '2025-09-12 14:08:49');
+INSERT INTO `sys_operationlog` VALUES (4036, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:49', '{}', 1, 2, '2025-09-12 14:08:49', 2, '2025-09-12 14:08:49');
+INSERT INTO `sys_operationlog` VALUES (4037, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:49', '{}', 1, 2, '2025-09-12 14:08:49', 2, '2025-09-12 14:08:49');
+INSERT INTO `sys_operationlog` VALUES (4038, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 14:08:49', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:49', 2, '2025-09-12 14:08:49');
+INSERT INTO `sys_operationlog` VALUES (4039, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:49', '{}', 1, 2, '2025-09-12 14:08:49', 2, '2025-09-12 14:08:49');
+INSERT INTO `sys_operationlog` VALUES (4040, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 14:08:49', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:49', 2, '2025-09-12 14:08:49');
+INSERT INTO `sys_operationlog` VALUES (4041, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:49', '{}', 1, 2, '2025-09-12 14:08:49', 2, '2025-09-12 14:08:49');
+INSERT INTO `sys_operationlog` VALUES (4042, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 14:08:49', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:49', 2, '2025-09-12 14:08:49');
+INSERT INTO `sys_operationlog` VALUES (4043, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:49', '{}', 1, 2, '2025-09-12 14:08:49', 2, '2025-09-12 14:08:49');
+INSERT INTO `sys_operationlog` VALUES (4044, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 14:08:49', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:49', 2, '2025-09-12 14:08:49');
+INSERT INTO `sys_operationlog` VALUES (4045, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:49', '{}', 1, 2, '2025-09-12 14:08:49', 2, '2025-09-12 14:08:49');
+INSERT INTO `sys_operationlog` VALUES (4046, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 14:08:50', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:50', 2, '2025-09-12 14:08:50');
+INSERT INTO `sys_operationlog` VALUES (4047, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:51', '{}', 1, 2, '2025-09-12 14:08:51', 2, '2025-09-12 14:08:51');
+INSERT INTO `sys_operationlog` VALUES (4048, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 14:08:51', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:51', 2, '2025-09-12 14:08:51');
+INSERT INTO `sys_operationlog` VALUES (4049, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:51', '{}', 1, 2, '2025-09-12 14:08:51', 2, '2025-09-12 14:08:51');
+INSERT INTO `sys_operationlog` VALUES (4050, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 14:08:51', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:51', 2, '2025-09-12 14:08:51');
+INSERT INTO `sys_operationlog` VALUES (4051, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:51', '{}', 1, 2, '2025-09-12 14:08:51', 2, '2025-09-12 14:08:51');
+INSERT INTO `sys_operationlog` VALUES (4052, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 14:08:51', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:51', 2, '2025-09-12 14:08:51');
+INSERT INTO `sys_operationlog` VALUES (4053, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:51', '{}', 1, 2, '2025-09-12 14:08:51', 2, '2025-09-12 14:08:51');
+INSERT INTO `sys_operationlog` VALUES (4054, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 14:08:51', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:51', 2, '2025-09-12 14:08:51');
+INSERT INTO `sys_operationlog` VALUES (4055, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:51', '{}', 1, 2, '2025-09-12 14:08:51', 2, '2025-09-12 14:08:51');
+INSERT INTO `sys_operationlog` VALUES (4056, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 14:08:51', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:51', 2, '2025-09-12 14:08:51');
+INSERT INTO `sys_operationlog` VALUES (4057, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:51', '{}', 1, 2, '2025-09-12 14:08:51', 2, '2025-09-12 14:08:51');
+INSERT INTO `sys_operationlog` VALUES (4058, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:08:51', '{}', 1, 2, '2025-09-12 14:08:51', 2, '2025-09-12 14:08:51');
+INSERT INTO `sys_operationlog` VALUES (4059, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 14:08:51', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:51', 2, '2025-09-12 14:08:51');
+INSERT INTO `sys_operationlog` VALUES (4060, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 14:08:52', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:52', 2, '2025-09-12 14:08:52');
+INSERT INTO `sys_operationlog` VALUES (4061, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 14:08:52', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:52', 2, '2025-09-12 14:08:52');
+INSERT INTO `sys_operationlog` VALUES (4062, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 14:08:52', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:08:52', 2, '2025-09-12 14:08:52');
+INSERT INTO `sys_operationlog` VALUES (4063, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:09:00', '{}', 1, 2, '2025-09-12 14:09:00', 2, '2025-09-12 14:09:00');
+INSERT INTO `sys_operationlog` VALUES (4064, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:09:00', '{}', 1, 2, '2025-09-12 14:09:00', 2, '2025-09-12 14:09:00');
+INSERT INTO `sys_operationlog` VALUES (4065, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-12 14:09:00', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:09:00', 2, '2025-09-12 14:09:00');
+INSERT INTO `sys_operationlog` VALUES (4066, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-12 14:09:00', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:09:00', 2, '2025-09-12 14:09:00');
+INSERT INTO `sys_operationlog` VALUES (4067, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:09:01', '{}', 1, 2, '2025-09-12 14:09:01', 2, '2025-09-12 14:09:01');
+INSERT INTO `sys_operationlog` VALUES (4068, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-12 14:09:01', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:09:01', 2, '2025-09-12 14:09:01');
+INSERT INTO `sys_operationlog` VALUES (4069, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:09:02', '{}', 1, 2, '2025-09-12 14:09:02', 2, '2025-09-12 14:09:02');
+INSERT INTO `sys_operationlog` VALUES (4070, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-12 14:09:02', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:09:02', 2, '2025-09-12 14:09:02');
+INSERT INTO `sys_operationlog` VALUES (4071, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:09:04', '{}', 1, 2, '2025-09-12 14:09:04', 2, '2025-09-12 14:09:04');
+INSERT INTO `sys_operationlog` VALUES (4072, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-12 14:09:04', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:09:04', 2, '2025-09-12 14:09:04');
+INSERT INTO `sys_operationlog` VALUES (4073, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-12 14:09:05', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:09:05', 2, '2025-09-12 14:09:05');
+INSERT INTO `sys_operationlog` VALUES (4074, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:09:05', '{}', 1, 2, '2025-09-12 14:09:05', 2, '2025-09-12 14:09:05');
+INSERT INTO `sys_operationlog` VALUES (4075, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:09:05', '{}', 1, 2, '2025-09-12 14:09:05', 2, '2025-09-12 14:09:05');
+INSERT INTO `sys_operationlog` VALUES (4076, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-12 14:09:05', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:09:05', 2, '2025-09-12 14:09:05');
+INSERT INTO `sys_operationlog` VALUES (4077, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-12 14:09:05', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:09:05', 2, '2025-09-12 14:09:05');
+INSERT INTO `sys_operationlog` VALUES (4078, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:09:05', '{}', 1, 2, '2025-09-12 14:09:05', 2, '2025-09-12 14:09:05');
+INSERT INTO `sys_operationlog` VALUES (4079, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-12 14:09:05', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:09:05', 2, '2025-09-12 14:09:05');
+INSERT INTO `sys_operationlog` VALUES (4080, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:09:05', '{}', 1, 2, '2025-09-12 14:09:05', 2, '2025-09-12 14:09:05');
+INSERT INTO `sys_operationlog` VALUES (4081, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:09:06', '{}', 1, 2, '2025-09-12 14:09:06', 2, '2025-09-12 14:09:06');
+INSERT INTO `sys_operationlog` VALUES (4082, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-12 14:09:06', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:09:06', 2, '2025-09-12 14:09:06');
+INSERT INTO `sys_operationlog` VALUES (4083, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:09:06', '{}', 1, 2, '2025-09-12 14:09:06', 2, '2025-09-12 14:09:06');
+INSERT INTO `sys_operationlog` VALUES (4084, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-12 14:09:06', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:09:06', 2, '2025-09-12 14:09:06');
+INSERT INTO `sys_operationlog` VALUES (4085, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:09:07', '{}', 1, 2, '2025-09-12 14:09:07', 2, '2025-09-12 14:09:07');
+INSERT INTO `sys_operationlog` VALUES (4086, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-12 14:09:07', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:09:07', 2, '2025-09-12 14:09:07');
+INSERT INTO `sys_operationlog` VALUES (4087, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:09:07', '{}', 1, 2, '2025-09-12 14:09:07', 2, '2025-09-12 14:09:07');
+INSERT INTO `sys_operationlog` VALUES (4088, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-12 14:09:07', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:09:07', 2, '2025-09-12 14:09:07');
+INSERT INTO `sys_operationlog` VALUES (4089, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 14:09:07', '{}', 1, 2, '2025-09-12 14:09:07', 2, '2025-09-12 14:09:07');
+INSERT INTO `sys_operationlog` VALUES (4090, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-12 14:09:07', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:09:07', 2, '2025-09-12 14:09:07');
+INSERT INTO `sys_operationlog` VALUES (4091, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-12 14:09:07', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 14:09:07', 2, '2025-09-12 14:09:07');
+INSERT INTO `sys_operationlog` VALUES (4092, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:21', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:21', 2, '2025-09-12 14:09:21');
+INSERT INTO `sys_operationlog` VALUES (4093, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:21', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:21', 2, '2025-09-12 14:09:21');
+INSERT INTO `sys_operationlog` VALUES (4094, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:21', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:21', 2, '2025-09-12 14:09:21');
+INSERT INTO `sys_operationlog` VALUES (4095, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:21', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:21', 2, '2025-09-12 14:09:21');
+INSERT INTO `sys_operationlog` VALUES (4096, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:21', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:21', 2, '2025-09-12 14:09:21');
+INSERT INTO `sys_operationlog` VALUES (4097, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:21', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:21', 2, '2025-09-12 14:09:21');
+INSERT INTO `sys_operationlog` VALUES (4098, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:21', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:21', 2, '2025-09-12 14:09:21');
+INSERT INTO `sys_operationlog` VALUES (4099, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:21', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:21', 2, '2025-09-12 14:09:21');
+INSERT INTO `sys_operationlog` VALUES (4100, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:21', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:21', 2, '2025-09-12 14:09:21');
+INSERT INTO `sys_operationlog` VALUES (4101, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:21', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:21', 2, '2025-09-12 14:09:21');
+INSERT INTO `sys_operationlog` VALUES (4102, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:21', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:21', 2, '2025-09-12 14:09:21');
+INSERT INTO `sys_operationlog` VALUES (4103, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:21', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:21', 2, '2025-09-12 14:09:21');
+INSERT INTO `sys_operationlog` VALUES (4104, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:22', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:22', 2, '2025-09-12 14:09:22');
+INSERT INTO `sys_operationlog` VALUES (4105, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:22', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:22', 2, '2025-09-12 14:09:22');
+INSERT INTO `sys_operationlog` VALUES (4106, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:22', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:22', 2, '2025-09-12 14:09:22');
+INSERT INTO `sys_operationlog` VALUES (4107, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:22', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:22', 2, '2025-09-12 14:09:22');
+INSERT INTO `sys_operationlog` VALUES (4108, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:22', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:22', 2, '2025-09-12 14:09:22');
+INSERT INTO `sys_operationlog` VALUES (4109, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:22', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:22', 2, '2025-09-12 14:09:22');
+INSERT INTO `sys_operationlog` VALUES (4110, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:22', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:22', 2, '2025-09-12 14:09:22');
+INSERT INTO `sys_operationlog` VALUES (4111, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:22', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:22', 2, '2025-09-12 14:09:22');
+INSERT INTO `sys_operationlog` VALUES (4112, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:22', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:22', 2, '2025-09-12 14:09:22');
+INSERT INTO `sys_operationlog` VALUES (4113, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:22', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:22', 2, '2025-09-12 14:09:22');
+INSERT INTO `sys_operationlog` VALUES (4114, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:22', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:22', 2, '2025-09-12 14:09:22');
+INSERT INTO `sys_operationlog` VALUES (4115, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:22', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:22', 2, '2025-09-12 14:09:22');
+INSERT INTO `sys_operationlog` VALUES (4116, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:22', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:22', 2, '2025-09-12 14:09:22');
+INSERT INTO `sys_operationlog` VALUES (4117, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:22', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:22', 2, '2025-09-12 14:09:22');
+INSERT INTO `sys_operationlog` VALUES (4118, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:23', 2, '2025-09-12 14:09:23');
+INSERT INTO `sys_operationlog` VALUES (4119, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:23', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:23', 2, '2025-09-12 14:09:23');
+INSERT INTO `sys_operationlog` VALUES (4120, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:23', 2, '2025-09-12 14:09:23');
+INSERT INTO `sys_operationlog` VALUES (4121, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:23', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:23', 2, '2025-09-12 14:09:23');
+INSERT INTO `sys_operationlog` VALUES (4122, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:23', 2, '2025-09-12 14:09:23');
+INSERT INTO `sys_operationlog` VALUES (4123, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:23', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:23', 2, '2025-09-12 14:09:23');
+INSERT INTO `sys_operationlog` VALUES (4124, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:23', 2, '2025-09-12 14:09:23');
+INSERT INTO `sys_operationlog` VALUES (4125, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:23', 2, '2025-09-12 14:09:23');
+INSERT INTO `sys_operationlog` VALUES (4126, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:23', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:23', 2, '2025-09-12 14:09:23');
+INSERT INTO `sys_operationlog` VALUES (4127, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:23', 2, '2025-09-12 14:09:23');
+INSERT INTO `sys_operationlog` VALUES (4128, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:23', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:23', 2, '2025-09-12 14:09:23');
+INSERT INTO `sys_operationlog` VALUES (4129, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:23', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:23', 2, '2025-09-12 14:09:23');
+INSERT INTO `sys_operationlog` VALUES (4130, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:23', 2, '2025-09-12 14:09:23');
+INSERT INTO `sys_operationlog` VALUES (4131, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:24', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:24', 2, '2025-09-12 14:09:24');
+INSERT INTO `sys_operationlog` VALUES (4132, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:24', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:24', 2, '2025-09-12 14:09:24');
+INSERT INTO `sys_operationlog` VALUES (4133, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:24', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:24', 2, '2025-09-12 14:09:24');
+INSERT INTO `sys_operationlog` VALUES (4134, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:24', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:24', 2, '2025-09-12 14:09:24');
+INSERT INTO `sys_operationlog` VALUES (4135, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:24', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:24', 2, '2025-09-12 14:09:24');
+INSERT INTO `sys_operationlog` VALUES (4136, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:24', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:24', 2, '2025-09-12 14:09:24');
+INSERT INTO `sys_operationlog` VALUES (4137, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:24', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:24', 2, '2025-09-12 14:09:24');
+INSERT INTO `sys_operationlog` VALUES (4138, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 14:09:24', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:24', 2, '2025-09-12 14:09:24');
+INSERT INTO `sys_operationlog` VALUES (4139, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:24', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:24', 2, '2025-09-12 14:09:24');
+INSERT INTO `sys_operationlog` VALUES (4140, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:24', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:24', 2, '2025-09-12 14:09:24');
+INSERT INTO `sys_operationlog` VALUES (4141, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:24', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:24', 2, '2025-09-12 14:09:24');
+INSERT INTO `sys_operationlog` VALUES (4142, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:24', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:24', 2, '2025-09-12 14:09:24');
+INSERT INTO `sys_operationlog` VALUES (4143, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:24', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:24', 2, '2025-09-12 14:09:24');
+INSERT INTO `sys_operationlog` VALUES (4144, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:24', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:24', 2, '2025-09-12 14:09:24');
+INSERT INTO `sys_operationlog` VALUES (4145, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:24', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:24', 2, '2025-09-12 14:09:24');
+INSERT INTO `sys_operationlog` VALUES (4146, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:24', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:24', 2, '2025-09-12 14:09:24');
+INSERT INTO `sys_operationlog` VALUES (4147, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:24', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:24', 2, '2025-09-12 14:09:24');
+INSERT INTO `sys_operationlog` VALUES (4148, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:24', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:24', 2, '2025-09-12 14:09:24');
+INSERT INTO `sys_operationlog` VALUES (4149, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:24', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:24', 2, '2025-09-12 14:09:24');
+INSERT INTO `sys_operationlog` VALUES (4150, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:25', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:25', 2, '2025-09-12 14:09:25');
+INSERT INTO `sys_operationlog` VALUES (4151, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:25', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:25', 2, '2025-09-12 14:09:25');
+INSERT INTO `sys_operationlog` VALUES (4152, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 14:09:25', '{\"storeId\":null}', 1, 2, '2025-09-12 14:09:25', 2, '2025-09-12 14:09:25');
+INSERT INTO `sys_operationlog` VALUES (4153, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:25', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:25', 2, '2025-09-12 14:09:25');
+INSERT INTO `sys_operationlog` VALUES (4154, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:25', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:25', 2, '2025-09-12 14:09:25');
+INSERT INTO `sys_operationlog` VALUES (4155, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:25', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:25', 2, '2025-09-12 14:09:25');
+INSERT INTO `sys_operationlog` VALUES (4156, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:25', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:25', 2, '2025-09-12 14:09:25');
+INSERT INTO `sys_operationlog` VALUES (4157, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:25', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:25', 2, '2025-09-12 14:09:25');
+INSERT INTO `sys_operationlog` VALUES (4158, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:25', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:25', 2, '2025-09-12 14:09:25');
+INSERT INTO `sys_operationlog` VALUES (4159, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:25', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:25', 2, '2025-09-12 14:09:25');
+INSERT INTO `sys_operationlog` VALUES (4160, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:25', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:25', 2, '2025-09-12 14:09:25');
+INSERT INTO `sys_operationlog` VALUES (4161, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:26', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:26', 2, '2025-09-12 14:09:26');
+INSERT INTO `sys_operationlog` VALUES (4162, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:26', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:26', 2, '2025-09-12 14:09:26');
+INSERT INTO `sys_operationlog` VALUES (4163, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:26', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:26', 2, '2025-09-12 14:09:26');
+INSERT INTO `sys_operationlog` VALUES (4164, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:26', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:26', 2, '2025-09-12 14:09:26');
+INSERT INTO `sys_operationlog` VALUES (4165, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:26', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:26', 2, '2025-09-12 14:09:26');
+INSERT INTO `sys_operationlog` VALUES (4166, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:26', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:26', 2, '2025-09-12 14:09:26');
+INSERT INTO `sys_operationlog` VALUES (4167, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-12 14:09:26', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:09:26', 2, '2025-09-12 14:09:26');
+INSERT INTO `sys_operationlog` VALUES (4168, 2, 10, '系统登陆', '人员登陆', '2025-09-12 14:13:43', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-12 14:13:43', 2, '2025-09-12 14:13:43');
+INSERT INTO `sys_operationlog` VALUES (4169, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:14:19', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:14:19', 2, '2025-09-12 14:14:19');
+INSERT INTO `sys_operationlog` VALUES (4170, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:14:19', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:14:19', 2, '2025-09-12 14:14:19');
+INSERT INTO `sys_operationlog` VALUES (4171, 2, 10, '系统登陆', '人员登陆', '2025-09-12 14:24:47', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-12 14:24:47', 2, '2025-09-12 14:24:47');
+INSERT INTO `sys_operationlog` VALUES (4172, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:24:56', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:24:56', 2, '2025-09-12 14:24:56');
+INSERT INTO `sys_operationlog` VALUES (4173, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:24:56', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:24:56', 2, '2025-09-12 14:24:56');
+INSERT INTO `sys_operationlog` VALUES (4174, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:28:49', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:28:49', 2, '2025-09-12 14:28:49');
+INSERT INTO `sys_operationlog` VALUES (4175, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:28:49', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:28:49', 2, '2025-09-12 14:28:49');
+INSERT INTO `sys_operationlog` VALUES (4176, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:28:49', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:28:49', 2, '2025-09-12 14:28:49');
+INSERT INTO `sys_operationlog` VALUES (4177, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:28:49', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:28:49', 2, '2025-09-12 14:28:49');
+INSERT INTO `sys_operationlog` VALUES (4178, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:29:05', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:29:05', 2, '2025-09-12 14:29:05');
+INSERT INTO `sys_operationlog` VALUES (4179, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:29:05', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:29:05', 2, '2025-09-12 14:29:05');
+INSERT INTO `sys_operationlog` VALUES (4180, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:30:07', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:30:07', 2, '2025-09-12 14:30:07');
+INSERT INTO `sys_operationlog` VALUES (4181, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:30:07', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:30:07', 2, '2025-09-12 14:30:07');
+INSERT INTO `sys_operationlog` VALUES (4182, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:34:32', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:34:32', 2, '2025-09-12 14:34:32');
+INSERT INTO `sys_operationlog` VALUES (4183, 2, 3, '系统设置>门店设置', '新增门店', '2025-09-12 14:34:46', '{\"sys_Store\":{\"store_id\":null,\"store_name\":\"1\",\"address\":\"1\",\"phone\":\"1\",\"business_hours\":\"12\",\"total_tables\":1,\"status\":1,\"created_at\":\"2025-09-12T14:34:45.5161455+08:00\",\"updated_at\":\"2025-09-12T14:34:45.5161471+08:00\",\"store_code\":\"STORE-20250912143445524\"}}', 1, 2, '2025-09-12 14:34:46', 2, '2025-09-12 14:34:46');
+INSERT INTO `sys_operationlog` VALUES (4184, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:34:46', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:34:46', 2, '2025-09-12 14:34:46');
+INSERT INTO `sys_operationlog` VALUES (4185, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:43:56', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:43:56', 2, '2025-09-12 14:43:56');
+INSERT INTO `sys_operationlog` VALUES (4186, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:45:23', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:45:23', 2, '2025-09-12 14:45:23');
+INSERT INTO `sys_operationlog` VALUES (4187, 2, 10, '系统登陆', '人员登陆', '2025-09-12 14:46:54', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-12 14:46:54', 2, '2025-09-12 14:46:54');
+INSERT INTO `sys_operationlog` VALUES (4188, 2, 10, '系统登陆', '人员登陆', '2025-09-12 14:55:39', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-12 14:55:39', 2, '2025-09-12 14:55:39');
+INSERT INTO `sys_operationlog` VALUES (4189, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:57:55', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:57:55', 2, '2025-09-12 14:57:55');
+INSERT INTO `sys_operationlog` VALUES (4190, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:57:55', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:57:55', 2, '2025-09-12 14:57:55');
+INSERT INTO `sys_operationlog` VALUES (4191, 2, 2, '系统设置>门店设置', '删除门店', '2025-09-12 14:57:58', '{\"storeIds\":[16]}', 1, 2, '2025-09-12 14:57:58', 2, '2025-09-12 14:57:58');
+INSERT INTO `sys_operationlog` VALUES (4192, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 14:57:58', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 14:57:58', 2, '2025-09-12 14:57:58');
+INSERT INTO `sys_operationlog` VALUES (4193, 2, 10, '系统登陆', '人员登陆', '2025-09-12 15:01:17', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-12 15:01:17', 2, '2025-09-12 15:01:17');
+INSERT INTO `sys_operationlog` VALUES (4194, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 15:01:25', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 15:01:25', 2, '2025-09-12 15:01:25');
+INSERT INTO `sys_operationlog` VALUES (4195, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 15:01:25', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 15:01:25', 2, '2025-09-12 15:01:25');
+INSERT INTO `sys_operationlog` VALUES (4196, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 15:01:27', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 15:01:27', 2, '2025-09-12 15:01:27');
+INSERT INTO `sys_operationlog` VALUES (4197, 2, 3, '系统设置>门店设置', '新增门店', '2025-09-12 15:01:37', '{\"sys_Store\":{\"store_id\":null,\"store_name\":\"1\",\"address\":\"1\",\"phone\":\"1\",\"business_hours\":\"1\",\"total_tables\":1,\"status\":1,\"created_at\":\"2025-09-12T15:01:37.2960368+08:00\",\"updated_at\":\"2025-09-12T15:01:37.2960396+08:00\",\"store_code\":\"STORE-20250912150137318\"}}', 1, 2, '2025-09-12 15:01:37', 2, '2025-09-12 15:01:37');
+INSERT INTO `sys_operationlog` VALUES (4198, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-12 15:01:37', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 15:01:37', 2, '2025-09-12 15:01:37');
+INSERT INTO `sys_operationlog` VALUES (4199, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-12 15:04:17', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 15:04:17', 2, '2025-09-12 15:04:17');
+INSERT INTO `sys_operationlog` VALUES (4200, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-12 15:04:17', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 15:04:17', 2, '2025-09-12 15:04:17');
+INSERT INTO `sys_operationlog` VALUES (4201, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-12 15:04:17', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 15:04:17', 2, '2025-09-12 15:04:17');
+INSERT INTO `sys_operationlog` VALUES (4202, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-12 18:38:22', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 18:38:22', 2, '2025-09-12 18:38:22');
+INSERT INTO `sys_operationlog` VALUES (4203, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:18:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:18:53', 2, '2025-09-12 20:18:53');
+INSERT INTO `sys_operationlog` VALUES (4204, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:18:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:18:53', 2, '2025-09-12 20:18:53');
+INSERT INTO `sys_operationlog` VALUES (4205, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:18:53', '{\"storeId\":null}', 1, 2, '2025-09-12 20:18:53', 2, '2025-09-12 20:18:53');
+INSERT INTO `sys_operationlog` VALUES (4206, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:18:53', '{\"storeId\":null}', 1, 2, '2025-09-12 20:18:53', 2, '2025-09-12 20:18:53');
+INSERT INTO `sys_operationlog` VALUES (4207, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:19:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:19:23', 2, '2025-09-12 20:19:23');
+INSERT INTO `sys_operationlog` VALUES (4208, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:19:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:19:23', 2, '2025-09-12 20:19:23');
+INSERT INTO `sys_operationlog` VALUES (4209, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:19:23', '{\"storeId\":null}', 1, 2, '2025-09-12 20:19:23', 2, '2025-09-12 20:19:23');
+INSERT INTO `sys_operationlog` VALUES (4210, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:19:23', '{\"storeId\":null}', 1, 2, '2025-09-12 20:19:23', 2, '2025-09-12 20:19:23');
+INSERT INTO `sys_operationlog` VALUES (4211, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:19:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:19:53', 2, '2025-09-12 20:19:53');
+INSERT INTO `sys_operationlog` VALUES (4212, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:19:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:19:53', 2, '2025-09-12 20:19:53');
+INSERT INTO `sys_operationlog` VALUES (4213, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:19:53', '{\"storeId\":null}', 1, 2, '2025-09-12 20:19:53', 2, '2025-09-12 20:19:53');
+INSERT INTO `sys_operationlog` VALUES (4214, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:19:53', '{\"storeId\":null}', 1, 2, '2025-09-12 20:19:53', 2, '2025-09-12 20:19:53');
+INSERT INTO `sys_operationlog` VALUES (4215, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:20:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:20:23', 2, '2025-09-12 20:20:23');
+INSERT INTO `sys_operationlog` VALUES (4216, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:20:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:20:23', 2, '2025-09-12 20:20:23');
+INSERT INTO `sys_operationlog` VALUES (4217, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:20:23', '{\"storeId\":null}', 1, 2, '2025-09-12 20:20:23', 2, '2025-09-12 20:20:23');
+INSERT INTO `sys_operationlog` VALUES (4218, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:20:23', '{\"storeId\":null}', 1, 2, '2025-09-12 20:20:23', 2, '2025-09-12 20:20:23');
+INSERT INTO `sys_operationlog` VALUES (4219, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:20:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:20:53', 2, '2025-09-12 20:20:53');
+INSERT INTO `sys_operationlog` VALUES (4220, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:20:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:20:53', 2, '2025-09-12 20:20:53');
+INSERT INTO `sys_operationlog` VALUES (4221, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:20:53', '{\"storeId\":null}', 1, 2, '2025-09-12 20:20:53', 2, '2025-09-12 20:20:53');
+INSERT INTO `sys_operationlog` VALUES (4222, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:20:53', '{\"storeId\":null}', 1, 2, '2025-09-12 20:20:53', 2, '2025-09-12 20:20:53');
+INSERT INTO `sys_operationlog` VALUES (4223, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:21:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:21:23', 2, '2025-09-12 20:21:23');
+INSERT INTO `sys_operationlog` VALUES (4224, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:21:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:21:23', 2, '2025-09-12 20:21:23');
+INSERT INTO `sys_operationlog` VALUES (4225, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:21:23', '{\"storeId\":null}', 1, 2, '2025-09-12 20:21:23', 2, '2025-09-12 20:21:23');
+INSERT INTO `sys_operationlog` VALUES (4226, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:21:23', '{\"storeId\":null}', 1, 2, '2025-09-12 20:21:23', 2, '2025-09-12 20:21:23');
+INSERT INTO `sys_operationlog` VALUES (4227, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:21:35', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:21:35', 2, '2025-09-12 20:21:35');
+INSERT INTO `sys_operationlog` VALUES (4228, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:21:35', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:21:35', 2, '2025-09-12 20:21:35');
+INSERT INTO `sys_operationlog` VALUES (4229, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:21:35', '{\"storeId\":null}', 1, 2, '2025-09-12 20:21:35', 2, '2025-09-12 20:21:35');
+INSERT INTO `sys_operationlog` VALUES (4230, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:21:35', '{\"storeId\":null}', 1, 2, '2025-09-12 20:21:35', 2, '2025-09-12 20:21:35');
+INSERT INTO `sys_operationlog` VALUES (4231, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:21:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:21:53', 2, '2025-09-12 20:21:53');
+INSERT INTO `sys_operationlog` VALUES (4232, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:21:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:21:53', 2, '2025-09-12 20:21:53');
+INSERT INTO `sys_operationlog` VALUES (4233, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:21:53', '{\"storeId\":null}', 1, 2, '2025-09-12 20:21:53', 2, '2025-09-12 20:21:53');
+INSERT INTO `sys_operationlog` VALUES (4234, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:21:53', '{\"storeId\":null}', 1, 2, '2025-09-12 20:21:53', 2, '2025-09-12 20:21:53');
+INSERT INTO `sys_operationlog` VALUES (4235, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:22:06', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:22:06', 2, '2025-09-12 20:22:06');
+INSERT INTO `sys_operationlog` VALUES (4236, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:22:06', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:22:06', 2, '2025-09-12 20:22:06');
+INSERT INTO `sys_operationlog` VALUES (4237, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:22:06', '{\"storeId\":null}', 1, 2, '2025-09-12 20:22:06', 2, '2025-09-12 20:22:06');
+INSERT INTO `sys_operationlog` VALUES (4238, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:22:06', '{\"storeId\":null}', 1, 2, '2025-09-12 20:22:06', 2, '2025-09-12 20:22:06');
+INSERT INTO `sys_operationlog` VALUES (4239, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:22:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:22:23', 2, '2025-09-12 20:22:23');
+INSERT INTO `sys_operationlog` VALUES (4240, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:22:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:22:23', 2, '2025-09-12 20:22:23');
+INSERT INTO `sys_operationlog` VALUES (4241, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:22:23', '{\"storeId\":null}', 1, 2, '2025-09-12 20:22:23', 2, '2025-09-12 20:22:23');
+INSERT INTO `sys_operationlog` VALUES (4242, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:22:23', '{\"storeId\":null}', 1, 2, '2025-09-12 20:22:23', 2, '2025-09-12 20:22:23');
+INSERT INTO `sys_operationlog` VALUES (4243, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:22:35', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:22:35', 2, '2025-09-12 20:22:35');
+INSERT INTO `sys_operationlog` VALUES (4244, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:22:35', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:22:35', 2, '2025-09-12 20:22:35');
+INSERT INTO `sys_operationlog` VALUES (4245, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:22:35', '{\"storeId\":null}', 1, 2, '2025-09-12 20:22:35', 2, '2025-09-12 20:22:35');
+INSERT INTO `sys_operationlog` VALUES (4246, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:22:35', '{\"storeId\":null}', 1, 2, '2025-09-12 20:22:35', 2, '2025-09-12 20:22:35');
+INSERT INTO `sys_operationlog` VALUES (4247, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:23:06', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:23:06', 2, '2025-09-12 20:23:06');
+INSERT INTO `sys_operationlog` VALUES (4248, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:23:06', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:23:06', 2, '2025-09-12 20:23:06');
+INSERT INTO `sys_operationlog` VALUES (4249, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:23:06', '{\"storeId\":null}', 1, 2, '2025-09-12 20:23:06', 2, '2025-09-12 20:23:06');
+INSERT INTO `sys_operationlog` VALUES (4250, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:23:06', '{\"storeId\":null}', 1, 2, '2025-09-12 20:23:06', 2, '2025-09-12 20:23:06');
+INSERT INTO `sys_operationlog` VALUES (4251, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:23:36', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:23:36', 2, '2025-09-12 20:23:36');
+INSERT INTO `sys_operationlog` VALUES (4252, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:23:36', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:23:36', 2, '2025-09-12 20:23:36');
+INSERT INTO `sys_operationlog` VALUES (4253, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:23:36', '{\"storeId\":null}', 1, 2, '2025-09-12 20:23:36', 2, '2025-09-12 20:23:36');
+INSERT INTO `sys_operationlog` VALUES (4254, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:23:36', '{\"storeId\":null}', 1, 2, '2025-09-12 20:23:36', 2, '2025-09-12 20:23:36');
+INSERT INTO `sys_operationlog` VALUES (4255, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:23:39', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:23:39', 2, '2025-09-12 20:23:39');
+INSERT INTO `sys_operationlog` VALUES (4256, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:23:39', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:23:39', 2, '2025-09-12 20:23:39');
+INSERT INTO `sys_operationlog` VALUES (4257, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:23:39', '{\"storeId\":null}', 1, 2, '2025-09-12 20:23:39', 2, '2025-09-12 20:23:39');
+INSERT INTO `sys_operationlog` VALUES (4258, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:23:39', '{\"storeId\":null}', 1, 2, '2025-09-12 20:23:39', 2, '2025-09-12 20:23:39');
+INSERT INTO `sys_operationlog` VALUES (4259, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:24:06', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:24:06', 2, '2025-09-12 20:24:06');
+INSERT INTO `sys_operationlog` VALUES (4260, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:24:06', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:24:06', 2, '2025-09-12 20:24:06');
+INSERT INTO `sys_operationlog` VALUES (4261, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:24:06', '{\"storeId\":null}', 1, 2, '2025-09-12 20:24:06', 2, '2025-09-12 20:24:06');
+INSERT INTO `sys_operationlog` VALUES (4262, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:24:06', '{\"storeId\":null}', 1, 2, '2025-09-12 20:24:06', 2, '2025-09-12 20:24:06');
+INSERT INTO `sys_operationlog` VALUES (4263, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:24:36', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:24:36', 2, '2025-09-12 20:24:36');
+INSERT INTO `sys_operationlog` VALUES (4264, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:24:36', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:24:36', 2, '2025-09-12 20:24:36');
+INSERT INTO `sys_operationlog` VALUES (4265, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:24:36', '{\"storeId\":null}', 1, 2, '2025-09-12 20:24:36', 2, '2025-09-12 20:24:36');
+INSERT INTO `sys_operationlog` VALUES (4266, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:24:36', '{\"storeId\":null}', 1, 2, '2025-09-12 20:24:36', 2, '2025-09-12 20:24:36');
+INSERT INTO `sys_operationlog` VALUES (4267, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:24:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:24:40', 2, '2025-09-12 20:24:40');
+INSERT INTO `sys_operationlog` VALUES (4268, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:24:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:24:40', 2, '2025-09-12 20:24:40');
+INSERT INTO `sys_operationlog` VALUES (4269, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:24:40', '{\"storeId\":null}', 1, 2, '2025-09-12 20:24:40', 2, '2025-09-12 20:24:40');
+INSERT INTO `sys_operationlog` VALUES (4270, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:24:40', '{\"storeId\":null}', 1, 2, '2025-09-12 20:24:40', 2, '2025-09-12 20:24:40');
+INSERT INTO `sys_operationlog` VALUES (4271, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:25:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:25:40', 2, '2025-09-12 20:25:40');
+INSERT INTO `sys_operationlog` VALUES (4272, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:25:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:25:40', 2, '2025-09-12 20:25:40');
+INSERT INTO `sys_operationlog` VALUES (4273, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:25:40', '{\"storeId\":null}', 1, 2, '2025-09-12 20:25:40', 2, '2025-09-12 20:25:40');
+INSERT INTO `sys_operationlog` VALUES (4274, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:25:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:25:40', 2, '2025-09-12 20:25:40');
+INSERT INTO `sys_operationlog` VALUES (4275, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:25:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:25:40', 2, '2025-09-12 20:25:40');
+INSERT INTO `sys_operationlog` VALUES (4276, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:25:40', '{\"storeId\":null}', 1, 2, '2025-09-12 20:25:40', 2, '2025-09-12 20:25:40');
+INSERT INTO `sys_operationlog` VALUES (4277, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:25:40', '{\"storeId\":null}', 1, 2, '2025-09-12 20:25:40', 2, '2025-09-12 20:25:40');
+INSERT INTO `sys_operationlog` VALUES (4278, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:25:40', '{\"storeId\":null}', 1, 2, '2025-09-12 20:25:40', 2, '2025-09-12 20:25:40');
+INSERT INTO `sys_operationlog` VALUES (4279, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:26:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:26:40', 2, '2025-09-12 20:26:40');
+INSERT INTO `sys_operationlog` VALUES (4280, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:26:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:26:40', 2, '2025-09-12 20:26:40');
+INSERT INTO `sys_operationlog` VALUES (4281, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:26:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:26:40', 2, '2025-09-12 20:26:40');
+INSERT INTO `sys_operationlog` VALUES (4282, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:26:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:26:40', 2, '2025-09-12 20:26:40');
+INSERT INTO `sys_operationlog` VALUES (4283, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:26:40', '{\"storeId\":null}', 1, 2, '2025-09-12 20:26:40', 2, '2025-09-12 20:26:40');
+INSERT INTO `sys_operationlog` VALUES (4284, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:26:40', '{\"storeId\":null}', 1, 2, '2025-09-12 20:26:40', 2, '2025-09-12 20:26:40');
+INSERT INTO `sys_operationlog` VALUES (4285, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:26:40', '{\"storeId\":null}', 1, 2, '2025-09-12 20:26:40', 2, '2025-09-12 20:26:40');
+INSERT INTO `sys_operationlog` VALUES (4286, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:26:40', '{\"storeId\":null}', 1, 2, '2025-09-12 20:26:40', 2, '2025-09-12 20:26:40');
+INSERT INTO `sys_operationlog` VALUES (4287, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:31:15', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:31:15', 2, '2025-09-12 20:31:15');
+INSERT INTO `sys_operationlog` VALUES (4288, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:31:15', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:31:15', 2, '2025-09-12 20:31:15');
+INSERT INTO `sys_operationlog` VALUES (4289, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:31:15', '{\"storeId\":null}', 1, 2, '2025-09-12 20:31:15', 2, '2025-09-12 20:31:15');
+INSERT INTO `sys_operationlog` VALUES (4290, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:31:15', '{\"storeId\":null}', 1, 2, '2025-09-12 20:31:15', 2, '2025-09-12 20:31:15');
+INSERT INTO `sys_operationlog` VALUES (4291, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:37:22', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:37:22', 2, '2025-09-12 20:37:22');
+INSERT INTO `sys_operationlog` VALUES (4292, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:37:22', '{\"storeId\":null}', 1, 2, '2025-09-12 20:37:22', 2, '2025-09-12 20:37:22');
+INSERT INTO `sys_operationlog` VALUES (4293, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:37:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:37:53', 2, '2025-09-12 20:37:53');
+INSERT INTO `sys_operationlog` VALUES (4294, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:37:53', '{\"storeId\":null}', 1, 2, '2025-09-12 20:37:53', 2, '2025-09-12 20:37:53');
+INSERT INTO `sys_operationlog` VALUES (4295, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:38:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:38:23', 2, '2025-09-12 20:38:23');
+INSERT INTO `sys_operationlog` VALUES (4296, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:38:23', '{\"storeId\":null}', 1, 2, '2025-09-12 20:38:23', 2, '2025-09-12 20:38:23');
+INSERT INTO `sys_operationlog` VALUES (4297, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:38:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:38:53', 2, '2025-09-12 20:38:53');
+INSERT INTO `sys_operationlog` VALUES (4298, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:38:53', '{\"storeId\":null}', 1, 2, '2025-09-12 20:38:53', 2, '2025-09-12 20:38:53');
+INSERT INTO `sys_operationlog` VALUES (4299, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:39:22', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:39:22', 2, '2025-09-12 20:39:22');
+INSERT INTO `sys_operationlog` VALUES (4300, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:39:22', '{\"storeId\":null}', 1, 2, '2025-09-12 20:39:22', 2, '2025-09-12 20:39:22');
+INSERT INTO `sys_operationlog` VALUES (4301, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:39:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:39:53', 2, '2025-09-12 20:39:53');
+INSERT INTO `sys_operationlog` VALUES (4302, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:39:53', '{\"storeId\":null}', 1, 2, '2025-09-12 20:39:53', 2, '2025-09-12 20:39:53');
+INSERT INTO `sys_operationlog` VALUES (4303, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:40:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:40:23', 2, '2025-09-12 20:40:23');
+INSERT INTO `sys_operationlog` VALUES (4304, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:40:23', '{\"storeId\":null}', 1, 2, '2025-09-12 20:40:23', 2, '2025-09-12 20:40:23');
+INSERT INTO `sys_operationlog` VALUES (4305, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:40:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:40:53', 2, '2025-09-12 20:40:53');
+INSERT INTO `sys_operationlog` VALUES (4306, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:40:53', '{\"storeId\":null}', 1, 2, '2025-09-12 20:40:53', 2, '2025-09-12 20:40:53');
+INSERT INTO `sys_operationlog` VALUES (4307, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:41:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:41:40', 2, '2025-09-12 20:41:40');
+INSERT INTO `sys_operationlog` VALUES (4308, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:41:41', '{\"storeId\":null}', 1, 2, '2025-09-12 20:41:41', 2, '2025-09-12 20:41:41');
+INSERT INTO `sys_operationlog` VALUES (4309, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:41:57', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:41:57', 2, '2025-09-12 20:41:57');
+INSERT INTO `sys_operationlog` VALUES (4310, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:41:57', '{\"storeId\":null}', 1, 2, '2025-09-12 20:41:57', 2, '2025-09-12 20:41:57');
+INSERT INTO `sys_operationlog` VALUES (4311, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:42:22', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:42:22', 2, '2025-09-12 20:42:22');
+INSERT INTO `sys_operationlog` VALUES (4312, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:42:22', '{\"storeId\":null}', 1, 2, '2025-09-12 20:42:22', 2, '2025-09-12 20:42:22');
+INSERT INTO `sys_operationlog` VALUES (4313, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:42:52', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:42:52', 2, '2025-09-12 20:42:52');
+INSERT INTO `sys_operationlog` VALUES (4314, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:42:52', '{\"storeId\":null}', 1, 2, '2025-09-12 20:42:52', 2, '2025-09-12 20:42:52');
+INSERT INTO `sys_operationlog` VALUES (4315, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:43:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:43:23', 2, '2025-09-12 20:43:23');
+INSERT INTO `sys_operationlog` VALUES (4316, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:43:23', '{\"storeId\":null}', 1, 2, '2025-09-12 20:43:23', 2, '2025-09-12 20:43:23');
+INSERT INTO `sys_operationlog` VALUES (4317, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:43:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:43:53', 2, '2025-09-12 20:43:53');
+INSERT INTO `sys_operationlog` VALUES (4318, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:43:53', '{\"storeId\":null}', 1, 2, '2025-09-12 20:43:53', 2, '2025-09-12 20:43:53');
+INSERT INTO `sys_operationlog` VALUES (4319, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:44:22', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:44:22', 2, '2025-09-12 20:44:22');
+INSERT INTO `sys_operationlog` VALUES (4320, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:44:22', '{\"storeId\":null}', 1, 2, '2025-09-12 20:44:22', 2, '2025-09-12 20:44:22');
+INSERT INTO `sys_operationlog` VALUES (4321, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:44:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:44:53', 2, '2025-09-12 20:44:53');
+INSERT INTO `sys_operationlog` VALUES (4322, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:44:53', '{\"storeId\":null}', 1, 2, '2025-09-12 20:44:53', 2, '2025-09-12 20:44:53');
+INSERT INTO `sys_operationlog` VALUES (4323, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:45:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:45:23', 2, '2025-09-12 20:45:23');
+INSERT INTO `sys_operationlog` VALUES (4324, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:45:23', '{\"storeId\":null}', 1, 2, '2025-09-12 20:45:23', 2, '2025-09-12 20:45:23');
+INSERT INTO `sys_operationlog` VALUES (4325, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:45:32', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:45:32', 2, '2025-09-12 20:45:32');
+INSERT INTO `sys_operationlog` VALUES (4326, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:45:33', '{\"storeId\":null}', 1, 2, '2025-09-12 20:45:33', 2, '2025-09-12 20:45:33');
+INSERT INTO `sys_operationlog` VALUES (4327, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:46:03', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:46:03', 2, '2025-09-12 20:46:03');
+INSERT INTO `sys_operationlog` VALUES (4328, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:46:03', '{\"storeId\":null}', 1, 2, '2025-09-12 20:46:03', 2, '2025-09-12 20:46:03');
+INSERT INTO `sys_operationlog` VALUES (4329, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:46:24', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:46:24', 2, '2025-09-12 20:46:24');
+INSERT INTO `sys_operationlog` VALUES (4330, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:46:24', '{\"storeId\":null}', 1, 2, '2025-09-12 20:46:24', 2, '2025-09-12 20:46:24');
+INSERT INTO `sys_operationlog` VALUES (4331, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:46:42', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:46:42', 2, '2025-09-12 20:46:42');
+INSERT INTO `sys_operationlog` VALUES (4332, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:46:42', '{\"storeId\":null}', 1, 2, '2025-09-12 20:46:42', 2, '2025-09-12 20:46:42');
+INSERT INTO `sys_operationlog` VALUES (4333, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:47:12', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:47:12', 2, '2025-09-12 20:47:12');
+INSERT INTO `sys_operationlog` VALUES (4334, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:47:12', '{\"storeId\":null}', 1, 2, '2025-09-12 20:47:12', 2, '2025-09-12 20:47:12');
+INSERT INTO `sys_operationlog` VALUES (4335, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:47:42', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:47:42', 2, '2025-09-12 20:47:42');
+INSERT INTO `sys_operationlog` VALUES (4336, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:47:42', '{\"storeId\":null}', 1, 2, '2025-09-12 20:47:42', 2, '2025-09-12 20:47:42');
+INSERT INTO `sys_operationlog` VALUES (4337, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:48:12', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:48:12', 2, '2025-09-12 20:48:12');
+INSERT INTO `sys_operationlog` VALUES (4338, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:48:12', '{\"storeId\":null}', 1, 2, '2025-09-12 20:48:12', 2, '2025-09-12 20:48:12');
+INSERT INTO `sys_operationlog` VALUES (4339, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:48:42', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:48:42', 2, '2025-09-12 20:48:42');
+INSERT INTO `sys_operationlog` VALUES (4340, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:48:42', '{\"storeId\":null}', 1, 2, '2025-09-12 20:48:42', 2, '2025-09-12 20:48:42');
+INSERT INTO `sys_operationlog` VALUES (4341, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:49:13', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:49:13', 2, '2025-09-12 20:49:13');
+INSERT INTO `sys_operationlog` VALUES (4342, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:49:13', '{\"storeId\":null}', 1, 2, '2025-09-12 20:49:13', 2, '2025-09-12 20:49:13');
+INSERT INTO `sys_operationlog` VALUES (4343, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:49:43', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:49:43', 2, '2025-09-12 20:49:43');
+INSERT INTO `sys_operationlog` VALUES (4344, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:49:43', '{\"storeId\":null}', 1, 2, '2025-09-12 20:49:43', 2, '2025-09-12 20:49:43');
+INSERT INTO `sys_operationlog` VALUES (4345, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:50:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:50:40', 2, '2025-09-12 20:50:40');
+INSERT INTO `sys_operationlog` VALUES (4346, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:50:40', '{\"storeId\":null}', 1, 2, '2025-09-12 20:50:40', 2, '2025-09-12 20:50:40');
+INSERT INTO `sys_operationlog` VALUES (4347, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:51:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:51:40', 2, '2025-09-12 20:51:40');
+INSERT INTO `sys_operationlog` VALUES (4348, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:51:40', '{\"storeId\":null}', 1, 2, '2025-09-12 20:51:40', 2, '2025-09-12 20:51:40');
+INSERT INTO `sys_operationlog` VALUES (4349, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:52:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:52:40', 2, '2025-09-12 20:52:40');
+INSERT INTO `sys_operationlog` VALUES (4350, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:52:40', '{\"storeId\":null}', 1, 2, '2025-09-12 20:52:40', 2, '2025-09-12 20:52:40');
+INSERT INTO `sys_operationlog` VALUES (4351, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:53:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:53:40', 2, '2025-09-12 20:53:40');
+INSERT INTO `sys_operationlog` VALUES (4352, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:53:40', '{\"storeId\":null}', 1, 2, '2025-09-12 20:53:40', 2, '2025-09-12 20:53:40');
+INSERT INTO `sys_operationlog` VALUES (4353, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:54:15', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:54:15', 2, '2025-09-12 20:54:15');
+INSERT INTO `sys_operationlog` VALUES (4354, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:54:15', '{\"storeId\":null}', 1, 2, '2025-09-12 20:54:15', 2, '2025-09-12 20:54:15');
+INSERT INTO `sys_operationlog` VALUES (4355, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:54:43', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:54:43', 2, '2025-09-12 20:54:43');
+INSERT INTO `sys_operationlog` VALUES (4356, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:54:43', '{\"storeId\":null}', 1, 2, '2025-09-12 20:54:43', 2, '2025-09-12 20:54:43');
+INSERT INTO `sys_operationlog` VALUES (4357, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:55:13', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:55:13', 2, '2025-09-12 20:55:13');
+INSERT INTO `sys_operationlog` VALUES (4358, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:55:13', '{\"storeId\":null}', 1, 2, '2025-09-12 20:55:13', 2, '2025-09-12 20:55:13');
+INSERT INTO `sys_operationlog` VALUES (4359, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:55:43', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:55:43', 2, '2025-09-12 20:55:43');
+INSERT INTO `sys_operationlog` VALUES (4360, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:55:43', '{\"storeId\":null}', 1, 2, '2025-09-12 20:55:43', 2, '2025-09-12 20:55:43');
+INSERT INTO `sys_operationlog` VALUES (4361, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:56:13', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:56:13', 2, '2025-09-12 20:56:13');
+INSERT INTO `sys_operationlog` VALUES (4362, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:56:13', '{\"storeId\":null}', 1, 2, '2025-09-12 20:56:13', 2, '2025-09-12 20:56:13');
+INSERT INTO `sys_operationlog` VALUES (4363, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:56:43', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:56:43', 2, '2025-09-12 20:56:43');
+INSERT INTO `sys_operationlog` VALUES (4364, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:56:43', '{\"storeId\":null}', 1, 2, '2025-09-12 20:56:43', 2, '2025-09-12 20:56:43');
+INSERT INTO `sys_operationlog` VALUES (4365, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:57:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:57:40', 2, '2025-09-12 20:57:40');
+INSERT INTO `sys_operationlog` VALUES (4366, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:57:40', '{\"storeId\":null}', 1, 2, '2025-09-12 20:57:40', 2, '2025-09-12 20:57:40');
+INSERT INTO `sys_operationlog` VALUES (4367, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:58:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:58:40', 2, '2025-09-12 20:58:40');
+INSERT INTO `sys_operationlog` VALUES (4368, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:58:40', '{\"storeId\":null}', 1, 2, '2025-09-12 20:58:40', 2, '2025-09-12 20:58:40');
+INSERT INTO `sys_operationlog` VALUES (4369, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:59:07', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:59:07', 2, '2025-09-12 20:59:07');
+INSERT INTO `sys_operationlog` VALUES (4370, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:59:07', '{\"storeId\":null}', 1, 2, '2025-09-12 20:59:07', 2, '2025-09-12 20:59:07');
+INSERT INTO `sys_operationlog` VALUES (4371, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:59:13', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:59:13', 2, '2025-09-12 20:59:13');
+INSERT INTO `sys_operationlog` VALUES (4372, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:59:13', '{\"storeId\":null}', 1, 2, '2025-09-12 20:59:13', 2, '2025-09-12 20:59:13');
+INSERT INTO `sys_operationlog` VALUES (4373, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 20:59:43', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 20:59:43', 2, '2025-09-12 20:59:43');
+INSERT INTO `sys_operationlog` VALUES (4374, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 20:59:43', '{\"storeId\":null}', 1, 2, '2025-09-12 20:59:43', 2, '2025-09-12 20:59:43');
+INSERT INTO `sys_operationlog` VALUES (4375, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:00:13', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:00:13', 2, '2025-09-12 21:00:13');
+INSERT INTO `sys_operationlog` VALUES (4376, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:00:13', '{\"storeId\":null}', 1, 2, '2025-09-12 21:00:13', 2, '2025-09-12 21:00:13');
+INSERT INTO `sys_operationlog` VALUES (4377, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:00:43', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:00:43', 2, '2025-09-12 21:00:43');
+INSERT INTO `sys_operationlog` VALUES (4378, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:00:43', '{\"storeId\":null}', 1, 2, '2025-09-12 21:00:43', 2, '2025-09-12 21:00:43');
+INSERT INTO `sys_operationlog` VALUES (4379, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:01:13', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:01:13', 2, '2025-09-12 21:01:13');
+INSERT INTO `sys_operationlog` VALUES (4380, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:01:13', '{\"storeId\":null}', 1, 2, '2025-09-12 21:01:13', 2, '2025-09-12 21:01:13');
+INSERT INTO `sys_operationlog` VALUES (4381, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:01:35', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:01:35', 2, '2025-09-12 21:01:35');
+INSERT INTO `sys_operationlog` VALUES (4382, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:01:35', '{\"storeId\":null}', 1, 2, '2025-09-12 21:01:35', 2, '2025-09-12 21:01:35');
+INSERT INTO `sys_operationlog` VALUES (4383, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:02:06', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:02:06', 2, '2025-09-12 21:02:06');
+INSERT INTO `sys_operationlog` VALUES (4384, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:02:06', '{\"storeId\":null}', 1, 2, '2025-09-12 21:02:06', 2, '2025-09-12 21:02:06');
+INSERT INTO `sys_operationlog` VALUES (4385, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:02:35', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:02:35', 2, '2025-09-12 21:02:35');
+INSERT INTO `sys_operationlog` VALUES (4386, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:02:35', '{\"storeId\":null}', 1, 2, '2025-09-12 21:02:35', 2, '2025-09-12 21:02:35');
+INSERT INTO `sys_operationlog` VALUES (4387, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:03:06', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:03:06', 2, '2025-09-12 21:03:06');
+INSERT INTO `sys_operationlog` VALUES (4388, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:03:06', '{\"storeId\":null}', 1, 2, '2025-09-12 21:03:06', 2, '2025-09-12 21:03:06');
+INSERT INTO `sys_operationlog` VALUES (4389, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:03:36', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:03:36', 2, '2025-09-12 21:03:36');
+INSERT INTO `sys_operationlog` VALUES (4390, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:03:36', '{\"storeId\":null}', 1, 2, '2025-09-12 21:03:36', 2, '2025-09-12 21:03:36');
+INSERT INTO `sys_operationlog` VALUES (4391, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:04:05', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:04:05', 2, '2025-09-12 21:04:05');
+INSERT INTO `sys_operationlog` VALUES (4392, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:04:05', '{\"storeId\":null}', 1, 2, '2025-09-12 21:04:05', 2, '2025-09-12 21:04:05');
+INSERT INTO `sys_operationlog` VALUES (4393, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:04:36', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:04:36', 2, '2025-09-12 21:04:36');
+INSERT INTO `sys_operationlog` VALUES (4394, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:04:36', '{\"storeId\":null}', 1, 2, '2025-09-12 21:04:36', 2, '2025-09-12 21:04:36');
+INSERT INTO `sys_operationlog` VALUES (4395, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:05:06', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:05:06', 2, '2025-09-12 21:05:06');
+INSERT INTO `sys_operationlog` VALUES (4396, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:05:06', '{\"storeId\":null}', 1, 2, '2025-09-12 21:05:06', 2, '2025-09-12 21:05:06');
+INSERT INTO `sys_operationlog` VALUES (4397, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:05:35', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:05:35', 2, '2025-09-12 21:05:35');
+INSERT INTO `sys_operationlog` VALUES (4398, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:05:35', '{\"storeId\":null}', 1, 2, '2025-09-12 21:05:35', 2, '2025-09-12 21:05:35');
+INSERT INTO `sys_operationlog` VALUES (4399, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:06:06', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:06:06', 2, '2025-09-12 21:06:06');
+INSERT INTO `sys_operationlog` VALUES (4400, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:06:06', '{\"storeId\":null}', 1, 2, '2025-09-12 21:06:06', 2, '2025-09-12 21:06:06');
+INSERT INTO `sys_operationlog` VALUES (4401, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:06:36', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:06:36', 2, '2025-09-12 21:06:36');
+INSERT INTO `sys_operationlog` VALUES (4402, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:06:36', '{\"storeId\":null}', 1, 2, '2025-09-12 21:06:36', 2, '2025-09-12 21:06:36');
+INSERT INTO `sys_operationlog` VALUES (4403, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:07:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:07:40', 2, '2025-09-12 21:07:40');
+INSERT INTO `sys_operationlog` VALUES (4404, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:07:40', '{\"storeId\":null}', 1, 2, '2025-09-12 21:07:40', 2, '2025-09-12 21:07:40');
+INSERT INTO `sys_operationlog` VALUES (4405, 2, 1, '排队叫号>排队列表', '叫号', '2025-09-12 21:07:48', '{\"queueId\":4}', 1, 2, '2025-09-12 21:07:48', 2, '2025-09-12 21:07:48');
+INSERT INTO `sys_operationlog` VALUES (4406, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:07:48', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:07:48', 2, '2025-09-12 21:07:48');
+INSERT INTO `sys_operationlog` VALUES (4407, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:07:48', '{\"storeId\":null}', 1, 2, '2025-09-12 21:07:48', 2, '2025-09-12 21:07:48');
+INSERT INTO `sys_operationlog` VALUES (4408, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:08:06', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:08:06', 2, '2025-09-12 21:08:06');
+INSERT INTO `sys_operationlog` VALUES (4409, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:08:06', '{\"storeId\":null}', 1, 2, '2025-09-12 21:08:06', 2, '2025-09-12 21:08:06');
+INSERT INTO `sys_operationlog` VALUES (4410, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:08:36', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:08:36', 2, '2025-09-12 21:08:36');
+INSERT INTO `sys_operationlog` VALUES (4411, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:08:36', '{\"storeId\":null}', 1, 2, '2025-09-12 21:08:36', 2, '2025-09-12 21:08:36');
+INSERT INTO `sys_operationlog` VALUES (4412, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:08:52', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:08:52', 2, '2025-09-12 21:08:52');
+INSERT INTO `sys_operationlog` VALUES (4413, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:08:52', '{\"storeId\":null}', 1, 2, '2025-09-12 21:08:52', 2, '2025-09-12 21:08:52');
+INSERT INTO `sys_operationlog` VALUES (4414, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:09:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:09:23', 2, '2025-09-12 21:09:23');
+INSERT INTO `sys_operationlog` VALUES (4415, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:09:23', '{\"storeId\":null}', 1, 2, '2025-09-12 21:09:23', 2, '2025-09-12 21:09:23');
+INSERT INTO `sys_operationlog` VALUES (4416, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:09:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:09:53', 2, '2025-09-12 21:09:53');
+INSERT INTO `sys_operationlog` VALUES (4417, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:09:53', '{\"storeId\":null}', 1, 2, '2025-09-12 21:09:53', 2, '2025-09-12 21:09:53');
+INSERT INTO `sys_operationlog` VALUES (4418, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:10:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:10:23', 2, '2025-09-12 21:10:23');
+INSERT INTO `sys_operationlog` VALUES (4419, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:10:23', '{\"storeId\":null}', 1, 2, '2025-09-12 21:10:23', 2, '2025-09-12 21:10:23');
+INSERT INTO `sys_operationlog` VALUES (4420, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:10:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:10:53', 2, '2025-09-12 21:10:53');
+INSERT INTO `sys_operationlog` VALUES (4421, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:10:53', '{\"storeId\":null}', 1, 2, '2025-09-12 21:10:53', 2, '2025-09-12 21:10:53');
+INSERT INTO `sys_operationlog` VALUES (4422, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:11:22', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:11:22', 2, '2025-09-12 21:11:22');
+INSERT INTO `sys_operationlog` VALUES (4423, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:11:22', '{\"storeId\":null}', 1, 2, '2025-09-12 21:11:22', 2, '2025-09-12 21:11:22');
+INSERT INTO `sys_operationlog` VALUES (4424, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:11:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:11:53', 2, '2025-09-12 21:11:53');
+INSERT INTO `sys_operationlog` VALUES (4425, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:11:53', '{\"storeId\":null}', 1, 2, '2025-09-12 21:11:53', 2, '2025-09-12 21:11:53');
+INSERT INTO `sys_operationlog` VALUES (4426, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:12:22', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:12:22', 2, '2025-09-12 21:12:22');
+INSERT INTO `sys_operationlog` VALUES (4427, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:12:22', '{\"storeId\":null}', 1, 2, '2025-09-12 21:12:22', 2, '2025-09-12 21:12:22');
+INSERT INTO `sys_operationlog` VALUES (4428, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:12:52', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:12:52', 2, '2025-09-12 21:12:52');
+INSERT INTO `sys_operationlog` VALUES (4429, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:12:52', '{\"storeId\":null}', 1, 2, '2025-09-12 21:12:52', 2, '2025-09-12 21:12:52');
+INSERT INTO `sys_operationlog` VALUES (4430, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:13:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:13:23', 2, '2025-09-12 21:13:23');
+INSERT INTO `sys_operationlog` VALUES (4431, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:13:23', '{\"storeId\":null}', 1, 2, '2025-09-12 21:13:23', 2, '2025-09-12 21:13:23');
+INSERT INTO `sys_operationlog` VALUES (4432, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:13:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:13:53', 2, '2025-09-12 21:13:53');
+INSERT INTO `sys_operationlog` VALUES (4433, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:13:53', '{\"storeId\":null}', 1, 2, '2025-09-12 21:13:53', 2, '2025-09-12 21:13:53');
+INSERT INTO `sys_operationlog` VALUES (4434, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:14:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:14:40', 2, '2025-09-12 21:14:40');
+INSERT INTO `sys_operationlog` VALUES (4435, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:14:40', '{\"storeId\":null}', 1, 2, '2025-09-12 21:14:40', 2, '2025-09-12 21:14:40');
+INSERT INTO `sys_operationlog` VALUES (4436, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:15:59', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:15:59', 2, '2025-09-12 21:15:59');
+INSERT INTO `sys_operationlog` VALUES (4437, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:15:59', '{\"storeId\":null}', 1, 2, '2025-09-12 21:15:59', 2, '2025-09-12 21:15:59');
+INSERT INTO `sys_operationlog` VALUES (4438, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:16:30', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:16:30', 2, '2025-09-12 21:16:30');
+INSERT INTO `sys_operationlog` VALUES (4439, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:16:30', '{\"storeId\":null}', 1, 2, '2025-09-12 21:16:30', 2, '2025-09-12 21:16:30');
+INSERT INTO `sys_operationlog` VALUES (4440, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:17:00', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:17:00', 2, '2025-09-12 21:17:00');
+INSERT INTO `sys_operationlog` VALUES (4441, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:17:00', '{\"storeId\":null}', 1, 2, '2025-09-12 21:17:00', 2, '2025-09-12 21:17:00');
+INSERT INTO `sys_operationlog` VALUES (4442, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:17:30', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:17:30', 2, '2025-09-12 21:17:30');
+INSERT INTO `sys_operationlog` VALUES (4443, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:17:30', '{\"storeId\":null}', 1, 2, '2025-09-12 21:17:30', 2, '2025-09-12 21:17:30');
+INSERT INTO `sys_operationlog` VALUES (4444, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:18:00', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:18:00', 2, '2025-09-12 21:18:00');
+INSERT INTO `sys_operationlog` VALUES (4445, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:18:00', '{\"storeId\":null}', 1, 2, '2025-09-12 21:18:00', 2, '2025-09-12 21:18:00');
+INSERT INTO `sys_operationlog` VALUES (4446, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:18:30', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:18:30', 2, '2025-09-12 21:18:30');
+INSERT INTO `sys_operationlog` VALUES (4447, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:18:30', '{\"storeId\":null}', 1, 2, '2025-09-12 21:18:30', 2, '2025-09-12 21:18:30');
+INSERT INTO `sys_operationlog` VALUES (4448, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:19:00', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:19:00', 2, '2025-09-12 21:19:00');
+INSERT INTO `sys_operationlog` VALUES (4449, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:19:00', '{\"storeId\":null}', 1, 2, '2025-09-12 21:19:00', 2, '2025-09-12 21:19:00');
+INSERT INTO `sys_operationlog` VALUES (4450, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:19:30', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:19:30', 2, '2025-09-12 21:19:30');
+INSERT INTO `sys_operationlog` VALUES (4451, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:19:30', '{\"storeId\":null}', 1, 2, '2025-09-12 21:19:30', 2, '2025-09-12 21:19:30');
+INSERT INTO `sys_operationlog` VALUES (4452, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:19:42', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:19:42', 2, '2025-09-12 21:19:42');
+INSERT INTO `sys_operationlog` VALUES (4453, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:19:42', '{\"storeId\":null}', 1, 2, '2025-09-12 21:19:42', 2, '2025-09-12 21:19:42');
+INSERT INTO `sys_operationlog` VALUES (4454, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:20:00', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:20:00', 2, '2025-09-12 21:20:00');
+INSERT INTO `sys_operationlog` VALUES (4455, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:20:00', '{\"storeId\":null}', 1, 2, '2025-09-12 21:20:00', 2, '2025-09-12 21:20:00');
+INSERT INTO `sys_operationlog` VALUES (4456, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:20:30', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:20:30', 2, '2025-09-12 21:20:30');
+INSERT INTO `sys_operationlog` VALUES (4457, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:20:30', '{\"storeId\":null}', 1, 2, '2025-09-12 21:20:30', 2, '2025-09-12 21:20:30');
+INSERT INTO `sys_operationlog` VALUES (4458, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:21:02', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:21:02', 2, '2025-09-12 21:21:02');
+INSERT INTO `sys_operationlog` VALUES (4459, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:21:02', '{\"storeId\":null}', 1, 2, '2025-09-12 21:21:02', 2, '2025-09-12 21:21:02');
+INSERT INTO `sys_operationlog` VALUES (4460, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:21:05', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:21:05', 2, '2025-09-12 21:21:05');
+INSERT INTO `sys_operationlog` VALUES (4461, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:21:05', '{\"storeId\":null}', 1, 2, '2025-09-12 21:21:05', 2, '2025-09-12 21:21:05');
+INSERT INTO `sys_operationlog` VALUES (4462, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:21:19', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:21:19', 2, '2025-09-12 21:21:19');
+INSERT INTO `sys_operationlog` VALUES (4463, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:21:20', '{\"storeId\":null}', 1, 2, '2025-09-12 21:21:20', 2, '2025-09-12 21:21:20');
+INSERT INTO `sys_operationlog` VALUES (4464, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:21:50', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:21:50', 2, '2025-09-12 21:21:50');
+INSERT INTO `sys_operationlog` VALUES (4465, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:21:50', '{\"storeId\":null}', 1, 2, '2025-09-12 21:21:50', 2, '2025-09-12 21:21:50');
+INSERT INTO `sys_operationlog` VALUES (4466, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:22:20', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:22:20', 2, '2025-09-12 21:22:20');
+INSERT INTO `sys_operationlog` VALUES (4467, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:22:20', '{\"storeId\":null}', 1, 2, '2025-09-12 21:22:20', 2, '2025-09-12 21:22:20');
+INSERT INTO `sys_operationlog` VALUES (4468, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:22:50', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:22:50', 2, '2025-09-12 21:22:50');
+INSERT INTO `sys_operationlog` VALUES (4469, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:22:50', '{\"storeId\":null}', 1, 2, '2025-09-12 21:22:50', 2, '2025-09-12 21:22:50');
+INSERT INTO `sys_operationlog` VALUES (4470, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:23:20', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:23:20', 2, '2025-09-12 21:23:20');
+INSERT INTO `sys_operationlog` VALUES (4471, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:23:20', '{\"storeId\":null}', 1, 2, '2025-09-12 21:23:20', 2, '2025-09-12 21:23:20');
+INSERT INTO `sys_operationlog` VALUES (4472, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:23:50', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:23:50', 2, '2025-09-12 21:23:50');
+INSERT INTO `sys_operationlog` VALUES (4473, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:23:50', '{\"storeId\":null}', 1, 2, '2025-09-12 21:23:50', 2, '2025-09-12 21:23:50');
+INSERT INTO `sys_operationlog` VALUES (4474, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:24:19', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:24:19', 2, '2025-09-12 21:24:19');
+INSERT INTO `sys_operationlog` VALUES (4475, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:24:19', '{\"storeId\":null}', 1, 2, '2025-09-12 21:24:19', 2, '2025-09-12 21:24:19');
+INSERT INTO `sys_operationlog` VALUES (4476, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:24:30', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:24:30', 2, '2025-09-12 21:24:30');
+INSERT INTO `sys_operationlog` VALUES (4477, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:24:30', '{\"storeId\":null}', 1, 2, '2025-09-12 21:24:30', 2, '2025-09-12 21:24:30');
+INSERT INTO `sys_operationlog` VALUES (4478, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:25:00', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:25:00', 2, '2025-09-12 21:25:00');
+INSERT INTO `sys_operationlog` VALUES (4479, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:25:00', '{\"storeId\":null}', 1, 2, '2025-09-12 21:25:00', 2, '2025-09-12 21:25:00');
+INSERT INTO `sys_operationlog` VALUES (4480, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:25:30', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:25:30', 2, '2025-09-12 21:25:30');
+INSERT INTO `sys_operationlog` VALUES (4481, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:25:30', '{\"storeId\":null}', 1, 2, '2025-09-12 21:25:30', 2, '2025-09-12 21:25:30');
+INSERT INTO `sys_operationlog` VALUES (4482, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:26:00', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:26:00', 2, '2025-09-12 21:26:00');
+INSERT INTO `sys_operationlog` VALUES (4483, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:26:00', '{\"storeId\":null}', 1, 2, '2025-09-12 21:26:00', 2, '2025-09-12 21:26:00');
+INSERT INTO `sys_operationlog` VALUES (4484, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:26:30', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:26:30', 2, '2025-09-12 21:26:30');
+INSERT INTO `sys_operationlog` VALUES (4485, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:26:30', '{\"storeId\":null}', 1, 2, '2025-09-12 21:26:30', 2, '2025-09-12 21:26:30');
+INSERT INTO `sys_operationlog` VALUES (4486, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:27:01', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:27:01', 2, '2025-09-12 21:27:01');
+INSERT INTO `sys_operationlog` VALUES (4487, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:27:01', '{\"storeId\":null}', 1, 2, '2025-09-12 21:27:01', 2, '2025-09-12 21:27:01');
+INSERT INTO `sys_operationlog` VALUES (4488, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:27:31', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:27:31', 2, '2025-09-12 21:27:31');
+INSERT INTO `sys_operationlog` VALUES (4489, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:27:31', '{\"storeId\":null}', 1, 2, '2025-09-12 21:27:31', 2, '2025-09-12 21:27:31');
+INSERT INTO `sys_operationlog` VALUES (4490, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:28:01', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:28:01', 2, '2025-09-12 21:28:01');
+INSERT INTO `sys_operationlog` VALUES (4491, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:28:01', '{\"storeId\":null}', 1, 2, '2025-09-12 21:28:01', 2, '2025-09-12 21:28:01');
+INSERT INTO `sys_operationlog` VALUES (4492, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:28:30', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:28:30', 2, '2025-09-12 21:28:30');
+INSERT INTO `sys_operationlog` VALUES (4493, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:28:30', '{\"storeId\":null}', 1, 2, '2025-09-12 21:28:30', 2, '2025-09-12 21:28:30');
+INSERT INTO `sys_operationlog` VALUES (4494, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:29:01', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:29:01', 2, '2025-09-12 21:29:01');
+INSERT INTO `sys_operationlog` VALUES (4495, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:29:01', '{\"storeId\":null}', 1, 2, '2025-09-12 21:29:01', 2, '2025-09-12 21:29:01');
+INSERT INTO `sys_operationlog` VALUES (4496, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:29:31', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:29:31', 2, '2025-09-12 21:29:31');
+INSERT INTO `sys_operationlog` VALUES (4497, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:29:31', '{\"storeId\":null}', 1, 2, '2025-09-12 21:29:31', 2, '2025-09-12 21:29:31');
+INSERT INTO `sys_operationlog` VALUES (4498, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:30:00', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:30:00', 2, '2025-09-12 21:30:00');
+INSERT INTO `sys_operationlog` VALUES (4499, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:30:00', '{\"storeId\":null}', 1, 2, '2025-09-12 21:30:00', 2, '2025-09-12 21:30:00');
+INSERT INTO `sys_operationlog` VALUES (4500, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:30:31', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:30:31', 2, '2025-09-12 21:30:31');
+INSERT INTO `sys_operationlog` VALUES (4501, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:30:31', '{\"storeId\":null}', 1, 2, '2025-09-12 21:30:31', 2, '2025-09-12 21:30:31');
+INSERT INTO `sys_operationlog` VALUES (4502, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:30:44', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:30:44', 2, '2025-09-12 21:30:44');
+INSERT INTO `sys_operationlog` VALUES (4503, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:30:44', '{\"storeId\":null}', 1, 2, '2025-09-12 21:30:44', 2, '2025-09-12 21:30:44');
+INSERT INTO `sys_operationlog` VALUES (4504, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:31:14', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:31:14', 2, '2025-09-12 21:31:14');
+INSERT INTO `sys_operationlog` VALUES (4505, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:31:15', '{\"storeId\":null}', 1, 2, '2025-09-12 21:31:15', 2, '2025-09-12 21:31:15');
+INSERT INTO `sys_operationlog` VALUES (4506, 2, 1, '排队叫号>排队列表', '叫号', '2025-09-12 21:31:18', '{\"queueId\":1}', 1, 2, '2025-09-12 21:31:18', 2, '2025-09-12 21:31:18');
+INSERT INTO `sys_operationlog` VALUES (4507, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:31:18', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:31:18', 2, '2025-09-12 21:31:18');
+INSERT INTO `sys_operationlog` VALUES (4508, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:31:18', '{\"storeId\":null}', 1, 2, '2025-09-12 21:31:18', 2, '2025-09-12 21:31:18');
+INSERT INTO `sys_operationlog` VALUES (4509, 2, 1, '排队叫号>排队列表', '过号', '2025-09-12 21:31:20', '{\"queueId\":1}', 1, 2, '2025-09-12 21:31:20', 2, '2025-09-12 21:31:20');
+INSERT INTO `sys_operationlog` VALUES (4510, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:31:20', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:31:20', 2, '2025-09-12 21:31:20');
+INSERT INTO `sys_operationlog` VALUES (4511, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:31:20', '{\"storeId\":null}', 1, 2, '2025-09-12 21:31:20', 2, '2025-09-12 21:31:20');
+INSERT INTO `sys_operationlog` VALUES (4512, 2, 2, '排队叫号>排队列表', '取消排队', '2025-09-12 21:31:22', '{\"queueId\":1}', 1, 2, '2025-09-12 21:31:22', 2, '2025-09-12 21:31:22');
+INSERT INTO `sys_operationlog` VALUES (4513, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:31:22', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:31:22', 2, '2025-09-12 21:31:22');
+INSERT INTO `sys_operationlog` VALUES (4514, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:31:22', '{\"storeId\":null}', 1, 2, '2025-09-12 21:31:22', 2, '2025-09-12 21:31:22');
+INSERT INTO `sys_operationlog` VALUES (4515, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:31:27', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:31:27', 2, '2025-09-12 21:31:27');
+INSERT INTO `sys_operationlog` VALUES (4516, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:31:27', '{\"storeId\":null}', 1, 2, '2025-09-12 21:31:27', 2, '2025-09-12 21:31:27');
+INSERT INTO `sys_operationlog` VALUES (4517, 2, 1, '排队叫号>排队列表', '叫号', '2025-09-12 21:31:30', '{\"queueId\":3}', 1, 2, '2025-09-12 21:31:30', 2, '2025-09-12 21:31:30');
+INSERT INTO `sys_operationlog` VALUES (4518, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:31:30', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:31:30', 2, '2025-09-12 21:31:30');
+INSERT INTO `sys_operationlog` VALUES (4519, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:31:30', '{\"storeId\":null}', 1, 2, '2025-09-12 21:31:30', 2, '2025-09-12 21:31:30');
+INSERT INTO `sys_operationlog` VALUES (4520, 2, 1, '排队叫号>排队列表', '叫号', '2025-09-12 21:31:32', '{\"queueId\":3}', 1, 2, '2025-09-12 21:31:32', 2, '2025-09-12 21:31:32');
+INSERT INTO `sys_operationlog` VALUES (4521, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:31:32', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:31:32', 2, '2025-09-12 21:31:32');
+INSERT INTO `sys_operationlog` VALUES (4522, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:31:32', '{\"storeId\":null}', 1, 2, '2025-09-12 21:31:32', 2, '2025-09-12 21:31:32');
+INSERT INTO `sys_operationlog` VALUES (4523, 2, 1, '排队叫号>排队列表', '过号', '2025-09-12 21:31:34', '{\"queueId\":4}', 1, 2, '2025-09-12 21:31:34', 2, '2025-09-12 21:31:34');
+INSERT INTO `sys_operationlog` VALUES (4524, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:31:34', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:31:34', 2, '2025-09-12 21:31:34');
+INSERT INTO `sys_operationlog` VALUES (4525, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:31:34', '{\"storeId\":null}', 1, 2, '2025-09-12 21:31:34', 2, '2025-09-12 21:31:34');
+INSERT INTO `sys_operationlog` VALUES (4526, 2, 1, '排队叫号>排队列表', '过号', '2025-09-12 21:31:35', '{\"queueId\":3}', 1, 2, '2025-09-12 21:31:35', 2, '2025-09-12 21:31:35');
+INSERT INTO `sys_operationlog` VALUES (4527, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:31:35', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:31:35', 2, '2025-09-12 21:31:35');
+INSERT INTO `sys_operationlog` VALUES (4528, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:31:35', '{\"storeId\":null}', 1, 2, '2025-09-12 21:31:35', 2, '2025-09-12 21:31:35');
+INSERT INTO `sys_operationlog` VALUES (4529, 2, 1, '排队叫号>排队列表', '过号', '2025-09-12 21:31:37', '{\"queueId\":1}', 1, 2, '2025-09-12 21:31:37', 2, '2025-09-12 21:31:37');
+INSERT INTO `sys_operationlog` VALUES (4530, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:31:37', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:31:37', 2, '2025-09-12 21:31:37');
+INSERT INTO `sys_operationlog` VALUES (4531, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:31:37', '{\"storeId\":null}', 1, 2, '2025-09-12 21:31:37', 2, '2025-09-12 21:31:37');
+INSERT INTO `sys_operationlog` VALUES (4532, 2, 1, '排队叫号>排队列表', '过号', '2025-09-12 21:31:38', '{\"queueId\":1}', 1, 2, '2025-09-12 21:31:38', 2, '2025-09-12 21:31:38');
+INSERT INTO `sys_operationlog` VALUES (4533, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:31:38', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:31:38', 2, '2025-09-12 21:31:38');
+INSERT INTO `sys_operationlog` VALUES (4534, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:31:38', '{\"storeId\":null}', 1, 2, '2025-09-12 21:31:38', 2, '2025-09-12 21:31:38');
+INSERT INTO `sys_operationlog` VALUES (4535, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:31:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:31:40', 2, '2025-09-12 21:31:40');
+INSERT INTO `sys_operationlog` VALUES (4536, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:31:40', '{\"storeId\":null}', 1, 2, '2025-09-12 21:31:40', 2, '2025-09-12 21:31:40');
+INSERT INTO `sys_operationlog` VALUES (4537, 2, 1, '排队叫号>排队列表', '叫号', '2025-09-12 21:31:43', '{\"queueId\":5}', 1, 2, '2025-09-12 21:31:43', 2, '2025-09-12 21:31:43');
+INSERT INTO `sys_operationlog` VALUES (4538, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:31:43', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:31:43', 2, '2025-09-12 21:31:43');
+INSERT INTO `sys_operationlog` VALUES (4539, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:31:43', '{\"storeId\":null}', 1, 2, '2025-09-12 21:31:43', 2, '2025-09-12 21:31:43');
+INSERT INTO `sys_operationlog` VALUES (4540, 2, 1, '排队叫号>排队列表', '过号', '2025-09-12 21:31:46', '{\"queueId\":4}', 1, 2, '2025-09-12 21:31:46', 2, '2025-09-12 21:31:46');
+INSERT INTO `sys_operationlog` VALUES (4541, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:31:46', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:31:46', 2, '2025-09-12 21:31:46');
+INSERT INTO `sys_operationlog` VALUES (4542, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:31:46', '{\"storeId\":null}', 1, 2, '2025-09-12 21:31:46', 2, '2025-09-12 21:31:46');
+INSERT INTO `sys_operationlog` VALUES (4543, 2, 1, '排队叫号>排队列表', '叫号', '2025-09-12 21:31:49', '{\"queueId\":4}', 1, 2, '2025-09-12 21:31:49', 2, '2025-09-12 21:31:49');
+INSERT INTO `sys_operationlog` VALUES (4544, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:31:49', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:31:49', 2, '2025-09-12 21:31:49');
+INSERT INTO `sys_operationlog` VALUES (4545, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:31:49', '{\"storeId\":null}', 1, 2, '2025-09-12 21:31:49', 2, '2025-09-12 21:31:49');
+INSERT INTO `sys_operationlog` VALUES (4546, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:31:52', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:31:52', 2, '2025-09-12 21:31:52');
+INSERT INTO `sys_operationlog` VALUES (4547, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:31:52', '{\"storeId\":null}', 1, 2, '2025-09-12 21:31:52', 2, '2025-09-12 21:31:52');
+INSERT INTO `sys_operationlog` VALUES (4548, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:32:15', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:32:15', 2, '2025-09-12 21:32:15');
+INSERT INTO `sys_operationlog` VALUES (4549, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:32:16', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:32:16', 2, '2025-09-12 21:32:16');
+INSERT INTO `sys_operationlog` VALUES (4550, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:32:16', '{\"storeId\":null}', 1, 2, '2025-09-12 21:32:16', 2, '2025-09-12 21:32:16');
+INSERT INTO `sys_operationlog` VALUES (4551, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:32:16', '{\"storeId\":null}', 1, 2, '2025-09-12 21:32:16', 2, '2025-09-12 21:32:16');
+INSERT INTO `sys_operationlog` VALUES (4552, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:32:17', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:32:17', 2, '2025-09-12 21:32:17');
+INSERT INTO `sys_operationlog` VALUES (4553, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:32:17', '{\"storeId\":null}', 1, 2, '2025-09-12 21:32:17', 2, '2025-09-12 21:32:17');
+INSERT INTO `sys_operationlog` VALUES (4554, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:32:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:32:23', 2, '2025-09-12 21:32:23');
+INSERT INTO `sys_operationlog` VALUES (4555, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:32:23', '{\"storeId\":null}', 1, 2, '2025-09-12 21:32:23', 2, '2025-09-12 21:32:23');
+INSERT INTO `sys_operationlog` VALUES (4556, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:32:47', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:32:47', 2, '2025-09-12 21:32:47');
+INSERT INTO `sys_operationlog` VALUES (4557, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:32:47', '{\"storeId\":null}', 1, 2, '2025-09-12 21:32:47', 2, '2025-09-12 21:32:47');
+INSERT INTO `sys_operationlog` VALUES (4558, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:32:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:32:53', 2, '2025-09-12 21:32:53');
+INSERT INTO `sys_operationlog` VALUES (4559, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:32:53', '{\"storeId\":null}', 1, 2, '2025-09-12 21:32:53', 2, '2025-09-12 21:32:53');
+INSERT INTO `sys_operationlog` VALUES (4560, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:33:13', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:33:13', 2, '2025-09-12 21:33:13');
+INSERT INTO `sys_operationlog` VALUES (4561, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:33:13', '{\"storeId\":null}', 1, 2, '2025-09-12 21:33:13', 2, '2025-09-12 21:33:13');
+INSERT INTO `sys_operationlog` VALUES (4562, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:33:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:33:23', 2, '2025-09-12 21:33:23');
+INSERT INTO `sys_operationlog` VALUES (4563, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:33:23', '{\"storeId\":null}', 1, 2, '2025-09-12 21:33:23', 2, '2025-09-12 21:33:23');
+INSERT INTO `sys_operationlog` VALUES (4564, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:33:44', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:33:44', 2, '2025-09-12 21:33:44');
+INSERT INTO `sys_operationlog` VALUES (4565, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:33:44', '{\"storeId\":null}', 1, 2, '2025-09-12 21:33:44', 2, '2025-09-12 21:33:44');
+INSERT INTO `sys_operationlog` VALUES (4566, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:33:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:33:53', 2, '2025-09-12 21:33:53');
+INSERT INTO `sys_operationlog` VALUES (4567, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:33:53', '{\"storeId\":null}', 1, 2, '2025-09-12 21:33:53', 2, '2025-09-12 21:33:53');
+INSERT INTO `sys_operationlog` VALUES (4568, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:33:58', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:33:58', 2, '2025-09-12 21:33:58');
+INSERT INTO `sys_operationlog` VALUES (4569, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:33:59', '{\"storeId\":null}', 1, 2, '2025-09-12 21:33:59', 2, '2025-09-12 21:33:59');
+INSERT INTO `sys_operationlog` VALUES (4570, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:34:14', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:34:14', 2, '2025-09-12 21:34:14');
+INSERT INTO `sys_operationlog` VALUES (4571, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:34:14', '{\"storeId\":null}', 1, 2, '2025-09-12 21:34:14', 2, '2025-09-12 21:34:14');
+INSERT INTO `sys_operationlog` VALUES (4572, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:34:29', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:34:29', 2, '2025-09-12 21:34:29');
+INSERT INTO `sys_operationlog` VALUES (4573, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:34:29', '{\"storeId\":null}', 1, 2, '2025-09-12 21:34:29', 2, '2025-09-12 21:34:29');
+INSERT INTO `sys_operationlog` VALUES (4574, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:34:44', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:34:44', 2, '2025-09-12 21:34:44');
+INSERT INTO `sys_operationlog` VALUES (4575, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:34:44', '{\"storeId\":null}', 1, 2, '2025-09-12 21:34:44', 2, '2025-09-12 21:34:44');
+INSERT INTO `sys_operationlog` VALUES (4576, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:34:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:34:56', 2, '2025-09-12 21:34:56');
+INSERT INTO `sys_operationlog` VALUES (4577, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:34:56', '{\"storeId\":null}', 1, 2, '2025-09-12 21:34:56', 2, '2025-09-12 21:34:56');
+INSERT INTO `sys_operationlog` VALUES (4578, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:35:14', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:35:14', 2, '2025-09-12 21:35:14');
+INSERT INTO `sys_operationlog` VALUES (4579, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:35:14', '{\"storeId\":null}', 1, 2, '2025-09-12 21:35:14', 2, '2025-09-12 21:35:14');
+INSERT INTO `sys_operationlog` VALUES (4580, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:35:27', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:35:27', 2, '2025-09-12 21:35:27');
+INSERT INTO `sys_operationlog` VALUES (4581, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:35:27', '{\"storeId\":null}', 1, 2, '2025-09-12 21:35:27', 2, '2025-09-12 21:35:27');
+INSERT INTO `sys_operationlog` VALUES (4582, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:35:44', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:35:44', 2, '2025-09-12 21:35:44');
+INSERT INTO `sys_operationlog` VALUES (4583, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:35:44', '{\"storeId\":null}', 1, 2, '2025-09-12 21:35:44', 2, '2025-09-12 21:35:44');
+INSERT INTO `sys_operationlog` VALUES (4584, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:35:57', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:35:57', 2, '2025-09-12 21:35:57');
+INSERT INTO `sys_operationlog` VALUES (4585, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:35:57', '{\"storeId\":null}', 1, 2, '2025-09-12 21:35:57', 2, '2025-09-12 21:35:57');
+INSERT INTO `sys_operationlog` VALUES (4586, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:36:14', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:36:14', 2, '2025-09-12 21:36:14');
+INSERT INTO `sys_operationlog` VALUES (4587, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:36:14', '{\"storeId\":null}', 1, 2, '2025-09-12 21:36:14', 2, '2025-09-12 21:36:14');
+INSERT INTO `sys_operationlog` VALUES (4588, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:36:27', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:36:27', 2, '2025-09-12 21:36:27');
+INSERT INTO `sys_operationlog` VALUES (4589, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:36:27', '{\"storeId\":null}', 1, 2, '2025-09-12 21:36:27', 2, '2025-09-12 21:36:27');
+INSERT INTO `sys_operationlog` VALUES (4590, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:36:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:36:56', 2, '2025-09-12 21:36:56');
+INSERT INTO `sys_operationlog` VALUES (4591, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:36:56', '{\"storeId\":null}', 1, 2, '2025-09-12 21:36:56', 2, '2025-09-12 21:36:56');
+INSERT INTO `sys_operationlog` VALUES (4592, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:36:58', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:36:58', 2, '2025-09-12 21:36:58');
+INSERT INTO `sys_operationlog` VALUES (4593, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:36:58', '{\"storeId\":null}', 1, 2, '2025-09-12 21:36:58', 2, '2025-09-12 21:36:58');
+INSERT INTO `sys_operationlog` VALUES (4594, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:37:28', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:37:28', 2, '2025-09-12 21:37:28');
+INSERT INTO `sys_operationlog` VALUES (4595, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:37:28', '{\"storeId\":null}', 1, 2, '2025-09-12 21:37:28', 2, '2025-09-12 21:37:28');
+INSERT INTO `sys_operationlog` VALUES (4596, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:37:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:37:40', 2, '2025-09-12 21:37:40');
+INSERT INTO `sys_operationlog` VALUES (4597, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:37:40', '{\"storeId\":null}', 1, 2, '2025-09-12 21:37:40', 2, '2025-09-12 21:37:40');
+INSERT INTO `sys_operationlog` VALUES (4598, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:37:58', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:37:58', 2, '2025-09-12 21:37:58');
+INSERT INTO `sys_operationlog` VALUES (4599, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:37:58', '{\"storeId\":null}', 1, 2, '2025-09-12 21:37:58', 2, '2025-09-12 21:37:58');
+INSERT INTO `sys_operationlog` VALUES (4600, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:38:28', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:38:28', 2, '2025-09-12 21:38:28');
+INSERT INTO `sys_operationlog` VALUES (4601, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:38:28', '{\"storeId\":null}', 1, 2, '2025-09-12 21:38:28', 2, '2025-09-12 21:38:28');
+INSERT INTO `sys_operationlog` VALUES (4602, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:38:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:38:40', 2, '2025-09-12 21:38:40');
+INSERT INTO `sys_operationlog` VALUES (4603, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:38:40', '{\"storeId\":null}', 1, 2, '2025-09-12 21:38:40', 2, '2025-09-12 21:38:40');
+INSERT INTO `sys_operationlog` VALUES (4604, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:38:58', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:38:58', 2, '2025-09-12 21:38:58');
+INSERT INTO `sys_operationlog` VALUES (4605, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:38:58', '{\"storeId\":null}', 1, 2, '2025-09-12 21:38:58', 2, '2025-09-12 21:38:58');
+INSERT INTO `sys_operationlog` VALUES (4606, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:39:28', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:39:28', 2, '2025-09-12 21:39:28');
+INSERT INTO `sys_operationlog` VALUES (4607, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:39:28', '{\"storeId\":null}', 1, 2, '2025-09-12 21:39:28', 2, '2025-09-12 21:39:28');
+INSERT INTO `sys_operationlog` VALUES (4608, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:39:34', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:39:34', 2, '2025-09-12 21:39:34');
+INSERT INTO `sys_operationlog` VALUES (4609, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:39:34', '{\"storeId\":null}', 1, 2, '2025-09-12 21:39:34', 2, '2025-09-12 21:39:34');
+INSERT INTO `sys_operationlog` VALUES (4610, 2, 1, '排队叫号>排队列表', '叫号', '2025-09-12 21:39:40', '{\"queueId\":4}', 1, 2, '2025-09-12 21:39:40', 2, '2025-09-12 21:39:40');
+INSERT INTO `sys_operationlog` VALUES (4611, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:39:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:39:40', 2, '2025-09-12 21:39:40');
+INSERT INTO `sys_operationlog` VALUES (4612, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:39:40', '{\"storeId\":null}', 1, 2, '2025-09-12 21:39:40', 2, '2025-09-12 21:39:40');
+INSERT INTO `sys_operationlog` VALUES (4613, 2, 1, '排队叫号>排队列表', '过号', '2025-09-12 21:39:43', '{\"queueId\":4}', 1, 2, '2025-09-12 21:39:43', 2, '2025-09-12 21:39:43');
+INSERT INTO `sys_operationlog` VALUES (4614, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:39:43', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:39:43', 2, '2025-09-12 21:39:43');
+INSERT INTO `sys_operationlog` VALUES (4615, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:39:43', '{\"storeId\":null}', 1, 2, '2025-09-12 21:39:43', 2, '2025-09-12 21:39:43');
+INSERT INTO `sys_operationlog` VALUES (4616, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:39:43', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:39:43', 2, '2025-09-12 21:39:43');
+INSERT INTO `sys_operationlog` VALUES (4617, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:39:43', '{\"storeId\":null}', 1, 2, '2025-09-12 21:39:43', 2, '2025-09-12 21:39:43');
+INSERT INTO `sys_operationlog` VALUES (4618, 2, 1, '排队叫号>排队列表', '叫号', '2025-09-12 21:39:46', '{\"queueId\":5}', 1, 2, '2025-09-12 21:39:46', 2, '2025-09-12 21:39:46');
+INSERT INTO `sys_operationlog` VALUES (4619, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:39:46', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:39:46', 2, '2025-09-12 21:39:46');
+INSERT INTO `sys_operationlog` VALUES (4620, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:39:46', '{\"storeId\":null}', 1, 2, '2025-09-12 21:39:46', 2, '2025-09-12 21:39:46');
+INSERT INTO `sys_operationlog` VALUES (4621, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:39:58', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:39:58', 2, '2025-09-12 21:39:58');
+INSERT INTO `sys_operationlog` VALUES (4622, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:39:58', '{\"storeId\":null}', 1, 2, '2025-09-12 21:39:58', 2, '2025-09-12 21:39:58');
+INSERT INTO `sys_operationlog` VALUES (4623, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:40:14', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:40:14', 2, '2025-09-12 21:40:14');
+INSERT INTO `sys_operationlog` VALUES (4624, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:40:14', '{\"storeId\":null}', 1, 2, '2025-09-12 21:40:14', 2, '2025-09-12 21:40:14');
+INSERT INTO `sys_operationlog` VALUES (4625, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:40:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:40:40', 2, '2025-09-12 21:40:40');
+INSERT INTO `sys_operationlog` VALUES (4626, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:40:40', '{\"storeId\":null}', 1, 2, '2025-09-12 21:40:40', 2, '2025-09-12 21:40:40');
+INSERT INTO `sys_operationlog` VALUES (4627, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:40:44', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:40:44', 2, '2025-09-12 21:40:44');
+INSERT INTO `sys_operationlog` VALUES (4628, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:40:44', '{\"storeId\":null}', 1, 2, '2025-09-12 21:40:44', 2, '2025-09-12 21:40:44');
+INSERT INTO `sys_operationlog` VALUES (4629, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:41:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:41:40', 2, '2025-09-12 21:41:40');
+INSERT INTO `sys_operationlog` VALUES (4630, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:41:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:41:40', 2, '2025-09-12 21:41:40');
+INSERT INTO `sys_operationlog` VALUES (4631, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:41:40', '{\"storeId\":null}', 1, 2, '2025-09-12 21:41:40', 2, '2025-09-12 21:41:40');
+INSERT INTO `sys_operationlog` VALUES (4632, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:41:40', '{\"storeId\":null}', 1, 2, '2025-09-12 21:41:40', 2, '2025-09-12 21:41:40');
+INSERT INTO `sys_operationlog` VALUES (4633, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:42:10', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:42:10', 2, '2025-09-12 21:42:10');
+INSERT INTO `sys_operationlog` VALUES (4634, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:42:10', '{\"storeId\":null}', 1, 2, '2025-09-12 21:42:10', 2, '2025-09-12 21:42:10');
+INSERT INTO `sys_operationlog` VALUES (4635, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:42:12', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:42:12', 2, '2025-09-12 21:42:12');
+INSERT INTO `sys_operationlog` VALUES (4636, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:42:12', '{\"storeId\":null}', 1, 2, '2025-09-12 21:42:12', 2, '2025-09-12 21:42:12');
+INSERT INTO `sys_operationlog` VALUES (4637, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:42:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:42:40', 2, '2025-09-12 21:42:40');
+INSERT INTO `sys_operationlog` VALUES (4638, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:42:40', '{\"storeId\":null}', 1, 2, '2025-09-12 21:42:40', 2, '2025-09-12 21:42:40');
+INSERT INTO `sys_operationlog` VALUES (4639, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:42:43', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:42:43', 2, '2025-09-12 21:42:43');
+INSERT INTO `sys_operationlog` VALUES (4640, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:42:43', '{\"storeId\":null}', 1, 2, '2025-09-12 21:42:43', 2, '2025-09-12 21:42:43');
+INSERT INTO `sys_operationlog` VALUES (4641, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:42:52', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:42:52', 2, '2025-09-12 21:42:52');
+INSERT INTO `sys_operationlog` VALUES (4642, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:42:52', '{\"storeId\":null}', 1, 2, '2025-09-12 21:42:52', 2, '2025-09-12 21:42:52');
+INSERT INTO `sys_operationlog` VALUES (4643, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:43:15', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:43:15', 2, '2025-09-12 21:43:15');
+INSERT INTO `sys_operationlog` VALUES (4644, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:43:15', '{\"storeId\":null}', 1, 2, '2025-09-12 21:43:15', 2, '2025-09-12 21:43:15');
+INSERT INTO `sys_operationlog` VALUES (4645, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:43:23', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:43:23', 2, '2025-09-12 21:43:23');
+INSERT INTO `sys_operationlog` VALUES (4646, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:43:23', '{\"storeId\":null}', 1, 2, '2025-09-12 21:43:23', 2, '2025-09-12 21:43:23');
+INSERT INTO `sys_operationlog` VALUES (4647, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:43:45', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:43:45', 2, '2025-09-12 21:43:45');
+INSERT INTO `sys_operationlog` VALUES (4648, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:43:45', '{\"storeId\":null}', 1, 2, '2025-09-12 21:43:45', 2, '2025-09-12 21:43:45');
+INSERT INTO `sys_operationlog` VALUES (4649, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:43:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:43:53', 2, '2025-09-12 21:43:53');
+INSERT INTO `sys_operationlog` VALUES (4650, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:43:53', '{\"storeId\":null}', 1, 2, '2025-09-12 21:43:53', 2, '2025-09-12 21:43:53');
+INSERT INTO `sys_operationlog` VALUES (4651, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:44:15', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:44:15', 2, '2025-09-12 21:44:15');
+INSERT INTO `sys_operationlog` VALUES (4652, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:44:15', '{\"storeId\":null}', 1, 2, '2025-09-12 21:44:15', 2, '2025-09-12 21:44:15');
+INSERT INTO `sys_operationlog` VALUES (4653, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:44:20', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:44:20', 2, '2025-09-12 21:44:20');
+INSERT INTO `sys_operationlog` VALUES (4654, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:44:20', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:44:20', 2, '2025-09-12 21:44:20');
+INSERT INTO `sys_operationlog` VALUES (4655, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:44:20', '{\"storeId\":null}', 1, 2, '2025-09-12 21:44:20', 2, '2025-09-12 21:44:20');
+INSERT INTO `sys_operationlog` VALUES (4656, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:44:20', '{\"storeId\":null}', 1, 2, '2025-09-12 21:44:20', 2, '2025-09-12 21:44:20');
+INSERT INTO `sys_operationlog` VALUES (4657, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:44:26', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:44:26', 2, '2025-09-12 21:44:26');
+INSERT INTO `sys_operationlog` VALUES (4658, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:44:26', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:44:26', 2, '2025-09-12 21:44:26');
+INSERT INTO `sys_operationlog` VALUES (4659, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:44:26', '{\"storeId\":null}', 1, 2, '2025-09-12 21:44:26', 2, '2025-09-12 21:44:26');
+INSERT INTO `sys_operationlog` VALUES (4660, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:44:26', '{\"storeId\":null}', 1, 2, '2025-09-12 21:44:26', 2, '2025-09-12 21:44:26');
+INSERT INTO `sys_operationlog` VALUES (4661, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:44:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:44:56', 2, '2025-09-12 21:44:56');
+INSERT INTO `sys_operationlog` VALUES (4662, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:44:56', '{\"storeId\":null}', 1, 2, '2025-09-12 21:44:56', 2, '2025-09-12 21:44:56');
+INSERT INTO `sys_operationlog` VALUES (4663, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:44:57', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:44:57', 2, '2025-09-12 21:44:57');
+INSERT INTO `sys_operationlog` VALUES (4664, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:44:57', '{\"storeId\":null}', 1, 2, '2025-09-12 21:44:57', 2, '2025-09-12 21:44:57');
+INSERT INTO `sys_operationlog` VALUES (4665, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:45:27', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:45:27', 2, '2025-09-12 21:45:27');
+INSERT INTO `sys_operationlog` VALUES (4666, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:45:27', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:45:27', 2, '2025-09-12 21:45:27');
+INSERT INTO `sys_operationlog` VALUES (4667, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:45:27', '{\"storeId\":null}', 1, 2, '2025-09-12 21:45:27', 2, '2025-09-12 21:45:27');
+INSERT INTO `sys_operationlog` VALUES (4668, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:45:27', '{\"storeId\":null}', 1, 2, '2025-09-12 21:45:27', 2, '2025-09-12 21:45:27');
+INSERT INTO `sys_operationlog` VALUES (4669, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:45:57', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:45:57', 2, '2025-09-12 21:45:57');
+INSERT INTO `sys_operationlog` VALUES (4670, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:45:57', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:45:57', 2, '2025-09-12 21:45:57');
+INSERT INTO `sys_operationlog` VALUES (4671, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:45:57', '{\"storeId\":null}', 1, 2, '2025-09-12 21:45:57', 2, '2025-09-12 21:45:57');
+INSERT INTO `sys_operationlog` VALUES (4672, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:45:57', '{\"storeId\":null}', 1, 2, '2025-09-12 21:45:57', 2, '2025-09-12 21:45:57');
+INSERT INTO `sys_operationlog` VALUES (4673, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:46:27', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:46:27', 2, '2025-09-12 21:46:27');
+INSERT INTO `sys_operationlog` VALUES (4674, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:46:27', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:46:27', 2, '2025-09-12 21:46:27');
+INSERT INTO `sys_operationlog` VALUES (4675, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:46:27', '{\"storeId\":null}', 1, 2, '2025-09-12 21:46:27', 2, '2025-09-12 21:46:27');
+INSERT INTO `sys_operationlog` VALUES (4676, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:46:27', '{\"storeId\":null}', 1, 2, '2025-09-12 21:46:27', 2, '2025-09-12 21:46:27');
+INSERT INTO `sys_operationlog` VALUES (4677, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:46:57', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:46:57', 2, '2025-09-12 21:46:57');
+INSERT INTO `sys_operationlog` VALUES (4678, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:46:57', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:46:57', 2, '2025-09-12 21:46:57');
+INSERT INTO `sys_operationlog` VALUES (4679, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:46:57', '{\"storeId\":null}', 1, 2, '2025-09-12 21:46:57', 2, '2025-09-12 21:46:57');
+INSERT INTO `sys_operationlog` VALUES (4680, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:46:57', '{\"storeId\":null}', 1, 2, '2025-09-12 21:46:57', 2, '2025-09-12 21:46:57');
+INSERT INTO `sys_operationlog` VALUES (4681, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:47:26', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:47:26', 2, '2025-09-12 21:47:26');
+INSERT INTO `sys_operationlog` VALUES (4682, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:47:26', '{\"storeId\":null}', 1, 2, '2025-09-12 21:47:26', 2, '2025-09-12 21:47:26');
+INSERT INTO `sys_operationlog` VALUES (4683, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:47:27', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:47:27', 2, '2025-09-12 21:47:27');
+INSERT INTO `sys_operationlog` VALUES (4684, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:47:27', '{\"storeId\":null}', 1, 2, '2025-09-12 21:47:27', 2, '2025-09-12 21:47:27');
+INSERT INTO `sys_operationlog` VALUES (4685, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:47:57', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:47:57', 2, '2025-09-12 21:47:57');
+INSERT INTO `sys_operationlog` VALUES (4686, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:47:57', '{\"storeId\":null}', 1, 2, '2025-09-12 21:47:57', 2, '2025-09-12 21:47:57');
+INSERT INTO `sys_operationlog` VALUES (4687, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:48:26', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:48:26', 2, '2025-09-12 21:48:26');
+INSERT INTO `sys_operationlog` VALUES (4688, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:48:26', '{\"storeId\":null}', 1, 2, '2025-09-12 21:48:26', 2, '2025-09-12 21:48:26');
+INSERT INTO `sys_operationlog` VALUES (4689, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:48:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:48:40', 2, '2025-09-12 21:48:40');
+INSERT INTO `sys_operationlog` VALUES (4690, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:48:40', '{\"storeId\":null}', 1, 2, '2025-09-12 21:48:40', 2, '2025-09-12 21:48:40');
+INSERT INTO `sys_operationlog` VALUES (4691, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:48:57', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:48:57', 2, '2025-09-12 21:48:57');
+INSERT INTO `sys_operationlog` VALUES (4692, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:48:57', '{\"storeId\":null}', 1, 2, '2025-09-12 21:48:57', 2, '2025-09-12 21:48:57');
+INSERT INTO `sys_operationlog` VALUES (4693, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:49:27', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:49:27', 2, '2025-09-12 21:49:27');
+INSERT INTO `sys_operationlog` VALUES (4694, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:49:27', '{\"storeId\":null}', 1, 2, '2025-09-12 21:49:27', 2, '2025-09-12 21:49:27');
+INSERT INTO `sys_operationlog` VALUES (4695, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:49:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:49:40', 2, '2025-09-12 21:49:40');
+INSERT INTO `sys_operationlog` VALUES (4696, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:49:40', '{\"storeId\":null}', 1, 2, '2025-09-12 21:49:40', 2, '2025-09-12 21:49:40');
+INSERT INTO `sys_operationlog` VALUES (4697, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:50:04', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:50:04', 2, '2025-09-12 21:50:04');
+INSERT INTO `sys_operationlog` VALUES (4698, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:50:04', '{\"storeId\":null}', 1, 2, '2025-09-12 21:50:04', 2, '2025-09-12 21:50:04');
+INSERT INTO `sys_operationlog` VALUES (4699, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:50:27', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:50:27', 2, '2025-09-12 21:50:27');
+INSERT INTO `sys_operationlog` VALUES (4700, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:50:27', '{\"storeId\":null}', 1, 2, '2025-09-12 21:50:27', 2, '2025-09-12 21:50:27');
+INSERT INTO `sys_operationlog` VALUES (4701, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:50:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:50:40', 2, '2025-09-12 21:50:40');
+INSERT INTO `sys_operationlog` VALUES (4702, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:50:40', '{\"storeId\":null}', 1, 2, '2025-09-12 21:50:40', 2, '2025-09-12 21:50:40');
+INSERT INTO `sys_operationlog` VALUES (4703, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:50:57', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:50:57', 2, '2025-09-12 21:50:57');
+INSERT INTO `sys_operationlog` VALUES (4704, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:50:57', '{\"storeId\":null}', 1, 2, '2025-09-12 21:50:57', 2, '2025-09-12 21:50:57');
+INSERT INTO `sys_operationlog` VALUES (4705, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:51:26', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:51:26', 2, '2025-09-12 21:51:26');
+INSERT INTO `sys_operationlog` VALUES (4706, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:51:26', '{\"storeId\":null}', 1, 2, '2025-09-12 21:51:26', 2, '2025-09-12 21:51:26');
+INSERT INTO `sys_operationlog` VALUES (4707, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:51:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:51:40', 2, '2025-09-12 21:51:40');
+INSERT INTO `sys_operationlog` VALUES (4708, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:51:40', '{\"storeId\":null}', 1, 2, '2025-09-12 21:51:40', 2, '2025-09-12 21:51:40');
+INSERT INTO `sys_operationlog` VALUES (4709, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:51:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:51:56', 2, '2025-09-12 21:51:56');
+INSERT INTO `sys_operationlog` VALUES (4710, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:51:56', '{\"storeId\":null}', 1, 2, '2025-09-12 21:51:56', 2, '2025-09-12 21:51:56');
+INSERT INTO `sys_operationlog` VALUES (4711, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:51:58', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:51:58', 2, '2025-09-12 21:51:58');
+INSERT INTO `sys_operationlog` VALUES (4712, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:51:58', '{\"storeId\":null}', 1, 2, '2025-09-12 21:51:58', 2, '2025-09-12 21:51:58');
+INSERT INTO `sys_operationlog` VALUES (4713, 2, 1, '排队叫号>排队列表', '叫号', '2025-09-12 21:52:04', '{\"queueId\":3}', 1, 2, '2025-09-12 21:52:04', 2, '2025-09-12 21:52:04');
+INSERT INTO `sys_operationlog` VALUES (4714, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:52:04', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:52:04', 2, '2025-09-12 21:52:04');
+INSERT INTO `sys_operationlog` VALUES (4715, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:52:04', '{\"storeId\":null}', 1, 2, '2025-09-12 21:52:04', 2, '2025-09-12 21:52:04');
+INSERT INTO `sys_operationlog` VALUES (4716, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:52:27', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:52:27', 2, '2025-09-12 21:52:27');
+INSERT INTO `sys_operationlog` VALUES (4717, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:52:27', '{\"storeId\":null}', 1, 2, '2025-09-12 21:52:27', 2, '2025-09-12 21:52:27');
+INSERT INTO `sys_operationlog` VALUES (4718, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:52:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:52:40', 2, '2025-09-12 21:52:40');
+INSERT INTO `sys_operationlog` VALUES (4719, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:52:40', '{\"storeId\":null}', 1, 2, '2025-09-12 21:52:40', 2, '2025-09-12 21:52:40');
+INSERT INTO `sys_operationlog` VALUES (4720, 2, 1, '排队叫号>排队列表', '过号', '2025-09-12 21:52:45', '{\"queueId\":4}', 1, 2, '2025-09-12 21:52:45', 2, '2025-09-12 21:52:45');
+INSERT INTO `sys_operationlog` VALUES (4721, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:52:45', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:52:45', 2, '2025-09-12 21:52:45');
+INSERT INTO `sys_operationlog` VALUES (4722, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:52:45', '{\"storeId\":null}', 1, 2, '2025-09-12 21:52:45', 2, '2025-09-12 21:52:45');
+INSERT INTO `sys_operationlog` VALUES (4723, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:52:58', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:52:58', 2, '2025-09-12 21:52:58');
+INSERT INTO `sys_operationlog` VALUES (4724, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:52:58', '{\"storeId\":null}', 1, 2, '2025-09-12 21:52:58', 2, '2025-09-12 21:52:58');
+INSERT INTO `sys_operationlog` VALUES (4725, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:53:14', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:53:14', 2, '2025-09-12 21:53:14');
+INSERT INTO `sys_operationlog` VALUES (4726, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:53:14', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:53:14', 2, '2025-09-12 21:53:14');
+INSERT INTO `sys_operationlog` VALUES (4727, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:53:14', '{\"storeId\":null}', 1, 2, '2025-09-12 21:53:14', 2, '2025-09-12 21:53:14');
+INSERT INTO `sys_operationlog` VALUES (4728, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:53:14', '{\"storeId\":null}', 1, 2, '2025-09-12 21:53:14', 2, '2025-09-12 21:53:14');
+INSERT INTO `sys_operationlog` VALUES (4729, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:53:27', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:53:27', 2, '2025-09-12 21:53:27');
+INSERT INTO `sys_operationlog` VALUES (4730, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:53:27', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:53:27', 2, '2025-09-12 21:53:27');
+INSERT INTO `sys_operationlog` VALUES (4731, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:53:27', '{\"storeId\":null}', 1, 2, '2025-09-12 21:53:27', 2, '2025-09-12 21:53:27');
+INSERT INTO `sys_operationlog` VALUES (4732, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:53:27', '{\"storeId\":null}', 1, 2, '2025-09-12 21:53:27', 2, '2025-09-12 21:53:27');
+INSERT INTO `sys_operationlog` VALUES (4733, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:53:57', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:53:57', 2, '2025-09-12 21:53:57');
+INSERT INTO `sys_operationlog` VALUES (4734, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:53:57', '{\"storeId\":null}', 1, 2, '2025-09-12 21:53:57', 2, '2025-09-12 21:53:57');
+INSERT INTO `sys_operationlog` VALUES (4735, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:53:58', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:53:58', 2, '2025-09-12 21:53:58');
+INSERT INTO `sys_operationlog` VALUES (4736, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:53:58', '{\"storeId\":null}', 1, 2, '2025-09-12 21:53:58', 2, '2025-09-12 21:53:58');
+INSERT INTO `sys_operationlog` VALUES (4737, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:54:27', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:54:27', 2, '2025-09-12 21:54:27');
+INSERT INTO `sys_operationlog` VALUES (4738, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:54:27', '{\"storeId\":null}', 1, 2, '2025-09-12 21:54:27', 2, '2025-09-12 21:54:27');
+INSERT INTO `sys_operationlog` VALUES (4739, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:54:28', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:54:28', 2, '2025-09-12 21:54:28');
+INSERT INTO `sys_operationlog` VALUES (4740, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:54:28', '{\"storeId\":null}', 1, 2, '2025-09-12 21:54:28', 2, '2025-09-12 21:54:28');
+INSERT INTO `sys_operationlog` VALUES (4741, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 21:54:57', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:54:57', 2, '2025-09-12 21:54:57');
+INSERT INTO `sys_operationlog` VALUES (4742, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 21:54:57', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:54:57', 2, '2025-09-12 21:54:57');
+INSERT INTO `sys_operationlog` VALUES (4743, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:54:58', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:54:58', 2, '2025-09-12 21:54:58');
+INSERT INTO `sys_operationlog` VALUES (4744, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:54:58', '{\"storeId\":null}', 1, 2, '2025-09-12 21:54:58', 2, '2025-09-12 21:54:58');
+INSERT INTO `sys_operationlog` VALUES (4745, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:55:28', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:55:28', 2, '2025-09-12 21:55:28');
+INSERT INTO `sys_operationlog` VALUES (4746, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:55:28', '{\"storeId\":null}', 1, 2, '2025-09-12 21:55:28', 2, '2025-09-12 21:55:28');
+INSERT INTO `sys_operationlog` VALUES (4747, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:55:58', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:55:58', 2, '2025-09-12 21:55:58');
+INSERT INTO `sys_operationlog` VALUES (4748, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:55:58', '{\"storeId\":null}', 1, 2, '2025-09-12 21:55:58', 2, '2025-09-12 21:55:58');
+INSERT INTO `sys_operationlog` VALUES (4749, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:56:28', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:56:28', 2, '2025-09-12 21:56:28');
+INSERT INTO `sys_operationlog` VALUES (4750, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:56:28', '{\"storeId\":null}', 1, 2, '2025-09-12 21:56:28', 2, '2025-09-12 21:56:28');
+INSERT INTO `sys_operationlog` VALUES (4751, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-12 21:57:40', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:57:40', 2, '2025-09-12 21:57:40');
+INSERT INTO `sys_operationlog` VALUES (4752, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-12 21:57:40', '{\"storeId\":null}', 1, 2, '2025-09-12 21:57:40', 2, '2025-09-12 21:57:40');
+INSERT INTO `sys_operationlog` VALUES (4753, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 21:59:12', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:59:12', 2, '2025-09-12 21:59:12');
+INSERT INTO `sys_operationlog` VALUES (4754, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 21:59:13', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:59:13', 2, '2025-09-12 21:59:13');
+INSERT INTO `sys_operationlog` VALUES (4755, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 21:59:56', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:59:56', 2, '2025-09-12 21:59:56');
+INSERT INTO `sys_operationlog` VALUES (4756, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 21:59:56', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 21:59:56', 2, '2025-09-12 21:59:56');
+INSERT INTO `sys_operationlog` VALUES (4757, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 22:33:02', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 22:33:02', 2, '2025-09-12 22:33:02');
+INSERT INTO `sys_operationlog` VALUES (4758, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 22:33:02', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 22:33:02', 2, '2025-09-12 22:33:02');
+INSERT INTO `sys_operationlog` VALUES (4759, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 22:33:05', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 22:33:05', 2, '2025-09-12 22:33:05');
+INSERT INTO `sys_operationlog` VALUES (4760, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 22:36:43', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 22:36:43', 2, '2025-09-12 22:36:43');
+INSERT INTO `sys_operationlog` VALUES (4761, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 22:38:08', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 22:38:08', 2, '2025-09-12 22:38:08');
+INSERT INTO `sys_operationlog` VALUES (4762, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-12 22:40:32', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-12 22:40:32', 2, '2025-09-12 22:40:32');
+INSERT INTO `sys_operationlog` VALUES (4763, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-12 22:41:19', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:41:19', 2, '2025-09-12 22:41:19');
+INSERT INTO `sys_operationlog` VALUES (4764, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-12 22:41:19', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:41:19', 2, '2025-09-12 22:41:19');
+INSERT INTO `sys_operationlog` VALUES (4765, 2, 4, '库存管理>损耗管理', '损耗详情', '2025-09-12 22:41:34', '{\"lossId\":1}', 1, 2, '2025-09-12 22:41:34', 2, '2025-09-12 22:41:34');
+INSERT INTO `sys_operationlog` VALUES (4766, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 22:43:02', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:43:02', 2, '2025-09-12 22:43:02');
+INSERT INTO `sys_operationlog` VALUES (4767, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 22:43:02', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:43:02', 2, '2025-09-12 22:43:02');
+INSERT INTO `sys_operationlog` VALUES (4768, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 22:43:03', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:43:03', 2, '2025-09-12 22:43:03');
+INSERT INTO `sys_operationlog` VALUES (4769, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 22:43:54', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:43:54', 2, '2025-09-12 22:43:54');
+INSERT INTO `sys_operationlog` VALUES (4770, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 22:43:54', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:43:54', 2, '2025-09-12 22:43:54');
+INSERT INTO `sys_operationlog` VALUES (4771, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 22:43:54', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:43:54', 2, '2025-09-12 22:43:54');
+INSERT INTO `sys_operationlog` VALUES (4772, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 22:43:54', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:43:54', 2, '2025-09-12 22:43:54');
+INSERT INTO `sys_operationlog` VALUES (4773, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 22:44:39', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:44:39', 2, '2025-09-12 22:44:39');
+INSERT INTO `sys_operationlog` VALUES (4774, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 22:44:39', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:44:39', 2, '2025-09-12 22:44:39');
+INSERT INTO `sys_operationlog` VALUES (4775, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 22:44:39', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:44:39', 2, '2025-09-12 22:44:39');
+INSERT INTO `sys_operationlog` VALUES (4776, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 22:44:39', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:44:39', 2, '2025-09-12 22:44:39');
+INSERT INTO `sys_operationlog` VALUES (4777, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-12 22:44:45', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:44:45', 2, '2025-09-12 22:44:45');
+INSERT INTO `sys_operationlog` VALUES (4778, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-12 22:44:45', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:44:45', 2, '2025-09-12 22:44:45');
+INSERT INTO `sys_operationlog` VALUES (4779, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-12 22:44:45', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:44:45', 2, '2025-09-12 22:44:45');
+INSERT INTO `sys_operationlog` VALUES (4780, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-12 22:44:45', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:44:45', 2, '2025-09-12 22:44:45');
+INSERT INTO `sys_operationlog` VALUES (4781, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-12 22:44:45', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:44:45', 2, '2025-09-12 22:44:45');
+INSERT INTO `sys_operationlog` VALUES (4782, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 22:44:45', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:44:45', 2, '2025-09-12 22:44:45');
+INSERT INTO `sys_operationlog` VALUES (4783, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 22:44:45', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:44:45', 2, '2025-09-12 22:44:45');
+INSERT INTO `sys_operationlog` VALUES (4784, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 22:44:45', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:44:45', 2, '2025-09-12 22:44:45');
+INSERT INTO `sys_operationlog` VALUES (4785, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 22:44:45', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:44:45', 2, '2025-09-12 22:44:45');
+INSERT INTO `sys_operationlog` VALUES (4786, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-12 22:44:45', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:44:45', 2, '2025-09-12 22:44:45');
+INSERT INTO `sys_operationlog` VALUES (4787, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 22:45:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:45:55', 2, '2025-09-12 22:45:55');
+INSERT INTO `sys_operationlog` VALUES (4788, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 22:45:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:45:55', 2, '2025-09-12 22:45:55');
+INSERT INTO `sys_operationlog` VALUES (4789, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 22:45:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:45:55', 2, '2025-09-12 22:45:55');
+INSERT INTO `sys_operationlog` VALUES (4790, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 22:45:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:45:55', 2, '2025-09-12 22:45:55');
+INSERT INTO `sys_operationlog` VALUES (4791, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 22:45:55', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:45:55', 2, '2025-09-12 22:45:55');
+INSERT INTO `sys_operationlog` VALUES (4792, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-12 22:46:00', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:46:00', 2, '2025-09-12 22:46:00');
+INSERT INTO `sys_operationlog` VALUES (4793, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 22:48:01', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 22:48:01', 2, '2025-09-12 22:48:01');
+INSERT INTO `sys_operationlog` VALUES (4794, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 22:48:01', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-12 22:48:01', 2, '2025-09-12 22:48:01');
+INSERT INTO `sys_operationlog` VALUES (4795, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 22:48:04', '{}', 1, 2, '2025-09-12 22:48:04', 2, '2025-09-12 22:48:04');
+INSERT INTO `sys_operationlog` VALUES (4796, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-12 22:48:04', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:48:04', 2, '2025-09-12 22:48:04');
+INSERT INTO `sys_operationlog` VALUES (4797, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 22:48:04', '{}', 1, 2, '2025-09-12 22:48:04', 2, '2025-09-12 22:48:04');
+INSERT INTO `sys_operationlog` VALUES (4798, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 22:48:04', '{}', 1, 2, '2025-09-12 22:48:04', 2, '2025-09-12 22:48:04');
+INSERT INTO `sys_operationlog` VALUES (4799, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-12 22:48:04', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:48:04', 2, '2025-09-12 22:48:04');
+INSERT INTO `sys_operationlog` VALUES (4800, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-12 22:48:04', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:48:04', 2, '2025-09-12 22:48:04');
+INSERT INTO `sys_operationlog` VALUES (4801, 2, 4, '菜品管理>套餐管理', '套餐明细查询', '2025-09-12 22:48:06', '{\"mealId\":1}', 1, 2, '2025-09-12 22:48:06', 2, '2025-09-12 22:48:06');
+INSERT INTO `sys_operationlog` VALUES (4802, 2, 4, '菜品管理>套餐管理', '套餐明细查询', '2025-09-12 22:48:29', '{\"mealId\":1}', 1, 2, '2025-09-12 22:48:29', 2, '2025-09-12 22:48:29');
+INSERT INTO `sys_operationlog` VALUES (4803, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 22:49:19', '{}', 1, 2, '2025-09-12 22:49:19', 2, '2025-09-12 22:49:19');
+INSERT INTO `sys_operationlog` VALUES (4804, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 22:49:19', '{}', 1, 2, '2025-09-12 22:49:19', 2, '2025-09-12 22:49:19');
+INSERT INTO `sys_operationlog` VALUES (4805, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 22:49:19', '{}', 1, 2, '2025-09-12 22:49:19', 2, '2025-09-12 22:49:19');
+INSERT INTO `sys_operationlog` VALUES (4806, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 22:49:19', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:49:19', 2, '2025-09-12 22:49:19');
+INSERT INTO `sys_operationlog` VALUES (4807, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-12 22:49:19', '{}', 1, 2, '2025-09-12 22:49:19', 2, '2025-09-12 22:49:19');
+INSERT INTO `sys_operationlog` VALUES (4808, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 22:49:19', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:49:19', 2, '2025-09-12 22:49:19');
+INSERT INTO `sys_operationlog` VALUES (4809, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 22:49:19', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:49:19', 2, '2025-09-12 22:49:19');
+INSERT INTO `sys_operationlog` VALUES (4810, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-12 22:49:19', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-12 22:49:19', 2, '2025-09-12 22:49:19');
+INSERT INTO `sys_operationlog` VALUES (4811, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 00:02:58', '{}', 1, 2, '2025-09-13 00:02:58', 2, '2025-09-13 00:02:58');
+INSERT INTO `sys_operationlog` VALUES (4812, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-13 00:02:58', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 00:02:58', 2, '2025-09-13 00:02:58');
+INSERT INTO `sys_operationlog` VALUES (4813, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 01:05:12', '{}', 1, 2, '2025-09-13 01:05:12', 2, '2025-09-13 01:05:12');
+INSERT INTO `sys_operationlog` VALUES (4814, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-13 01:05:12', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 01:05:12', 2, '2025-09-13 01:05:12');
+INSERT INTO `sys_operationlog` VALUES (4815, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 01:06:00', '{}', 1, 2, '2025-09-13 01:06:00', 2, '2025-09-13 01:06:00');
+INSERT INTO `sys_operationlog` VALUES (4816, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-13 01:06:01', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 01:06:01', 2, '2025-09-13 01:06:01');
+INSERT INTO `sys_operationlog` VALUES (4817, 2, 10, '系统登陆', '人员登陆', '2025-09-13 16:33:38', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-13 16:33:38', 2, '2025-09-13 16:33:38');
+INSERT INTO `sys_operationlog` VALUES (4818, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-13 16:33:52', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 16:33:52', 2, '2025-09-13 16:33:52');
+INSERT INTO `sys_operationlog` VALUES (4819, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-13 16:33:52', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 16:33:52', 2, '2025-09-13 16:33:52');
+INSERT INTO `sys_operationlog` VALUES (4820, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-13 16:34:03', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 16:34:03', 2, '2025-09-13 16:34:03');
+INSERT INTO `sys_operationlog` VALUES (4821, 2, 4, '库存管理>损耗管理', '损耗详情', '2025-09-13 16:34:31', '{\"lossId\":1}', 1, 2, '2025-09-13 16:34:31', 2, '2025-09-13 16:34:31');
+INSERT INTO `sys_operationlog` VALUES (4822, 2, 4, '库存管理>损耗管理', '损耗详情', '2025-09-13 16:35:04', '{\"lossId\":1}', 1, 2, '2025-09-13 16:35:04', 2, '2025-09-13 16:35:04');
+INSERT INTO `sys_operationlog` VALUES (4823, 2, 10, '系统登陆', '人员登陆', '2025-09-13 17:30:46', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-13 17:30:46', 2, '2025-09-13 17:30:46');
+INSERT INTO `sys_operationlog` VALUES (4824, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-13 17:30:57', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:30:57', 2, '2025-09-13 17:30:57');
+INSERT INTO `sys_operationlog` VALUES (4825, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-13 17:30:57', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:30:57', 2, '2025-09-13 17:30:57');
+INSERT INTO `sys_operationlog` VALUES (4826, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-13 17:35:10', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:35:10', 2, '2025-09-13 17:35:10');
+INSERT INTO `sys_operationlog` VALUES (4827, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-13 17:35:10', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:35:10', 2, '2025-09-13 17:35:10');
+INSERT INTO `sys_operationlog` VALUES (4828, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-13 17:35:11', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:35:11', 2, '2025-09-13 17:35:11');
+INSERT INTO `sys_operationlog` VALUES (4829, 2, 10, '系统登陆', '人员登陆', '2025-09-13 17:35:33', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-13 17:35:33', 2, '2025-09-13 17:35:33');
+INSERT INTO `sys_operationlog` VALUES (4830, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-13 17:35:36', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:35:36', 2, '2025-09-13 17:35:36');
+INSERT INTO `sys_operationlog` VALUES (4831, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-13 17:35:36', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:35:36', 2, '2025-09-13 17:35:36');
+INSERT INTO `sys_operationlog` VALUES (4832, 2, 4, '库存管理>损耗管理', '损耗详情', '2025-09-13 17:35:40', '{\"lossId\":1}', 1, 2, '2025-09-13 17:35:40', 2, '2025-09-13 17:35:40');
+INSERT INTO `sys_operationlog` VALUES (4833, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-13 17:38:11', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:38:11', 2, '2025-09-13 17:38:11');
+INSERT INTO `sys_operationlog` VALUES (4834, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-13 17:38:11', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:38:11', 2, '2025-09-13 17:38:11');
+INSERT INTO `sys_operationlog` VALUES (4835, 2, 10, '系统登陆', '人员登陆', '2025-09-13 17:39:35', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-13 17:39:35', 2, '2025-09-13 17:39:35');
+INSERT INTO `sys_operationlog` VALUES (4836, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-13 17:39:40', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:39:40', 2, '2025-09-13 17:39:40');
+INSERT INTO `sys_operationlog` VALUES (4837, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-13 17:39:40', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:39:40', 2, '2025-09-13 17:39:40');
+INSERT INTO `sys_operationlog` VALUES (4838, 2, 3, '库存管理>损耗管理', '修改损耗记录', '2025-09-13 17:39:47', '{\"loss\":{\"loss_id\":1,\"store_id\":0,\"material_id\":2,\"batch_no\":null,\"loss_quantity\":6.0,\"loss_type\":0,\"loss_reason\":\"text\",\"loss_time\":\"0001-01-01T00:00:00\",\"updatetime\":\"2025-09-13T17:39:46.9968353+08:00\",\"operator_id\":0,\"updateuser_id\":2,\"staff\":null}}', 1, 2, '2025-09-13 17:39:47', 2, '2025-09-13 17:39:47');
+INSERT INTO `sys_operationlog` VALUES (4839, 2, 3, '库存管理>损耗管理', '修改损耗记录', '2025-09-13 17:39:51', '{\"loss\":{\"loss_id\":1,\"store_id\":0,\"material_id\":2,\"batch_no\":null,\"loss_quantity\":6.0,\"loss_type\":0,\"loss_reason\":\"text\",\"loss_time\":\"0001-01-01T00:00:00\",\"updatetime\":\"2025-09-13T17:39:50.6479236+08:00\",\"operator_id\":0,\"updateuser_id\":2,\"staff\":null}}', 1, 2, '2025-09-13 17:39:51', 2, '2025-09-13 17:39:51');
+INSERT INTO `sys_operationlog` VALUES (4840, 2, 10, '系统登陆', '人员登陆', '2025-09-13 17:43:50', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-13 17:43:50', 2, '2025-09-13 17:43:50');
+INSERT INTO `sys_operationlog` VALUES (4841, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-13 17:43:55', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:43:55', 2, '2025-09-13 17:43:55');
+INSERT INTO `sys_operationlog` VALUES (4842, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-13 17:43:55', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:43:55', 2, '2025-09-13 17:43:55');
+INSERT INTO `sys_operationlog` VALUES (4843, 2, 3, '库存管理>损耗管理', '修改损耗记录', '2025-09-13 17:44:03', '{\"loss\":{\"loss_id\":1,\"store_id\":0,\"material_id\":2,\"batch_no\":null,\"loss_quantity\":6.0,\"loss_type\":0,\"loss_reason\":\"text\",\"loss_time\":\"0001-01-01T00:00:00\",\"updatetime\":\"2025-09-13T17:44:03.1893901+08:00\",\"operator_id\":0,\"updateuser_id\":2,\"staff\":null}}', 1, 2, '2025-09-13 17:44:03', 2, '2025-09-13 17:44:03');
+INSERT INTO `sys_operationlog` VALUES (4844, 2, 10, '系统登陆', '人员登陆', '2025-09-13 17:51:04', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-13 17:51:04', 2, '2025-09-13 17:51:04');
+INSERT INTO `sys_operationlog` VALUES (4845, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-13 17:51:09', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:51:09', 2, '2025-09-13 17:51:09');
+INSERT INTO `sys_operationlog` VALUES (4846, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-13 17:51:09', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:51:09', 2, '2025-09-13 17:51:09');
+INSERT INTO `sys_operationlog` VALUES (4847, 2, 3, '库存管理>损耗管理', '修改损耗记录', '2025-09-13 17:51:20', '{\"loss\":{\"loss_id\":1,\"store_id\":0,\"material_id\":2,\"batch_no\":null,\"loss_quantity\":6.0,\"loss_type\":0,\"loss_reason\":\"text\",\"loss_time\":\"0001-01-01T00:00:00\",\"updatetime\":\"2025-09-13T17:51:19.3112516+08:00\",\"operator_id\":0,\"updateuser_id\":2,\"staff\":null}}', 1, 2, '2025-09-13 17:51:20', 2, '2025-09-13 17:51:20');
+INSERT INTO `sys_operationlog` VALUES (4848, 2, 3, '库存管理>损耗管理', '修改损耗记录', '2025-09-13 17:52:51', '{\"loss\":{\"loss_id\":1,\"store_id\":0,\"material_id\":2,\"batch_no\":null,\"loss_quantity\":6.0,\"loss_type\":0,\"loss_reason\":\"text\",\"loss_time\":\"0001-01-01T00:00:00\",\"updatetime\":\"2025-09-13T17:52:51.3745391+08:00\",\"operator_id\":0,\"updateuser_id\":2,\"staff\":null}}', 1, 2, '2025-09-13 17:52:51', 2, '2025-09-13 17:52:51');
+INSERT INTO `sys_operationlog` VALUES (4849, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-13 17:54:48', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:54:48', 2, '2025-09-13 17:54:48');
+INSERT INTO `sys_operationlog` VALUES (4850, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-13 17:54:48', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:54:48', 2, '2025-09-13 17:54:48');
+INSERT INTO `sys_operationlog` VALUES (4851, 2, 10, '系统登陆', '人员登陆', '2025-09-13 17:58:09', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-13 17:58:09', 2, '2025-09-13 17:58:09');
+INSERT INTO `sys_operationlog` VALUES (4852, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-13 17:58:13', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:58:13', 2, '2025-09-13 17:58:13');
+INSERT INTO `sys_operationlog` VALUES (4853, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-13 17:58:13', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:58:13', 2, '2025-09-13 17:58:13');
+INSERT INTO `sys_operationlog` VALUES (4854, 2, 3, '库存管理>损耗管理', '修改损耗记录', '2025-09-13 17:58:16', '{\"loss\":{\"loss_id\":1,\"store_id\":0,\"material_id\":2,\"batch_no\":null,\"loss_quantity\":6.0,\"loss_type\":0,\"loss_reason\":\"text\",\"loss_time\":\"0001-01-01T00:00:00\",\"updatetime\":null,\"operator_id\":0,\"updateuser_id\":null,\"staff\":null}}', 1, 2, '2025-09-13 17:58:16', 2, '2025-09-13 17:58:16');
+INSERT INTO `sys_operationlog` VALUES (4855, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-13 17:58:16', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:58:16', 2, '2025-09-13 17:58:16');
+INSERT INTO `sys_operationlog` VALUES (4856, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-13 17:58:26', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:58:26', 2, '2025-09-13 17:58:26');
+INSERT INTO `sys_operationlog` VALUES (4857, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-13 17:58:26', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:58:26', 2, '2025-09-13 17:58:26');
+INSERT INTO `sys_operationlog` VALUES (4858, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-13 17:58:26', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:58:26', 2, '2025-09-13 17:58:26');
+INSERT INTO `sys_operationlog` VALUES (4859, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 17:58:31', '{}', 1, 2, '2025-09-13 17:58:31', 2, '2025-09-13 17:58:31');
+INSERT INTO `sys_operationlog` VALUES (4860, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 17:58:31', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:58:31', 2, '2025-09-13 17:58:31');
+INSERT INTO `sys_operationlog` VALUES (4861, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 17:58:31', '{}', 1, 2, '2025-09-13 17:58:31', 2, '2025-09-13 17:58:31');
+INSERT INTO `sys_operationlog` VALUES (4862, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 17:58:31', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:58:31', 2, '2025-09-13 17:58:31');
+INSERT INTO `sys_operationlog` VALUES (4863, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 17:58:31', '{}', 1, 2, '2025-09-13 17:58:31', 2, '2025-09-13 17:58:31');
+INSERT INTO `sys_operationlog` VALUES (4864, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 17:58:31', '{}', 1, 2, '2025-09-13 17:58:31', 2, '2025-09-13 17:58:31');
+INSERT INTO `sys_operationlog` VALUES (4865, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 17:58:31', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:58:31', 2, '2025-09-13 17:58:31');
+INSERT INTO `sys_operationlog` VALUES (4866, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 17:58:31', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 17:58:31', 2, '2025-09-13 17:58:31');
+INSERT INTO `sys_operationlog` VALUES (4867, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 18:12:24', '{}', 1, 2, '2025-09-13 18:12:24', 2, '2025-09-13 18:12:24');
+INSERT INTO `sys_operationlog` VALUES (4868, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 18:12:24', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 18:12:24', 2, '2025-09-13 18:12:24');
+INSERT INTO `sys_operationlog` VALUES (4869, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 18:20:26', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-13 18:20:26', 2, '2025-09-13 18:20:26');
+INSERT INTO `sys_operationlog` VALUES (4870, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 18:20:26', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-13 18:20:26', 2, '2025-09-13 18:20:26');
+INSERT INTO `sys_operationlog` VALUES (4871, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 18:21:31', '{}', 1, 2, '2025-09-13 18:21:31', 2, '2025-09-13 18:21:31');
+INSERT INTO `sys_operationlog` VALUES (4872, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 18:21:32', '{}', 1, 2, '2025-09-13 18:21:32', 2, '2025-09-13 18:21:32');
+INSERT INTO `sys_operationlog` VALUES (4873, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-13 18:21:32', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 18:21:32', 2, '2025-09-13 18:21:32');
+INSERT INTO `sys_operationlog` VALUES (4874, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 18:21:32', '{}', 1, 2, '2025-09-13 18:21:32', 2, '2025-09-13 18:21:32');
+INSERT INTO `sys_operationlog` VALUES (4875, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-13 18:21:32', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 18:21:32', 2, '2025-09-13 18:21:32');
+INSERT INTO `sys_operationlog` VALUES (4876, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-13 18:21:32', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 18:21:32', 2, '2025-09-13 18:21:32');
+INSERT INTO `sys_operationlog` VALUES (4877, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-13 18:21:34', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-13 18:21:34', 2, '2025-09-13 18:21:34');
+INSERT INTO `sys_operationlog` VALUES (4878, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-13 18:21:34', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-13 18:21:34', 2, '2025-09-13 18:21:34');
+INSERT INTO `sys_operationlog` VALUES (4879, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-13 18:21:34', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-13 18:21:34', 2, '2025-09-13 18:21:34');
+INSERT INTO `sys_operationlog` VALUES (4880, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-13 18:21:34', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-13 18:21:34', 2, '2025-09-13 18:21:34');
+INSERT INTO `sys_operationlog` VALUES (4881, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 18:21:36', '{}', 1, 2, '2025-09-13 18:21:36', 2, '2025-09-13 18:21:36');
+INSERT INTO `sys_operationlog` VALUES (4882, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 18:21:36', '{}', 1, 2, '2025-09-13 18:21:36', 2, '2025-09-13 18:21:36');
+INSERT INTO `sys_operationlog` VALUES (4883, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 18:21:36', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 18:21:36', 2, '2025-09-13 18:21:36');
+INSERT INTO `sys_operationlog` VALUES (4884, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 18:21:36', '{}', 1, 2, '2025-09-13 18:21:36', 2, '2025-09-13 18:21:36');
+INSERT INTO `sys_operationlog` VALUES (4885, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 18:21:36', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 18:21:36', 2, '2025-09-13 18:21:36');
+INSERT INTO `sys_operationlog` VALUES (4886, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 18:21:36', '{}', 1, 2, '2025-09-13 18:21:36', 2, '2025-09-13 18:21:36');
+INSERT INTO `sys_operationlog` VALUES (4887, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 18:21:36', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 18:21:36', 2, '2025-09-13 18:21:36');
+INSERT INTO `sys_operationlog` VALUES (4888, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 18:21:36', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 18:21:36', 2, '2025-09-13 18:21:36');
+INSERT INTO `sys_operationlog` VALUES (4889, 2, 10, '系统登陆', '人员登陆', '2025-09-13 21:40:12', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-13 21:40:12', 2, '2025-09-13 21:40:12');
+INSERT INTO `sys_operationlog` VALUES (4890, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 21:40:20', '{}', 1, 2, '2025-09-13 21:40:20', 2, '2025-09-13 21:40:20');
+INSERT INTO `sys_operationlog` VALUES (4891, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 21:40:20', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 21:40:20', 2, '2025-09-13 21:40:20');
+INSERT INTO `sys_operationlog` VALUES (4892, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 21:40:20', '{}', 1, 2, '2025-09-13 21:40:20', 2, '2025-09-13 21:40:20');
+INSERT INTO `sys_operationlog` VALUES (4893, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 21:40:20', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 21:40:20', 2, '2025-09-13 21:40:20');
+INSERT INTO `sys_operationlog` VALUES (4894, 2, 4, '菜品管理>套餐管理', '套餐明细查询', '2025-09-13 21:45:25', '{\"mealId\":1}', 1, 2, '2025-09-13 21:45:25', 2, '2025-09-13 21:45:25');
+INSERT INTO `sys_operationlog` VALUES (4895, 2, 4, '菜品管理>套餐管理', '套餐明细查询', '2025-09-13 21:45:29', '{\"mealId\":1}', 1, 2, '2025-09-13 21:45:29', 2, '2025-09-13 21:45:29');
+INSERT INTO `sys_operationlog` VALUES (4896, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 21:48:26', '{\"mealId\":1}', 1, 2, '2025-09-13 21:48:26', 2, '2025-09-13 21:48:26');
+INSERT INTO `sys_operationlog` VALUES (4897, 2, 4, '菜品管理>套餐管理', '套餐明细查询', '2025-09-13 21:48:31', '{\"mealId\":1}', 1, 2, '2025-09-13 21:48:31', 2, '2025-09-13 21:48:31');
+INSERT INTO `sys_operationlog` VALUES (4898, 2, 10, '系统登陆', '人员登陆', '2025-09-13 21:50:29', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-13 21:50:29', 2, '2025-09-13 21:50:29');
+INSERT INTO `sys_operationlog` VALUES (4899, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-13 21:50:36', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-13 21:50:36', 2, '2025-09-13 21:50:36');
+INSERT INTO `sys_operationlog` VALUES (4900, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-13 21:50:36', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-13 21:50:36', 2, '2025-09-13 21:50:36');
+INSERT INTO `sys_operationlog` VALUES (4901, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 21:51:16', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 21:51:16', 2, '2025-09-13 21:51:16');
+INSERT INTO `sys_operationlog` VALUES (4902, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 21:51:16', '{}', 1, 2, '2025-09-13 21:51:16', 2, '2025-09-13 21:51:16');
+INSERT INTO `sys_operationlog` VALUES (4903, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 21:51:16', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 21:51:16', 2, '2025-09-13 21:51:16');
+INSERT INTO `sys_operationlog` VALUES (4904, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 21:51:16', '{}', 1, 2, '2025-09-13 21:51:16', 2, '2025-09-13 21:51:16');
+INSERT INTO `sys_operationlog` VALUES (4905, 2, 4, '菜品管理>套餐管理', '套餐明细查询', '2025-09-13 21:54:59', '{\"mealId\":1}', 1, 2, '2025-09-13 21:54:59', 2, '2025-09-13 21:54:59');
+INSERT INTO `sys_operationlog` VALUES (4906, 2, 4, '菜品管理>套餐管理', '套餐明细查询', '2025-09-13 21:55:07', '{\"mealId\":1}', 1, 2, '2025-09-13 21:55:07', 2, '2025-09-13 21:55:07');
+INSERT INTO `sys_operationlog` VALUES (4907, 2, 4, '菜品管理>套餐管理', '套餐明细查询', '2025-09-13 21:55:10', '{\"mealId\":1}', 1, 2, '2025-09-13 21:55:10', 2, '2025-09-13 21:55:10');
+INSERT INTO `sys_operationlog` VALUES (4908, 2, 4, '菜品管理>套餐管理', '套餐明细查询', '2025-09-13 21:55:12', '{\"mealId\":1}', 1, 2, '2025-09-13 21:55:12', 2, '2025-09-13 21:55:12');
+INSERT INTO `sys_operationlog` VALUES (4909, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 21:57:20', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 21:57:20', 2, '2025-09-13 21:57:20');
+INSERT INTO `sys_operationlog` VALUES (4910, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 21:57:20', '{}', 1, 2, '2025-09-13 21:57:20', 2, '2025-09-13 21:57:20');
+INSERT INTO `sys_operationlog` VALUES (4911, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 21:57:20', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 21:57:20', 2, '2025-09-13 21:57:20');
+INSERT INTO `sys_operationlog` VALUES (4912, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 21:57:20', '{}', 1, 2, '2025-09-13 21:57:20', 2, '2025-09-13 21:57:20');
+INSERT INTO `sys_operationlog` VALUES (4913, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 21:57:39', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 21:57:39', 2, '2025-09-13 21:57:39');
+INSERT INTO `sys_operationlog` VALUES (4914, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 21:57:39', '{}', 1, 2, '2025-09-13 21:57:39', 2, '2025-09-13 21:57:39');
+INSERT INTO `sys_operationlog` VALUES (4915, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 21:57:39', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 21:57:39', 2, '2025-09-13 21:57:39');
+INSERT INTO `sys_operationlog` VALUES (4916, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 21:57:39', '{}', 1, 2, '2025-09-13 21:57:39', 2, '2025-09-13 21:57:39');
+INSERT INTO `sys_operationlog` VALUES (4917, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:00:22', '{}', 1, 2, '2025-09-13 22:00:22', 2, '2025-09-13 22:00:22');
+INSERT INTO `sys_operationlog` VALUES (4918, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:00:22', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:00:22', 2, '2025-09-13 22:00:22');
+INSERT INTO `sys_operationlog` VALUES (4919, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:00:22', '{}', 1, 2, '2025-09-13 22:00:22', 2, '2025-09-13 22:00:22');
+INSERT INTO `sys_operationlog` VALUES (4920, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:00:22', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:00:22', 2, '2025-09-13 22:00:22');
+INSERT INTO `sys_operationlog` VALUES (4921, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:00:35', '{}', 1, 2, '2025-09-13 22:00:35', 2, '2025-09-13 22:00:35');
+INSERT INTO `sys_operationlog` VALUES (4922, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:00:35', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:00:35', 2, '2025-09-13 22:00:35');
+INSERT INTO `sys_operationlog` VALUES (4923, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:00:35', '{}', 1, 2, '2025-09-13 22:00:35', 2, '2025-09-13 22:00:35');
+INSERT INTO `sys_operationlog` VALUES (4924, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:00:35', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:00:35', 2, '2025-09-13 22:00:35');
+INSERT INTO `sys_operationlog` VALUES (4925, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:02:42', '{}', 1, 2, '2025-09-13 22:02:42', 2, '2025-09-13 22:02:42');
+INSERT INTO `sys_operationlog` VALUES (4926, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:02:42', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:02:42', 2, '2025-09-13 22:02:42');
+INSERT INTO `sys_operationlog` VALUES (4927, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:02:42', '{}', 1, 2, '2025-09-13 22:02:42', 2, '2025-09-13 22:02:42');
+INSERT INTO `sys_operationlog` VALUES (4928, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:02:42', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:02:42', 2, '2025-09-13 22:02:42');
+INSERT INTO `sys_operationlog` VALUES (4929, 2, 10, '系统登陆', '人员登陆', '2025-09-13 22:09:34', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-13 22:09:34', 2, '2025-09-13 22:09:34');
+INSERT INTO `sys_operationlog` VALUES (4930, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:09:39', '{}', 1, 2, '2025-09-13 22:09:39', 2, '2025-09-13 22:09:39');
+INSERT INTO `sys_operationlog` VALUES (4931, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:09:39', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:09:39', 2, '2025-09-13 22:09:39');
+INSERT INTO `sys_operationlog` VALUES (4932, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:09:39', '{}', 1, 2, '2025-09-13 22:09:39', 2, '2025-09-13 22:09:39');
+INSERT INTO `sys_operationlog` VALUES (4933, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:09:39', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:09:39', 2, '2025-09-13 22:09:39');
+INSERT INTO `sys_operationlog` VALUES (4934, 2, 4, '菜品管理>套餐管理', '套餐明细查询', '2025-09-13 22:10:49', '{\"mealId\":1}', 1, 2, '2025-09-13 22:10:49', 2, '2025-09-13 22:10:49');
+INSERT INTO `sys_operationlog` VALUES (4935, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:15:21', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:15:21', 2, '2025-09-13 22:15:21');
+INSERT INTO `sys_operationlog` VALUES (4936, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:15:21', '{}', 1, 2, '2025-09-13 22:15:21', 2, '2025-09-13 22:15:21');
+INSERT INTO `sys_operationlog` VALUES (4937, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:15:21', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:15:21', 2, '2025-09-13 22:15:21');
+INSERT INTO `sys_operationlog` VALUES (4938, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:15:21', '{}', 1, 2, '2025-09-13 22:15:21', 2, '2025-09-13 22:15:21');
+INSERT INTO `sys_operationlog` VALUES (4939, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:35:00', '{}', 1, 2, '2025-09-13 22:35:00', 2, '2025-09-13 22:35:00');
+INSERT INTO `sys_operationlog` VALUES (4940, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:35:00', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:35:00', 2, '2025-09-13 22:35:00');
+INSERT INTO `sys_operationlog` VALUES (4941, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:35:00', '{}', 1, 2, '2025-09-13 22:35:00', 2, '2025-09-13 22:35:00');
+INSERT INTO `sys_operationlog` VALUES (4942, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:35:00', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:35:00', 2, '2025-09-13 22:35:00');
+INSERT INTO `sys_operationlog` VALUES (4943, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 22:35:19', '{\"mealId\":1}', 1, 2, '2025-09-13 22:35:19', 2, '2025-09-13 22:35:19');
+INSERT INTO `sys_operationlog` VALUES (4944, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 22:35:35', '{\"mealId\":1}', 1, 2, '2025-09-13 22:35:35', 2, '2025-09-13 22:35:35');
+INSERT INTO `sys_operationlog` VALUES (4945, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:36:06', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:36:06', 2, '2025-09-13 22:36:06');
+INSERT INTO `sys_operationlog` VALUES (4946, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:36:06', '{}', 1, 2, '2025-09-13 22:36:06', 2, '2025-09-13 22:36:06');
+INSERT INTO `sys_operationlog` VALUES (4947, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:36:06', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:36:06', 2, '2025-09-13 22:36:06');
+INSERT INTO `sys_operationlog` VALUES (4948, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:36:06', '{}', 1, 2, '2025-09-13 22:36:06', 2, '2025-09-13 22:36:06');
+INSERT INTO `sys_operationlog` VALUES (4949, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:37:32', '{}', 1, 2, '2025-09-13 22:37:32', 2, '2025-09-13 22:37:32');
+INSERT INTO `sys_operationlog` VALUES (4950, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:37:32', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:37:32', 2, '2025-09-13 22:37:32');
+INSERT INTO `sys_operationlog` VALUES (4951, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:37:32', '{}', 1, 2, '2025-09-13 22:37:32', 2, '2025-09-13 22:37:32');
+INSERT INTO `sys_operationlog` VALUES (4952, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:37:32', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:37:32', 2, '2025-09-13 22:37:32');
+INSERT INTO `sys_operationlog` VALUES (4953, 2, 10, '系统登陆', '人员登陆', '2025-09-13 22:40:19', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-13 22:40:19', 2, '2025-09-13 22:40:19');
+INSERT INTO `sys_operationlog` VALUES (4954, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:40:26', '{}', 1, 2, '2025-09-13 22:40:26', 2, '2025-09-13 22:40:26');
+INSERT INTO `sys_operationlog` VALUES (4955, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:40:26', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:40:26', 2, '2025-09-13 22:40:26');
+INSERT INTO `sys_operationlog` VALUES (4956, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:40:26', '{}', 1, 2, '2025-09-13 22:40:26', 2, '2025-09-13 22:40:26');
+INSERT INTO `sys_operationlog` VALUES (4957, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:40:26', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:40:26', 2, '2025-09-13 22:40:26');
+INSERT INTO `sys_operationlog` VALUES (4958, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 22:40:37', '{\"mealId\":1}', 1, 2, '2025-09-13 22:40:37', 2, '2025-09-13 22:40:37');
+INSERT INTO `sys_operationlog` VALUES (4959, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:43:04', '{}', 1, 2, '2025-09-13 22:43:04', 2, '2025-09-13 22:43:04');
+INSERT INTO `sys_operationlog` VALUES (4960, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:43:04', '{}', 1, 2, '2025-09-13 22:43:04', 2, '2025-09-13 22:43:04');
+INSERT INTO `sys_operationlog` VALUES (4961, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:43:04', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:43:04', 2, '2025-09-13 22:43:04');
+INSERT INTO `sys_operationlog` VALUES (4962, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:43:04', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:43:04', 2, '2025-09-13 22:43:04');
+INSERT INTO `sys_operationlog` VALUES (4963, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 22:43:09', '{\"mealId\":1}', 1, 2, '2025-09-13 22:43:09', 2, '2025-09-13 22:43:09');
+INSERT INTO `sys_operationlog` VALUES (4964, 2, 4, '菜品管理>套餐管理', '套餐明细查询', '2025-09-13 22:43:27', '{\"mealId\":1}', 1, 2, '2025-09-13 22:43:27', 2, '2025-09-13 22:43:27');
+INSERT INTO `sys_operationlog` VALUES (4965, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 22:43:32', '{\"mealId\":1}', 1, 2, '2025-09-13 22:43:32', 2, '2025-09-13 22:43:32');
+INSERT INTO `sys_operationlog` VALUES (4966, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 22:43:39', '{\"mealId\":1}', 1, 2, '2025-09-13 22:43:39', 2, '2025-09-13 22:43:39');
+INSERT INTO `sys_operationlog` VALUES (4967, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:46:37', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:46:37', 2, '2025-09-13 22:46:37');
+INSERT INTO `sys_operationlog` VALUES (4968, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:46:37', '{}', 1, 2, '2025-09-13 22:46:37', 2, '2025-09-13 22:46:37');
+INSERT INTO `sys_operationlog` VALUES (4969, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:46:37', '{}', 1, 2, '2025-09-13 22:46:37', 2, '2025-09-13 22:46:37');
+INSERT INTO `sys_operationlog` VALUES (4970, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:46:37', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:46:37', 2, '2025-09-13 22:46:37');
+INSERT INTO `sys_operationlog` VALUES (4971, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:47:35', '{}', 1, 2, '2025-09-13 22:47:35', 2, '2025-09-13 22:47:35');
+INSERT INTO `sys_operationlog` VALUES (4972, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:47:35', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:47:35', 2, '2025-09-13 22:47:35');
+INSERT INTO `sys_operationlog` VALUES (4973, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:47:35', '{}', 1, 2, '2025-09-13 22:47:35', 2, '2025-09-13 22:47:35');
+INSERT INTO `sys_operationlog` VALUES (4974, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:47:35', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:47:35', 2, '2025-09-13 22:47:35');
+INSERT INTO `sys_operationlog` VALUES (4975, 2, 4, '菜品管理>套餐管理', '套餐明细查询', '2025-09-13 22:47:40', '{\"mealId\":1}', 1, 2, '2025-09-13 22:47:40', 2, '2025-09-13 22:47:40');
+INSERT INTO `sys_operationlog` VALUES (4976, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 22:47:43', '{\"mealId\":1}', 1, 2, '2025-09-13 22:47:43', 2, '2025-09-13 22:47:43');
+INSERT INTO `sys_operationlog` VALUES (4977, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:48:41', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:48:41', 2, '2025-09-13 22:48:41');
+INSERT INTO `sys_operationlog` VALUES (4978, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:48:41', '{}', 1, 2, '2025-09-13 22:48:41', 2, '2025-09-13 22:48:41');
+INSERT INTO `sys_operationlog` VALUES (4979, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:48:41', '{}', 1, 2, '2025-09-13 22:48:41', 2, '2025-09-13 22:48:41');
+INSERT INTO `sys_operationlog` VALUES (4980, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:48:41', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:48:41', 2, '2025-09-13 22:48:41');
+INSERT INTO `sys_operationlog` VALUES (4981, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 22:48:49', '{\"mealId\":1}', 1, 2, '2025-09-13 22:48:49', 2, '2025-09-13 22:48:49');
+INSERT INTO `sys_operationlog` VALUES (4982, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:49:18', '{}', 1, 2, '2025-09-13 22:49:18', 2, '2025-09-13 22:49:18');
+INSERT INTO `sys_operationlog` VALUES (4983, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:49:18', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:49:18', 2, '2025-09-13 22:49:18');
+INSERT INTO `sys_operationlog` VALUES (4984, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:49:18', '{}', 1, 2, '2025-09-13 22:49:18', 2, '2025-09-13 22:49:18');
+INSERT INTO `sys_operationlog` VALUES (4985, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:49:18', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:49:18', 2, '2025-09-13 22:49:18');
+INSERT INTO `sys_operationlog` VALUES (4986, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 22:49:22', '{\"mealId\":1}', 1, 2, '2025-09-13 22:49:22', 2, '2025-09-13 22:49:22');
+INSERT INTO `sys_operationlog` VALUES (4987, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 22:49:34', '{\"mealId\":1}', 1, 2, '2025-09-13 22:49:34', 2, '2025-09-13 22:49:34');
+INSERT INTO `sys_operationlog` VALUES (4988, 2, 10, '系统登陆', '人员登陆', '2025-09-13 22:51:48', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-13 22:51:48', 2, '2025-09-13 22:51:48');
+INSERT INTO `sys_operationlog` VALUES (4989, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:51:54', '{}', 1, 2, '2025-09-13 22:51:54', 2, '2025-09-13 22:51:54');
+INSERT INTO `sys_operationlog` VALUES (4990, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:51:54', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:51:54', 2, '2025-09-13 22:51:54');
+INSERT INTO `sys_operationlog` VALUES (4991, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:51:54', '{}', 1, 2, '2025-09-13 22:51:54', 2, '2025-09-13 22:51:54');
+INSERT INTO `sys_operationlog` VALUES (4992, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:51:54', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:51:54', 2, '2025-09-13 22:51:54');
+INSERT INTO `sys_operationlog` VALUES (4993, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:54:16', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:54:16', 2, '2025-09-13 22:54:16');
+INSERT INTO `sys_operationlog` VALUES (4994, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:54:16', '{}', 1, 2, '2025-09-13 22:54:16', 2, '2025-09-13 22:54:16');
+INSERT INTO `sys_operationlog` VALUES (4995, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:54:16', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:54:16', 2, '2025-09-13 22:54:16');
+INSERT INTO `sys_operationlog` VALUES (4996, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:54:16', '{}', 1, 2, '2025-09-13 22:54:16', 2, '2025-09-13 22:54:16');
+INSERT INTO `sys_operationlog` VALUES (4997, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:54:22', '{}', 1, 2, '2025-09-13 22:54:22', 2, '2025-09-13 22:54:22');
+INSERT INTO `sys_operationlog` VALUES (4998, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:54:22', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:54:22', 2, '2025-09-13 22:54:22');
+INSERT INTO `sys_operationlog` VALUES (4999, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:54:22', '{}', 1, 2, '2025-09-13 22:54:22', 2, '2025-09-13 22:54:22');
+INSERT INTO `sys_operationlog` VALUES (5000, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:54:22', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:54:22', 2, '2025-09-13 22:54:22');
+INSERT INTO `sys_operationlog` VALUES (5001, 2, 10, '系统登陆', '人员登陆', '2025-09-13 22:56:37', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-13 22:56:37', 2, '2025-09-13 22:56:37');
+INSERT INTO `sys_operationlog` VALUES (5002, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:56:42', '{}', 1, 2, '2025-09-13 22:56:42', 2, '2025-09-13 22:56:42');
+INSERT INTO `sys_operationlog` VALUES (5003, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:56:42', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:56:42', 2, '2025-09-13 22:56:42');
+INSERT INTO `sys_operationlog` VALUES (5004, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 22:56:43', '{}', 1, 2, '2025-09-13 22:56:43', 2, '2025-09-13 22:56:43');
+INSERT INTO `sys_operationlog` VALUES (5005, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 22:56:43', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 22:56:43', 2, '2025-09-13 22:56:43');
+INSERT INTO `sys_operationlog` VALUES (5006, 2, 3, '菜品管理>套餐管理', '新增套餐', '2025-09-13 22:57:35', '{\"meal\":{\"meal_id\":0,\"store_id\":2,\"meal_name\":\"111\",\"price\":111.0,\"original_price\":111.0,\"description\":\"111\",\"is_fixed\":0,\"status\":1,\"start_time\":\"2025-09-13T22:56:54\",\"end_time\":\"2025-09-27T00:00:00\",\"meal_item\":[{\"item_id\":0,\"meal_id\":2,\"dish_id\":0,\"spec_id\":null,\"quantity\":0,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null},{\"item_id\":0,\"meal_id\":2,\"dish_id\":0,\"spec_id\":null,\"quantity\":0,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null}],\"item\":[]}}', 1, 2, '2025-09-13 22:57:35', 2, '2025-09-13 22:57:35');
+INSERT INTO `sys_operationlog` VALUES (5007, 2, 3, '菜品管理>套餐管理', '新增套餐', '2025-09-13 22:57:40', '{\"meal\":{\"meal_id\":0,\"store_id\":2,\"meal_name\":\"111\",\"price\":111.0,\"original_price\":111.0,\"description\":\"111\",\"is_fixed\":0,\"status\":1,\"start_time\":\"2025-09-13T22:56:54\",\"end_time\":\"2025-09-27T00:00:00\",\"meal_item\":[{\"item_id\":0,\"meal_id\":3,\"dish_id\":0,\"spec_id\":null,\"quantity\":0,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null},{\"item_id\":0,\"meal_id\":3,\"dish_id\":0,\"spec_id\":null,\"quantity\":0,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null}],\"item\":[]}}', 1, 2, '2025-09-13 22:57:40', 2, '2025-09-13 22:57:40');
+INSERT INTO `sys_operationlog` VALUES (5008, 2, 10, '系统登陆', '人员登陆', '2025-09-13 23:11:20', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-13 23:11:20', 2, '2025-09-13 23:11:20');
+INSERT INTO `sys_operationlog` VALUES (5009, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 23:11:24', '{}', 1, 2, '2025-09-13 23:11:24', 2, '2025-09-13 23:11:24');
+INSERT INTO `sys_operationlog` VALUES (5010, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 23:11:24', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 23:11:24', 2, '2025-09-13 23:11:24');
+INSERT INTO `sys_operationlog` VALUES (5011, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 23:11:24', '{}', 1, 2, '2025-09-13 23:11:24', 2, '2025-09-13 23:11:24');
+INSERT INTO `sys_operationlog` VALUES (5012, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 23:11:24', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 23:11:24', 2, '2025-09-13 23:11:24');
+INSERT INTO `sys_operationlog` VALUES (5013, 2, 3, '菜品管理>套餐管理', '新增套餐', '2025-09-13 23:12:12', '{\"meal\":{\"meal_id\":0,\"store_id\":2,\"meal_name\":\"111\",\"price\":111.0,\"original_price\":111.0,\"description\":\"111\",\"is_fixed\":0,\"status\":1,\"start_time\":\"2025-09-13T23:11:39\",\"end_time\":\"2025-09-27T00:00:00\",\"meal_item\":[{\"item_id\":0,\"meal_id\":5,\"dish_id\":0,\"spec_id\":null,\"quantity\":0,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null},{\"item_id\":0,\"meal_id\":5,\"dish_id\":0,\"spec_id\":null,\"quantity\":0,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null}],\"item\":[]}}', 1, 2, '2025-09-13 23:12:12', 2, '2025-09-13 23:12:12');
+INSERT INTO `sys_operationlog` VALUES (5014, 2, 3, '菜品管理>套餐管理', '新增套餐', '2025-09-13 23:12:31', '{\"meal\":{\"meal_id\":0,\"store_id\":2,\"meal_name\":\"111\",\"price\":111.0,\"original_price\":111.0,\"description\":\"111\",\"is_fixed\":0,\"status\":1,\"start_time\":\"2025-09-13T23:11:39\",\"end_time\":\"2025-09-27T00:00:00\",\"meal_item\":[{\"item_id\":0,\"meal_id\":6,\"dish_id\":0,\"spec_id\":null,\"quantity\":0,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null},{\"item_id\":0,\"meal_id\":6,\"dish_id\":0,\"spec_id\":null,\"quantity\":0,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null}],\"item\":[]}}', 1, 2, '2025-09-13 23:12:31', 2, '2025-09-13 23:12:31');
+INSERT INTO `sys_operationlog` VALUES (5015, 2, 3, '菜品管理>套餐管理', '新增套餐', '2025-09-13 23:13:57', '{\"meal\":{\"meal_id\":0,\"store_id\":2,\"meal_name\":\"111\",\"price\":111.0,\"original_price\":111.0,\"description\":\"111\",\"is_fixed\":0,\"status\":1,\"start_time\":\"2025-09-13T23:11:39\",\"end_time\":\"2025-09-27T00:00:00\",\"meal_item\":[{\"item_id\":0,\"meal_id\":7,\"dish_id\":0,\"spec_id\":null,\"quantity\":0,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null},{\"item_id\":0,\"meal_id\":7,\"dish_id\":0,\"spec_id\":null,\"quantity\":0,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null}],\"item\":[]}}', 1, 2, '2025-09-13 23:13:57', 2, '2025-09-13 23:13:57');
+INSERT INTO `sys_operationlog` VALUES (5016, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 23:14:07', '{}', 1, 2, '2025-09-13 23:14:07', 2, '2025-09-13 23:14:07');
+INSERT INTO `sys_operationlog` VALUES (5017, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 23:14:07', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 23:14:07', 2, '2025-09-13 23:14:07');
+INSERT INTO `sys_operationlog` VALUES (5018, 2, 3, '菜品管理>套餐管理', '新增套餐', '2025-09-13 23:15:26', '{\"meal\":{\"meal_id\":0,\"store_id\":2,\"meal_name\":\"111\",\"price\":11.0,\"original_price\":11.0,\"description\":\"11\",\"is_fixed\":0,\"status\":1,\"start_time\":\"2025-09-13T23:14:56\",\"end_time\":\"2025-09-27T00:00:00\",\"meal_item\":[{\"item_id\":0,\"meal_id\":8,\"dish_id\":0,\"spec_id\":null,\"quantity\":0,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null},{\"item_id\":0,\"meal_id\":8,\"dish_id\":0,\"spec_id\":null,\"quantity\":0,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null}],\"item\":[]}}', 1, 2, '2025-09-13 23:15:26', 2, '2025-09-13 23:15:26');
+INSERT INTO `sys_operationlog` VALUES (5019, 2, 3, '菜品管理>套餐管理', '新增套餐', '2025-09-13 23:15:31', '{\"meal\":{\"meal_id\":0,\"store_id\":2,\"meal_name\":\"111\",\"price\":11.0,\"original_price\":11.0,\"description\":\"11\",\"is_fixed\":0,\"status\":1,\"start_time\":\"2025-09-13T23:14:56\",\"end_time\":\"2025-09-27T00:00:00\",\"meal_item\":[{\"item_id\":0,\"meal_id\":9,\"dish_id\":0,\"spec_id\":null,\"quantity\":0,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null},{\"item_id\":0,\"meal_id\":9,\"dish_id\":0,\"spec_id\":null,\"quantity\":0,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null}],\"item\":[]}}', 1, 2, '2025-09-13 23:15:31', 2, '2025-09-13 23:15:31');
+INSERT INTO `sys_operationlog` VALUES (5020, 2, 3, '菜品管理>套餐管理', '新增套餐', '2025-09-13 23:15:37', '{\"meal\":{\"meal_id\":0,\"store_id\":2,\"meal_name\":\"111\",\"price\":11.0,\"original_price\":11.0,\"description\":\"11\",\"is_fixed\":0,\"status\":1,\"start_time\":\"2025-09-13T23:14:56\",\"end_time\":\"2025-09-27T00:00:00\",\"meal_item\":[{\"item_id\":0,\"meal_id\":10,\"dish_id\":0,\"spec_id\":null,\"quantity\":0,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null},{\"item_id\":0,\"meal_id\":10,\"dish_id\":0,\"spec_id\":null,\"quantity\":0,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null}],\"item\":[]}}', 1, 2, '2025-09-13 23:15:37', 2, '2025-09-13 23:15:37');
+INSERT INTO `sys_operationlog` VALUES (5021, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 23:16:26', '{}', 1, 2, '2025-09-13 23:16:26', 2, '2025-09-13 23:16:26');
+INSERT INTO `sys_operationlog` VALUES (5022, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 23:16:26', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 23:16:26', 2, '2025-09-13 23:16:26');
+INSERT INTO `sys_operationlog` VALUES (5023, 2, 3, '菜品管理>套餐管理', '新增套餐', '2025-09-13 23:17:05', '{\"meal\":{\"meal_id\":0,\"store_id\":2,\"meal_name\":\"111\",\"price\":11.0,\"original_price\":111.0,\"description\":\"111\",\"is_fixed\":0,\"status\":1,\"start_time\":\"2025-09-13T23:17:00\",\"end_time\":\"2025-09-27T00:00:00\",\"meal_item\":[{\"item_id\":0,\"meal_id\":11,\"dish_id\":2,\"spec_id\":2,\"quantity\":1,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":\"11\"},{\"item_id\":0,\"meal_id\":11,\"dish_id\":2,\"spec_id\":1,\"quantity\":1,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":\"22\"}],\"item\":[]}}', 1, 2, '2025-09-13 23:17:05', 2, '2025-09-13 23:17:05');
+INSERT INTO `sys_operationlog` VALUES (5024, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 23:17:05', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 23:17:05', 2, '2025-09-13 23:17:05');
+INSERT INTO `sys_operationlog` VALUES (5025, 2, 4, '菜品管理>套餐管理', '套餐明细查询', '2025-09-13 23:17:08', '{\"mealId\":1}', 1, 2, '2025-09-13 23:17:08', 2, '2025-09-13 23:17:08');
+INSERT INTO `sys_operationlog` VALUES (5026, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 23:17:15', '{\"mealId\":1}', 1, 2, '2025-09-13 23:17:15', 2, '2025-09-13 23:17:15');
+INSERT INTO `sys_operationlog` VALUES (5027, 2, 4, '菜品管理>套餐管理', '套餐明细查询', '2025-09-13 23:17:22', '{\"mealId\":1}', 1, 2, '2025-09-13 23:17:22', 2, '2025-09-13 23:17:22');
+INSERT INTO `sys_operationlog` VALUES (5028, 2, 4, '菜品管理>套餐管理', '套餐明细查询', '2025-09-13 23:17:48', '{\"mealId\":1}', 1, 2, '2025-09-13 23:17:48', 2, '2025-09-13 23:17:48');
+INSERT INTO `sys_operationlog` VALUES (5029, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 23:17:55', '{\"mealId\":1}', 1, 2, '2025-09-13 23:17:55', 2, '2025-09-13 23:17:55');
+INSERT INTO `sys_operationlog` VALUES (5030, 2, 4, '菜品管理>套餐管理', '套餐明细查询', '2025-09-13 23:17:59', '{\"mealId\":11}', 1, 2, '2025-09-13 23:17:59', 2, '2025-09-13 23:17:59');
+INSERT INTO `sys_operationlog` VALUES (5031, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 23:18:04', '{\"mealId\":11}', 1, 2, '2025-09-13 23:18:04', 2, '2025-09-13 23:18:04');
+INSERT INTO `sys_operationlog` VALUES (5032, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 23:18:10', '{\"mealId\":1}', 1, 2, '2025-09-13 23:18:10', 2, '2025-09-13 23:18:10');
+INSERT INTO `sys_operationlog` VALUES (5033, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 23:18:23', '{\"mealId\":11}', 1, 2, '2025-09-13 23:18:23', 2, '2025-09-13 23:18:23');
+INSERT INTO `sys_operationlog` VALUES (5034, 2, 10, '系统登陆', '人员登陆', '2025-09-13 23:19:38', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-13 23:19:38', 2, '2025-09-13 23:19:38');
+INSERT INTO `sys_operationlog` VALUES (5035, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 23:19:43', '{}', 1, 2, '2025-09-13 23:19:43', 2, '2025-09-13 23:19:43');
+INSERT INTO `sys_operationlog` VALUES (5036, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 23:19:43', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 23:19:43', 2, '2025-09-13 23:19:43');
+INSERT INTO `sys_operationlog` VALUES (5037, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 23:19:43', '{}', 1, 2, '2025-09-13 23:19:43', 2, '2025-09-13 23:19:43');
+INSERT INTO `sys_operationlog` VALUES (5038, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 23:19:43', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 23:19:43', 2, '2025-09-13 23:19:43');
+INSERT INTO `sys_operationlog` VALUES (5039, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 23:19:48', '{\"mealId\":11}', 1, 2, '2025-09-13 23:19:48', 2, '2025-09-13 23:19:48');
+INSERT INTO `sys_operationlog` VALUES (5040, 2, 10, '系统登陆', '人员登陆', '2025-09-13 23:21:58', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-13 23:21:58', 2, '2025-09-13 23:21:58');
+INSERT INTO `sys_operationlog` VALUES (5041, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 23:22:05', '{}', 1, 2, '2025-09-13 23:22:05', 2, '2025-09-13 23:22:05');
+INSERT INTO `sys_operationlog` VALUES (5042, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 23:22:05', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 23:22:05', 2, '2025-09-13 23:22:05');
+INSERT INTO `sys_operationlog` VALUES (5043, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 23:22:05', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 23:22:05', 2, '2025-09-13 23:22:05');
+INSERT INTO `sys_operationlog` VALUES (5044, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 23:22:05', '{}', 1, 2, '2025-09-13 23:22:05', 2, '2025-09-13 23:22:05');
+INSERT INTO `sys_operationlog` VALUES (5045, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 23:22:06', '{\"mealId\":11}', 1, 2, '2025-09-13 23:22:06', 2, '2025-09-13 23:22:06');
+INSERT INTO `sys_operationlog` VALUES (5046, 2, 10, '系统登陆', '人员登陆', '2025-09-13 23:23:17', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-13 23:23:17', 2, '2025-09-13 23:23:17');
+INSERT INTO `sys_operationlog` VALUES (5047, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 23:23:22', '{}', 1, 2, '2025-09-13 23:23:22', 2, '2025-09-13 23:23:22');
+INSERT INTO `sys_operationlog` VALUES (5048, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 23:23:22', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 23:23:22', 2, '2025-09-13 23:23:22');
+INSERT INTO `sys_operationlog` VALUES (5049, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-13 23:23:22', '{}', 1, 2, '2025-09-13 23:23:22', 2, '2025-09-13 23:23:22');
+INSERT INTO `sys_operationlog` VALUES (5050, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 23:23:22', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 23:23:22', 2, '2025-09-13 23:23:22');
+INSERT INTO `sys_operationlog` VALUES (5051, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 23:23:24', '{\"mealId\":11}', 1, 2, '2025-09-13 23:23:24', 2, '2025-09-13 23:23:24');
+INSERT INTO `sys_operationlog` VALUES (5052, 2, 3, '菜品管理>套餐管理', '新增套餐', '2025-09-13 23:23:44', '{\"meal\":{\"meal_id\":0,\"store_id\":2,\"meal_name\":\"111\",\"price\":111.0,\"original_price\":111.0,\"description\":\"111\",\"is_fixed\":1,\"status\":1,\"start_time\":\"2025-09-13T23:23:33\",\"end_time\":\"2025-09-27T00:00:00\",\"meal_item\":[{\"item_id\":0,\"meal_id\":12,\"dish_id\":2,\"spec_id\":2,\"quantity\":1,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null}],\"item\":null}}', 1, 2, '2025-09-13 23:23:44', 2, '2025-09-13 23:23:44');
+INSERT INTO `sys_operationlog` VALUES (5053, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-13 23:23:44', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-13 23:23:44', 2, '2025-09-13 23:23:44');
+INSERT INTO `sys_operationlog` VALUES (5054, 2, 4, '菜品管理>套餐管理', '套餐明细查询', '2025-09-13 23:23:46', '{\"mealId\":12}', 1, 2, '2025-09-13 23:23:46', 2, '2025-09-13 23:23:46');
+INSERT INTO `sys_operationlog` VALUES (5055, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 23:23:48', '{\"mealId\":12}', 1, 2, '2025-09-13 23:23:48', 2, '2025-09-13 23:23:48');
+INSERT INTO `sys_operationlog` VALUES (5056, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 23:23:52', '{\"mealId\":1}', 1, 2, '2025-09-13 23:23:52', 2, '2025-09-13 23:23:52');
+INSERT INTO `sys_operationlog` VALUES (5057, 2, 4, '菜品管理>套餐管理', '套餐明细查询', '2025-09-13 23:23:55', '{\"mealId\":1}', 1, 2, '2025-09-13 23:23:55', 2, '2025-09-13 23:23:55');
+INSERT INTO `sys_operationlog` VALUES (5058, 2, 4, '菜品管理>套餐管理', '套餐明细查询', '2025-09-13 23:23:57', '{\"mealId\":11}', 1, 2, '2025-09-13 23:23:57', 2, '2025-09-13 23:23:57');
+INSERT INTO `sys_operationlog` VALUES (5059, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-13 23:24:00', '{\"mealId\":11}', 1, 2, '2025-09-13 23:24:00', 2, '2025-09-13 23:24:00');
+INSERT INTO `sys_operationlog` VALUES (5060, 2, 10, '系统登陆', '人员登陆', '2025-09-14 00:02:24', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-14 00:02:24', 2, '2025-09-14 00:02:24');
+INSERT INTO `sys_operationlog` VALUES (5061, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 00:03:59', '{}', 1, 2, '2025-09-14 00:03:59', 2, '2025-09-14 00:03:59');
+INSERT INTO `sys_operationlog` VALUES (5062, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-14 00:03:59', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-14 00:03:59', 2, '2025-09-14 00:03:59');
+INSERT INTO `sys_operationlog` VALUES (5063, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 00:03:59', '{}', 1, 2, '2025-09-14 00:03:59', 2, '2025-09-14 00:03:59');
+INSERT INTO `sys_operationlog` VALUES (5064, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-14 00:03:59', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-14 00:03:59', 2, '2025-09-14 00:03:59');
+INSERT INTO `sys_operationlog` VALUES (5065, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-14 00:04:12', '{\"mealId\":12}', 1, 2, '2025-09-14 00:04:12', 2, '2025-09-14 00:04:12');
+INSERT INTO `sys_operationlog` VALUES (5066, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 00:05:25', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-14 00:05:25', 2, '2025-09-14 00:05:25');
+INSERT INTO `sys_operationlog` VALUES (5067, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 00:05:25', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-14 00:05:25', 2, '2025-09-14 00:05:25');
+INSERT INTO `sys_operationlog` VALUES (5068, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 00:05:25', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-14 00:05:25', 2, '2025-09-14 00:05:25');
+INSERT INTO `sys_operationlog` VALUES (5069, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-14 00:05:32', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-14 00:05:32', 2, '2025-09-14 00:05:32');
+INSERT INTO `sys_operationlog` VALUES (5070, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 00:05:32', '{}', 1, 2, '2025-09-14 00:05:32', 2, '2025-09-14 00:05:32');
+INSERT INTO `sys_operationlog` VALUES (5071, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 00:05:32', '{}', 1, 2, '2025-09-14 00:05:32', 2, '2025-09-14 00:05:32');
+INSERT INTO `sys_operationlog` VALUES (5072, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-14 00:05:32', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-14 00:05:32', 2, '2025-09-14 00:05:32');
+INSERT INTO `sys_operationlog` VALUES (5073, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 00:05:32', '{}', 1, 2, '2025-09-14 00:05:32', 2, '2025-09-14 00:05:32');
+INSERT INTO `sys_operationlog` VALUES (5074, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-14 00:05:32', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-14 00:05:32', 2, '2025-09-14 00:05:32');
+INSERT INTO `sys_operationlog` VALUES (5075, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-14 00:07:15', '{\"mealId\":12}', 1, 2, '2025-09-14 00:07:15', 2, '2025-09-14 00:07:15');
+INSERT INTO `sys_operationlog` VALUES (5076, 2, 10, '系统登陆', '人员登陆', '2025-09-14 00:08:02', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-14 00:08:02', 2, '2025-09-14 00:08:02');
+INSERT INTO `sys_operationlog` VALUES (5077, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 00:08:07', '{}', 1, 2, '2025-09-14 00:08:07', 2, '2025-09-14 00:08:07');
+INSERT INTO `sys_operationlog` VALUES (5078, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-14 00:08:07', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-14 00:08:07', 2, '2025-09-14 00:08:07');
+INSERT INTO `sys_operationlog` VALUES (5079, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 00:08:07', '{}', 1, 2, '2025-09-14 00:08:07', 2, '2025-09-14 00:08:07');
+INSERT INTO `sys_operationlog` VALUES (5080, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-14 00:08:07', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-14 00:08:07', 2, '2025-09-14 00:08:07');
+INSERT INTO `sys_operationlog` VALUES (5081, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-14 00:08:09', '{\"mealId\":12}', 1, 2, '2025-09-14 00:08:09', 2, '2025-09-14 00:08:09');
+INSERT INTO `sys_operationlog` VALUES (5082, 2, 10, '系统登陆', '人员登陆', '2025-09-14 00:08:49', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-14 00:08:49', 2, '2025-09-14 00:08:49');
+INSERT INTO `sys_operationlog` VALUES (5083, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 00:08:54', '{}', 1, 2, '2025-09-14 00:08:54', 2, '2025-09-14 00:08:54');
+INSERT INTO `sys_operationlog` VALUES (5084, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-14 00:08:54', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-14 00:08:54', 2, '2025-09-14 00:08:54');
+INSERT INTO `sys_operationlog` VALUES (5085, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 00:08:55', '{}', 1, 2, '2025-09-14 00:08:55', 2, '2025-09-14 00:08:55');
+INSERT INTO `sys_operationlog` VALUES (5086, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-14 00:08:55', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-14 00:08:55', 2, '2025-09-14 00:08:55');
+INSERT INTO `sys_operationlog` VALUES (5087, 2, 4, '菜品管理>套餐管理', '套餐明细查询', '2025-09-14 00:08:57', '{\"mealId\":12}', 1, 2, '2025-09-14 00:08:57', 2, '2025-09-14 00:08:57');
+INSERT INTO `sys_operationlog` VALUES (5088, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-14 00:09:00', '{\"mealId\":12}', 1, 2, '2025-09-14 00:09:00', 2, '2025-09-14 00:09:00');
+INSERT INTO `sys_operationlog` VALUES (5089, 2, 1, '菜品管理>套餐管理', '修改套餐', '2025-09-14 00:09:07', '{\"meal\":{\"meal_id\":12,\"store_id\":2,\"meal_name\":\"111\",\"price\":111.0,\"original_price\":111.0,\"description\":\"111\",\"is_fixed\":1,\"status\":1,\"start_time\":\"2025-09-13T23:23:33\",\"end_time\":\"2025-09-27T00:00:00\",\"image_url\":\"http://169.254.188.119:7092/20250914/2cea67ba-9bec-4efb-8fec-436adae13124.gif\",\"meal_item\":[{\"item_id\":23,\"meal_id\":12,\"dish_id\":2,\"spec_id\":2,\"quantity\":1,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null}],\"item\":[{\"item_id\":23,\"meal_id\":12,\"dish_id\":2,\"spec_id\":2,\"quantity\":1,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null}]}}', 1, 2, '2025-09-14 00:09:07', 2, '2025-09-14 00:09:07');
+INSERT INTO `sys_operationlog` VALUES (5090, 2, 1, '菜品管理>套餐管理', '修改套餐', '2025-09-14 00:09:11', '{\"meal\":{\"meal_id\":12,\"store_id\":2,\"meal_name\":\"111\",\"price\":111.0,\"original_price\":111.0,\"description\":\"111\",\"is_fixed\":1,\"status\":1,\"start_time\":\"2025-09-13T23:23:33\",\"end_time\":\"2025-09-27T00:00:00\",\"image_url\":\"http://169.254.188.119:7092/20250914/2cea67ba-9bec-4efb-8fec-436adae13124.gif\",\"meal_item\":[{\"item_id\":23,\"meal_id\":12,\"dish_id\":2,\"spec_id\":2,\"quantity\":1,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null}],\"item\":[{\"item_id\":23,\"meal_id\":12,\"dish_id\":2,\"spec_id\":2,\"quantity\":1,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null}]}}', 1, 2, '2025-09-14 00:09:11', 2, '2025-09-14 00:09:11');
+INSERT INTO `sys_operationlog` VALUES (5091, 2, 10, '系统登陆', '人员登陆', '2025-09-14 00:11:17', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-14 00:11:17', 2, '2025-09-14 00:11:17');
+INSERT INTO `sys_operationlog` VALUES (5092, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 00:11:22', '{}', 1, 2, '2025-09-14 00:11:22', 2, '2025-09-14 00:11:22');
+INSERT INTO `sys_operationlog` VALUES (5093, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 00:11:22', '{}', 1, 2, '2025-09-14 00:11:22', 2, '2025-09-14 00:11:22');
+INSERT INTO `sys_operationlog` VALUES (5094, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-14 00:11:22', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-14 00:11:22', 2, '2025-09-14 00:11:22');
+INSERT INTO `sys_operationlog` VALUES (5095, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-14 00:11:22', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-14 00:11:22', 2, '2025-09-14 00:11:22');
+INSERT INTO `sys_operationlog` VALUES (5096, 2, 4, '菜品管理>套餐管理', '套餐详情查询', '2025-09-14 00:11:24', '{\"mealId\":12}', 1, 2, '2025-09-14 00:11:24', 2, '2025-09-14 00:11:24');
+INSERT INTO `sys_operationlog` VALUES (5097, 2, 1, '菜品管理>套餐管理', '修改套餐', '2025-09-14 00:11:33', '{\"meal\":{\"meal_id\":12,\"store_id\":2,\"meal_name\":\"111\",\"price\":111.0,\"original_price\":111.0,\"description\":\"111\",\"is_fixed\":1,\"status\":1,\"start_time\":\"2025-09-13T23:23:33\",\"end_time\":\"2025-09-27T00:00:00\",\"image_url\":\"http://169.254.188.119:7092/20250914/f4a3573c-c5d3-4a09-8028-57762b59a4be.gif\",\"meal_item\":[{\"item_id\":23,\"meal_id\":12,\"dish_id\":2,\"spec_id\":2,\"quantity\":1,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null}],\"item\":[{\"item_id\":23,\"meal_id\":12,\"dish_id\":2,\"spec_id\":2,\"quantity\":1,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null}]}}', 1, 2, '2025-09-14 00:11:33', 2, '2025-09-14 00:11:33');
+INSERT INTO `sys_operationlog` VALUES (5098, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-14 00:11:33', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-14 00:11:33', 2, '2025-09-14 00:11:33');
+INSERT INTO `sys_operationlog` VALUES (5099, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 13:16:11', '{}', 1, 2, '2025-09-14 13:16:11', 2, '2025-09-14 13:16:11');
+INSERT INTO `sys_operationlog` VALUES (5100, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-14 13:16:11', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-14 13:16:11', 2, '2025-09-14 13:16:11');
+INSERT INTO `sys_operationlog` VALUES (5101, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 15:15:51', '{}', 1, 2, '2025-09-14 15:15:51', 2, '2025-09-14 15:15:51');
+INSERT INTO `sys_operationlog` VALUES (5102, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-14 15:15:51', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-14 15:15:51', 2, '2025-09-14 15:15:51');
+INSERT INTO `sys_operationlog` VALUES (5103, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 15:15:54', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-14 15:15:54', 2, '2025-09-14 15:15:54');
+INSERT INTO `sys_operationlog` VALUES (5104, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 15:15:54', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-14 15:15:54', 2, '2025-09-14 15:15:54');
+INSERT INTO `sys_operationlog` VALUES (5105, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 15:15:58', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-14 15:15:58', 2, '2025-09-14 15:15:58');
+INSERT INTO `sys_operationlog` VALUES (5106, 2, 11, '账号登出', '人员退出系统', '2025-09-14 15:16:03', '{}', 1, 2, '2025-09-14 15:16:03', 2, '2025-09-14 15:16:03');
+INSERT INTO `sys_operationlog` VALUES (5107, 2, 10, '系统登陆', '人员登陆', '2025-09-14 15:16:09', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-14 15:16:09', 2, '2025-09-14 15:16:09');
+INSERT INTO `sys_operationlog` VALUES (5108, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 15:16:12', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-14 15:16:12', 2, '2025-09-14 15:16:12');
+INSERT INTO `sys_operationlog` VALUES (5109, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 15:16:12', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-14 15:16:12', 2, '2025-09-14 15:16:12');
+INSERT INTO `sys_operationlog` VALUES (5110, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 15:47:10', '{}', 1, 2, '2025-09-14 15:47:10', 2, '2025-09-14 15:47:10');
+INSERT INTO `sys_operationlog` VALUES (5111, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-14 15:47:10', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-14 15:47:10', 2, '2025-09-14 15:47:10');
+INSERT INTO `sys_operationlog` VALUES (5112, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 15:47:10', '{}', 1, 2, '2025-09-14 15:47:10', 2, '2025-09-14 15:47:10');
+INSERT INTO `sys_operationlog` VALUES (5113, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-14 15:47:10', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-14 15:47:10', 2, '2025-09-14 15:47:10');
+INSERT INTO `sys_operationlog` VALUES (5114, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-14 15:47:10', '{}', 1, 2, '2025-09-14 15:47:10', 2, '2025-09-14 15:47:10');
+INSERT INTO `sys_operationlog` VALUES (5115, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-14 15:47:10', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-14 15:47:10', 2, '2025-09-14 15:47:10');
+INSERT INTO `sys_operationlog` VALUES (5116, 2, 10, '系统登陆', '人员登陆', '2025-09-15 14:18:18', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-15 14:18:18', 2, '2025-09-15 14:18:18');
+INSERT INTO `sys_operationlog` VALUES (5117, 2, 10, '系统登陆', '人员登陆', '2025-09-15 14:18:46', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-15 14:18:46', 2, '2025-09-15 14:18:46');
+INSERT INTO `sys_operationlog` VALUES (5118, 2, 10, '系统登陆', '人员登陆', '2025-09-15 14:19:01', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-15 14:19:01', 2, '2025-09-15 14:19:01');
+INSERT INTO `sys_operationlog` VALUES (5119, 2, 10, '系统登陆', '人员登陆', '2025-09-15 14:22:27', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-15 14:22:27', 2, '2025-09-15 14:22:27');
+INSERT INTO `sys_operationlog` VALUES (5120, 2, 10, '系统登陆', '人员登陆', '2025-09-15 14:22:34', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-15 14:22:34', 2, '2025-09-15 14:22:34');
+INSERT INTO `sys_operationlog` VALUES (5121, 2, 10, '系统登陆', '人员登陆', '2025-09-15 14:22:36', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-15 14:22:36', 2, '2025-09-15 14:22:36');
+INSERT INTO `sys_operationlog` VALUES (5122, 2, 10, '系统登陆', '人员登陆', '2025-09-15 14:22:37', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-15 14:22:37', 2, '2025-09-15 14:22:37');
+INSERT INTO `sys_operationlog` VALUES (5123, 2, 10, '系统登陆', '人员登陆', '2025-09-15 14:22:38', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-15 14:22:38', 2, '2025-09-15 14:22:38');
+INSERT INTO `sys_operationlog` VALUES (5124, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:23:36', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:23:36', 2, '2025-09-15 14:23:36');
+INSERT INTO `sys_operationlog` VALUES (5125, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:23:55', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:23:55', 2, '2025-09-15 14:23:55');
+INSERT INTO `sys_operationlog` VALUES (5126, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:24:09', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:24:09', 2, '2025-09-15 14:24:09');
+INSERT INTO `sys_operationlog` VALUES (5127, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:24:23', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:24:23', 2, '2025-09-15 14:24:23');
+INSERT INTO `sys_operationlog` VALUES (5128, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:24:25', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:24:25', 2, '2025-09-15 14:24:25');
+INSERT INTO `sys_operationlog` VALUES (5129, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:24:28', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:24:28', 2, '2025-09-15 14:24:28');
+INSERT INTO `sys_operationlog` VALUES (5130, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:24:29', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:24:29', 2, '2025-09-15 14:24:29');
+INSERT INTO `sys_operationlog` VALUES (5131, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:24:31', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:24:31', 2, '2025-09-15 14:24:31');
+INSERT INTO `sys_operationlog` VALUES (5132, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:25:16', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:25:16', 2, '2025-09-15 14:25:16');
+INSERT INTO `sys_operationlog` VALUES (5133, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:25:17', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:25:17', 2, '2025-09-15 14:25:17');
+INSERT INTO `sys_operationlog` VALUES (5134, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:25:21', '{}', 1, 2, '2025-09-15 14:25:21', 2, '2025-09-15 14:25:21');
+INSERT INTO `sys_operationlog` VALUES (5135, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:25:21', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:25:21', 2, '2025-09-15 14:25:21');
+INSERT INTO `sys_operationlog` VALUES (5136, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:25:21', '{}', 1, 2, '2025-09-15 14:25:21', 2, '2025-09-15 14:25:21');
+INSERT INTO `sys_operationlog` VALUES (5137, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:25:21', '{}', 1, 2, '2025-09-15 14:25:21', 2, '2025-09-15 14:25:21');
+INSERT INTO `sys_operationlog` VALUES (5138, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:25:21', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:25:21', 2, '2025-09-15 14:25:21');
+INSERT INTO `sys_operationlog` VALUES (5139, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:25:22', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:25:22', 2, '2025-09-15 14:25:22');
+INSERT INTO `sys_operationlog` VALUES (5140, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:25:24', '{}', 1, 2, '2025-09-15 14:25:24', 2, '2025-09-15 14:25:24');
+INSERT INTO `sys_operationlog` VALUES (5141, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:25:25', '{}', 1, 2, '2025-09-15 14:25:25', 2, '2025-09-15 14:25:25');
+INSERT INTO `sys_operationlog` VALUES (5142, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:25:25', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:25:25', 2, '2025-09-15 14:25:25');
+INSERT INTO `sys_operationlog` VALUES (5143, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:25:25', '{}', 1, 2, '2025-09-15 14:25:25', 2, '2025-09-15 14:25:25');
+INSERT INTO `sys_operationlog` VALUES (5144, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:25:25', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:25:25', 2, '2025-09-15 14:25:25');
+INSERT INTO `sys_operationlog` VALUES (5145, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:25:25', '{}', 1, 2, '2025-09-15 14:25:25', 2, '2025-09-15 14:25:25');
+INSERT INTO `sys_operationlog` VALUES (5146, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:25:25', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:25:25', 2, '2025-09-15 14:25:25');
+INSERT INTO `sys_operationlog` VALUES (5147, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:25:25', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:25:25', 2, '2025-09-15 14:25:25');
+INSERT INTO `sys_operationlog` VALUES (5148, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:26', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:26', 2, '2025-09-15 14:26:26');
+INSERT INTO `sys_operationlog` VALUES (5149, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:26', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:26', 2, '2025-09-15 14:26:26');
+INSERT INTO `sys_operationlog` VALUES (5150, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:26', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:26', 2, '2025-09-15 14:26:26');
+INSERT INTO `sys_operationlog` VALUES (5151, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:27', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:27', 2, '2025-09-15 14:26:27');
+INSERT INTO `sys_operationlog` VALUES (5152, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:29', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:29', 2, '2025-09-15 14:26:29');
+INSERT INTO `sys_operationlog` VALUES (5153, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:29', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:29', 2, '2025-09-15 14:26:29');
+INSERT INTO `sys_operationlog` VALUES (5154, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:29', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:29', 2, '2025-09-15 14:26:29');
+INSERT INTO `sys_operationlog` VALUES (5155, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:29', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:29', 2, '2025-09-15 14:26:29');
+INSERT INTO `sys_operationlog` VALUES (5156, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:30', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:30', 2, '2025-09-15 14:26:30');
+INSERT INTO `sys_operationlog` VALUES (5157, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:30', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:30', 2, '2025-09-15 14:26:30');
+INSERT INTO `sys_operationlog` VALUES (5158, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:30', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:30', 2, '2025-09-15 14:26:30');
+INSERT INTO `sys_operationlog` VALUES (5159, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:30', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:30', 2, '2025-09-15 14:26:30');
+INSERT INTO `sys_operationlog` VALUES (5160, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:33', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:33', 2, '2025-09-15 14:26:33');
+INSERT INTO `sys_operationlog` VALUES (5161, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:33', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:33', 2, '2025-09-15 14:26:33');
+INSERT INTO `sys_operationlog` VALUES (5162, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:33', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:33', 2, '2025-09-15 14:26:33');
+INSERT INTO `sys_operationlog` VALUES (5163, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:33', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:33', 2, '2025-09-15 14:26:33');
+INSERT INTO `sys_operationlog` VALUES (5164, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:34', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:34', 2, '2025-09-15 14:26:34');
+INSERT INTO `sys_operationlog` VALUES (5165, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:34', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:34', 2, '2025-09-15 14:26:34');
+INSERT INTO `sys_operationlog` VALUES (5166, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:35', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:35', 2, '2025-09-15 14:26:35');
+INSERT INTO `sys_operationlog` VALUES (5167, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:35', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:35', 2, '2025-09-15 14:26:35');
+INSERT INTO `sys_operationlog` VALUES (5168, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:35', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:35', 2, '2025-09-15 14:26:35');
+INSERT INTO `sys_operationlog` VALUES (5169, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:36', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:36', 2, '2025-09-15 14:26:36');
+INSERT INTO `sys_operationlog` VALUES (5170, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:36', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:36', 2, '2025-09-15 14:26:36');
+INSERT INTO `sys_operationlog` VALUES (5171, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:26:36', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:26:36', 2, '2025-09-15 14:26:36');
+INSERT INTO `sys_operationlog` VALUES (5172, 2, 11, '账号登出', '人员退出系统', '2025-09-15 14:26:42', '{}', 1, 2, '2025-09-15 14:26:42', 2, '2025-09-15 14:26:42');
+INSERT INTO `sys_operationlog` VALUES (5173, 2, 10, '系统登陆', '人员登陆', '2025-09-15 14:26:46', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-15 14:26:46', 2, '2025-09-15 14:26:46');
+INSERT INTO `sys_operationlog` VALUES (5174, 2, 10, '系统登陆', '人员登陆', '2025-09-15 14:27:31', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-15 14:27:31', 2, '2025-09-15 14:27:31');
+INSERT INTO `sys_operationlog` VALUES (5175, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:36:13', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:36:13', 2, '2025-09-15 14:36:13');
+INSERT INTO `sys_operationlog` VALUES (5176, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:36:14', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:36:14', 2, '2025-09-15 14:36:14');
+INSERT INTO `sys_operationlog` VALUES (5177, 2, 10, '系统登陆', '人员登陆', '2025-09-15 14:38:03', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-15 14:38:03', 2, '2025-09-15 14:38:03');
+INSERT INTO `sys_operationlog` VALUES (5178, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-15 14:38:21', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-15 14:38:21', 2, '2025-09-15 14:38:21');
+INSERT INTO `sys_operationlog` VALUES (5179, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-15 14:38:22', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-15 14:38:22', 2, '2025-09-15 14:38:22');
+INSERT INTO `sys_operationlog` VALUES (5180, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-15 14:38:28', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:38:28', 2, '2025-09-15 14:38:28');
+INSERT INTO `sys_operationlog` VALUES (5181, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-15 14:38:28', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:38:28', 2, '2025-09-15 14:38:28');
+INSERT INTO `sys_operationlog` VALUES (5182, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-15 14:38:28', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:38:28', 2, '2025-09-15 14:38:28');
+INSERT INTO `sys_operationlog` VALUES (5183, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-15 14:38:31', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:38:31', 2, '2025-09-15 14:38:31');
+INSERT INTO `sys_operationlog` VALUES (5184, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-15 14:38:31', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:38:31', 2, '2025-09-15 14:38:31');
+INSERT INTO `sys_operationlog` VALUES (5185, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-15 14:38:31', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:38:31', 2, '2025-09-15 14:38:31');
+INSERT INTO `sys_operationlog` VALUES (5186, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-15 14:38:32', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:38:32', 2, '2025-09-15 14:38:32');
+INSERT INTO `sys_operationlog` VALUES (5187, 2, 4, '系统管理>定时任务', '定时任务详情', '2025-09-15 14:38:37', '{\"taskId\":1}', 1, 2, '2025-09-15 14:38:37', 2, '2025-09-15 14:38:37');
+INSERT INTO `sys_operationlog` VALUES (5188, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-15 14:38:46', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:38:46', 2, '2025-09-15 14:38:46');
+INSERT INTO `sys_operationlog` VALUES (5189, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-15 14:38:46', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:38:46', 2, '2025-09-15 14:38:46');
+INSERT INTO `sys_operationlog` VALUES (5190, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-15 14:38:46', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:38:46', 2, '2025-09-15 14:38:46');
+INSERT INTO `sys_operationlog` VALUES (5191, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-15 14:38:46', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:38:46', 2, '2025-09-15 14:38:46');
+INSERT INTO `sys_operationlog` VALUES (5192, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-15 14:38:47', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:38:47', 2, '2025-09-15 14:38:47');
+INSERT INTO `sys_operationlog` VALUES (5193, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-15 14:38:50', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:38:50', 2, '2025-09-15 14:38:50');
+INSERT INTO `sys_operationlog` VALUES (5194, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-15 14:38:50', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:38:50', 2, '2025-09-15 14:38:50');
+INSERT INTO `sys_operationlog` VALUES (5195, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-15 14:38:50', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:38:50', 2, '2025-09-15 14:38:50');
+INSERT INTO `sys_operationlog` VALUES (5196, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-15 14:38:50', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:38:50', 2, '2025-09-15 14:38:50');
+INSERT INTO `sys_operationlog` VALUES (5197, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-15 14:38:50', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:38:50', 2, '2025-09-15 14:38:50');
+INSERT INTO `sys_operationlog` VALUES (5198, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-15 14:38:51', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:38:51', 2, '2025-09-15 14:38:51');
+INSERT INTO `sys_operationlog` VALUES (5199, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 14:39:00', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:39:00', 2, '2025-09-15 14:39:00');
+INSERT INTO `sys_operationlog` VALUES (5200, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 14:39:00', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:39:00', 2, '2025-09-15 14:39:00');
+INSERT INTO `sys_operationlog` VALUES (5201, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 14:39:01', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:39:01', 2, '2025-09-15 14:39:01');
+INSERT INTO `sys_operationlog` VALUES (5202, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 14:39:01', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:39:01', 2, '2025-09-15 14:39:01');
+INSERT INTO `sys_operationlog` VALUES (5203, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 14:39:01', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:39:01', 2, '2025-09-15 14:39:01');
+INSERT INTO `sys_operationlog` VALUES (5204, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 14:39:01', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:39:01', 2, '2025-09-15 14:39:01');
+INSERT INTO `sys_operationlog` VALUES (5205, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 14:39:01', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:39:01', 2, '2025-09-15 14:39:01');
+INSERT INTO `sys_operationlog` VALUES (5206, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 14:39:46', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:39:46', 2, '2025-09-15 14:39:46');
+INSERT INTO `sys_operationlog` VALUES (5207, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 14:39:46', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:39:46', 2, '2025-09-15 14:39:46');
+INSERT INTO `sys_operationlog` VALUES (5208, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 14:39:46', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:39:46', 2, '2025-09-15 14:39:46');
+INSERT INTO `sys_operationlog` VALUES (5209, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 14:39:46', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:39:46', 2, '2025-09-15 14:39:46');
+INSERT INTO `sys_operationlog` VALUES (5210, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 14:39:47', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:39:47', 2, '2025-09-15 14:39:47');
+INSERT INTO `sys_operationlog` VALUES (5211, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 14:39:47', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:39:47', 2, '2025-09-15 14:39:47');
+INSERT INTO `sys_operationlog` VALUES (5212, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 14:39:47', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:39:47', 2, '2025-09-15 14:39:47');
+INSERT INTO `sys_operationlog` VALUES (5213, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 14:39:47', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:39:47', 2, '2025-09-15 14:39:47');
+INSERT INTO `sys_operationlog` VALUES (5214, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:39:58', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:39:58', 2, '2025-09-15 14:39:58');
+INSERT INTO `sys_operationlog` VALUES (5215, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:39:58', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:39:58', 2, '2025-09-15 14:39:58');
+INSERT INTO `sys_operationlog` VALUES (5216, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:39:58', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:39:58', 2, '2025-09-15 14:39:58');
+INSERT INTO `sys_operationlog` VALUES (5217, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:39:58', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:39:58', 2, '2025-09-15 14:39:58');
+INSERT INTO `sys_operationlog` VALUES (5218, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:39:59', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:39:59', 2, '2025-09-15 14:39:59');
+INSERT INTO `sys_operationlog` VALUES (5219, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:39:59', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:39:59', 2, '2025-09-15 14:39:59');
+INSERT INTO `sys_operationlog` VALUES (5220, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:39:59', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:39:59', 2, '2025-09-15 14:39:59');
+INSERT INTO `sys_operationlog` VALUES (5221, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:39:59', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:39:59', 2, '2025-09-15 14:39:59');
+INSERT INTO `sys_operationlog` VALUES (5222, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:40:00', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:40:00', 2, '2025-09-15 14:40:00');
+INSERT INTO `sys_operationlog` VALUES (5223, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-15 14:40:02', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:40:02', 2, '2025-09-15 14:40:02');
+INSERT INTO `sys_operationlog` VALUES (5224, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-15 14:40:02', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:40:02', 2, '2025-09-15 14:40:02');
+INSERT INTO `sys_operationlog` VALUES (5225, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-15 14:40:03', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:40:03', 2, '2025-09-15 14:40:03');
+INSERT INTO `sys_operationlog` VALUES (5226, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-15 14:40:03', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:40:03', 2, '2025-09-15 14:40:03');
+INSERT INTO `sys_operationlog` VALUES (5227, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-15 14:40:03', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:40:03', 2, '2025-09-15 14:40:03');
+INSERT INTO `sys_operationlog` VALUES (5228, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-15 14:40:03', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:40:03', 2, '2025-09-15 14:40:03');
+INSERT INTO `sys_operationlog` VALUES (5229, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-15 14:40:03', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:40:03', 2, '2025-09-15 14:40:03');
+INSERT INTO `sys_operationlog` VALUES (5230, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-15 14:40:04', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:40:04', 2, '2025-09-15 14:40:04');
+INSERT INTO `sys_operationlog` VALUES (5231, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-15 14:40:04', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:40:04', 2, '2025-09-15 14:40:04');
+INSERT INTO `sys_operationlog` VALUES (5232, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-15 14:40:04', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:40:04', 2, '2025-09-15 14:40:04');
+INSERT INTO `sys_operationlog` VALUES (5233, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:43:21', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:21', 2, '2025-09-15 14:43:21');
+INSERT INTO `sys_operationlog` VALUES (5234, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:43:21', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:21', 2, '2025-09-15 14:43:21');
+INSERT INTO `sys_operationlog` VALUES (5235, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:43:21', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:21', 2, '2025-09-15 14:43:21');
+INSERT INTO `sys_operationlog` VALUES (5236, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:43:21', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:21', 2, '2025-09-15 14:43:21');
+INSERT INTO `sys_operationlog` VALUES (5237, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:43:22', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:22', 2, '2025-09-15 14:43:22');
+INSERT INTO `sys_operationlog` VALUES (5238, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:43:22', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:22', 2, '2025-09-15 14:43:22');
+INSERT INTO `sys_operationlog` VALUES (5239, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:43:22', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:22', 2, '2025-09-15 14:43:22');
+INSERT INTO `sys_operationlog` VALUES (5240, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:43:22', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:22', 2, '2025-09-15 14:43:22');
+INSERT INTO `sys_operationlog` VALUES (5241, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:43:23', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:23', 2, '2025-09-15 14:43:23');
+INSERT INTO `sys_operationlog` VALUES (5242, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:43:23', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:23', 2, '2025-09-15 14:43:23');
+INSERT INTO `sys_operationlog` VALUES (5243, 2, 3, '促销管理>优惠券管理', '新增优惠券', '2025-09-15 14:43:34', '{\"coupon\":{\"coupon_id\":0,\"store_id\":17,\"coupon_no\":\"20250915144333716201986\",\"coupon_name\":\"0\",\"type\":0,\"value\":1.0,\"min_consumption\":1.0,\"valid_start\":\"2025-09-25T00:00:00\",\"valid_end\":\"2025-10-22T00:00:00\",\"status\":0,\"applicable_dishes\":\"\",\"total\":1,\"received\":0,\"used\":0}}', 1, 2, '2025-09-15 14:43:34', 2, '2025-09-15 14:43:34');
+INSERT INTO `sys_operationlog` VALUES (5244, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:43:34', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:34', 2, '2025-09-15 14:43:34');
+INSERT INTO `sys_operationlog` VALUES (5245, 2, 2, '促销管理>优惠券管理', '删除优惠券', '2025-09-15 14:43:40', '{\"couponId\":7}', 1, 2, '2025-09-15 14:43:40', 2, '2025-09-15 14:43:40');
+INSERT INTO `sys_operationlog` VALUES (5246, 2, 4, '促销管理>优惠券管理', '优惠券列表查询', '2025-09-15 14:43:40', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:40', 2, '2025-09-15 14:43:40');
+INSERT INTO `sys_operationlog` VALUES (5247, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-15 14:43:45', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-15 14:43:45', 2, '2025-09-15 14:43:45');
+INSERT INTO `sys_operationlog` VALUES (5248, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-15 14:43:45', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-15 14:43:45', 2, '2025-09-15 14:43:45');
+INSERT INTO `sys_operationlog` VALUES (5249, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-15 14:43:45', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-15 14:43:45', 2, '2025-09-15 14:43:45');
+INSERT INTO `sys_operationlog` VALUES (5250, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-15 14:43:46', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-15 14:43:46', 2, '2025-09-15 14:43:46');
+INSERT INTO `sys_operationlog` VALUES (5251, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-15 14:43:46', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-15 14:43:46', 2, '2025-09-15 14:43:46');
+INSERT INTO `sys_operationlog` VALUES (5252, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-15 14:43:46', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:46', 2, '2025-09-15 14:43:46');
+INSERT INTO `sys_operationlog` VALUES (5253, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-15 14:43:46', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-15 14:43:46', 2, '2025-09-15 14:43:46');
+INSERT INTO `sys_operationlog` VALUES (5254, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-15 14:43:47', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:47', 2, '2025-09-15 14:43:47');
+INSERT INTO `sys_operationlog` VALUES (5255, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-15 14:43:47', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-15 14:43:47', 2, '2025-09-15 14:43:47');
+INSERT INTO `sys_operationlog` VALUES (5256, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-15 14:43:47', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:47', 2, '2025-09-15 14:43:47');
+INSERT INTO `sys_operationlog` VALUES (5257, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-15 14:43:47', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-15 14:43:47', 2, '2025-09-15 14:43:47');
+INSERT INTO `sys_operationlog` VALUES (5258, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-15 14:43:47', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:47', 2, '2025-09-15 14:43:47');
+INSERT INTO `sys_operationlog` VALUES (5259, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-15 14:43:47', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-15 14:43:47', 2, '2025-09-15 14:43:47');
+INSERT INTO `sys_operationlog` VALUES (5260, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-15 14:43:47', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:47', 2, '2025-09-15 14:43:47');
+INSERT INTO `sys_operationlog` VALUES (5261, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-15 14:43:47', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-15 14:43:47', 2, '2025-09-15 14:43:47');
+INSERT INTO `sys_operationlog` VALUES (5262, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-15 14:43:48', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:48', 2, '2025-09-15 14:43:48');
+INSERT INTO `sys_operationlog` VALUES (5263, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-15 14:43:48', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:48', 2, '2025-09-15 14:43:48');
+INSERT INTO `sys_operationlog` VALUES (5264, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-15 14:43:48', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:48', 2, '2025-09-15 14:43:48');
+INSERT INTO `sys_operationlog` VALUES (5265, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-15 14:43:48', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:48', 2, '2025-09-15 14:43:48');
+INSERT INTO `sys_operationlog` VALUES (5266, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-15 14:43:49', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:49', 2, '2025-09-15 14:43:49');
+INSERT INTO `sys_operationlog` VALUES (5267, 2, 3, '系统设置>供应商管理', '新增供应商', '2025-09-15 14:43:55', '{\"supplier\":{\"supplier_id\":0,\"supplier_name\":\"0\",\"contact_person\":\"0\",\"contact_phone\":\"0\",\"address\":\"0\",\"status\":1}}', 1, 2, '2025-09-15 14:43:55', 2, '2025-09-15 14:43:55');
+INSERT INTO `sys_operationlog` VALUES (5268, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-15 14:43:56', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:43:56', 2, '2025-09-15 14:43:56');
+INSERT INTO `sys_operationlog` VALUES (5269, 2, 2, '系统设置>供应商管理', '删除供应商', '2025-09-15 14:44:01', '{\"supplierId\":3}', 1, 2, '2025-09-15 14:44:01', 2, '2025-09-15 14:44:01');
+INSERT INTO `sys_operationlog` VALUES (5270, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-15 14:44:01', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:44:01', 2, '2025-09-15 14:44:01');
+INSERT INTO `sys_operationlog` VALUES (5271, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-15 14:44:03', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:44:03', 2, '2025-09-15 14:44:03');
+INSERT INTO `sys_operationlog` VALUES (5272, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-15 14:44:03', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:44:03', 2, '2025-09-15 14:44:03');
+INSERT INTO `sys_operationlog` VALUES (5273, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-15 14:44:03', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:44:03', 2, '2025-09-15 14:44:03');
+INSERT INTO `sys_operationlog` VALUES (5274, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-15 14:44:03', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:44:03', 2, '2025-09-15 14:44:03');
+INSERT INTO `sys_operationlog` VALUES (5275, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-15 14:44:04', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:44:04', 2, '2025-09-15 14:44:04');
+INSERT INTO `sys_operationlog` VALUES (5276, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-15 14:44:04', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:44:04', 2, '2025-09-15 14:44:04');
+INSERT INTO `sys_operationlog` VALUES (5277, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-15 14:44:04', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:44:04', 2, '2025-09-15 14:44:04');
+INSERT INTO `sys_operationlog` VALUES (5278, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-15 14:44:04', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:44:04', 2, '2025-09-15 14:44:04');
+INSERT INTO `sys_operationlog` VALUES (5279, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-15 14:44:04', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:44:04', 2, '2025-09-15 14:44:04');
+INSERT INTO `sys_operationlog` VALUES (5280, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-15 14:44:04', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:44:04', 2, '2025-09-15 14:44:04');
+INSERT INTO `sys_operationlog` VALUES (5281, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-15 14:44:06', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:06', 2, '2025-09-15 14:44:06');
+INSERT INTO `sys_operationlog` VALUES (5282, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-15 14:44:06', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:06', 2, '2025-09-15 14:44:06');
+INSERT INTO `sys_operationlog` VALUES (5283, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-15 14:44:06', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:06', 2, '2025-09-15 14:44:06');
+INSERT INTO `sys_operationlog` VALUES (5284, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-15 14:44:07', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:07', 2, '2025-09-15 14:44:07');
+INSERT INTO `sys_operationlog` VALUES (5285, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-15 14:44:07', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:07', 2, '2025-09-15 14:44:07');
+INSERT INTO `sys_operationlog` VALUES (5286, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-15 14:44:07', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:07', 2, '2025-09-15 14:44:07');
+INSERT INTO `sys_operationlog` VALUES (5287, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-15 14:44:07', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:07', 2, '2025-09-15 14:44:07');
+INSERT INTO `sys_operationlog` VALUES (5288, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-15 14:44:07', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:07', 2, '2025-09-15 14:44:07');
+INSERT INTO `sys_operationlog` VALUES (5289, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-15 14:44:08', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:08', 2, '2025-09-15 14:44:08');
+INSERT INTO `sys_operationlog` VALUES (5290, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-15 14:44:08', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:08', 2, '2025-09-15 14:44:08');
+INSERT INTO `sys_operationlog` VALUES (5291, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-15 14:44:08', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:08', 2, '2025-09-15 14:44:08');
+INSERT INTO `sys_operationlog` VALUES (5292, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-15 14:44:08', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:08', 2, '2025-09-15 14:44:08');
+INSERT INTO `sys_operationlog` VALUES (5293, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-15 14:44:08', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:08', 2, '2025-09-15 14:44:08');
+INSERT INTO `sys_operationlog` VALUES (5294, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-15 14:44:08', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:08', 2, '2025-09-15 14:44:08');
+INSERT INTO `sys_operationlog` VALUES (5295, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-15 14:44:08', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:08', 2, '2025-09-15 14:44:08');
+INSERT INTO `sys_operationlog` VALUES (5296, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-15 14:44:09', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:09', 2, '2025-09-15 14:44:09');
+INSERT INTO `sys_operationlog` VALUES (5297, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-15 14:44:09', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:09', 2, '2025-09-15 14:44:09');
+INSERT INTO `sys_operationlog` VALUES (5298, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-15 14:44:09', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:09', 2, '2025-09-15 14:44:09');
+INSERT INTO `sys_operationlog` VALUES (5299, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-15 14:44:09', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:09', 2, '2025-09-15 14:44:09');
+INSERT INTO `sys_operationlog` VALUES (5300, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-15 14:44:09', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:09', 2, '2025-09-15 14:44:09');
+INSERT INTO `sys_operationlog` VALUES (5301, 2, 3, '系统设置>门店设置', '新增门店', '2025-09-15 14:44:13', '{\"sys_Store\":{\"store_id\":null,\"store_name\":\"0\",\"address\":\"0\",\"phone\":\"0\",\"business_hours\":\"0\",\"total_tables\":0,\"status\":1,\"created_at\":\"2025-09-15T14:44:12.6381699+08:00\",\"updated_at\":\"2025-09-15T14:44:12.6381709+08:00\",\"store_code\":\"STORE-20250915144412652\"}}', 1, 2, '2025-09-15 14:44:13', 2, '2025-09-15 14:44:13');
+INSERT INTO `sys_operationlog` VALUES (5302, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-15 14:44:13', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:13', 2, '2025-09-15 14:44:13');
+INSERT INTO `sys_operationlog` VALUES (5303, 2, 2, '系统设置>门店设置', '删除门店', '2025-09-15 14:44:15', '{\"storeIds\":[18]}', 1, 2, '2025-09-15 14:44:15', 2, '2025-09-15 14:44:15');
+INSERT INTO `sys_operationlog` VALUES (5304, 2, 4, '系统设置>门店设置', '门店设置查询', '2025-09-15 14:44:15', '{\"StoreName\":null,\"phone\":null,\"address\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:15', 2, '2025-09-15 14:44:15');
+INSERT INTO `sys_operationlog` VALUES (5305, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 14:44:16', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:16', 2, '2025-09-15 14:44:16');
+INSERT INTO `sys_operationlog` VALUES (5306, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 14:44:16', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:16', 2, '2025-09-15 14:44:16');
+INSERT INTO `sys_operationlog` VALUES (5307, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 14:44:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:17', 2, '2025-09-15 14:44:17');
+INSERT INTO `sys_operationlog` VALUES (5308, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 14:44:17', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:17', 2, '2025-09-15 14:44:17');
+INSERT INTO `sys_operationlog` VALUES (5309, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 14:44:18', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:18', 2, '2025-09-15 14:44:18');
+INSERT INTO `sys_operationlog` VALUES (5310, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 14:44:18', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:18', 2, '2025-09-15 14:44:18');
+INSERT INTO `sys_operationlog` VALUES (5311, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 14:44:18', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:18', 2, '2025-09-15 14:44:18');
+INSERT INTO `sys_operationlog` VALUES (5312, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 14:44:18', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:18', 2, '2025-09-15 14:44:18');
+INSERT INTO `sys_operationlog` VALUES (5313, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 14:44:18', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:18', 2, '2025-09-15 14:44:18');
+INSERT INTO `sys_operationlog` VALUES (5314, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 14:44:18', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:18', 2, '2025-09-15 14:44:18');
+INSERT INTO `sys_operationlog` VALUES (5315, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 14:44:18', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:18', 2, '2025-09-15 14:44:18');
+INSERT INTO `sys_operationlog` VALUES (5316, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 14:44:18', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:18', 2, '2025-09-15 14:44:18');
+INSERT INTO `sys_operationlog` VALUES (5317, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 14:44:18', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:18', 2, '2025-09-15 14:44:18');
+INSERT INTO `sys_operationlog` VALUES (5318, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 14:44:19', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:19', 2, '2025-09-15 14:44:19');
+INSERT INTO `sys_operationlog` VALUES (5319, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 14:44:19', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:19', 2, '2025-09-15 14:44:19');
+INSERT INTO `sys_operationlog` VALUES (5320, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 14:44:19', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:19', 2, '2025-09-15 14:44:19');
+INSERT INTO `sys_operationlog` VALUES (5321, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 14:44:19', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:19', 2, '2025-09-15 14:44:19');
+INSERT INTO `sys_operationlog` VALUES (5322, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 14:44:19', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:19', 2, '2025-09-15 14:44:19');
+INSERT INTO `sys_operationlog` VALUES (5323, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 14:44:19', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:19', 2, '2025-09-15 14:44:19');
+INSERT INTO `sys_operationlog` VALUES (5324, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 14:44:20', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:20', 2, '2025-09-15 14:44:20');
+INSERT INTO `sys_operationlog` VALUES (5325, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:44:24', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:24', 2, '2025-09-15 14:44:24');
+INSERT INTO `sys_operationlog` VALUES (5326, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:44:24', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:24', 2, '2025-09-15 14:44:24');
+INSERT INTO `sys_operationlog` VALUES (5327, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:44:25', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:25', 2, '2025-09-15 14:44:25');
+INSERT INTO `sys_operationlog` VALUES (5328, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:44:25', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:25', 2, '2025-09-15 14:44:25');
+INSERT INTO `sys_operationlog` VALUES (5329, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:44:25', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:25', 2, '2025-09-15 14:44:25');
+INSERT INTO `sys_operationlog` VALUES (5330, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:44:25', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:25', 2, '2025-09-15 14:44:25');
+INSERT INTO `sys_operationlog` VALUES (5331, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:44:25', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:25', 2, '2025-09-15 14:44:25');
+INSERT INTO `sys_operationlog` VALUES (5332, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:44:25', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:25', 2, '2025-09-15 14:44:25');
+INSERT INTO `sys_operationlog` VALUES (5333, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:44:25', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:25', 2, '2025-09-15 14:44:25');
+INSERT INTO `sys_operationlog` VALUES (5334, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:44:25', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:25', 2, '2025-09-15 14:44:25');
+INSERT INTO `sys_operationlog` VALUES (5335, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:44:25', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:25', 2, '2025-09-15 14:44:25');
+INSERT INTO `sys_operationlog` VALUES (5336, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:44:25', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:25', 2, '2025-09-15 14:44:25');
+INSERT INTO `sys_operationlog` VALUES (5337, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:44:25', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:25', 2, '2025-09-15 14:44:25');
+INSERT INTO `sys_operationlog` VALUES (5338, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:44:26', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:26', 2, '2025-09-15 14:44:26');
+INSERT INTO `sys_operationlog` VALUES (5339, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:44:26', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:26', 2, '2025-09-15 14:44:26');
+INSERT INTO `sys_operationlog` VALUES (5340, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:44:26', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:26', 2, '2025-09-15 14:44:26');
+INSERT INTO `sys_operationlog` VALUES (5341, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:44:26', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:26', 2, '2025-09-15 14:44:26');
+INSERT INTO `sys_operationlog` VALUES (5342, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:44:26', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:26', 2, '2025-09-15 14:44:26');
+INSERT INTO `sys_operationlog` VALUES (5343, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:44:26', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:26', 2, '2025-09-15 14:44:26');
+INSERT INTO `sys_operationlog` VALUES (5344, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:44:26', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:26', 2, '2025-09-15 14:44:26');
+INSERT INTO `sys_operationlog` VALUES (5345, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:44:26', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:26', 2, '2025-09-15 14:44:26');
+INSERT INTO `sys_operationlog` VALUES (5346, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:44:26', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:26', 2, '2025-09-15 14:44:26');
+INSERT INTO `sys_operationlog` VALUES (5347, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:44:27', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:27', 2, '2025-09-15 14:44:27');
+INSERT INTO `sys_operationlog` VALUES (5348, 2, 3, '会员管理>会员列表', '新增会员', '2025-09-15 14:44:32', '{\"member\":{\"member_id\":0,\"member_no\":\"20250915144432291122521\",\"phone\":\"1\",\"name\":\"1\",\"birthday\":\"2025-09-08T16:00:00Z\",\"register_time\":\"2025-09-15T14:44:32.2915343+08:00\",\"status\":1,\"total_points\":0,\"referrer_id\":null,\"balance\":null}}', 1, 2, '2025-09-15 14:44:32', 2, '2025-09-15 14:44:32');
+INSERT INTO `sys_operationlog` VALUES (5349, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:44:33', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:44:33', 2, '2025-09-15 14:44:33');
+INSERT INTO `sys_operationlog` VALUES (5350, 2, 1, '会员管理>会员列表', '切换会员状态', '2025-09-15 14:45:16', '{\"memberId\":3,\"status\":0}', 1, 2, '2025-09-15 14:45:16', 2, '2025-09-15 14:45:16');
+INSERT INTO `sys_operationlog` VALUES (5351, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:45:16', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:16', 2, '2025-09-15 14:45:16');
+INSERT INTO `sys_operationlog` VALUES (5352, 2, 1, '会员管理>会员列表', '切换会员状态', '2025-09-15 14:45:19', '{\"memberId\":3,\"status\":1}', 1, 2, '2025-09-15 14:45:19', 2, '2025-09-15 14:45:19');
+INSERT INTO `sys_operationlog` VALUES (5353, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:45:19', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:19', 2, '2025-09-15 14:45:19');
+INSERT INTO `sys_operationlog` VALUES (5354, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:45:22', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:22', 2, '2025-09-15 14:45:22');
+INSERT INTO `sys_operationlog` VALUES (5355, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:45:22', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:22', 2, '2025-09-15 14:45:22');
+INSERT INTO `sys_operationlog` VALUES (5356, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:45:22', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:22', 2, '2025-09-15 14:45:22');
+INSERT INTO `sys_operationlog` VALUES (5357, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:45:22', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:22', 2, '2025-09-15 14:45:22');
+INSERT INTO `sys_operationlog` VALUES (5358, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:45:22', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:22', 2, '2025-09-15 14:45:22');
+INSERT INTO `sys_operationlog` VALUES (5359, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:45:23', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:23', 2, '2025-09-15 14:45:23');
+INSERT INTO `sys_operationlog` VALUES (5360, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:45:23', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:23', 2, '2025-09-15 14:45:23');
+INSERT INTO `sys_operationlog` VALUES (5361, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:45:23', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:23', 2, '2025-09-15 14:45:23');
+INSERT INTO `sys_operationlog` VALUES (5362, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:45:23', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:23', 2, '2025-09-15 14:45:23');
+INSERT INTO `sys_operationlog` VALUES (5363, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:45:24', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:24', 2, '2025-09-15 14:45:24');
+INSERT INTO `sys_operationlog` VALUES (5364, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:45:24', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:24', 2, '2025-09-15 14:45:24');
+INSERT INTO `sys_operationlog` VALUES (5365, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:45:24', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:24', 2, '2025-09-15 14:45:24');
+INSERT INTO `sys_operationlog` VALUES (5366, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:45:24', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:24', 2, '2025-09-15 14:45:24');
+INSERT INTO `sys_operationlog` VALUES (5367, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:45:24', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:24', 2, '2025-09-15 14:45:24');
+INSERT INTO `sys_operationlog` VALUES (5368, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:45:24', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:24', 2, '2025-09-15 14:45:24');
+INSERT INTO `sys_operationlog` VALUES (5369, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 14:45:24', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:24', 2, '2025-09-15 14:45:24');
+INSERT INTO `sys_operationlog` VALUES (5370, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:45:24', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:24', 2, '2025-09-15 14:45:24');
+INSERT INTO `sys_operationlog` VALUES (5371, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:45:24', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:24', 2, '2025-09-15 14:45:24');
+INSERT INTO `sys_operationlog` VALUES (5372, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:45:25', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:25', 2, '2025-09-15 14:45:25');
+INSERT INTO `sys_operationlog` VALUES (5373, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:45:25', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:25', 2, '2025-09-15 14:45:25');
+INSERT INTO `sys_operationlog` VALUES (5374, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:45:25', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:25', 2, '2025-09-15 14:45:25');
+INSERT INTO `sys_operationlog` VALUES (5375, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:45:25', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:25', 2, '2025-09-15 14:45:25');
+INSERT INTO `sys_operationlog` VALUES (5376, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:45:25', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:25', 2, '2025-09-15 14:45:25');
+INSERT INTO `sys_operationlog` VALUES (5377, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 14:45:26', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:45:26', 2, '2025-09-15 14:45:26');
+INSERT INTO `sys_operationlog` VALUES (5378, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 14:45:35', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:45:35', 2, '2025-09-15 14:45:35');
+INSERT INTO `sys_operationlog` VALUES (5379, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 14:45:35', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:45:35', 2, '2025-09-15 14:45:35');
+INSERT INTO `sys_operationlog` VALUES (5380, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 14:45:35', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:45:35', 2, '2025-09-15 14:45:35');
+INSERT INTO `sys_operationlog` VALUES (5381, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 14:45:35', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:45:35', 2, '2025-09-15 14:45:35');
+INSERT INTO `sys_operationlog` VALUES (5382, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 14:45:36', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:45:36', 2, '2025-09-15 14:45:36');
+INSERT INTO `sys_operationlog` VALUES (5383, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 14:45:36', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:45:36', 2, '2025-09-15 14:45:36');
+INSERT INTO `sys_operationlog` VALUES (5384, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 14:45:36', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:45:36', 2, '2025-09-15 14:45:36');
+INSERT INTO `sys_operationlog` VALUES (5385, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 14:45:36', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:45:36', 2, '2025-09-15 14:45:36');
+INSERT INTO `sys_operationlog` VALUES (5386, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 14:45:36', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:45:36', 2, '2025-09-15 14:45:36');
+INSERT INTO `sys_operationlog` VALUES (5387, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 14:45:36', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:45:36', 2, '2025-09-15 14:45:36');
+INSERT INTO `sys_operationlog` VALUES (5388, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 14:45:37', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:45:37', 2, '2025-09-15 14:45:37');
+INSERT INTO `sys_operationlog` VALUES (5389, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 14:45:37', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:45:37', 2, '2025-09-15 14:45:37');
+INSERT INTO `sys_operationlog` VALUES (5390, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 14:45:37', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:45:37', 2, '2025-09-15 14:45:37');
+INSERT INTO `sys_operationlog` VALUES (5391, 2, 3, '库存管理>原材料管理', '新增原材料', '2025-09-15 14:46:13', '{\"material\":{\"material_id\":0,\"store_id\":17,\"material_name\":\"0\",\"category\":\"生鲜\",\"unit\":\"1\",\"purchase_price\":1.0,\"warning_threshold\":0.0,\"status\":1}}', 1, 2, '2025-09-15 14:46:13', 2, '2025-09-15 14:46:13');
+INSERT INTO `sys_operationlog` VALUES (5392, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 14:46:13', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:13', 2, '2025-09-15 14:46:13');
+INSERT INTO `sys_operationlog` VALUES (5393, 2, 1, '库存管理>原材料管理', '原材料状态变更', '2025-09-15 14:46:20', '{\"materialId\":3,\"status\":0}', 1, 2, '2025-09-15 14:46:20', 2, '2025-09-15 14:46:20');
+INSERT INTO `sys_operationlog` VALUES (5394, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 14:46:21', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:21', 2, '2025-09-15 14:46:21');
+INSERT INTO `sys_operationlog` VALUES (5395, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:46:33', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:46:33', 2, '2025-09-15 14:46:33');
+INSERT INTO `sys_operationlog` VALUES (5396, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:33', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:33', 2, '2025-09-15 14:46:33');
+INSERT INTO `sys_operationlog` VALUES (5397, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:46:33', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:46:33', 2, '2025-09-15 14:46:33');
+INSERT INTO `sys_operationlog` VALUES (5398, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:33', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:33', 2, '2025-09-15 14:46:33');
+INSERT INTO `sys_operationlog` VALUES (5399, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:46:33', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:46:33', 2, '2025-09-15 14:46:33');
+INSERT INTO `sys_operationlog` VALUES (5400, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:33', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:33', 2, '2025-09-15 14:46:33');
+INSERT INTO `sys_operationlog` VALUES (5401, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:46:33', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:46:33', 2, '2025-09-15 14:46:33');
+INSERT INTO `sys_operationlog` VALUES (5402, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:34', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:34', 2, '2025-09-15 14:46:34');
+INSERT INTO `sys_operationlog` VALUES (5403, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:46:34', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:46:34', 2, '2025-09-15 14:46:34');
+INSERT INTO `sys_operationlog` VALUES (5404, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:46:34', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:46:34', 2, '2025-09-15 14:46:34');
+INSERT INTO `sys_operationlog` VALUES (5405, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:34', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:34', 2, '2025-09-15 14:46:34');
+INSERT INTO `sys_operationlog` VALUES (5406, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:46:34', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:46:34', 2, '2025-09-15 14:46:34');
+INSERT INTO `sys_operationlog` VALUES (5407, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:34', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:34', 2, '2025-09-15 14:46:34');
+INSERT INTO `sys_operationlog` VALUES (5408, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:34', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:34', 2, '2025-09-15 14:46:34');
+INSERT INTO `sys_operationlog` VALUES (5409, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:46:34', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:46:34', 2, '2025-09-15 14:46:34');
+INSERT INTO `sys_operationlog` VALUES (5410, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:35', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:35', 2, '2025-09-15 14:46:35');
+INSERT INTO `sys_operationlog` VALUES (5411, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:46:35', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:46:35', 2, '2025-09-15 14:46:35');
+INSERT INTO `sys_operationlog` VALUES (5412, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:35', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:35', 2, '2025-09-15 14:46:35');
+INSERT INTO `sys_operationlog` VALUES (5413, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:46:35', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:46:35', 2, '2025-09-15 14:46:35');
+INSERT INTO `sys_operationlog` VALUES (5414, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:46:36', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:46:36', 2, '2025-09-15 14:46:36');
+INSERT INTO `sys_operationlog` VALUES (5415, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 14:46:36', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:36', 2, '2025-09-15 14:46:36');
+INSERT INTO `sys_operationlog` VALUES (5416, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:46:36', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:46:36', 2, '2025-09-15 14:46:36');
+INSERT INTO `sys_operationlog` VALUES (5417, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:36', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:36', 2, '2025-09-15 14:46:36');
+INSERT INTO `sys_operationlog` VALUES (5418, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:36', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:36', 2, '2025-09-15 14:46:36');
+INSERT INTO `sys_operationlog` VALUES (5419, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:46:36', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:46:36', 2, '2025-09-15 14:46:36');
+INSERT INTO `sys_operationlog` VALUES (5420, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 14:46:36', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:36', 2, '2025-09-15 14:46:36');
+INSERT INTO `sys_operationlog` VALUES (5421, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:46:37', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:46:37', 2, '2025-09-15 14:46:37');
+INSERT INTO `sys_operationlog` VALUES (5422, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:37', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:37', 2, '2025-09-15 14:46:37');
+INSERT INTO `sys_operationlog` VALUES (5423, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 14:46:37', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:37', 2, '2025-09-15 14:46:37');
+INSERT INTO `sys_operationlog` VALUES (5424, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:37', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:37', 2, '2025-09-15 14:46:37');
+INSERT INTO `sys_operationlog` VALUES (5425, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 14:46:37', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:37', 2, '2025-09-15 14:46:37');
+INSERT INTO `sys_operationlog` VALUES (5426, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:37', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:37', 2, '2025-09-15 14:46:37');
+INSERT INTO `sys_operationlog` VALUES (5427, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 14:46:37', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:37', 2, '2025-09-15 14:46:37');
+INSERT INTO `sys_operationlog` VALUES (5428, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:37', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:37', 2, '2025-09-15 14:46:37');
+INSERT INTO `sys_operationlog` VALUES (5429, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 14:46:37', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:37', 2, '2025-09-15 14:46:37');
+INSERT INTO `sys_operationlog` VALUES (5430, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:37', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:37', 2, '2025-09-15 14:46:37');
+INSERT INTO `sys_operationlog` VALUES (5431, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 14:46:37', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:37', 2, '2025-09-15 14:46:37');
+INSERT INTO `sys_operationlog` VALUES (5432, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:37', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:37', 2, '2025-09-15 14:46:37');
+INSERT INTO `sys_operationlog` VALUES (5433, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 14:46:37', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:37', 2, '2025-09-15 14:46:37');
+INSERT INTO `sys_operationlog` VALUES (5434, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:38', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:38', 2, '2025-09-15 14:46:38');
+INSERT INTO `sys_operationlog` VALUES (5435, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 14:46:38', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:38', 2, '2025-09-15 14:46:38');
+INSERT INTO `sys_operationlog` VALUES (5436, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:38', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:38', 2, '2025-09-15 14:46:38');
+INSERT INTO `sys_operationlog` VALUES (5437, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 14:46:38', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:38', 2, '2025-09-15 14:46:38');
+INSERT INTO `sys_operationlog` VALUES (5438, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:38', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:38', 2, '2025-09-15 14:46:38');
+INSERT INTO `sys_operationlog` VALUES (5439, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 14:46:38', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:38', 2, '2025-09-15 14:46:38');
+INSERT INTO `sys_operationlog` VALUES (5440, 2, 4, '库存管理>损耗管理', '损耗详情', '2025-09-15 14:46:38', '{\"lossId\":1}', 1, 2, '2025-09-15 14:46:38', 2, '2025-09-15 14:46:38');
+INSERT INTO `sys_operationlog` VALUES (5441, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:38', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:38', 2, '2025-09-15 14:46:38');
+INSERT INTO `sys_operationlog` VALUES (5442, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 14:46:39', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:39', 2, '2025-09-15 14:46:39');
+INSERT INTO `sys_operationlog` VALUES (5443, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:39', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:39', 2, '2025-09-15 14:46:39');
+INSERT INTO `sys_operationlog` VALUES (5444, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 14:46:39', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:39', 2, '2025-09-15 14:46:39');
+INSERT INTO `sys_operationlog` VALUES (5445, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:39', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:39', 2, '2025-09-15 14:46:39');
+INSERT INTO `sys_operationlog` VALUES (5446, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 14:46:39', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:39', 2, '2025-09-15 14:46:39');
+INSERT INTO `sys_operationlog` VALUES (5447, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:39', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:39', 2, '2025-09-15 14:46:39');
+INSERT INTO `sys_operationlog` VALUES (5448, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 14:46:39', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:39', 2, '2025-09-15 14:46:39');
+INSERT INTO `sys_operationlog` VALUES (5449, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:39', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:39', 2, '2025-09-15 14:46:39');
+INSERT INTO `sys_operationlog` VALUES (5450, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:40', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:40', 2, '2025-09-15 14:46:40');
+INSERT INTO `sys_operationlog` VALUES (5451, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:40', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:40', 2, '2025-09-15 14:46:40');
+INSERT INTO `sys_operationlog` VALUES (5452, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:46:40', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:46:40', 2, '2025-09-15 14:46:40');
+INSERT INTO `sys_operationlog` VALUES (5453, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:49', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:49', 2, '2025-09-15 14:46:49');
+INSERT INTO `sys_operationlog` VALUES (5454, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:49', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:49', 2, '2025-09-15 14:46:49');
+INSERT INTO `sys_operationlog` VALUES (5455, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:49', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:49', 2, '2025-09-15 14:46:49');
+INSERT INTO `sys_operationlog` VALUES (5456, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:49', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:49', 2, '2025-09-15 14:46:49');
+INSERT INTO `sys_operationlog` VALUES (5457, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:49', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:49', 2, '2025-09-15 14:46:49');
+INSERT INTO `sys_operationlog` VALUES (5458, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:50', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:50', 2, '2025-09-15 14:46:50');
+INSERT INTO `sys_operationlog` VALUES (5459, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:50', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:50', 2, '2025-09-15 14:46:50');
+INSERT INTO `sys_operationlog` VALUES (5460, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:50', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:50', 2, '2025-09-15 14:46:50');
+INSERT INTO `sys_operationlog` VALUES (5461, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:51', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:51', 2, '2025-09-15 14:46:51');
+INSERT INTO `sys_operationlog` VALUES (5462, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:51', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:51', 2, '2025-09-15 14:46:51');
+INSERT INTO `sys_operationlog` VALUES (5463, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:51', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:51', 2, '2025-09-15 14:46:51');
+INSERT INTO `sys_operationlog` VALUES (5464, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:51', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:51', 2, '2025-09-15 14:46:51');
+INSERT INTO `sys_operationlog` VALUES (5465, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:51', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:51', 2, '2025-09-15 14:46:51');
+INSERT INTO `sys_operationlog` VALUES (5466, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:51', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:51', 2, '2025-09-15 14:46:51');
+INSERT INTO `sys_operationlog` VALUES (5467, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:52', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:52', 2, '2025-09-15 14:46:52');
+INSERT INTO `sys_operationlog` VALUES (5468, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:52', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:52', 2, '2025-09-15 14:46:52');
+INSERT INTO `sys_operationlog` VALUES (5469, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:52', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:52', 2, '2025-09-15 14:46:52');
+INSERT INTO `sys_operationlog` VALUES (5470, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:52', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:52', 2, '2025-09-15 14:46:52');
+INSERT INTO `sys_operationlog` VALUES (5471, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:52', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:52', 2, '2025-09-15 14:46:52');
+INSERT INTO `sys_operationlog` VALUES (5472, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:52', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:52', 2, '2025-09-15 14:46:52');
+INSERT INTO `sys_operationlog` VALUES (5473, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:52', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:52', 2, '2025-09-15 14:46:52');
+INSERT INTO `sys_operationlog` VALUES (5474, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:52', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:52', 2, '2025-09-15 14:46:52');
+INSERT INTO `sys_operationlog` VALUES (5475, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:53', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:53', 2, '2025-09-15 14:46:53');
+INSERT INTO `sys_operationlog` VALUES (5476, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:53', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:53', 2, '2025-09-15 14:46:53');
+INSERT INTO `sys_operationlog` VALUES (5477, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:53', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:53', 2, '2025-09-15 14:46:53');
+INSERT INTO `sys_operationlog` VALUES (5478, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:53', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:53', 2, '2025-09-15 14:46:53');
+INSERT INTO `sys_operationlog` VALUES (5479, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:53', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:53', 2, '2025-09-15 14:46:53');
+INSERT INTO `sys_operationlog` VALUES (5480, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:54', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:54', 2, '2025-09-15 14:46:54');
+INSERT INTO `sys_operationlog` VALUES (5481, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:54', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:54', 2, '2025-09-15 14:46:54');
+INSERT INTO `sys_operationlog` VALUES (5482, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:56', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:56', 2, '2025-09-15 14:46:56');
+INSERT INTO `sys_operationlog` VALUES (5483, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:56', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:56', 2, '2025-09-15 14:46:56');
+INSERT INTO `sys_operationlog` VALUES (5484, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:56', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:56', 2, '2025-09-15 14:46:56');
+INSERT INTO `sys_operationlog` VALUES (5485, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:56', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:56', 2, '2025-09-15 14:46:56');
+INSERT INTO `sys_operationlog` VALUES (5486, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:56', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:56', 2, '2025-09-15 14:46:56');
+INSERT INTO `sys_operationlog` VALUES (5487, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:56', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:56', 2, '2025-09-15 14:46:56');
+INSERT INTO `sys_operationlog` VALUES (5488, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:57', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:57', 2, '2025-09-15 14:46:57');
+INSERT INTO `sys_operationlog` VALUES (5489, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:57', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:57', 2, '2025-09-15 14:46:57');
+INSERT INTO `sys_operationlog` VALUES (5490, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:57', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:57', 2, '2025-09-15 14:46:57');
+INSERT INTO `sys_operationlog` VALUES (5491, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:57', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:57', 2, '2025-09-15 14:46:57');
+INSERT INTO `sys_operationlog` VALUES (5492, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:57', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:57', 2, '2025-09-15 14:46:57');
+INSERT INTO `sys_operationlog` VALUES (5493, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:57', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:57', 2, '2025-09-15 14:46:57');
+INSERT INTO `sys_operationlog` VALUES (5494, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:57', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:57', 2, '2025-09-15 14:46:57');
+INSERT INTO `sys_operationlog` VALUES (5495, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:57', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:57', 2, '2025-09-15 14:46:57');
+INSERT INTO `sys_operationlog` VALUES (5496, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:57', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:57', 2, '2025-09-15 14:46:57');
+INSERT INTO `sys_operationlog` VALUES (5497, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:58', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:58', 2, '2025-09-15 14:46:58');
+INSERT INTO `sys_operationlog` VALUES (5498, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:58', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:58', 2, '2025-09-15 14:46:58');
+INSERT INTO `sys_operationlog` VALUES (5499, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:58', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:58', 2, '2025-09-15 14:46:58');
+INSERT INTO `sys_operationlog` VALUES (5500, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:58', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:58', 2, '2025-09-15 14:46:58');
+INSERT INTO `sys_operationlog` VALUES (5501, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:58', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:58', 2, '2025-09-15 14:46:58');
+INSERT INTO `sys_operationlog` VALUES (5502, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:58', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:58', 2, '2025-09-15 14:46:58');
+INSERT INTO `sys_operationlog` VALUES (5503, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:58', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:58', 2, '2025-09-15 14:46:58');
+INSERT INTO `sys_operationlog` VALUES (5504, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:58', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:58', 2, '2025-09-15 14:46:58');
+INSERT INTO `sys_operationlog` VALUES (5505, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:58', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:58', 2, '2025-09-15 14:46:58');
+INSERT INTO `sys_operationlog` VALUES (5506, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:58', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:58', 2, '2025-09-15 14:46:58');
+INSERT INTO `sys_operationlog` VALUES (5507, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:59', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:59', 2, '2025-09-15 14:46:59');
+INSERT INTO `sys_operationlog` VALUES (5508, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:59', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:59', 2, '2025-09-15 14:46:59');
+INSERT INTO `sys_operationlog` VALUES (5509, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:59', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:59', 2, '2025-09-15 14:46:59');
+INSERT INTO `sys_operationlog` VALUES (5510, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:59', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:59', 2, '2025-09-15 14:46:59');
+INSERT INTO `sys_operationlog` VALUES (5511, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:59', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:59', 2, '2025-09-15 14:46:59');
+INSERT INTO `sys_operationlog` VALUES (5512, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:59', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:59', 2, '2025-09-15 14:46:59');
+INSERT INTO `sys_operationlog` VALUES (5513, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:46:59', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:59', 2, '2025-09-15 14:46:59');
+INSERT INTO `sys_operationlog` VALUES (5514, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:46:59', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:46:59', 2, '2025-09-15 14:46:59');
+INSERT INTO `sys_operationlog` VALUES (5515, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:47:00', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:00', 2, '2025-09-15 14:47:00');
+INSERT INTO `sys_operationlog` VALUES (5516, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:00', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:00', 2, '2025-09-15 14:47:00');
+INSERT INTO `sys_operationlog` VALUES (5517, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:00', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:00', 2, '2025-09-15 14:47:00');
+INSERT INTO `sys_operationlog` VALUES (5518, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:00', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:00', 2, '2025-09-15 14:47:00');
+INSERT INTO `sys_operationlog` VALUES (5519, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:00', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:00', 2, '2025-09-15 14:47:00');
+INSERT INTO `sys_operationlog` VALUES (5520, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:47:20', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:20', 2, '2025-09-15 14:47:20');
+INSERT INTO `sys_operationlog` VALUES (5521, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:47:20', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:20', 2, '2025-09-15 14:47:20');
+INSERT INTO `sys_operationlog` VALUES (5522, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:47:20', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:20', 2, '2025-09-15 14:47:20');
+INSERT INTO `sys_operationlog` VALUES (5523, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:47:20', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:20', 2, '2025-09-15 14:47:20');
+INSERT INTO `sys_operationlog` VALUES (5524, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:47:21', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:21', 2, '2025-09-15 14:47:21');
+INSERT INTO `sys_operationlog` VALUES (5525, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:47:21', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:21', 2, '2025-09-15 14:47:21');
+INSERT INTO `sys_operationlog` VALUES (5526, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:47:21', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:21', 2, '2025-09-15 14:47:21');
+INSERT INTO `sys_operationlog` VALUES (5527, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:47:21', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:21', 2, '2025-09-15 14:47:21');
+INSERT INTO `sys_operationlog` VALUES (5528, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:47:21', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:21', 2, '2025-09-15 14:47:21');
+INSERT INTO `sys_operationlog` VALUES (5529, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:47:22', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:22', 2, '2025-09-15 14:47:22');
+INSERT INTO `sys_operationlog` VALUES (5530, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:47:22', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:22', 2, '2025-09-15 14:47:22');
+INSERT INTO `sys_operationlog` VALUES (5531, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:47:22', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:22', 2, '2025-09-15 14:47:22');
+INSERT INTO `sys_operationlog` VALUES (5532, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:47:22', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:22', 2, '2025-09-15 14:47:22');
+INSERT INTO `sys_operationlog` VALUES (5533, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:47:22', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:22', 2, '2025-09-15 14:47:22');
+INSERT INTO `sys_operationlog` VALUES (5534, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:47:22', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:22', 2, '2025-09-15 14:47:22');
+INSERT INTO `sys_operationlog` VALUES (5535, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:47:23', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:23', 2, '2025-09-15 14:47:23');
+INSERT INTO `sys_operationlog` VALUES (5536, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-15 14:47:23', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:23', 2, '2025-09-15 14:47:23');
+INSERT INTO `sys_operationlog` VALUES (5537, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:40', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:40', 2, '2025-09-15 14:47:40');
+INSERT INTO `sys_operationlog` VALUES (5538, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:41', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:41', 2, '2025-09-15 14:47:41');
+INSERT INTO `sys_operationlog` VALUES (5539, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:41', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:41', 2, '2025-09-15 14:47:41');
+INSERT INTO `sys_operationlog` VALUES (5540, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:41', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:41', 2, '2025-09-15 14:47:41');
+INSERT INTO `sys_operationlog` VALUES (5541, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:41', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:41', 2, '2025-09-15 14:47:41');
+INSERT INTO `sys_operationlog` VALUES (5542, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:41', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:41', 2, '2025-09-15 14:47:41');
+INSERT INTO `sys_operationlog` VALUES (5543, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:42', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:42', 2, '2025-09-15 14:47:42');
+INSERT INTO `sys_operationlog` VALUES (5544, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:42', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:42', 2, '2025-09-15 14:47:42');
+INSERT INTO `sys_operationlog` VALUES (5545, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:42', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:42', 2, '2025-09-15 14:47:42');
+INSERT INTO `sys_operationlog` VALUES (5546, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:42', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:42', 2, '2025-09-15 14:47:42');
+INSERT INTO `sys_operationlog` VALUES (5547, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:43', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:43', 2, '2025-09-15 14:47:43');
+INSERT INTO `sys_operationlog` VALUES (5548, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:43', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:43', 2, '2025-09-15 14:47:43');
+INSERT INTO `sys_operationlog` VALUES (5549, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:43', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:43', 2, '2025-09-15 14:47:43');
+INSERT INTO `sys_operationlog` VALUES (5550, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:43', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:43', 2, '2025-09-15 14:47:43');
+INSERT INTO `sys_operationlog` VALUES (5551, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:43', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:43', 2, '2025-09-15 14:47:43');
+INSERT INTO `sys_operationlog` VALUES (5552, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:44', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:44', 2, '2025-09-15 14:47:44');
+INSERT INTO `sys_operationlog` VALUES (5553, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:47:44', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:44', 2, '2025-09-15 14:47:44');
+INSERT INTO `sys_operationlog` VALUES (5554, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-15 14:47:44', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:47:44', 2, '2025-09-15 14:47:44');
+INSERT INTO `sys_operationlog` VALUES (5555, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:47:44', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:44', 2, '2025-09-15 14:47:44');
+INSERT INTO `sys_operationlog` VALUES (5556, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:47:44', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:44', 2, '2025-09-15 14:47:44');
+INSERT INTO `sys_operationlog` VALUES (5557, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:47:45', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:45', 2, '2025-09-15 14:47:45');
+INSERT INTO `sys_operationlog` VALUES (5558, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:47:45', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:45', 2, '2025-09-15 14:47:45');
+INSERT INTO `sys_operationlog` VALUES (5559, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:47:45', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:45', 2, '2025-09-15 14:47:45');
+INSERT INTO `sys_operationlog` VALUES (5560, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:47:45', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:45', 2, '2025-09-15 14:47:45');
+INSERT INTO `sys_operationlog` VALUES (5561, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:47:46', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:46', 2, '2025-09-15 14:47:46');
+INSERT INTO `sys_operationlog` VALUES (5562, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:47:46', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:46', 2, '2025-09-15 14:47:46');
+INSERT INTO `sys_operationlog` VALUES (5563, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:47:46', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:46', 2, '2025-09-15 14:47:46');
+INSERT INTO `sys_operationlog` VALUES (5564, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:47:46', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:46', 2, '2025-09-15 14:47:46');
+INSERT INTO `sys_operationlog` VALUES (5565, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:47:47', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:47', 2, '2025-09-15 14:47:47');
+INSERT INTO `sys_operationlog` VALUES (5566, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:47:47', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:47', 2, '2025-09-15 14:47:47');
+INSERT INTO `sys_operationlog` VALUES (5567, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:47:47', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:47', 2, '2025-09-15 14:47:47');
+INSERT INTO `sys_operationlog` VALUES (5568, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:47:47', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:47', 2, '2025-09-15 14:47:47');
+INSERT INTO `sys_operationlog` VALUES (5569, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:47:48', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:48', 2, '2025-09-15 14:47:48');
+INSERT INTO `sys_operationlog` VALUES (5570, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:47:48', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:48', 2, '2025-09-15 14:47:48');
+INSERT INTO `sys_operationlog` VALUES (5571, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:47:48', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:48', 2, '2025-09-15 14:47:48');
+INSERT INTO `sys_operationlog` VALUES (5572, 2, 3, '厨房管理>厨房管理', '新增厨房', '2025-09-15 14:47:50', '{\"kitchen\":{\"id\":0,\"kitchen_name\":\"21\",\"kitchen_type\":\"1\",\"kitchen_description\":\"1\",\"store_id\":0}}', 1, 2, '2025-09-15 14:47:50', 2, '2025-09-15 14:47:50');
+INSERT INTO `sys_operationlog` VALUES (5573, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:47:50', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:50', 2, '2025-09-15 14:47:50');
+INSERT INTO `sys_operationlog` VALUES (5574, 2, 2, '厨房管理>厨房管理', '删除厨房', '2025-09-15 14:47:52', '{\"kitchenId\":4}', 1, 2, '2025-09-15 14:47:52', 2, '2025-09-15 14:47:52');
+INSERT INTO `sys_operationlog` VALUES (5575, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:47:53', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:53', 2, '2025-09-15 14:47:53');
+INSERT INTO `sys_operationlog` VALUES (5576, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:47:55', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:55', 2, '2025-09-15 14:47:55');
+INSERT INTO `sys_operationlog` VALUES (5577, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:47:56', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:56', 2, '2025-09-15 14:47:56');
+INSERT INTO `sys_operationlog` VALUES (5578, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:47:56', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:56', 2, '2025-09-15 14:47:56');
+INSERT INTO `sys_operationlog` VALUES (5579, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:47:56', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:56', 2, '2025-09-15 14:47:56');
+INSERT INTO `sys_operationlog` VALUES (5580, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:47:56', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:56', 2, '2025-09-15 14:47:56');
+INSERT INTO `sys_operationlog` VALUES (5581, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:47:57', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:57', 2, '2025-09-15 14:47:57');
+INSERT INTO `sys_operationlog` VALUES (5582, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:47:57', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:57', 2, '2025-09-15 14:47:57');
+INSERT INTO `sys_operationlog` VALUES (5583, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:47:57', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:57', 2, '2025-09-15 14:47:57');
+INSERT INTO `sys_operationlog` VALUES (5584, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:47:57', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:57', 2, '2025-09-15 14:47:57');
+INSERT INTO `sys_operationlog` VALUES (5585, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:47:58', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:58', 2, '2025-09-15 14:47:58');
+INSERT INTO `sys_operationlog` VALUES (5586, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:47:58', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:58', 2, '2025-09-15 14:47:58');
+INSERT INTO `sys_operationlog` VALUES (5587, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:47:58', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:58', 2, '2025-09-15 14:47:58');
+INSERT INTO `sys_operationlog` VALUES (5588, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:47:58', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:58', 2, '2025-09-15 14:47:58');
+INSERT INTO `sys_operationlog` VALUES (5589, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:47:58', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:58', 2, '2025-09-15 14:47:58');
+INSERT INTO `sys_operationlog` VALUES (5590, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:47:58', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:58', 2, '2025-09-15 14:47:58');
+INSERT INTO `sys_operationlog` VALUES (5591, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:47:59', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:59', 2, '2025-09-15 14:47:59');
+INSERT INTO `sys_operationlog` VALUES (5592, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:47:59', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:47:59', 2, '2025-09-15 14:47:59');
+INSERT INTO `sys_operationlog` VALUES (5593, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:48:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:48:00', 2, '2025-09-15 14:48:00');
+INSERT INTO `sys_operationlog` VALUES (5594, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:00', 2, '2025-09-15 14:48:00');
+INSERT INTO `sys_operationlog` VALUES (5595, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:48:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:48:01', 2, '2025-09-15 14:48:01');
+INSERT INTO `sys_operationlog` VALUES (5596, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:01', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:01', 2, '2025-09-15 14:48:01');
+INSERT INTO `sys_operationlog` VALUES (5597, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:48:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:48:01', 2, '2025-09-15 14:48:01');
+INSERT INTO `sys_operationlog` VALUES (5598, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:48:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:48:01', 2, '2025-09-15 14:48:01');
+INSERT INTO `sys_operationlog` VALUES (5599, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:48:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:48:01', 2, '2025-09-15 14:48:01');
+INSERT INTO `sys_operationlog` VALUES (5600, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:01', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:01', 2, '2025-09-15 14:48:01');
+INSERT INTO `sys_operationlog` VALUES (5601, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:48:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:48:01', 2, '2025-09-15 14:48:01');
+INSERT INTO `sys_operationlog` VALUES (5602, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:01', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:01', 2, '2025-09-15 14:48:01');
+INSERT INTO `sys_operationlog` VALUES (5603, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:48:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:48:01', 2, '2025-09-15 14:48:01');
+INSERT INTO `sys_operationlog` VALUES (5604, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:01', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:01', 2, '2025-09-15 14:48:01');
+INSERT INTO `sys_operationlog` VALUES (5605, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:02', 2, '2025-09-15 14:48:02');
+INSERT INTO `sys_operationlog` VALUES (5606, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:48:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:48:02', 2, '2025-09-15 14:48:02');
+INSERT INTO `sys_operationlog` VALUES (5607, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:02', 2, '2025-09-15 14:48:02');
+INSERT INTO `sys_operationlog` VALUES (5608, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:48:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:48:02', 2, '2025-09-15 14:48:02');
+INSERT INTO `sys_operationlog` VALUES (5609, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:48:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:48:02', 2, '2025-09-15 14:48:02');
+INSERT INTO `sys_operationlog` VALUES (5610, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:02', 2, '2025-09-15 14:48:02');
+INSERT INTO `sys_operationlog` VALUES (5611, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:02', 2, '2025-09-15 14:48:02');
+INSERT INTO `sys_operationlog` VALUES (5612, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:48:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:48:02', 2, '2025-09-15 14:48:02');
+INSERT INTO `sys_operationlog` VALUES (5613, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:03', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:03', 2, '2025-09-15 14:48:03');
+INSERT INTO `sys_operationlog` VALUES (5614, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:48:03', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:48:03', 2, '2025-09-15 14:48:03');
+INSERT INTO `sys_operationlog` VALUES (5615, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:03', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:03', 2, '2025-09-15 14:48:03');
+INSERT INTO `sys_operationlog` VALUES (5616, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:48:03', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:48:03', 2, '2025-09-15 14:48:03');
+INSERT INTO `sys_operationlog` VALUES (5617, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:03', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:03', 2, '2025-09-15 14:48:03');
+INSERT INTO `sys_operationlog` VALUES (5618, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:48:03', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:48:03', 2, '2025-09-15 14:48:03');
+INSERT INTO `sys_operationlog` VALUES (5619, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:03', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:03', 2, '2025-09-15 14:48:03');
+INSERT INTO `sys_operationlog` VALUES (5620, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:48:03', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:48:03', 2, '2025-09-15 14:48:03');
+INSERT INTO `sys_operationlog` VALUES (5621, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:04', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:04', 2, '2025-09-15 14:48:04');
+INSERT INTO `sys_operationlog` VALUES (5622, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:48:04', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:48:04', 2, '2025-09-15 14:48:04');
+INSERT INTO `sys_operationlog` VALUES (5623, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:04', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:04', 2, '2025-09-15 14:48:04');
+INSERT INTO `sys_operationlog` VALUES (5624, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:48:04', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:48:04', 2, '2025-09-15 14:48:04');
+INSERT INTO `sys_operationlog` VALUES (5625, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:48:04', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:48:04', 2, '2025-09-15 14:48:04');
+INSERT INTO `sys_operationlog` VALUES (5626, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:04', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:04', 2, '2025-09-15 14:48:04');
+INSERT INTO `sys_operationlog` VALUES (5627, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:48:04', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:48:04', 2, '2025-09-15 14:48:04');
+INSERT INTO `sys_operationlog` VALUES (5628, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:04', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:04', 2, '2025-09-15 14:48:04');
+INSERT INTO `sys_operationlog` VALUES (5629, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:48:05', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:48:05', 2, '2025-09-15 14:48:05');
+INSERT INTO `sys_operationlog` VALUES (5630, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:05', 2, '2025-09-15 14:48:05');
+INSERT INTO `sys_operationlog` VALUES (5631, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:05', 2, '2025-09-15 14:48:05');
+INSERT INTO `sys_operationlog` VALUES (5632, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:48:05', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:48:05', 2, '2025-09-15 14:48:05');
+INSERT INTO `sys_operationlog` VALUES (5633, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:05', 2, '2025-09-15 14:48:05');
+INSERT INTO `sys_operationlog` VALUES (5634, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:05', 2, '2025-09-15 14:48:05');
+INSERT INTO `sys_operationlog` VALUES (5635, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:05', 2, '2025-09-15 14:48:05');
+INSERT INTO `sys_operationlog` VALUES (5636, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:06', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:06', 2, '2025-09-15 14:48:06');
+INSERT INTO `sys_operationlog` VALUES (5637, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:06', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:06', 2, '2025-09-15 14:48:06');
+INSERT INTO `sys_operationlog` VALUES (5638, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:06', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:06', 2, '2025-09-15 14:48:06');
+INSERT INTO `sys_operationlog` VALUES (5639, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:06', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:06', 2, '2025-09-15 14:48:06');
+INSERT INTO `sys_operationlog` VALUES (5640, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:06', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:06', 2, '2025-09-15 14:48:06');
+INSERT INTO `sys_operationlog` VALUES (5641, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:07', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:07', 2, '2025-09-15 14:48:07');
+INSERT INTO `sys_operationlog` VALUES (5642, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:07', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:07', 2, '2025-09-15 14:48:07');
+INSERT INTO `sys_operationlog` VALUES (5643, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:07', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:07', 2, '2025-09-15 14:48:07');
+INSERT INTO `sys_operationlog` VALUES (5644, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:07', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:07', 2, '2025-09-15 14:48:07');
+INSERT INTO `sys_operationlog` VALUES (5645, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:07', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:07', 2, '2025-09-15 14:48:07');
+INSERT INTO `sys_operationlog` VALUES (5646, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:07', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:07', 2, '2025-09-15 14:48:07');
+INSERT INTO `sys_operationlog` VALUES (5647, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:07', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:07', 2, '2025-09-15 14:48:07');
+INSERT INTO `sys_operationlog` VALUES (5648, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:08', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:08', 2, '2025-09-15 14:48:08');
+INSERT INTO `sys_operationlog` VALUES (5649, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:08', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:08', 2, '2025-09-15 14:48:08');
+INSERT INTO `sys_operationlog` VALUES (5650, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:08', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:08', 2, '2025-09-15 14:48:08');
+INSERT INTO `sys_operationlog` VALUES (5651, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:48:08', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:48:08', 2, '2025-09-15 14:48:08');
+INSERT INTO `sys_operationlog` VALUES (5652, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:49:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:49:00', 2, '2025-09-15 14:49:00');
+INSERT INTO `sys_operationlog` VALUES (5653, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:00', 2, '2025-09-15 14:49:00');
+INSERT INTO `sys_operationlog` VALUES (5654, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:49:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:49:00', 2, '2025-09-15 14:49:00');
+INSERT INTO `sys_operationlog` VALUES (5655, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:00', 2, '2025-09-15 14:49:00');
+INSERT INTO `sys_operationlog` VALUES (5656, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:49:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:49:00', 2, '2025-09-15 14:49:00');
+INSERT INTO `sys_operationlog` VALUES (5657, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:00', 2, '2025-09-15 14:49:00');
+INSERT INTO `sys_operationlog` VALUES (5658, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:00', 2, '2025-09-15 14:49:00');
+INSERT INTO `sys_operationlog` VALUES (5659, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:49:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:49:00', 2, '2025-09-15 14:49:00');
+INSERT INTO `sys_operationlog` VALUES (5660, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:49:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:49:01', 2, '2025-09-15 14:49:01');
+INSERT INTO `sys_operationlog` VALUES (5661, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:01', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:01', 2, '2025-09-15 14:49:01');
+INSERT INTO `sys_operationlog` VALUES (5662, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:49:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:49:01', 2, '2025-09-15 14:49:01');
+INSERT INTO `sys_operationlog` VALUES (5663, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:01', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:01', 2, '2025-09-15 14:49:01');
+INSERT INTO `sys_operationlog` VALUES (5664, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:49:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:49:01', 2, '2025-09-15 14:49:01');
+INSERT INTO `sys_operationlog` VALUES (5665, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:01', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:01', 2, '2025-09-15 14:49:01');
+INSERT INTO `sys_operationlog` VALUES (5666, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:01', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:01', 2, '2025-09-15 14:49:01');
+INSERT INTO `sys_operationlog` VALUES (5667, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:49:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:49:01', 2, '2025-09-15 14:49:01');
+INSERT INTO `sys_operationlog` VALUES (5668, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:01', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:01', 2, '2025-09-15 14:49:01');
+INSERT INTO `sys_operationlog` VALUES (5669, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:49:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:49:01', 2, '2025-09-15 14:49:01');
+INSERT INTO `sys_operationlog` VALUES (5670, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:01', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:01', 2, '2025-09-15 14:49:01');
+INSERT INTO `sys_operationlog` VALUES (5671, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:49:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:49:01', 2, '2025-09-15 14:49:01');
+INSERT INTO `sys_operationlog` VALUES (5672, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:02', 2, '2025-09-15 14:49:02');
+INSERT INTO `sys_operationlog` VALUES (5673, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:49:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:49:02', 2, '2025-09-15 14:49:02');
+INSERT INTO `sys_operationlog` VALUES (5674, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:02', 2, '2025-09-15 14:49:02');
+INSERT INTO `sys_operationlog` VALUES (5675, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:02', 2, '2025-09-15 14:49:02');
+INSERT INTO `sys_operationlog` VALUES (5676, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:49:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:49:02', 2, '2025-09-15 14:49:02');
+INSERT INTO `sys_operationlog` VALUES (5677, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:02', 2, '2025-09-15 14:49:02');
+INSERT INTO `sys_operationlog` VALUES (5678, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:49:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:49:02', 2, '2025-09-15 14:49:02');
+INSERT INTO `sys_operationlog` VALUES (5679, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:02', 2, '2025-09-15 14:49:02');
+INSERT INTO `sys_operationlog` VALUES (5680, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:49:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:49:02', 2, '2025-09-15 14:49:02');
+INSERT INTO `sys_operationlog` VALUES (5681, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:02', 2, '2025-09-15 14:49:02');
+INSERT INTO `sys_operationlog` VALUES (5682, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:49:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:49:02', 2, '2025-09-15 14:49:02');
+INSERT INTO `sys_operationlog` VALUES (5683, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:03', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:03', 2, '2025-09-15 14:49:03');
+INSERT INTO `sys_operationlog` VALUES (5684, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:49:03', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:49:03', 2, '2025-09-15 14:49:03');
+INSERT INTO `sys_operationlog` VALUES (5685, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:49:03', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:49:03', 2, '2025-09-15 14:49:03');
+INSERT INTO `sys_operationlog` VALUES (5686, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:03', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:03', 2, '2025-09-15 14:49:03');
+INSERT INTO `sys_operationlog` VALUES (5687, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:03', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:03', 2, '2025-09-15 14:49:03');
+INSERT INTO `sys_operationlog` VALUES (5688, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:49:03', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:49:03', 2, '2025-09-15 14:49:03');
+INSERT INTO `sys_operationlog` VALUES (5689, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:49:03', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:49:03', 2, '2025-09-15 14:49:03');
+INSERT INTO `sys_operationlog` VALUES (5690, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:03', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:03', 2, '2025-09-15 14:49:03');
+INSERT INTO `sys_operationlog` VALUES (5691, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:04', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:04', 2, '2025-09-15 14:49:04');
+INSERT INTO `sys_operationlog` VALUES (5692, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:04', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:04', 2, '2025-09-15 14:49:04');
+INSERT INTO `sys_operationlog` VALUES (5693, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:04', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:04', 2, '2025-09-15 14:49:04');
+INSERT INTO `sys_operationlog` VALUES (5694, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:04', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:04', 2, '2025-09-15 14:49:04');
+INSERT INTO `sys_operationlog` VALUES (5695, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:05', 2, '2025-09-15 14:49:05');
+INSERT INTO `sys_operationlog` VALUES (5696, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:05', 2, '2025-09-15 14:49:05');
+INSERT INTO `sys_operationlog` VALUES (5697, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:05', 2, '2025-09-15 14:49:05');
+INSERT INTO `sys_operationlog` VALUES (5698, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:05', 2, '2025-09-15 14:49:05');
+INSERT INTO `sys_operationlog` VALUES (5699, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:05', 2, '2025-09-15 14:49:05');
+INSERT INTO `sys_operationlog` VALUES (5700, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:05', 2, '2025-09-15 14:49:05');
+INSERT INTO `sys_operationlog` VALUES (5701, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:05', 2, '2025-09-15 14:49:05');
+INSERT INTO `sys_operationlog` VALUES (5702, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:06', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:06', 2, '2025-09-15 14:49:06');
+INSERT INTO `sys_operationlog` VALUES (5703, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:06', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:06', 2, '2025-09-15 14:49:06');
+INSERT INTO `sys_operationlog` VALUES (5704, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:06', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:06', 2, '2025-09-15 14:49:06');
+INSERT INTO `sys_operationlog` VALUES (5705, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:06', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:06', 2, '2025-09-15 14:49:06');
+INSERT INTO `sys_operationlog` VALUES (5706, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:07', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:07', 2, '2025-09-15 14:49:07');
+INSERT INTO `sys_operationlog` VALUES (5707, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:07', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:07', 2, '2025-09-15 14:49:07');
+INSERT INTO `sys_operationlog` VALUES (5708, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:49:07', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:49:07', 2, '2025-09-15 14:49:07');
+INSERT INTO `sys_operationlog` VALUES (5709, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:50:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:50:00', 2, '2025-09-15 14:50:00');
+INSERT INTO `sys_operationlog` VALUES (5710, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:00', 2, '2025-09-15 14:50:00');
+INSERT INTO `sys_operationlog` VALUES (5711, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:50:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:50:00', 2, '2025-09-15 14:50:00');
+INSERT INTO `sys_operationlog` VALUES (5712, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:00', 2, '2025-09-15 14:50:00');
+INSERT INTO `sys_operationlog` VALUES (5713, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:00', 2, '2025-09-15 14:50:00');
+INSERT INTO `sys_operationlog` VALUES (5714, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:50:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:50:00', 2, '2025-09-15 14:50:00');
+INSERT INTO `sys_operationlog` VALUES (5715, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:50:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:50:00', 2, '2025-09-15 14:50:00');
+INSERT INTO `sys_operationlog` VALUES (5716, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:00', 2, '2025-09-15 14:50:00');
+INSERT INTO `sys_operationlog` VALUES (5717, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:01', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:01', 2, '2025-09-15 14:50:01');
+INSERT INTO `sys_operationlog` VALUES (5718, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:50:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:50:01', 2, '2025-09-15 14:50:01');
+INSERT INTO `sys_operationlog` VALUES (5719, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:01', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:01', 2, '2025-09-15 14:50:01');
+INSERT INTO `sys_operationlog` VALUES (5720, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:50:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:50:01', 2, '2025-09-15 14:50:01');
+INSERT INTO `sys_operationlog` VALUES (5721, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:01', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:01', 2, '2025-09-15 14:50:01');
+INSERT INTO `sys_operationlog` VALUES (5722, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:01', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:01', 2, '2025-09-15 14:50:01');
+INSERT INTO `sys_operationlog` VALUES (5723, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:50:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:50:01', 2, '2025-09-15 14:50:01');
+INSERT INTO `sys_operationlog` VALUES (5724, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:50:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:50:01', 2, '2025-09-15 14:50:01');
+INSERT INTO `sys_operationlog` VALUES (5725, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:01', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:01', 2, '2025-09-15 14:50:01');
+INSERT INTO `sys_operationlog` VALUES (5726, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:01', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:01', 2, '2025-09-15 14:50:01');
+INSERT INTO `sys_operationlog` VALUES (5727, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:50:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:50:01', 2, '2025-09-15 14:50:01');
+INSERT INTO `sys_operationlog` VALUES (5728, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:02', 2, '2025-09-15 14:50:02');
+INSERT INTO `sys_operationlog` VALUES (5729, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:50:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:50:02', 2, '2025-09-15 14:50:02');
+INSERT INTO `sys_operationlog` VALUES (5730, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:50:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:50:02', 2, '2025-09-15 14:50:02');
+INSERT INTO `sys_operationlog` VALUES (5731, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:02', 2, '2025-09-15 14:50:02');
+INSERT INTO `sys_operationlog` VALUES (5732, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:02', 2, '2025-09-15 14:50:02');
+INSERT INTO `sys_operationlog` VALUES (5733, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:50:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:50:02', 2, '2025-09-15 14:50:02');
+INSERT INTO `sys_operationlog` VALUES (5734, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:03', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:03', 2, '2025-09-15 14:50:03');
+INSERT INTO `sys_operationlog` VALUES (5735, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:50:03', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:50:03', 2, '2025-09-15 14:50:03');
+INSERT INTO `sys_operationlog` VALUES (5736, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:03', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:03', 2, '2025-09-15 14:50:03');
+INSERT INTO `sys_operationlog` VALUES (5737, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:50:03', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:50:03', 2, '2025-09-15 14:50:03');
+INSERT INTO `sys_operationlog` VALUES (5738, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:03', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:03', 2, '2025-09-15 14:50:03');
+INSERT INTO `sys_operationlog` VALUES (5739, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:50:03', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:50:03', 2, '2025-09-15 14:50:03');
+INSERT INTO `sys_operationlog` VALUES (5740, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:50:03', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:50:03', 2, '2025-09-15 14:50:03');
+INSERT INTO `sys_operationlog` VALUES (5741, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:03', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:03', 2, '2025-09-15 14:50:03');
+INSERT INTO `sys_operationlog` VALUES (5742, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:03', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:03', 2, '2025-09-15 14:50:03');
+INSERT INTO `sys_operationlog` VALUES (5743, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:50:03', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:50:03', 2, '2025-09-15 14:50:03');
+INSERT INTO `sys_operationlog` VALUES (5744, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:50:04', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:50:04', 2, '2025-09-15 14:50:04');
+INSERT INTO `sys_operationlog` VALUES (5745, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:04', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:04', 2, '2025-09-15 14:50:04');
+INSERT INTO `sys_operationlog` VALUES (5746, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:04', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:04', 2, '2025-09-15 14:50:04');
+INSERT INTO `sys_operationlog` VALUES (5747, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:50:04', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:50:04', 2, '2025-09-15 14:50:04');
+INSERT INTO `sys_operationlog` VALUES (5748, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:04', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:04', 2, '2025-09-15 14:50:04');
+INSERT INTO `sys_operationlog` VALUES (5749, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:04', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:04', 2, '2025-09-15 14:50:04');
+INSERT INTO `sys_operationlog` VALUES (5750, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:05', 2, '2025-09-15 14:50:05');
+INSERT INTO `sys_operationlog` VALUES (5751, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:05', 2, '2025-09-15 14:50:05');
+INSERT INTO `sys_operationlog` VALUES (5752, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:05', 2, '2025-09-15 14:50:05');
+INSERT INTO `sys_operationlog` VALUES (5753, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:05', 2, '2025-09-15 14:50:05');
+INSERT INTO `sys_operationlog` VALUES (5754, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:05', 2, '2025-09-15 14:50:05');
+INSERT INTO `sys_operationlog` VALUES (5755, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:05', 2, '2025-09-15 14:50:05');
+INSERT INTO `sys_operationlog` VALUES (5756, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:06', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:06', 2, '2025-09-15 14:50:06');
+INSERT INTO `sys_operationlog` VALUES (5757, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:06', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:06', 2, '2025-09-15 14:50:06');
+INSERT INTO `sys_operationlog` VALUES (5758, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:06', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:06', 2, '2025-09-15 14:50:06');
+INSERT INTO `sys_operationlog` VALUES (5759, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:06', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:06', 2, '2025-09-15 14:50:06');
+INSERT INTO `sys_operationlog` VALUES (5760, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:06', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:06', 2, '2025-09-15 14:50:06');
+INSERT INTO `sys_operationlog` VALUES (5761, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:07', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:07', 2, '2025-09-15 14:50:07');
+INSERT INTO `sys_operationlog` VALUES (5762, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:07', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:07', 2, '2025-09-15 14:50:07');
+INSERT INTO `sys_operationlog` VALUES (5763, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:07', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:07', 2, '2025-09-15 14:50:07');
+INSERT INTO `sys_operationlog` VALUES (5764, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:07', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:07', 2, '2025-09-15 14:50:07');
+INSERT INTO `sys_operationlog` VALUES (5765, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:50:07', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:50:07', 2, '2025-09-15 14:50:07');
+INSERT INTO `sys_operationlog` VALUES (5766, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:00', 2, '2025-09-15 14:51:00');
+INSERT INTO `sys_operationlog` VALUES (5767, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:51:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:51:00', 2, '2025-09-15 14:51:00');
+INSERT INTO `sys_operationlog` VALUES (5768, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:00', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:00', 2, '2025-09-15 14:51:00');
+INSERT INTO `sys_operationlog` VALUES (5769, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:51:00', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:51:00', 2, '2025-09-15 14:51:00');
+INSERT INTO `sys_operationlog` VALUES (5770, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:01', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:01', 2, '2025-09-15 14:51:01');
+INSERT INTO `sys_operationlog` VALUES (5771, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:51:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:51:01', 2, '2025-09-15 14:51:01');
+INSERT INTO `sys_operationlog` VALUES (5772, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:01', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:01', 2, '2025-09-15 14:51:01');
+INSERT INTO `sys_operationlog` VALUES (5773, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:51:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:51:01', 2, '2025-09-15 14:51:01');
+INSERT INTO `sys_operationlog` VALUES (5774, 2, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-15 14:51:01', '{\"kitchenOrderId\":30,\"status\":2}', 1, 2, '2025-09-15 14:51:01', 2, '2025-09-15 14:51:01');
+INSERT INTO `sys_operationlog` VALUES (5775, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:01', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:01', 2, '2025-09-15 14:51:01');
+INSERT INTO `sys_operationlog` VALUES (5776, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:51:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:51:01', 2, '2025-09-15 14:51:01');
+INSERT INTO `sys_operationlog` VALUES (5777, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:01', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:01', 2, '2025-09-15 14:51:01');
+INSERT INTO `sys_operationlog` VALUES (5778, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:51:01', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:51:01', 2, '2025-09-15 14:51:01');
+INSERT INTO `sys_operationlog` VALUES (5779, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:02', 2, '2025-09-15 14:51:02');
+INSERT INTO `sys_operationlog` VALUES (5780, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:51:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:51:02', 2, '2025-09-15 14:51:02');
+INSERT INTO `sys_operationlog` VALUES (5781, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:51:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:51:02', 2, '2025-09-15 14:51:02');
+INSERT INTO `sys_operationlog` VALUES (5782, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:02', 2, '2025-09-15 14:51:02');
+INSERT INTO `sys_operationlog` VALUES (5783, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:02', 2, '2025-09-15 14:51:02');
+INSERT INTO `sys_operationlog` VALUES (5784, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:51:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:51:02', 2, '2025-09-15 14:51:02');
+INSERT INTO `sys_operationlog` VALUES (5785, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:02', 2, '2025-09-15 14:51:02');
+INSERT INTO `sys_operationlog` VALUES (5786, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:51:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:51:02', 2, '2025-09-15 14:51:02');
+INSERT INTO `sys_operationlog` VALUES (5787, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:02', 2, '2025-09-15 14:51:02');
+INSERT INTO `sys_operationlog` VALUES (5788, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:51:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:51:02', 2, '2025-09-15 14:51:02');
+INSERT INTO `sys_operationlog` VALUES (5789, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:02', 2, '2025-09-15 14:51:02');
+INSERT INTO `sys_operationlog` VALUES (5790, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:51:03', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:51:03', 2, '2025-09-15 14:51:03');
+INSERT INTO `sys_operationlog` VALUES (5791, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:03', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:03', 2, '2025-09-15 14:51:03');
+INSERT INTO `sys_operationlog` VALUES (5792, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:03', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:03', 2, '2025-09-15 14:51:03');
+INSERT INTO `sys_operationlog` VALUES (5793, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:51:03', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:51:03', 2, '2025-09-15 14:51:03');
+INSERT INTO `sys_operationlog` VALUES (5794, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:03', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:03', 2, '2025-09-15 14:51:03');
+INSERT INTO `sys_operationlog` VALUES (5795, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:51:03', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:51:03', 2, '2025-09-15 14:51:03');
+INSERT INTO `sys_operationlog` VALUES (5796, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:51:03', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:51:03', 2, '2025-09-15 14:51:03');
+INSERT INTO `sys_operationlog` VALUES (5797, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:03', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:03', 2, '2025-09-15 14:51:03');
+INSERT INTO `sys_operationlog` VALUES (5798, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:51:04', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:51:04', 2, '2025-09-15 14:51:04');
+INSERT INTO `sys_operationlog` VALUES (5799, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:04', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:04', 2, '2025-09-15 14:51:04');
+INSERT INTO `sys_operationlog` VALUES (5800, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:04', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:04', 2, '2025-09-15 14:51:04');
+INSERT INTO `sys_operationlog` VALUES (5801, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:51:04', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:51:04', 2, '2025-09-15 14:51:04');
+INSERT INTO `sys_operationlog` VALUES (5802, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:51:04', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:51:04', 2, '2025-09-15 14:51:04');
+INSERT INTO `sys_operationlog` VALUES (5803, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:04', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:04', 2, '2025-09-15 14:51:04');
+INSERT INTO `sys_operationlog` VALUES (5804, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:51:04', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:51:04', 2, '2025-09-15 14:51:04');
+INSERT INTO `sys_operationlog` VALUES (5805, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:04', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:04', 2, '2025-09-15 14:51:04');
+INSERT INTO `sys_operationlog` VALUES (5806, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:04', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:04', 2, '2025-09-15 14:51:04');
+INSERT INTO `sys_operationlog` VALUES (5807, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:05', 2, '2025-09-15 14:51:05');
+INSERT INTO `sys_operationlog` VALUES (5808, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:05', 2, '2025-09-15 14:51:05');
+INSERT INTO `sys_operationlog` VALUES (5809, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:05', 2, '2025-09-15 14:51:05');
+INSERT INTO `sys_operationlog` VALUES (5810, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:05', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:05', 2, '2025-09-15 14:51:05');
+INSERT INTO `sys_operationlog` VALUES (5811, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:06', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:06', 2, '2025-09-15 14:51:06');
+INSERT INTO `sys_operationlog` VALUES (5812, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:06', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:06', 2, '2025-09-15 14:51:06');
+INSERT INTO `sys_operationlog` VALUES (5813, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:06', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:06', 2, '2025-09-15 14:51:06');
+INSERT INTO `sys_operationlog` VALUES (5814, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:06', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:06', 2, '2025-09-15 14:51:06');
+INSERT INTO `sys_operationlog` VALUES (5815, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:07', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:07', 2, '2025-09-15 14:51:07');
+INSERT INTO `sys_operationlog` VALUES (5816, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:07', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:07', 2, '2025-09-15 14:51:07');
+INSERT INTO `sys_operationlog` VALUES (5817, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:07', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:07', 2, '2025-09-15 14:51:07');
+INSERT INTO `sys_operationlog` VALUES (5818, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:07', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:07', 2, '2025-09-15 14:51:07');
+INSERT INTO `sys_operationlog` VALUES (5819, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:07', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:07', 2, '2025-09-15 14:51:07');
+INSERT INTO `sys_operationlog` VALUES (5820, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:08', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:08', 2, '2025-09-15 14:51:08');
+INSERT INTO `sys_operationlog` VALUES (5821, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:08', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:08', 2, '2025-09-15 14:51:08');
+INSERT INTO `sys_operationlog` VALUES (5822, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:08', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:08', 2, '2025-09-15 14:51:08');
+INSERT INTO `sys_operationlog` VALUES (5823, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:08', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:08', 2, '2025-09-15 14:51:08');
+INSERT INTO `sys_operationlog` VALUES (5824, 2, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-15 14:51:11', '{\"kitchenOrderId\":26,\"status\":2}', 1, 2, '2025-09-15 14:51:11', 2, '2025-09-15 14:51:11');
+INSERT INTO `sys_operationlog` VALUES (5825, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-15 14:51:25', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-15 14:51:25', 2, '2025-09-15 14:51:25');
+INSERT INTO `sys_operationlog` VALUES (5826, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-15 14:51:25', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-15 14:51:25', 2, '2025-09-15 14:51:25');
+INSERT INTO `sys_operationlog` VALUES (5827, 2, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-15 14:51:27', '{\"kitchenOrderId\":29,\"status\":2}', 1, 2, '2025-09-15 14:51:27', 2, '2025-09-15 14:51:27');
+INSERT INTO `sys_operationlog` VALUES (5828, 2, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-15 14:51:31', '{\"kitchenOrderId\":16,\"status\":2}', 1, 2, '2025-09-15 14:51:31', 2, '2025-09-15 14:51:31');
+INSERT INTO `sys_operationlog` VALUES (5829, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:51:38', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:38', 2, '2025-09-15 14:51:38');
+INSERT INTO `sys_operationlog` VALUES (5830, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:51:38', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:38', 2, '2025-09-15 14:51:38');
+INSERT INTO `sys_operationlog` VALUES (5831, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:51:38', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:38', 2, '2025-09-15 14:51:38');
+INSERT INTO `sys_operationlog` VALUES (5832, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:51:38', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:38', 2, '2025-09-15 14:51:38');
+INSERT INTO `sys_operationlog` VALUES (5833, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:51:39', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:39', 2, '2025-09-15 14:51:39');
+INSERT INTO `sys_operationlog` VALUES (5834, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:51:39', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:39', 2, '2025-09-15 14:51:39');
+INSERT INTO `sys_operationlog` VALUES (5835, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:51:39', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:39', 2, '2025-09-15 14:51:39');
+INSERT INTO `sys_operationlog` VALUES (5836, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:51:39', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:39', 2, '2025-09-15 14:51:39');
+INSERT INTO `sys_operationlog` VALUES (5837, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:51:40', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:40', 2, '2025-09-15 14:51:40');
+INSERT INTO `sys_operationlog` VALUES (5838, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:51:40', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:40', 2, '2025-09-15 14:51:40');
+INSERT INTO `sys_operationlog` VALUES (5839, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:51:40', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:40', 2, '2025-09-15 14:51:40');
+INSERT INTO `sys_operationlog` VALUES (5840, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:51:40', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:40', 2, '2025-09-15 14:51:40');
+INSERT INTO `sys_operationlog` VALUES (5841, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:51:40', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:40', 2, '2025-09-15 14:51:40');
+INSERT INTO `sys_operationlog` VALUES (5842, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:51:41', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:41', 2, '2025-09-15 14:51:41');
+INSERT INTO `sys_operationlog` VALUES (5843, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:51:41', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:41', 2, '2025-09-15 14:51:41');
+INSERT INTO `sys_operationlog` VALUES (5844, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:51:41', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:41', 2, '2025-09-15 14:51:41');
+INSERT INTO `sys_operationlog` VALUES (5845, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:51:41', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:41', 2, '2025-09-15 14:51:41');
+INSERT INTO `sys_operationlog` VALUES (5846, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:51:42', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:42', 2, '2025-09-15 14:51:42');
+INSERT INTO `sys_operationlog` VALUES (5847, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-15 14:51:42', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:42', 2, '2025-09-15 14:51:42');
+INSERT INTO `sys_operationlog` VALUES (5848, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:51:50', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:50', 2, '2025-09-15 14:51:50');
+INSERT INTO `sys_operationlog` VALUES (5849, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:51:50', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:50', 2, '2025-09-15 14:51:50');
+INSERT INTO `sys_operationlog` VALUES (5850, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:51:50', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:50', 2, '2025-09-15 14:51:50');
+INSERT INTO `sys_operationlog` VALUES (5851, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:51:50', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:50', 2, '2025-09-15 14:51:50');
+INSERT INTO `sys_operationlog` VALUES (5852, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:51:50', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:50', 2, '2025-09-15 14:51:50');
+INSERT INTO `sys_operationlog` VALUES (5853, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:51:51', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:51', 2, '2025-09-15 14:51:51');
+INSERT INTO `sys_operationlog` VALUES (5854, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:51:51', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:51', 2, '2025-09-15 14:51:51');
+INSERT INTO `sys_operationlog` VALUES (5855, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:51:51', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:51', 2, '2025-09-15 14:51:51');
+INSERT INTO `sys_operationlog` VALUES (5856, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:51:51', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:51', 2, '2025-09-15 14:51:51');
+INSERT INTO `sys_operationlog` VALUES (5857, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:51:52', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:52', 2, '2025-09-15 14:51:52');
+INSERT INTO `sys_operationlog` VALUES (5858, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:51:52', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:52', 2, '2025-09-15 14:51:52');
+INSERT INTO `sys_operationlog` VALUES (5859, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:51:52', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:52', 2, '2025-09-15 14:51:52');
+INSERT INTO `sys_operationlog` VALUES (5860, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:51:52', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:52', 2, '2025-09-15 14:51:52');
+INSERT INTO `sys_operationlog` VALUES (5861, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:51:53', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:53', 2, '2025-09-15 14:51:53');
+INSERT INTO `sys_operationlog` VALUES (5862, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:51:53', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:53', 2, '2025-09-15 14:51:53');
+INSERT INTO `sys_operationlog` VALUES (5863, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:51:53', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:53', 2, '2025-09-15 14:51:53');
+INSERT INTO `sys_operationlog` VALUES (5864, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:51:53', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:53', 2, '2025-09-15 14:51:53');
+INSERT INTO `sys_operationlog` VALUES (5865, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:51:54', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:54', 2, '2025-09-15 14:51:54');
+INSERT INTO `sys_operationlog` VALUES (5866, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:51:54', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:51:54', 2, '2025-09-15 14:51:54');
+INSERT INTO `sys_operationlog` VALUES (5867, 2, 3, '厨房管理>厨房管理', '新增厨房', '2025-09-15 14:52:10', '{\"kitchen\":{\"id\":0,\"kitchen_name\":\"1\",\"kitchen_type\":\"1\",\"kitchen_description\":\"1\",\"store_id\":0}}', 1, 2, '2025-09-15 14:52:10', 2, '2025-09-15 14:52:10');
+INSERT INTO `sys_operationlog` VALUES (5868, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:52:10', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:10', 2, '2025-09-15 14:52:10');
+INSERT INTO `sys_operationlog` VALUES (5869, 2, 2, '厨房管理>厨房管理', '删除厨房', '2025-09-15 14:52:13', '{\"kitchenId\":5}', 1, 2, '2025-09-15 14:52:13', 2, '2025-09-15 14:52:13');
+INSERT INTO `sys_operationlog` VALUES (5870, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-15 14:52:13', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:13', 2, '2025-09-15 14:52:13');
+INSERT INTO `sys_operationlog` VALUES (5871, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 14:52:20', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:20', 2, '2025-09-15 14:52:20');
+INSERT INTO `sys_operationlog` VALUES (5872, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 14:52:20', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:20', 2, '2025-09-15 14:52:20');
+INSERT INTO `sys_operationlog` VALUES (5873, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 14:52:20', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:20', 2, '2025-09-15 14:52:20');
+INSERT INTO `sys_operationlog` VALUES (5874, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 14:52:21', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:21', 2, '2025-09-15 14:52:21');
+INSERT INTO `sys_operationlog` VALUES (5875, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 14:52:21', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:21', 2, '2025-09-15 14:52:21');
+INSERT INTO `sys_operationlog` VALUES (5876, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 14:52:21', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:21', 2, '2025-09-15 14:52:21');
+INSERT INTO `sys_operationlog` VALUES (5877, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 14:52:21', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:21', 2, '2025-09-15 14:52:21');
+INSERT INTO `sys_operationlog` VALUES (5878, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 14:52:22', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:22', 2, '2025-09-15 14:52:22');
+INSERT INTO `sys_operationlog` VALUES (5879, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 14:52:22', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:22', 2, '2025-09-15 14:52:22');
+INSERT INTO `sys_operationlog` VALUES (5880, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 14:52:22', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:22', 2, '2025-09-15 14:52:22');
+INSERT INTO `sys_operationlog` VALUES (5881, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 14:52:22', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:22', 2, '2025-09-15 14:52:22');
+INSERT INTO `sys_operationlog` VALUES (5882, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 14:52:23', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:23', 2, '2025-09-15 14:52:23');
+INSERT INTO `sys_operationlog` VALUES (5883, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 14:52:23', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:23', 2, '2025-09-15 14:52:23');
+INSERT INTO `sys_operationlog` VALUES (5884, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 14:52:23', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:23', 2, '2025-09-15 14:52:23');
+INSERT INTO `sys_operationlog` VALUES (5885, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 14:52:23', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:23', 2, '2025-09-15 14:52:23');
+INSERT INTO `sys_operationlog` VALUES (5886, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 14:52:24', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:24', 2, '2025-09-15 14:52:24');
+INSERT INTO `sys_operationlog` VALUES (5887, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 14:52:24', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:24', 2, '2025-09-15 14:52:24');
+INSERT INTO `sys_operationlog` VALUES (5888, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 14:52:24', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:24', 2, '2025-09-15 14:52:24');
+INSERT INTO `sys_operationlog` VALUES (5889, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 14:52:24', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:24', 2, '2025-09-15 14:52:24');
+INSERT INTO `sys_operationlog` VALUES (5890, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 14:52:25', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:52:25', 2, '2025-09-15 14:52:25');
+INSERT INTO `sys_operationlog` VALUES (5891, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:09', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:09', 2, '2025-09-15 14:53:09');
+INSERT INTO `sys_operationlog` VALUES (5892, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:09', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:09', 2, '2025-09-15 14:53:09');
+INSERT INTO `sys_operationlog` VALUES (5893, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:09', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:09', 2, '2025-09-15 14:53:09');
+INSERT INTO `sys_operationlog` VALUES (5894, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:10', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:10', 2, '2025-09-15 14:53:10');
+INSERT INTO `sys_operationlog` VALUES (5895, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:10', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:10', 2, '2025-09-15 14:53:10');
+INSERT INTO `sys_operationlog` VALUES (5896, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:10', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:10', 2, '2025-09-15 14:53:10');
+INSERT INTO `sys_operationlog` VALUES (5897, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:11', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:11', 2, '2025-09-15 14:53:11');
+INSERT INTO `sys_operationlog` VALUES (5898, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:11', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:11', 2, '2025-09-15 14:53:11');
+INSERT INTO `sys_operationlog` VALUES (5899, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:11', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:11', 2, '2025-09-15 14:53:11');
+INSERT INTO `sys_operationlog` VALUES (5900, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:11', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:11', 2, '2025-09-15 14:53:11');
+INSERT INTO `sys_operationlog` VALUES (5901, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:12', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:12', 2, '2025-09-15 14:53:12');
+INSERT INTO `sys_operationlog` VALUES (5902, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:12', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:12', 2, '2025-09-15 14:53:12');
+INSERT INTO `sys_operationlog` VALUES (5903, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:12', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:12', 2, '2025-09-15 14:53:12');
+INSERT INTO `sys_operationlog` VALUES (5904, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:12', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:12', 2, '2025-09-15 14:53:12');
+INSERT INTO `sys_operationlog` VALUES (5905, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:13', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:13', 2, '2025-09-15 14:53:13');
+INSERT INTO `sys_operationlog` VALUES (5906, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:13', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:13', 2, '2025-09-15 14:53:13');
+INSERT INTO `sys_operationlog` VALUES (5907, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:13', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:13', 2, '2025-09-15 14:53:13');
+INSERT INTO `sys_operationlog` VALUES (5908, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:13', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:13', 2, '2025-09-15 14:53:13');
+INSERT INTO `sys_operationlog` VALUES (5909, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:14', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:14', 2, '2025-09-15 14:53:14');
+INSERT INTO `sys_operationlog` VALUES (5910, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:14', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:14', 2, '2025-09-15 14:53:14');
+INSERT INTO `sys_operationlog` VALUES (5911, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:14', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 14:53:14', 2, '2025-09-15 14:53:14');
+INSERT INTO `sys_operationlog` VALUES (5912, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:36', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:36', 2, '2025-09-15 14:53:36');
+INSERT INTO `sys_operationlog` VALUES (5913, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:37', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:37', 2, '2025-09-15 14:53:37');
+INSERT INTO `sys_operationlog` VALUES (5914, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:37', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:37', 2, '2025-09-15 14:53:37');
+INSERT INTO `sys_operationlog` VALUES (5915, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:37', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:37', 2, '2025-09-15 14:53:37');
+INSERT INTO `sys_operationlog` VALUES (5916, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:37', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:37', 2, '2025-09-15 14:53:37');
+INSERT INTO `sys_operationlog` VALUES (5917, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:38', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:38', 2, '2025-09-15 14:53:38');
+INSERT INTO `sys_operationlog` VALUES (5918, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:38', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:38', 2, '2025-09-15 14:53:38');
+INSERT INTO `sys_operationlog` VALUES (5919, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:38', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:38', 2, '2025-09-15 14:53:38');
+INSERT INTO `sys_operationlog` VALUES (5920, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:38', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:38', 2, '2025-09-15 14:53:38');
+INSERT INTO `sys_operationlog` VALUES (5921, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:38', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:38', 2, '2025-09-15 14:53:38');
+INSERT INTO `sys_operationlog` VALUES (5922, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:39', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:39', 2, '2025-09-15 14:53:39');
+INSERT INTO `sys_operationlog` VALUES (5923, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:39', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:39', 2, '2025-09-15 14:53:39');
+INSERT INTO `sys_operationlog` VALUES (5924, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:39', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:39', 2, '2025-09-15 14:53:39');
+INSERT INTO `sys_operationlog` VALUES (5925, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:39', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:39', 2, '2025-09-15 14:53:39');
+INSERT INTO `sys_operationlog` VALUES (5926, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:40', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:40', 2, '2025-09-15 14:53:40');
+INSERT INTO `sys_operationlog` VALUES (5927, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:40', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:40', 2, '2025-09-15 14:53:40');
+INSERT INTO `sys_operationlog` VALUES (5928, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:40', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:40', 2, '2025-09-15 14:53:40');
+INSERT INTO `sys_operationlog` VALUES (5929, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:40', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:40', 2, '2025-09-15 14:53:40');
+INSERT INTO `sys_operationlog` VALUES (5930, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:40', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:40', 2, '2025-09-15 14:53:40');
+INSERT INTO `sys_operationlog` VALUES (5931, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:41', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:41', 2, '2025-09-15 14:53:41');
+INSERT INTO `sys_operationlog` VALUES (5932, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:41', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:41', 2, '2025-09-15 14:53:41');
+INSERT INTO `sys_operationlog` VALUES (5933, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:41', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:41', 2, '2025-09-15 14:53:41');
+INSERT INTO `sys_operationlog` VALUES (5934, 2, 3, '菜品管理>菜品分类', '新增菜品分类', '2025-09-15 14:53:43', '{\"dishCategory\":{\"category_id\":0,\"store_id\":2,\"category_name\":\"1\",\"sort_order\":1,\"status\":1}}', 1, 2, '2025-09-15 14:53:43', 2, '2025-09-15 14:53:43');
+INSERT INTO `sys_operationlog` VALUES (5935, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:44', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:44', 2, '2025-09-15 14:53:44');
+INSERT INTO `sys_operationlog` VALUES (5936, 2, 2, '菜品管理>菜品分类', '删除菜品分类', '2025-09-15 14:53:48', '{\"categoryIds\":[3]}', 1, 2, '2025-09-15 14:53:48', 2, '2025-09-15 14:53:48');
+INSERT INTO `sys_operationlog` VALUES (5937, 2, 4, '菜品管理>菜品分类', '菜品分类管理查询', '2025-09-15 14:53:48', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:53:48', 2, '2025-09-15 14:53:48');
+INSERT INTO `sys_operationlog` VALUES (5938, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:52', '{}', 1, 2, '2025-09-15 14:53:52', 2, '2025-09-15 14:53:52');
+INSERT INTO `sys_operationlog` VALUES (5939, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:52', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:52', 2, '2025-09-15 14:53:52');
+INSERT INTO `sys_operationlog` VALUES (5940, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:52', '{}', 1, 2, '2025-09-15 14:53:52', 2, '2025-09-15 14:53:52');
+INSERT INTO `sys_operationlog` VALUES (5941, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:52', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:52', 2, '2025-09-15 14:53:52');
+INSERT INTO `sys_operationlog` VALUES (5942, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:52', '{}', 1, 2, '2025-09-15 14:53:52', 2, '2025-09-15 14:53:52');
+INSERT INTO `sys_operationlog` VALUES (5943, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:52', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:52', 2, '2025-09-15 14:53:52');
+INSERT INTO `sys_operationlog` VALUES (5944, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:53', '{}', 1, 2, '2025-09-15 14:53:53', 2, '2025-09-15 14:53:53');
+INSERT INTO `sys_operationlog` VALUES (5945, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:53', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:53', 2, '2025-09-15 14:53:53');
+INSERT INTO `sys_operationlog` VALUES (5946, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:53', '{}', 1, 2, '2025-09-15 14:53:53', 2, '2025-09-15 14:53:53');
+INSERT INTO `sys_operationlog` VALUES (5947, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:53', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:53', 2, '2025-09-15 14:53:53');
+INSERT INTO `sys_operationlog` VALUES (5948, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:53', '{}', 1, 2, '2025-09-15 14:53:53', 2, '2025-09-15 14:53:53');
+INSERT INTO `sys_operationlog` VALUES (5949, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:53', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:53', 2, '2025-09-15 14:53:53');
+INSERT INTO `sys_operationlog` VALUES (5950, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:53', '{}', 1, 2, '2025-09-15 14:53:53', 2, '2025-09-15 14:53:53');
+INSERT INTO `sys_operationlog` VALUES (5951, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:53', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:53', 2, '2025-09-15 14:53:53');
+INSERT INTO `sys_operationlog` VALUES (5952, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:53', '{}', 1, 2, '2025-09-15 14:53:53', 2, '2025-09-15 14:53:53');
+INSERT INTO `sys_operationlog` VALUES (5953, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:53', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:53', 2, '2025-09-15 14:53:53');
+INSERT INTO `sys_operationlog` VALUES (5954, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:54', '{}', 1, 2, '2025-09-15 14:53:54', 2, '2025-09-15 14:53:54');
+INSERT INTO `sys_operationlog` VALUES (5955, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:54', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:54', 2, '2025-09-15 14:53:54');
+INSERT INTO `sys_operationlog` VALUES (5956, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:54', '{}', 1, 2, '2025-09-15 14:53:54', 2, '2025-09-15 14:53:54');
+INSERT INTO `sys_operationlog` VALUES (5957, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:54', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:54', 2, '2025-09-15 14:53:54');
+INSERT INTO `sys_operationlog` VALUES (5958, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:54', '{}', 1, 2, '2025-09-15 14:53:54', 2, '2025-09-15 14:53:54');
+INSERT INTO `sys_operationlog` VALUES (5959, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:54', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:54', 2, '2025-09-15 14:53:54');
+INSERT INTO `sys_operationlog` VALUES (5960, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:54', '{}', 1, 2, '2025-09-15 14:53:54', 2, '2025-09-15 14:53:54');
+INSERT INTO `sys_operationlog` VALUES (5961, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:54', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:54', 2, '2025-09-15 14:53:54');
+INSERT INTO `sys_operationlog` VALUES (5962, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:55', '{}', 1, 2, '2025-09-15 14:53:55', 2, '2025-09-15 14:53:55');
+INSERT INTO `sys_operationlog` VALUES (5963, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:55', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:55', 2, '2025-09-15 14:53:55');
+INSERT INTO `sys_operationlog` VALUES (5964, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:55', '{}', 1, 2, '2025-09-15 14:53:55', 2, '2025-09-15 14:53:55');
+INSERT INTO `sys_operationlog` VALUES (5965, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:55', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:55', 2, '2025-09-15 14:53:55');
+INSERT INTO `sys_operationlog` VALUES (5966, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:55', '{}', 1, 2, '2025-09-15 14:53:55', 2, '2025-09-15 14:53:55');
+INSERT INTO `sys_operationlog` VALUES (5967, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:55', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:55', 2, '2025-09-15 14:53:55');
+INSERT INTO `sys_operationlog` VALUES (5968, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:55', '{}', 1, 2, '2025-09-15 14:53:55', 2, '2025-09-15 14:53:55');
+INSERT INTO `sys_operationlog` VALUES (5969, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:55', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:55', 2, '2025-09-15 14:53:55');
+INSERT INTO `sys_operationlog` VALUES (5970, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:56', '{}', 1, 2, '2025-09-15 14:53:56', 2, '2025-09-15 14:53:56');
+INSERT INTO `sys_operationlog` VALUES (5971, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:56', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:56', 2, '2025-09-15 14:53:56');
+INSERT INTO `sys_operationlog` VALUES (5972, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:56', '{}', 1, 2, '2025-09-15 14:53:56', 2, '2025-09-15 14:53:56');
+INSERT INTO `sys_operationlog` VALUES (5973, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:56', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:56', 2, '2025-09-15 14:53:56');
+INSERT INTO `sys_operationlog` VALUES (5974, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:56', '{}', 1, 2, '2025-09-15 14:53:56', 2, '2025-09-15 14:53:56');
+INSERT INTO `sys_operationlog` VALUES (5975, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:56', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:56', 2, '2025-09-15 14:53:56');
+INSERT INTO `sys_operationlog` VALUES (5976, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:56', '{}', 1, 2, '2025-09-15 14:53:56', 2, '2025-09-15 14:53:56');
+INSERT INTO `sys_operationlog` VALUES (5977, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:56', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:56', 2, '2025-09-15 14:53:56');
+INSERT INTO `sys_operationlog` VALUES (5978, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:56', '{}', 1, 2, '2025-09-15 14:53:56', 2, '2025-09-15 14:53:56');
+INSERT INTO `sys_operationlog` VALUES (5979, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:56', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:56', 2, '2025-09-15 14:53:56');
+INSERT INTO `sys_operationlog` VALUES (5980, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:56', '{}', 1, 2, '2025-09-15 14:53:56', 2, '2025-09-15 14:53:56');
+INSERT INTO `sys_operationlog` VALUES (5981, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:57', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:57', 2, '2025-09-15 14:53:57');
+INSERT INTO `sys_operationlog` VALUES (5982, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:53:57', '{}', 1, 2, '2025-09-15 14:53:57', 2, '2025-09-15 14:53:57');
+INSERT INTO `sys_operationlog` VALUES (5983, 2, 4, '菜品管理>规格管理', '规格列表查询', '2025-09-15 14:53:57', '{\"specName\":null,\"specType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:53:57', 2, '2025-09-15 14:53:57');
+INSERT INTO `sys_operationlog` VALUES (5984, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:09', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:09', 2, '2025-09-15 14:54:09');
+INSERT INTO `sys_operationlog` VALUES (5985, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:09', '{}', 1, 2, '2025-09-15 14:54:09', 2, '2025-09-15 14:54:09');
+INSERT INTO `sys_operationlog` VALUES (5986, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:09', '{}', 1, 2, '2025-09-15 14:54:09', 2, '2025-09-15 14:54:09');
+INSERT INTO `sys_operationlog` VALUES (5987, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:09', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:09', 2, '2025-09-15 14:54:09');
+INSERT INTO `sys_operationlog` VALUES (5988, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:09', '{}', 1, 2, '2025-09-15 14:54:09', 2, '2025-09-15 14:54:09');
+INSERT INTO `sys_operationlog` VALUES (5989, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:09', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:09', 2, '2025-09-15 14:54:09');
+INSERT INTO `sys_operationlog` VALUES (5990, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:09', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:09', 2, '2025-09-15 14:54:09');
+INSERT INTO `sys_operationlog` VALUES (5991, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:09', '{}', 1, 2, '2025-09-15 14:54:09', 2, '2025-09-15 14:54:09');
+INSERT INTO `sys_operationlog` VALUES (5992, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:10', '{}', 1, 2, '2025-09-15 14:54:10', 2, '2025-09-15 14:54:10');
+INSERT INTO `sys_operationlog` VALUES (5993, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:10', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:10', 2, '2025-09-15 14:54:10');
+INSERT INTO `sys_operationlog` VALUES (5994, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:10', '{}', 1, 2, '2025-09-15 14:54:10', 2, '2025-09-15 14:54:10');
+INSERT INTO `sys_operationlog` VALUES (5995, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:10', '{}', 1, 2, '2025-09-15 14:54:10', 2, '2025-09-15 14:54:10');
+INSERT INTO `sys_operationlog` VALUES (5996, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:10', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:10', 2, '2025-09-15 14:54:10');
+INSERT INTO `sys_operationlog` VALUES (5997, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:10', '{}', 1, 2, '2025-09-15 14:54:10', 2, '2025-09-15 14:54:10');
+INSERT INTO `sys_operationlog` VALUES (5998, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:10', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:10', 2, '2025-09-15 14:54:10');
+INSERT INTO `sys_operationlog` VALUES (5999, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:10', '{}', 1, 2, '2025-09-15 14:54:10', 2, '2025-09-15 14:54:10');
+INSERT INTO `sys_operationlog` VALUES (6000, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:10', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:10', 2, '2025-09-15 14:54:10');
+INSERT INTO `sys_operationlog` VALUES (6001, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:11', '{}', 1, 2, '2025-09-15 14:54:11', 2, '2025-09-15 14:54:11');
+INSERT INTO `sys_operationlog` VALUES (6002, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:11', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:11', 2, '2025-09-15 14:54:11');
+INSERT INTO `sys_operationlog` VALUES (6003, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:11', '{}', 1, 2, '2025-09-15 14:54:11', 2, '2025-09-15 14:54:11');
+INSERT INTO `sys_operationlog` VALUES (6004, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:11', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:11', 2, '2025-09-15 14:54:11');
+INSERT INTO `sys_operationlog` VALUES (6005, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:11', '{}', 1, 2, '2025-09-15 14:54:11', 2, '2025-09-15 14:54:11');
+INSERT INTO `sys_operationlog` VALUES (6006, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:11', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:11', 2, '2025-09-15 14:54:11');
+INSERT INTO `sys_operationlog` VALUES (6007, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:11', '{}', 1, 2, '2025-09-15 14:54:11', 2, '2025-09-15 14:54:11');
+INSERT INTO `sys_operationlog` VALUES (6008, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:11', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:11', 2, '2025-09-15 14:54:11');
+INSERT INTO `sys_operationlog` VALUES (6009, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:12', '{}', 1, 2, '2025-09-15 14:54:12', 2, '2025-09-15 14:54:12');
+INSERT INTO `sys_operationlog` VALUES (6010, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:12', '{}', 1, 2, '2025-09-15 14:54:12', 2, '2025-09-15 14:54:12');
+INSERT INTO `sys_operationlog` VALUES (6011, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:12', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:12', 2, '2025-09-15 14:54:12');
+INSERT INTO `sys_operationlog` VALUES (6012, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:12', '{}', 1, 2, '2025-09-15 14:54:12', 2, '2025-09-15 14:54:12');
+INSERT INTO `sys_operationlog` VALUES (6013, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:12', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:12', 2, '2025-09-15 14:54:12');
+INSERT INTO `sys_operationlog` VALUES (6014, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:13', '{}', 1, 2, '2025-09-15 14:54:13', 2, '2025-09-15 14:54:13');
+INSERT INTO `sys_operationlog` VALUES (6015, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:13', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:13', 2, '2025-09-15 14:54:13');
+INSERT INTO `sys_operationlog` VALUES (6016, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:13', '{}', 1, 2, '2025-09-15 14:54:13', 2, '2025-09-15 14:54:13');
+INSERT INTO `sys_operationlog` VALUES (6017, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:13', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:13', 2, '2025-09-15 14:54:13');
+INSERT INTO `sys_operationlog` VALUES (6018, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:13', '{}', 1, 2, '2025-09-15 14:54:13', 2, '2025-09-15 14:54:13');
+INSERT INTO `sys_operationlog` VALUES (6019, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:13', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:13', 2, '2025-09-15 14:54:13');
+INSERT INTO `sys_operationlog` VALUES (6020, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:13', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:13', 2, '2025-09-15 14:54:13');
+INSERT INTO `sys_operationlog` VALUES (6021, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:13', '{}', 1, 2, '2025-09-15 14:54:13', 2, '2025-09-15 14:54:13');
+INSERT INTO `sys_operationlog` VALUES (6022, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:14', '{}', 1, 2, '2025-09-15 14:54:14', 2, '2025-09-15 14:54:14');
+INSERT INTO `sys_operationlog` VALUES (6023, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:14', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:14', 2, '2025-09-15 14:54:14');
+INSERT INTO `sys_operationlog` VALUES (6024, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:14', '{}', 1, 2, '2025-09-15 14:54:14', 2, '2025-09-15 14:54:14');
+INSERT INTO `sys_operationlog` VALUES (6025, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:14', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:14', 2, '2025-09-15 14:54:14');
+INSERT INTO `sys_operationlog` VALUES (6026, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:14', '{}', 1, 2, '2025-09-15 14:54:14', 2, '2025-09-15 14:54:14');
+INSERT INTO `sys_operationlog` VALUES (6027, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:14', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:14', 2, '2025-09-15 14:54:14');
+INSERT INTO `sys_operationlog` VALUES (6028, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 14:54:14', '{}', 1, 2, '2025-09-15 14:54:14', 2, '2025-09-15 14:54:14');
+INSERT INTO `sys_operationlog` VALUES (6029, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:14', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:14', 2, '2025-09-15 14:54:14');
+INSERT INTO `sys_operationlog` VALUES (6030, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:15', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:15', 2, '2025-09-15 14:54:15');
+INSERT INTO `sys_operationlog` VALUES (6031, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:15', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:15', 2, '2025-09-15 14:54:15');
+INSERT INTO `sys_operationlog` VALUES (6032, 2, 3, '菜品管理>套餐管理', '新增套餐', '2025-09-15 14:54:42', '{\"meal\":{\"meal_id\":0,\"store_id\":2,\"meal_name\":\"1\",\"price\":1.0,\"original_price\":1.0,\"description\":\"1\",\"is_fixed\":1,\"status\":1,\"start_time\":\"2025-09-15T00:00:00\",\"end_time\":\"2025-09-23T00:00:00\",\"image_url\":null,\"meal_item\":[{\"item_id\":0,\"meal_id\":13,\"dish_id\":2,\"spec_id\":2,\"quantity\":1,\"is_replaceable\":0,\"replaceable_dishes\":null,\"meal_group\":null}],\"item\":null}}', 1, 2, '2025-09-15 14:54:42', 2, '2025-09-15 14:54:42');
+INSERT INTO `sys_operationlog` VALUES (6033, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:43', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:43', 2, '2025-09-15 14:54:43');
+INSERT INTO `sys_operationlog` VALUES (6034, 2, 2, '菜品管理>套餐管理', '删除套餐', '2025-09-15 14:54:46', '{\"mealId\":1}', 1, 2, '2025-09-15 14:54:46', 2, '2025-09-15 14:54:46');
+INSERT INTO `sys_operationlog` VALUES (6035, 2, 4, '菜品管理>套餐管理', '套餐列表查询', '2025-09-15 14:54:46', '{\"storeId\":null,\"mealName\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 14:54:46', 2, '2025-09-15 14:54:46');
+INSERT INTO `sys_operationlog` VALUES (6036, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:52', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:52', 2, '2025-09-15 14:54:52');
+INSERT INTO `sys_operationlog` VALUES (6037, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:52', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:52', 2, '2025-09-15 14:54:52');
+INSERT INTO `sys_operationlog` VALUES (6038, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:52', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:52', 2, '2025-09-15 14:54:52');
+INSERT INTO `sys_operationlog` VALUES (6039, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:52', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:52', 2, '2025-09-15 14:54:52');
+INSERT INTO `sys_operationlog` VALUES (6040, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:53', 2, '2025-09-15 14:54:53');
+INSERT INTO `sys_operationlog` VALUES (6041, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:53', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:53', 2, '2025-09-15 14:54:53');
+INSERT INTO `sys_operationlog` VALUES (6042, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:53', 2, '2025-09-15 14:54:53');
+INSERT INTO `sys_operationlog` VALUES (6043, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:53', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:53', 2, '2025-09-15 14:54:53');
+INSERT INTO `sys_operationlog` VALUES (6044, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:53', 2, '2025-09-15 14:54:53');
+INSERT INTO `sys_operationlog` VALUES (6045, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:53', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:53', 2, '2025-09-15 14:54:53');
+INSERT INTO `sys_operationlog` VALUES (6046, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:53', 2, '2025-09-15 14:54:53');
+INSERT INTO `sys_operationlog` VALUES (6047, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:53', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:53', 2, '2025-09-15 14:54:53');
+INSERT INTO `sys_operationlog` VALUES (6048, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:54', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:54', 2, '2025-09-15 14:54:54');
+INSERT INTO `sys_operationlog` VALUES (6049, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:54', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:54', 2, '2025-09-15 14:54:54');
+INSERT INTO `sys_operationlog` VALUES (6050, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:54', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:54', 2, '2025-09-15 14:54:54');
+INSERT INTO `sys_operationlog` VALUES (6051, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:54', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:54', 2, '2025-09-15 14:54:54');
+INSERT INTO `sys_operationlog` VALUES (6052, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:54', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:54', 2, '2025-09-15 14:54:54');
+INSERT INTO `sys_operationlog` VALUES (6053, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:54', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:54', 2, '2025-09-15 14:54:54');
+INSERT INTO `sys_operationlog` VALUES (6054, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:54', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:54', 2, '2025-09-15 14:54:54');
+INSERT INTO `sys_operationlog` VALUES (6055, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:54', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:54', 2, '2025-09-15 14:54:54');
+INSERT INTO `sys_operationlog` VALUES (6056, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:55', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:55', 2, '2025-09-15 14:54:55');
+INSERT INTO `sys_operationlog` VALUES (6057, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:55', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:55', 2, '2025-09-15 14:54:55');
+INSERT INTO `sys_operationlog` VALUES (6058, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:55', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:55', 2, '2025-09-15 14:54:55');
+INSERT INTO `sys_operationlog` VALUES (6059, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:55', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:55', 2, '2025-09-15 14:54:55');
+INSERT INTO `sys_operationlog` VALUES (6060, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:55', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:55', 2, '2025-09-15 14:54:55');
+INSERT INTO `sys_operationlog` VALUES (6061, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:55', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:55', 2, '2025-09-15 14:54:55');
+INSERT INTO `sys_operationlog` VALUES (6062, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:55', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:55', 2, '2025-09-15 14:54:55');
+INSERT INTO `sys_operationlog` VALUES (6063, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:55', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:55', 2, '2025-09-15 14:54:55');
+INSERT INTO `sys_operationlog` VALUES (6064, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:55', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:55', 2, '2025-09-15 14:54:55');
+INSERT INTO `sys_operationlog` VALUES (6065, 2, 1, '排队叫号>排队列表', '过号', '2025-09-15 14:54:56', '{\"queueId\":5}', 1, 2, '2025-09-15 14:54:56', 2, '2025-09-15 14:54:56');
+INSERT INTO `sys_operationlog` VALUES (6066, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:56', 2, '2025-09-15 14:54:56');
+INSERT INTO `sys_operationlog` VALUES (6067, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:56', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:56', 2, '2025-09-15 14:54:56');
+INSERT INTO `sys_operationlog` VALUES (6068, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:56', 2, '2025-09-15 14:54:56');
+INSERT INTO `sys_operationlog` VALUES (6069, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:56', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:56', 2, '2025-09-15 14:54:56');
+INSERT INTO `sys_operationlog` VALUES (6070, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:56', 2, '2025-09-15 14:54:56');
+INSERT INTO `sys_operationlog` VALUES (6071, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:56', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:56', 2, '2025-09-15 14:54:56');
+INSERT INTO `sys_operationlog` VALUES (6072, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:56', 2, '2025-09-15 14:54:56');
+INSERT INTO `sys_operationlog` VALUES (6073, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:56', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:56', 2, '2025-09-15 14:54:56');
+INSERT INTO `sys_operationlog` VALUES (6074, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:57', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:57', 2, '2025-09-15 14:54:57');
+INSERT INTO `sys_operationlog` VALUES (6075, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:57', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:57', 2, '2025-09-15 14:54:57');
+INSERT INTO `sys_operationlog` VALUES (6076, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:57', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:57', 2, '2025-09-15 14:54:57');
+INSERT INTO `sys_operationlog` VALUES (6077, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:57', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:57', 2, '2025-09-15 14:54:57');
+INSERT INTO `sys_operationlog` VALUES (6078, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:57', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:57', 2, '2025-09-15 14:54:57');
+INSERT INTO `sys_operationlog` VALUES (6079, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:57', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:57', 2, '2025-09-15 14:54:57');
+INSERT INTO `sys_operationlog` VALUES (6080, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:57', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:57', 2, '2025-09-15 14:54:57');
+INSERT INTO `sys_operationlog` VALUES (6081, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:57', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:57', 2, '2025-09-15 14:54:57');
+INSERT INTO `sys_operationlog` VALUES (6082, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:57', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:57', 2, '2025-09-15 14:54:57');
+INSERT INTO `sys_operationlog` VALUES (6083, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:57', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:57', 2, '2025-09-15 14:54:57');
+INSERT INTO `sys_operationlog` VALUES (6084, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:54:58', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:54:58', 2, '2025-09-15 14:54:58');
+INSERT INTO `sys_operationlog` VALUES (6085, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:58', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:58', 2, '2025-09-15 14:54:58');
+INSERT INTO `sys_operationlog` VALUES (6086, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:58', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:58', 2, '2025-09-15 14:54:58');
+INSERT INTO `sys_operationlog` VALUES (6087, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:58', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:58', 2, '2025-09-15 14:54:58');
+INSERT INTO `sys_operationlog` VALUES (6088, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:54:58', '{\"storeId\":null}', 1, 2, '2025-09-15 14:54:58', 2, '2025-09-15 14:54:58');
+INSERT INTO `sys_operationlog` VALUES (6089, 2, 1, '排队叫号>排队列表', '叫号', '2025-09-15 14:55:00', '{\"queueId\":1}', 1, 2, '2025-09-15 14:55:00', 2, '2025-09-15 14:55:00');
+INSERT INTO `sys_operationlog` VALUES (6090, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 14:55:01', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:01', 2, '2025-09-15 14:55:01');
+INSERT INTO `sys_operationlog` VALUES (6091, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 14:55:01', '{\"storeId\":null}', 1, 2, '2025-09-15 14:55:01', 2, '2025-09-15 14:55:01');
+INSERT INTO `sys_operationlog` VALUES (6092, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:07', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:07', 2, '2025-09-15 14:55:07');
+INSERT INTO `sys_operationlog` VALUES (6093, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:07', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:07', 2, '2025-09-15 14:55:07');
+INSERT INTO `sys_operationlog` VALUES (6094, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:07', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:07', 2, '2025-09-15 14:55:07');
+INSERT INTO `sys_operationlog` VALUES (6095, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:08', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:08', 2, '2025-09-15 14:55:08');
+INSERT INTO `sys_operationlog` VALUES (6096, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:08', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:08', 2, '2025-09-15 14:55:08');
+INSERT INTO `sys_operationlog` VALUES (6097, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:08', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:08', 2, '2025-09-15 14:55:08');
+INSERT INTO `sys_operationlog` VALUES (6098, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:08', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:08', 2, '2025-09-15 14:55:08');
+INSERT INTO `sys_operationlog` VALUES (6099, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:09', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:09', 2, '2025-09-15 14:55:09');
+INSERT INTO `sys_operationlog` VALUES (6100, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:09', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:09', 2, '2025-09-15 14:55:09');
+INSERT INTO `sys_operationlog` VALUES (6101, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:09', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:09', 2, '2025-09-15 14:55:09');
+INSERT INTO `sys_operationlog` VALUES (6102, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:09', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:09', 2, '2025-09-15 14:55:09');
+INSERT INTO `sys_operationlog` VALUES (6103, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:09', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:09', 2, '2025-09-15 14:55:09');
+INSERT INTO `sys_operationlog` VALUES (6104, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:10', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:10', 2, '2025-09-15 14:55:10');
+INSERT INTO `sys_operationlog` VALUES (6105, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:10', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:10', 2, '2025-09-15 14:55:10');
+INSERT INTO `sys_operationlog` VALUES (6106, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:10', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:10', 2, '2025-09-15 14:55:10');
+INSERT INTO `sys_operationlog` VALUES (6107, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:10', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:10', 2, '2025-09-15 14:55:10');
+INSERT INTO `sys_operationlog` VALUES (6108, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:11', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:11', 2, '2025-09-15 14:55:11');
+INSERT INTO `sys_operationlog` VALUES (6109, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:11', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:11', 2, '2025-09-15 14:55:11');
+INSERT INTO `sys_operationlog` VALUES (6110, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:11', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:11', 2, '2025-09-15 14:55:11');
+INSERT INTO `sys_operationlog` VALUES (6111, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:11', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:11', 2, '2025-09-15 14:55:11');
+INSERT INTO `sys_operationlog` VALUES (6112, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:11', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:11', 2, '2025-09-15 14:55:11');
+INSERT INTO `sys_operationlog` VALUES (6113, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:11', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:11', 2, '2025-09-15 14:55:11');
+INSERT INTO `sys_operationlog` VALUES (6114, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:11', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:11', 2, '2025-09-15 14:55:11');
+INSERT INTO `sys_operationlog` VALUES (6115, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:12', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:12', 2, '2025-09-15 14:55:12');
+INSERT INTO `sys_operationlog` VALUES (6116, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:12', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:12', 2, '2025-09-15 14:55:12');
+INSERT INTO `sys_operationlog` VALUES (6117, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:12', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:12', 2, '2025-09-15 14:55:12');
+INSERT INTO `sys_operationlog` VALUES (6118, 2, 3, '系统设置>角色管理', '新增桌台', '2025-09-15 14:55:24', '{\"sys_Table\":{\"table_id\":0,\"store_id\":2,\"table_no\":\"1\",\"capacity\":0,\"table_type\":null,\"status\":1,\"min_consumption\":11.0,\"created_at\":\"0001-01-01T00:00:00\",\"updated_at\":\"0001-01-01T00:00:00\",\"order_id\":null,\"desc\":\"1\",\"order\":null}}', 1, 2, '2025-09-15 14:55:24', 2, '2025-09-15 14:55:24');
+INSERT INTO `sys_operationlog` VALUES (6119, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:25', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:25', 2, '2025-09-15 14:55:25');
+INSERT INTO `sys_operationlog` VALUES (6120, 2, 2, '系统设置>角色管理', '删除桌台', '2025-09-15 14:55:27', '{\"tableIds\":[4]}', 1, 2, '2025-09-15 14:55:27', 2, '2025-09-15 14:55:27');
+INSERT INTO `sys_operationlog` VALUES (6121, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-15 14:55:28', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 14:55:28', 2, '2025-09-15 14:55:28');
+INSERT INTO `sys_operationlog` VALUES (6122, 2, 10, '系统登陆', '人员登陆', '2025-09-15 21:32:39', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-15 21:32:39', 2, '2025-09-15 21:32:39');
+INSERT INTO `sys_operationlog` VALUES (6123, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 21:32:49', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:32:49', 2, '2025-09-15 21:32:49');
+INSERT INTO `sys_operationlog` VALUES (6124, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-15 21:32:50', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:32:50', 2, '2025-09-15 21:32:50');
+INSERT INTO `sys_operationlog` VALUES (6125, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 21:32:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:32:53', 2, '2025-09-15 21:32:53');
+INSERT INTO `sys_operationlog` VALUES (6126, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 21:32:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:32:53', 2, '2025-09-15 21:32:53');
+INSERT INTO `sys_operationlog` VALUES (6127, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-15 21:32:53', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:32:53', 2, '2025-09-15 21:32:53');
+INSERT INTO `sys_operationlog` VALUES (6128, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 21:32:53', '{\"storeId\":null}', 1, 2, '2025-09-15 21:32:53', 2, '2025-09-15 21:32:53');
+INSERT INTO `sys_operationlog` VALUES (6129, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 21:32:53', '{\"storeId\":null}', 1, 2, '2025-09-15 21:32:53', 2, '2025-09-15 21:32:53');
+INSERT INTO `sys_operationlog` VALUES (6130, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-15 21:32:53', '{\"storeId\":null}', 1, 2, '2025-09-15 21:32:53', 2, '2025-09-15 21:32:53');
+INSERT INTO `sys_operationlog` VALUES (6131, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 21:33:10', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 21:33:10', 2, '2025-09-15 21:33:10');
+INSERT INTO `sys_operationlog` VALUES (6132, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 21:33:10', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 21:33:10', 2, '2025-09-15 21:33:10');
+INSERT INTO `sys_operationlog` VALUES (6133, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 21:33:10', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 21:33:10', 2, '2025-09-15 21:33:10');
+INSERT INTO `sys_operationlog` VALUES (6134, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 21:33:11', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 21:33:11', 2, '2025-09-15 21:33:11');
+INSERT INTO `sys_operationlog` VALUES (6135, 2, 3, '菜品管理>菜品列表', '新增菜品', '2025-09-15 21:33:42', '{\"sys_Dish\":{\"dish_id\":0,\"category_id\":1,\"dish_name\":\"111\",\"price\":111.0,\"member_price\":111.0,\"is_recommend\":0,\"is_temporary\":0,\"description\":\"111\",\"image_url\":\"http://169.254.188.119:7092/20250915/91959e68-c741-4766-8a65-879da956cd6a.jpg\",\"status\":1,\"cooking_time\":23,\"created_at\":\"2025-09-15T21:33:42.0768036+08:00\",\"updated_at\":\"2025-09-15T21:33:42.0768049+08:00\",\"store_id\":null,\"kitchen_id\":1,\"dish_category\":null,\"dish_kitchen\":null,\"dish_spec\":null,\"dish_formula\":null}}', 1, 2, '2025-09-15 21:33:42', 2, '2025-09-15 21:33:42');
+INSERT INTO `sys_operationlog` VALUES (6136, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-15 21:33:42', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-15 21:33:42', 2, '2025-09-15 21:33:42');
+INSERT INTO `sys_operationlog` VALUES (6137, 2, 10, '系统登陆', '人员登陆', '2025-09-15 21:36:08', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-15 21:36:08', 2, '2025-09-15 21:36:08');
+INSERT INTO `sys_operationlog` VALUES (6138, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 21:36:16', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:36:16', 2, '2025-09-15 21:36:16');
+INSERT INTO `sys_operationlog` VALUES (6139, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 21:36:16', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:36:16', 2, '2025-09-15 21:36:16');
+INSERT INTO `sys_operationlog` VALUES (6140, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 21:38:08', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:38:08', 2, '2025-09-15 21:38:08');
+INSERT INTO `sys_operationlog` VALUES (6141, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 21:38:08', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:38:08', 2, '2025-09-15 21:38:08');
+INSERT INTO `sys_operationlog` VALUES (6142, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 21:38:33', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:38:33', 2, '2025-09-15 21:38:33');
+INSERT INTO `sys_operationlog` VALUES (6143, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 21:38:33', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:38:33', 2, '2025-09-15 21:38:33');
+INSERT INTO `sys_operationlog` VALUES (6144, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 21:39:13', '{\"member_id\":1,\"recharge_amount\":100.0,\"give_amount\":0.0,\"type\":\"现金\"}', 1, 2, '2025-09-15 21:39:13', 2, '2025-09-15 21:39:13');
+INSERT INTO `sys_operationlog` VALUES (6145, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 21:39:19', '{\"member_id\":1,\"recharge_amount\":100.0,\"give_amount\":0.0,\"type\":\"现金\"}', 1, 2, '2025-09-15 21:39:19', 2, '2025-09-15 21:39:19');
+INSERT INTO `sys_operationlog` VALUES (6146, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 21:39:30', '{\"member_id\":1,\"recharge_amount\":100.0,\"give_amount\":0.0,\"type\":\"现金\"}', 1, 2, '2025-09-15 21:39:30', 2, '2025-09-15 21:39:30');
+INSERT INTO `sys_operationlog` VALUES (6147, 2, 10, '系统登陆', '人员登陆', '2025-09-15 21:39:59', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-15 21:39:59', 2, '2025-09-15 21:39:59');
+INSERT INTO `sys_operationlog` VALUES (6148, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 21:40:02', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:40:02', 2, '2025-09-15 21:40:02');
+INSERT INTO `sys_operationlog` VALUES (6149, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 21:40:02', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:40:02', 2, '2025-09-15 21:40:02');
+INSERT INTO `sys_operationlog` VALUES (6150, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 21:40:12', '{\"member_id\":1,\"recharge_amount\":100.0,\"give_amount\":0.0,\"type\":\"现金\"}', 1, 2, '2025-09-15 21:40:12', 2, '2025-09-15 21:40:12');
+INSERT INTO `sys_operationlog` VALUES (6151, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 21:40:31', '{\"member_id\":1,\"recharge_amount\":100.0,\"give_amount\":0.0,\"type\":\"现金\"}', 1, 2, '2025-09-15 21:40:31', 2, '2025-09-15 21:40:31');
+INSERT INTO `sys_operationlog` VALUES (6152, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 21:41:30', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:41:30', 2, '2025-09-15 21:41:30');
+INSERT INTO `sys_operationlog` VALUES (6153, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 21:41:34', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:41:34', 2, '2025-09-15 21:41:34');
+INSERT INTO `sys_operationlog` VALUES (6154, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 21:43:04', '{\"member_id\":1,\"recharge_amount\":100.0,\"give_amount\":0.0,\"type\":\"wechat\"}', 1, 2, '2025-09-15 21:43:04', 2, '2025-09-15 21:43:04');
+INSERT INTO `sys_operationlog` VALUES (6155, 2, 10, '系统登陆', '人员登陆', '2025-09-15 21:46:06', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-15 21:46:06', 2, '2025-09-15 21:46:06');
+INSERT INTO `sys_operationlog` VALUES (6156, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 21:46:11', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:46:11', 2, '2025-09-15 21:46:11');
+INSERT INTO `sys_operationlog` VALUES (6157, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 21:46:11', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:46:11', 2, '2025-09-15 21:46:11');
+INSERT INTO `sys_operationlog` VALUES (6158, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 21:46:22', '{\"member_id\":1,\"recharge_amount\":100.0,\"give_amount\":0.0,\"type\":\"现金\"}', 1, 2, '2025-09-15 21:46:22', 2, '2025-09-15 21:46:22');
+INSERT INTO `sys_operationlog` VALUES (6159, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 21:46:34', '{\"member_id\":1,\"recharge_amount\":100.0,\"give_amount\":0.0,\"type\":\"现金\"}', 1, 2, '2025-09-15 21:46:34', 2, '2025-09-15 21:46:34');
+INSERT INTO `sys_operationlog` VALUES (6160, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 21:46:44', '{\"member_id\":1,\"recharge_amount\":100.0,\"give_amount\":0.0,\"type\":\"现金\"}', 1, 2, '2025-09-15 21:46:44', 2, '2025-09-15 21:46:44');
+INSERT INTO `sys_operationlog` VALUES (6161, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 21:47:01', '{\"member_id\":1,\"recharge_amount\":100.0,\"give_amount\":0.0,\"type\":\"现金\"}', 1, 2, '2025-09-15 21:47:01', 2, '2025-09-15 21:47:01');
+INSERT INTO `sys_operationlog` VALUES (6162, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 21:47:05', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:47:05', 2, '2025-09-15 21:47:05');
+INSERT INTO `sys_operationlog` VALUES (6163, 2, 10, '系统登陆', '人员登陆', '2025-09-15 21:52:44', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-15 21:52:44', 2, '2025-09-15 21:52:44');
+INSERT INTO `sys_operationlog` VALUES (6164, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 21:52:51', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:52:51', 2, '2025-09-15 21:52:51');
+INSERT INTO `sys_operationlog` VALUES (6165, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 21:52:51', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:52:51', 2, '2025-09-15 21:52:51');
+INSERT INTO `sys_operationlog` VALUES (6166, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 21:54:54', '{\"member_id\":1,\"recharge_amount\":100.0,\"give_amount\":0.0,\"type\":\"wechat\"}', 1, 2, '2025-09-15 21:54:54', 2, '2025-09-15 21:54:54');
+INSERT INTO `sys_operationlog` VALUES (6167, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 21:55:19', '{\"member_id\":1,\"recharge_amount\":100.0,\"give_amount\":0.0,\"type\":\"wechat\"}', 1, 2, '2025-09-15 21:55:19', 2, '2025-09-15 21:55:19');
+INSERT INTO `sys_operationlog` VALUES (6168, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 21:55:25', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:55:25', 2, '2025-09-15 21:55:25');
+INSERT INTO `sys_operationlog` VALUES (6169, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 21:57:05', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:57:05', 2, '2025-09-15 21:57:05');
+INSERT INTO `sys_operationlog` VALUES (6170, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 21:57:05', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:57:05', 2, '2025-09-15 21:57:05');
+INSERT INTO `sys_operationlog` VALUES (6171, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 21:57:08', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:57:08', 2, '2025-09-15 21:57:08');
+INSERT INTO `sys_operationlog` VALUES (6172, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 21:57:10', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:57:10', 2, '2025-09-15 21:57:10');
+INSERT INTO `sys_operationlog` VALUES (6173, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 21:57:14', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:57:14', 2, '2025-09-15 21:57:14');
+INSERT INTO `sys_operationlog` VALUES (6174, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 21:57:36', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:57:36', 2, '2025-09-15 21:57:36');
+INSERT INTO `sys_operationlog` VALUES (6175, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 21:57:46', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:57:46', 2, '2025-09-15 21:57:46');
+INSERT INTO `sys_operationlog` VALUES (6176, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 21:57:59', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:57:59', 2, '2025-09-15 21:57:59');
+INSERT INTO `sys_operationlog` VALUES (6177, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 21:57:59', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 21:57:59', 2, '2025-09-15 21:57:59');
+INSERT INTO `sys_operationlog` VALUES (6178, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 21:58:12', '{\"member_id\":1,\"recharge_amount\":100.0,\"give_amount\":0.0,\"type\":\"现金\"}', 1, 2, '2025-09-15 21:58:12', 2, '2025-09-15 21:58:12');
+INSERT INTO `sys_operationlog` VALUES (6179, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 21:58:15', '{\"member_id\":1,\"recharge_amount\":100.0,\"give_amount\":0.0,\"type\":\"现金\"}', 1, 2, '2025-09-15 21:58:15', 2, '2025-09-15 21:58:15');
+INSERT INTO `sys_operationlog` VALUES (6180, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 21:58:20', '{\"member_id\":1,\"recharge_amount\":100.0,\"give_amount\":0.0,\"type\":\"现金\"}', 1, 2, '2025-09-15 21:58:20', 2, '2025-09-15 21:58:20');
+INSERT INTO `sys_operationlog` VALUES (6181, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 21:58:50', '{\"member_id\":1,\"recharge_amount\":100.0,\"give_amount\":0.0,\"type\":\"现金\"}', 1, 2, '2025-09-15 21:58:50', 2, '2025-09-15 21:58:50');
+INSERT INTO `sys_operationlog` VALUES (6182, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 22:00:09', '{\"member_id\":1,\"recharge_amount\":100.0,\"give_amount\":0.0,\"type\":\"wechat\"}', 1, 2, '2025-09-15 22:00:09', 2, '2025-09-15 22:00:09');
+INSERT INTO `sys_operationlog` VALUES (6183, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 22:20:10', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:20:10', 2, '2025-09-15 22:20:10');
+INSERT INTO `sys_operationlog` VALUES (6184, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 22:21:30', '{\"member_id\":1,\"recharge_amount\":100.0,\"give_amount\":0.0,\"type\":\"wechat\"}', 1, 2, '2025-09-15 22:21:30', 2, '2025-09-15 22:21:30');
+INSERT INTO `sys_operationlog` VALUES (6185, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 22:21:30', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:21:30', 2, '2025-09-15 22:21:30');
+INSERT INTO `sys_operationlog` VALUES (6186, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 22:36:06', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:36:06', 2, '2025-09-15 22:36:06');
+INSERT INTO `sys_operationlog` VALUES (6187, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 22:36:06', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:36:06', 2, '2025-09-15 22:36:06');
+INSERT INTO `sys_operationlog` VALUES (6188, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 22:37:50', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:37:50', 2, '2025-09-15 22:37:50');
+INSERT INTO `sys_operationlog` VALUES (6189, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 22:37:50', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:37:50', 2, '2025-09-15 22:37:50');
+INSERT INTO `sys_operationlog` VALUES (6190, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 22:40:07', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:40:07', 2, '2025-09-15 22:40:07');
+INSERT INTO `sys_operationlog` VALUES (6191, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 22:45:59', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:45:59', 2, '2025-09-15 22:45:59');
+INSERT INTO `sys_operationlog` VALUES (6192, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 22:50:19', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:50:19', 2, '2025-09-15 22:50:19');
+INSERT INTO `sys_operationlog` VALUES (6193, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-15 22:51:15', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 22:51:15', 2, '2025-09-15 22:51:15');
+INSERT INTO `sys_operationlog` VALUES (6194, 2, 4, '促销管理>促销活动', '促销活动列表查询', '2025-09-15 22:51:16', '{\"storeId\":null,\"name\":null,\"type\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 22:51:16', 2, '2025-09-15 22:51:16');
+INSERT INTO `sys_operationlog` VALUES (6195, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 22:51:19', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:51:19', 2, '2025-09-15 22:51:19');
+INSERT INTO `sys_operationlog` VALUES (6196, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 22:51:19', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:51:19', 2, '2025-09-15 22:51:19');
+INSERT INTO `sys_operationlog` VALUES (6197, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 22:51:19', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:51:19', 2, '2025-09-15 22:51:19');
+INSERT INTO `sys_operationlog` VALUES (6198, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 22:51:20', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:51:20', 2, '2025-09-15 22:51:20');
+INSERT INTO `sys_operationlog` VALUES (6199, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 22:51:21', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:51:21', 2, '2025-09-15 22:51:21');
+INSERT INTO `sys_operationlog` VALUES (6200, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 22:51:21', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:51:21', 2, '2025-09-15 22:51:21');
+INSERT INTO `sys_operationlog` VALUES (6201, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-15 22:51:21', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:51:21', 2, '2025-09-15 22:51:21');
+INSERT INTO `sys_operationlog` VALUES (6202, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 22:51:22', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:51:22', 2, '2025-09-15 22:51:22');
+INSERT INTO `sys_operationlog` VALUES (6203, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 22:51:22', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:51:22', 2, '2025-09-15 22:51:22');
+INSERT INTO `sys_operationlog` VALUES (6204, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 22:51:22', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:51:22', 2, '2025-09-15 22:51:22');
+INSERT INTO `sys_operationlog` VALUES (6205, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-15 22:51:22', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:51:22', 2, '2025-09-15 22:51:22');
+INSERT INTO `sys_operationlog` VALUES (6206, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 22:52:40', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:52:40', 2, '2025-09-15 22:52:40');
+INSERT INTO `sys_operationlog` VALUES (6207, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 22:52:40', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:52:40', 2, '2025-09-15 22:52:40');
+INSERT INTO `sys_operationlog` VALUES (6208, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 22:52:40', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:52:40', 2, '2025-09-15 22:52:40');
+INSERT INTO `sys_operationlog` VALUES (6209, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 22:52:40', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:52:40', 2, '2025-09-15 22:52:40');
+INSERT INTO `sys_operationlog` VALUES (6210, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 22:52:44', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:52:44', 2, '2025-09-15 22:52:44');
+INSERT INTO `sys_operationlog` VALUES (6211, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 22:54:41', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 22:54:41', 2, '2025-09-15 22:54:41');
+INSERT INTO `sys_operationlog` VALUES (6212, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 23:00:49', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 23:00:49', 2, '2025-09-15 23:00:49');
+INSERT INTO `sys_operationlog` VALUES (6213, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 23:00:49', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 23:00:49', 2, '2025-09-15 23:00:49');
+INSERT INTO `sys_operationlog` VALUES (6214, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 23:00:49', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 23:00:49', 2, '2025-09-15 23:00:49');
+INSERT INTO `sys_operationlog` VALUES (6215, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 23:00:49', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 23:00:49', 2, '2025-09-15 23:00:49');
+INSERT INTO `sys_operationlog` VALUES (6216, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 23:00:49', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 23:00:49', 2, '2025-09-15 23:00:49');
+INSERT INTO `sys_operationlog` VALUES (6217, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 23:00:50', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 23:00:50', 2, '2025-09-15 23:00:50');
+INSERT INTO `sys_operationlog` VALUES (6218, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 23:00:50', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 23:00:50', 2, '2025-09-15 23:00:50');
+INSERT INTO `sys_operationlog` VALUES (6219, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 23:00:50', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 23:00:50', 2, '2025-09-15 23:00:50');
+INSERT INTO `sys_operationlog` VALUES (6220, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 23:00:50', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 23:00:50', 2, '2025-09-15 23:00:50');
+INSERT INTO `sys_operationlog` VALUES (6221, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 23:00:50', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 23:00:50', 2, '2025-09-15 23:00:50');
+INSERT INTO `sys_operationlog` VALUES (6222, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 23:00:50', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 23:00:50', 2, '2025-09-15 23:00:50');
+INSERT INTO `sys_operationlog` VALUES (6223, 2, 4, '库存管理>损耗管理', '损耗记录列表查询', '2025-09-15 23:03:22', '{\"storeId\":null,\"materialId\":null,\"lossType\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 23:03:22', 2, '2025-09-15 23:03:22');
+INSERT INTO `sys_operationlog` VALUES (6224, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:05:28', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:05:28', 2, '2025-09-15 23:05:28');
+INSERT INTO `sys_operationlog` VALUES (6225, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:05:28', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:05:28', 2, '2025-09-15 23:05:28');
+INSERT INTO `sys_operationlog` VALUES (6226, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:05:28', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:05:28', 2, '2025-09-15 23:05:28');
+INSERT INTO `sys_operationlog` VALUES (6227, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:05:28', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:05:28', 2, '2025-09-15 23:05:28');
+INSERT INTO `sys_operationlog` VALUES (6228, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:05:28', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:05:28', 2, '2025-09-15 23:05:28');
+INSERT INTO `sys_operationlog` VALUES (6229, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:05:28', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:05:28', 2, '2025-09-15 23:05:28');
+INSERT INTO `sys_operationlog` VALUES (6230, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:05:45', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:05:45', 2, '2025-09-15 23:05:45');
+INSERT INTO `sys_operationlog` VALUES (6231, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:07:22', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:07:22', 2, '2025-09-15 23:07:22');
+INSERT INTO `sys_operationlog` VALUES (6232, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:07:22', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:07:22', 2, '2025-09-15 23:07:22');
+INSERT INTO `sys_operationlog` VALUES (6233, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:07:33', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:07:33', 2, '2025-09-15 23:07:33');
+INSERT INTO `sys_operationlog` VALUES (6234, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:08:15', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:08:15', 2, '2025-09-15 23:08:15');
+INSERT INTO `sys_operationlog` VALUES (6235, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:12:25', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:12:25', 2, '2025-09-15 23:12:25');
+INSERT INTO `sys_operationlog` VALUES (6236, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:12:27', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:12:27', 2, '2025-09-15 23:12:27');
+INSERT INTO `sys_operationlog` VALUES (6237, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:12:29', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:12:29', 2, '2025-09-15 23:12:29');
+INSERT INTO `sys_operationlog` VALUES (6238, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:13:09', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:13:09', 2, '2025-09-15 23:13:09');
+INSERT INTO `sys_operationlog` VALUES (6239, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:13:39', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:13:39', 2, '2025-09-15 23:13:39');
+INSERT INTO `sys_operationlog` VALUES (6240, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:13:41', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:13:41', 2, '2025-09-15 23:13:41');
+INSERT INTO `sys_operationlog` VALUES (6241, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:14:07', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:14:07', 2, '2025-09-15 23:14:07');
+INSERT INTO `sys_operationlog` VALUES (6242, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:14:34', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:14:34', 2, '2025-09-15 23:14:34');
+INSERT INTO `sys_operationlog` VALUES (6243, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:25:53', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:25:53', 2, '2025-09-15 23:25:53');
+INSERT INTO `sys_operationlog` VALUES (6244, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:26:42', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:26:42', 2, '2025-09-15 23:26:42');
+INSERT INTO `sys_operationlog` VALUES (6245, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 23:27:25', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 23:27:25', 2, '2025-09-15 23:27:25');
+INSERT INTO `sys_operationlog` VALUES (6246, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-15 23:27:26', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-15 23:27:26', 2, '2025-09-15 23:27:26');
+INSERT INTO `sys_operationlog` VALUES (6247, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 23:27:32', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:27:32', 2, '2025-09-15 23:27:32');
+INSERT INTO `sys_operationlog` VALUES (6248, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 23:27:32', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:27:32', 2, '2025-09-15 23:27:32');
+INSERT INTO `sys_operationlog` VALUES (6249, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 23:27:32', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:27:32', 2, '2025-09-15 23:27:32');
+INSERT INTO `sys_operationlog` VALUES (6250, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:27:37', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:27:37', 2, '2025-09-15 23:27:37');
+INSERT INTO `sys_operationlog` VALUES (6251, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:27:37', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:27:37', 2, '2025-09-15 23:27:37');
+INSERT INTO `sys_operationlog` VALUES (6252, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:27:38', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:27:38', 2, '2025-09-15 23:27:38');
+INSERT INTO `sys_operationlog` VALUES (6253, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 23:27:39', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:27:39', 2, '2025-09-15 23:27:39');
+INSERT INTO `sys_operationlog` VALUES (6254, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 23:27:39', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:27:39', 2, '2025-09-15 23:27:39');
+INSERT INTO `sys_operationlog` VALUES (6255, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 23:27:39', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:27:39', 2, '2025-09-15 23:27:39');
+INSERT INTO `sys_operationlog` VALUES (6256, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 23:28:10', '{\"member_id\":2,\"recharge_amount\":11.0,\"give_amount\":0.0,\"type\":\"wechat\"}', 1, 2, '2025-09-15 23:28:10', 2, '2025-09-15 23:28:10');
+INSERT INTO `sys_operationlog` VALUES (6257, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 23:28:10', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:28:10', 2, '2025-09-15 23:28:10');
+INSERT INTO `sys_operationlog` VALUES (6258, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 23:28:10', '{\"member_id\":2,\"recharge_amount\":11.0,\"give_amount\":0.0,\"type\":\"wechat\"}', 1, 2, '2025-09-15 23:28:10', 2, '2025-09-15 23:28:10');
+INSERT INTO `sys_operationlog` VALUES (6259, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 23:28:10', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:28:10', 2, '2025-09-15 23:28:10');
+INSERT INTO `sys_operationlog` VALUES (6260, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 23:29:22', '{\"member_id\":2,\"recharge_amount\":33.0,\"give_amount\":0.0,\"type\":\"现金\"}', 1, 2, '2025-09-15 23:29:22', 2, '2025-09-15 23:29:22');
+INSERT INTO `sys_operationlog` VALUES (6261, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-15 23:29:25', '{\"member_id\":2,\"recharge_amount\":33.0,\"give_amount\":0.0,\"type\":\"alipay\"}', 1, 2, '2025-09-15 23:29:25', 2, '2025-09-15 23:29:25');
+INSERT INTO `sys_operationlog` VALUES (6262, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 23:29:25', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:29:25', 2, '2025-09-15 23:29:25');
+INSERT INTO `sys_operationlog` VALUES (6263, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:29:34', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:29:34', 2, '2025-09-15 23:29:34');
+INSERT INTO `sys_operationlog` VALUES (6264, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:29:34', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:29:34', 2, '2025-09-15 23:29:34');
+INSERT INTO `sys_operationlog` VALUES (6265, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-15 23:29:34', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:29:34', 2, '2025-09-15 23:29:34');
+INSERT INTO `sys_operationlog` VALUES (6266, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 23:59:25', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:59:25', 2, '2025-09-15 23:59:25');
+INSERT INTO `sys_operationlog` VALUES (6267, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 23:59:25', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:59:25', 2, '2025-09-15 23:59:25');
+INSERT INTO `sys_operationlog` VALUES (6268, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-15 23:59:25', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-15 23:59:25', 2, '2025-09-15 23:59:25');
+INSERT INTO `sys_operationlog` VALUES (6269, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-16 00:05:05', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 00:05:05', 2, '2025-09-16 00:05:05');
+INSERT INTO `sys_operationlog` VALUES (6270, 2, 10, '系统登陆', '人员登陆', '2025-09-16 18:21:34', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-16 18:21:34', 2, '2025-09-16 18:21:34');
+INSERT INTO `sys_operationlog` VALUES (6271, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-16 18:24:52', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:24:52', 2, '2025-09-16 18:24:52');
+INSERT INTO `sys_operationlog` VALUES (6272, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-16 18:24:52', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:24:52', 2, '2025-09-16 18:24:52');
+INSERT INTO `sys_operationlog` VALUES (6273, 2, 3, '会员管理>会员列表', '会员储值', '2025-09-16 18:25:35', '{\"member_id\":3,\"recharge_amount\":100.0,\"give_amount\":0.0,\"type\":\"wechat\"}', 1, 2, '2025-09-16 18:25:35', 2, '2025-09-16 18:25:35');
+INSERT INTO `sys_operationlog` VALUES (6274, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-16 18:25:35', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:25:35', 2, '2025-09-16 18:25:35');
+INSERT INTO `sys_operationlog` VALUES (6275, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-16 18:25:48', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:25:48', 2, '2025-09-16 18:25:48');
+INSERT INTO `sys_operationlog` VALUES (6276, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-16 18:25:48', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:25:48', 2, '2025-09-16 18:25:48');
+INSERT INTO `sys_operationlog` VALUES (6277, 2, 4, '会员管理>储值记录', '储值记录查询', '2025-09-16 18:25:48', '{\"keyword\":null,\"operatorId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:25:48', 2, '2025-09-16 18:25:48');
+INSERT INTO `sys_operationlog` VALUES (6278, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-16 18:26:11', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:26:11', 2, '2025-09-16 18:26:11');
+INSERT INTO `sys_operationlog` VALUES (6279, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-16 18:26:11', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:26:11', 2, '2025-09-16 18:26:11');
+INSERT INTO `sys_operationlog` VALUES (6280, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-16 18:26:11', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:26:11', 2, '2025-09-16 18:26:11');
+INSERT INTO `sys_operationlog` VALUES (6281, 2, 4, '库存管理>原材料管理', '原材料列表查询', '2025-09-16 18:26:11', '{\"storeId\":null,\"name\":null,\"category\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:26:11', 2, '2025-09-16 18:26:11');
+INSERT INTO `sys_operationlog` VALUES (6282, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-16 18:26:29', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:26:29', 2, '2025-09-16 18:26:29');
+INSERT INTO `sys_operationlog` VALUES (6283, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-16 18:26:29', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:26:29', 2, '2025-09-16 18:26:29');
+INSERT INTO `sys_operationlog` VALUES (6284, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-16 18:26:29', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:26:29', 2, '2025-09-16 18:26:29');
+INSERT INTO `sys_operationlog` VALUES (6285, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-16 18:26:29', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:26:29', 2, '2025-09-16 18:26:29');
+INSERT INTO `sys_operationlog` VALUES (6286, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-16 18:26:30', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:26:30', 2, '2025-09-16 18:26:30');
+INSERT INTO `sys_operationlog` VALUES (6287, 2, 3, '库存管理>库存预警', '采购原材料', '2025-09-16 18:26:44', '{\"materialId\":2,\"quantity\":10.0,\"remark\":\"测试\"}', 1, 2, '2025-09-16 18:26:44', 2, '2025-09-16 18:26:44');
+INSERT INTO `sys_operationlog` VALUES (6288, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-16 18:26:45', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:26:45', 2, '2025-09-16 18:26:45');
+INSERT INTO `sys_operationlog` VALUES (6289, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-16 18:26:48', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:26:48', 2, '2025-09-16 18:26:48');
+INSERT INTO `sys_operationlog` VALUES (6290, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-16 18:26:48', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:26:48', 2, '2025-09-16 18:26:48');
+INSERT INTO `sys_operationlog` VALUES (6291, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-16 18:26:48', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:26:48', 2, '2025-09-16 18:26:48');
+INSERT INTO `sys_operationlog` VALUES (6292, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-16 18:26:48', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:26:48', 2, '2025-09-16 18:26:48');
+INSERT INTO `sys_operationlog` VALUES (6293, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-16 18:26:48', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:26:48', 2, '2025-09-16 18:26:48');
+INSERT INTO `sys_operationlog` VALUES (6294, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-16 18:26:48', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:26:48', 2, '2025-09-16 18:26:48');
+INSERT INTO `sys_operationlog` VALUES (6295, 2, 4, '库存管理>采购单管理', '采购单详情', '2025-09-16 18:26:54', '{\"poId\":4}', 1, 2, '2025-09-16 18:26:54', 2, '2025-09-16 18:26:54');
+INSERT INTO `sys_operationlog` VALUES (6296, 2, 4, '库存管理>采购单管理', '采购单详情', '2025-09-16 18:27:10', '{\"poId\":4}', 1, 2, '2025-09-16 18:27:10', 2, '2025-09-16 18:27:10');
+INSERT INTO `sys_operationlog` VALUES (6297, 2, 1, '库存管理>采购单管理', '采购单审核', '2025-09-16 18:27:10', '{\"poId\":4,\"supplier_id\":2}', 1, 2, '2025-09-16 18:27:10', 2, '2025-09-16 18:27:10');
+INSERT INTO `sys_operationlog` VALUES (6298, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-16 18:27:10', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:27:10', 2, '2025-09-16 18:27:10');
+INSERT INTO `sys_operationlog` VALUES (6299, 2, 4, '库存管理>采购单管理', '采购单详情', '2025-09-16 18:27:26', '{\"poId\":4}', 1, 2, '2025-09-16 18:27:26', 2, '2025-09-16 18:27:26');
+INSERT INTO `sys_operationlog` VALUES (6300, 2, 4, '库存管理>采购单管理', '采购单详情', '2025-09-16 18:27:31', '{\"poId\":4}', 1, 2, '2025-09-16 18:27:31', 2, '2025-09-16 18:27:31');
+INSERT INTO `sys_operationlog` VALUES (6301, 2, 1, '库存管理>采购单管理', '采购单确认收货', '2025-09-16 18:27:31', '{\"poId\":4}', 1, 2, '2025-09-16 18:27:31', 2, '2025-09-16 18:27:31');
+INSERT INTO `sys_operationlog` VALUES (6302, 2, 4, '库存管理>采购单管理', '采购单列表查询', '2025-09-16 18:27:31', '{\"storeId\":null,\"poNo\":null,\"supplierId\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:27:31', 2, '2025-09-16 18:27:31');
+INSERT INTO `sys_operationlog` VALUES (6303, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-16 18:27:34', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:27:34', 2, '2025-09-16 18:27:34');
+INSERT INTO `sys_operationlog` VALUES (6304, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-16 18:27:34', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:27:34', 2, '2025-09-16 18:27:34');
+INSERT INTO `sys_operationlog` VALUES (6305, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-16 18:27:34', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:27:34', 2, '2025-09-16 18:27:34');
+INSERT INTO `sys_operationlog` VALUES (6306, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-16 18:27:34', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:27:34', 2, '2025-09-16 18:27:34');
+INSERT INTO `sys_operationlog` VALUES (6307, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-16 18:27:34', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:27:34', 2, '2025-09-16 18:27:34');
+INSERT INTO `sys_operationlog` VALUES (6308, 2, 4, '库存管理>库存预警', '库存预警列表查询', '2025-09-16 18:27:34', '{\"storeId\":null,\"materialId\":null,\"category\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:27:34', 2, '2025-09-16 18:27:34');
+INSERT INTO `sys_operationlog` VALUES (6309, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-16 18:27:58', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-16 18:27:58', 2, '2025-09-16 18:27:58');
+INSERT INTO `sys_operationlog` VALUES (6310, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-16 18:27:58', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-16 18:27:58', 2, '2025-09-16 18:27:58');
+INSERT INTO `sys_operationlog` VALUES (6311, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-16 18:27:58', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-16 18:27:58', 2, '2025-09-16 18:27:58');
+INSERT INTO `sys_operationlog` VALUES (6312, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-16 18:27:58', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-16 18:27:58', 2, '2025-09-16 18:27:58');
+INSERT INTO `sys_operationlog` VALUES (6313, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-16 18:27:58', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-16 18:27:58', 2, '2025-09-16 18:27:58');
+INSERT INTO `sys_operationlog` VALUES (6314, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-16 18:27:58', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-16 18:27:58', 2, '2025-09-16 18:27:58');
+INSERT INTO `sys_operationlog` VALUES (6315, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-16 18:27:58', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-16 18:27:58', 2, '2025-09-16 18:27:58');
+INSERT INTO `sys_operationlog` VALUES (6316, 2, 3, '菜品管理>菜品列表', '新增菜品', '2025-09-16 18:28:38', '{\"sys_Dish\":{\"dish_id\":0,\"category_id\":1,\"dish_name\":\"2222\",\"price\":1111.0,\"member_price\":111.0,\"is_recommend\":0,\"is_temporary\":0,\"description\":\"112122\",\"image_url\":\"http://mpvk8690901.vicp.fun:12575/20250916/e6206b57-da39-4909-930d-9d120ef4d3fb.png\",\"status\":1,\"cooking_time\":24,\"created_at\":\"2025-09-16T18:28:38.2046385+08:00\",\"updated_at\":\"2025-09-16T18:28:38.20464+08:00\",\"store_id\":null,\"kitchen_id\":3,\"dish_category\":null,\"dish_kitchen\":null,\"dish_spec\":null,\"dish_formula\":null}}', 1, 2, '2025-09-16 18:28:38', 2, '2025-09-16 18:28:38');
+INSERT INTO `sys_operationlog` VALUES (6317, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-16 18:28:38', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-16 18:28:38', 2, '2025-09-16 18:28:38');
+INSERT INTO `sys_operationlog` VALUES (6318, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 18:28:55', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:28:55', 2, '2025-09-16 18:28:55');
+INSERT INTO `sys_operationlog` VALUES (6319, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 18:28:55', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:28:55', 2, '2025-09-16 18:28:55');
+INSERT INTO `sys_operationlog` VALUES (6320, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 18:28:55', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:28:55', 2, '2025-09-16 18:28:55');
+INSERT INTO `sys_operationlog` VALUES (6321, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 18:28:55', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:28:55', 2, '2025-09-16 18:28:55');
+INSERT INTO `sys_operationlog` VALUES (6322, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 18:28:55', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:28:55', 2, '2025-09-16 18:28:55');
+INSERT INTO `sys_operationlog` VALUES (6323, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 18:28:56', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:28:56', 2, '2025-09-16 18:28:56');
+INSERT INTO `sys_operationlog` VALUES (6324, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 18:28:56', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:28:56', 2, '2025-09-16 18:28:56');
+INSERT INTO `sys_operationlog` VALUES (6325, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 18:28:56', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:28:56', 2, '2025-09-16 18:28:56');
+INSERT INTO `sys_operationlog` VALUES (6326, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 18:30:03', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:30:03', 2, '2025-09-16 18:30:03');
+INSERT INTO `sys_operationlog` VALUES (6327, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:30:36', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:30:36', 2, '2025-09-16 18:30:36');
+INSERT INTO `sys_operationlog` VALUES (6328, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:30:36', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:30:36', 2, '2025-09-16 18:30:36');
+INSERT INTO `sys_operationlog` VALUES (6329, 2, 10, '系统登陆', '人员登陆', '2025-09-16 18:37:23', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-16 18:37:23', 2, '2025-09-16 18:37:23');
+INSERT INTO `sys_operationlog` VALUES (6330, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-16 18:37:26', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:37:26', 2, '2025-09-16 18:37:26');
+INSERT INTO `sys_operationlog` VALUES (6331, 2, 4, '订单管理>订单列表', '查询订单列表', '2025-09-16 18:37:26', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:37:26', 2, '2025-09-16 18:37:26');
+INSERT INTO `sys_operationlog` VALUES (6332, 2, 11, '账号登出', '人员退出系统', '2025-09-16 18:38:05', '{}', 1, 2, '2025-09-16 18:38:05', 2, '2025-09-16 18:38:05');
+INSERT INTO `sys_operationlog` VALUES (6333, 6, 10, '系统登陆', '人员登陆', '2025-09-16 18:38:16', '账号：lq,员工姓名：lq', 2, 6, '2025-09-16 18:38:16', 6, '2025-09-16 18:38:16');
+INSERT INTO `sys_operationlog` VALUES (6334, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 18:38:16', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 18:38:16', 6, '2025-09-16 18:38:16');
+INSERT INTO `sys_operationlog` VALUES (6335, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 18:38:31', '{\"orderId\":15}', 2, 6, '2025-09-16 18:38:31', 6, '2025-09-16 18:38:31');
+INSERT INTO `sys_operationlog` VALUES (6336, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 18:38:39', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 18:38:39', 6, '2025-09-16 18:38:39');
+INSERT INTO `sys_operationlog` VALUES (6337, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 18:38:40', '{\"orderId\":15}', 2, 6, '2025-09-16 18:38:40', 6, '2025-09-16 18:38:40');
+INSERT INTO `sys_operationlog` VALUES (6338, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 18:38:42', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 18:38:42', 6, '2025-09-16 18:38:42');
+INSERT INTO `sys_operationlog` VALUES (6339, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 18:38:43', '{\"orderId\":16}', 2, 6, '2025-09-16 18:38:43', 6, '2025-09-16 18:38:43');
+INSERT INTO `sys_operationlog` VALUES (6340, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 18:38:45', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 18:38:45', 6, '2025-09-16 18:38:45');
+INSERT INTO `sys_operationlog` VALUES (6341, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 18:38:45', '{\"orderId\":15}', 2, 6, '2025-09-16 18:38:45', 6, '2025-09-16 18:38:45');
+INSERT INTO `sys_operationlog` VALUES (6342, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 18:38:48', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 18:38:48', 6, '2025-09-16 18:38:48');
+INSERT INTO `sys_operationlog` VALUES (6343, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 18:38:49', '{\"orderId\":15}', 2, 6, '2025-09-16 18:38:49', 6, '2025-09-16 18:38:49');
+INSERT INTO `sys_operationlog` VALUES (6344, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 18:38:51', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 18:38:51', 6, '2025-09-16 18:38:51');
+INSERT INTO `sys_operationlog` VALUES (6345, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 18:38:52', '{\"orderId\":17}', 2, 6, '2025-09-16 18:38:52', 6, '2025-09-16 18:38:52');
+INSERT INTO `sys_operationlog` VALUES (6346, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 18:38:55', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 18:38:55', 6, '2025-09-16 18:38:55');
+INSERT INTO `sys_operationlog` VALUES (6347, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 18:39:09', '{\"orderId\":15}', 2, 6, '2025-09-16 18:39:09', 6, '2025-09-16 18:39:09');
+INSERT INTO `sys_operationlog` VALUES (6348, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 18:40:45', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 18:40:45', 6, '2025-09-16 18:40:45');
+INSERT INTO `sys_operationlog` VALUES (6349, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 18:40:47', '{\"orderId\":18}', 2, 6, '2025-09-16 18:40:47', 6, '2025-09-16 18:40:47');
+INSERT INTO `sys_operationlog` VALUES (6350, 6, 4, '订单管理>订单列表', '查询订单列表', '2025-09-16 18:42:58', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 18:42:58', 6, '2025-09-16 18:42:58');
+INSERT INTO `sys_operationlog` VALUES (6351, 6, 4, '订单管理>订单列表', '查询订单列表', '2025-09-16 18:42:58', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 18:42:58', 6, '2025-09-16 18:42:58');
+INSERT INTO `sys_operationlog` VALUES (6352, 6, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:43:24', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 18:43:24', 6, '2025-09-16 18:43:24');
+INSERT INTO `sys_operationlog` VALUES (6353, 6, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:43:24', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 18:43:24', 6, '2025-09-16 18:43:24');
+INSERT INTO `sys_operationlog` VALUES (6354, 6, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:43:24', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 18:43:24', 6, '2025-09-16 18:43:24');
+INSERT INTO `sys_operationlog` VALUES (6355, 6, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:43:24', '{\"storeId\":null}', 2, 6, '2025-09-16 18:43:24', 6, '2025-09-16 18:43:24');
+INSERT INTO `sys_operationlog` VALUES (6356, 6, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:43:24', '{\"storeId\":null}', 2, 6, '2025-09-16 18:43:24', 6, '2025-09-16 18:43:24');
+INSERT INTO `sys_operationlog` VALUES (6357, 6, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:43:24', '{\"storeId\":null}', 2, 6, '2025-09-16 18:43:24', 6, '2025-09-16 18:43:24');
+INSERT INTO `sys_operationlog` VALUES (6358, 6, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-16 18:43:49', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 2, 6, '2025-09-16 18:43:49', 6, '2025-09-16 18:43:49');
+INSERT INTO `sys_operationlog` VALUES (6359, 6, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-16 18:43:49', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 2, 6, '2025-09-16 18:43:49', 6, '2025-09-16 18:43:49');
+INSERT INTO `sys_operationlog` VALUES (6360, 6, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-16 18:43:49', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 2, 6, '2025-09-16 18:43:49', 6, '2025-09-16 18:43:49');
+INSERT INTO `sys_operationlog` VALUES (6361, 6, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-16 18:43:49', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 2, 6, '2025-09-16 18:43:49', 6, '2025-09-16 18:43:49');
+INSERT INTO `sys_operationlog` VALUES (6362, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 18:43:49', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 18:43:49', 6, '2025-09-16 18:43:49');
+INSERT INTO `sys_operationlog` VALUES (6363, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 18:43:49', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 18:43:49', 6, '2025-09-16 18:43:49');
+INSERT INTO `sys_operationlog` VALUES (6364, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 18:43:49', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 18:43:49', 6, '2025-09-16 18:43:49');
+INSERT INTO `sys_operationlog` VALUES (6365, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 18:43:49', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 18:43:49', 6, '2025-09-16 18:43:49');
+INSERT INTO `sys_operationlog` VALUES (6366, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 18:43:49', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 18:43:49', 6, '2025-09-16 18:43:49');
+INSERT INTO `sys_operationlog` VALUES (6367, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 18:43:49', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 18:43:49', 6, '2025-09-16 18:43:49');
+INSERT INTO `sys_operationlog` VALUES (6368, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 18:43:49', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 18:43:49', 6, '2025-09-16 18:43:49');
+INSERT INTO `sys_operationlog` VALUES (6369, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 18:43:49', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 18:43:49', 6, '2025-09-16 18:43:49');
+INSERT INTO `sys_operationlog` VALUES (6370, 6, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-16 18:43:59', '{\"kitchenOrderId\":47,\"status\":2}', 2, 6, '2025-09-16 18:43:59', 6, '2025-09-16 18:43:59');
+INSERT INTO `sys_operationlog` VALUES (6371, 6, 11, '账号登出', '人员退出系统', '2025-09-16 18:44:18', '{}', 2, 6, '2025-09-16 18:44:18', 6, '2025-09-16 18:44:18');
+INSERT INTO `sys_operationlog` VALUES (6372, 2, 10, '系统登陆', '人员登陆', '2025-09-16 18:44:22', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-16 18:44:22', 2, '2025-09-16 18:44:22');
+INSERT INTO `sys_operationlog` VALUES (6373, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:44:24', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:44:24', 2, '2025-09-16 18:44:24');
+INSERT INTO `sys_operationlog` VALUES (6374, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:44:25', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:44:25', 2, '2025-09-16 18:44:25');
+INSERT INTO `sys_operationlog` VALUES (6375, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-16 18:44:43', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-16 18:44:43', 2, '2025-09-16 18:44:43');
+INSERT INTO `sys_operationlog` VALUES (6376, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-16 18:44:43', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-16 18:44:43', 2, '2025-09-16 18:44:43');
+INSERT INTO `sys_operationlog` VALUES (6377, 2, 4, '菜品管理>菜品列表', '菜品列表查询', '2025-09-16 18:44:43', '{\"dishname\":null,\"type\":null,\"page\":0,\"size\":10}', 1, 2, '2025-09-16 18:44:43', 2, '2025-09-16 18:44:43');
+INSERT INTO `sys_operationlog` VALUES (6378, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-16 18:44:54', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-16 18:44:54', 2, '2025-09-16 18:44:54');
+INSERT INTO `sys_operationlog` VALUES (6379, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 18:44:54', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-16 18:44:54', 2, '2025-09-16 18:44:54');
+INSERT INTO `sys_operationlog` VALUES (6380, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-16 18:44:54', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-16 18:44:54', 2, '2025-09-16 18:44:54');
+INSERT INTO `sys_operationlog` VALUES (6381, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-16 18:44:54', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-16 18:44:54', 2, '2025-09-16 18:44:54');
+INSERT INTO `sys_operationlog` VALUES (6382, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 18:44:54', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-16 18:44:54', 2, '2025-09-16 18:44:54');
+INSERT INTO `sys_operationlog` VALUES (6383, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-16 18:44:54', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-16 18:44:54', 2, '2025-09-16 18:44:54');
+INSERT INTO `sys_operationlog` VALUES (6384, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 18:44:54', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-16 18:44:54', 2, '2025-09-16 18:44:54');
+INSERT INTO `sys_operationlog` VALUES (6385, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 18:44:54', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-16 18:44:54', 2, '2025-09-16 18:44:54');
+INSERT INTO `sys_operationlog` VALUES (6386, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 18:44:54', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-16 18:44:54', 2, '2025-09-16 18:44:54');
+INSERT INTO `sys_operationlog` VALUES (6387, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 18:44:54', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-16 18:44:54', 2, '2025-09-16 18:44:54');
+INSERT INTO `sys_operationlog` VALUES (6388, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 18:44:54', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-16 18:44:54', 2, '2025-09-16 18:44:54');
+INSERT INTO `sys_operationlog` VALUES (6389, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 18:44:54', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-16 18:44:54', 2, '2025-09-16 18:44:54');
+INSERT INTO `sys_operationlog` VALUES (6390, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:45:01', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:45:01', 2, '2025-09-16 18:45:01');
+INSERT INTO `sys_operationlog` VALUES (6391, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:45:01', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:45:01', 2, '2025-09-16 18:45:01');
+INSERT INTO `sys_operationlog` VALUES (6392, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:45:01', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:45:01', 2, '2025-09-16 18:45:01');
+INSERT INTO `sys_operationlog` VALUES (6393, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:45:01', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:45:01', 2, '2025-09-16 18:45:01');
+INSERT INTO `sys_operationlog` VALUES (6394, 2, 2, '系统管理>定时任务', '删除定时任务', '2025-09-16 18:46:02', '{\"taskId\":1}', 1, 2, '2025-09-16 18:46:02', 2, '2025-09-16 18:46:02');
+INSERT INTO `sys_operationlog` VALUES (6395, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:46:02', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:46:02', 2, '2025-09-16 18:46:02');
+INSERT INTO `sys_operationlog` VALUES (6396, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-16 18:46:06', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-16 18:46:06', 2, '2025-09-16 18:46:06');
+INSERT INTO `sys_operationlog` VALUES (6397, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-16 18:46:07', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-16 18:46:07', 2, '2025-09-16 18:46:07');
+INSERT INTO `sys_operationlog` VALUES (6398, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-16 18:46:07', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-16 18:46:07', 2, '2025-09-16 18:46:07');
+INSERT INTO `sys_operationlog` VALUES (6399, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-16 18:46:07', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-16 18:46:07', 2, '2025-09-16 18:46:07');
+INSERT INTO `sys_operationlog` VALUES (6400, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-16 18:46:07', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-16 18:46:07', 2, '2025-09-16 18:46:07');
+INSERT INTO `sys_operationlog` VALUES (6401, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-16 18:46:39', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:46:39', 2, '2025-09-16 18:46:39');
+INSERT INTO `sys_operationlog` VALUES (6402, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-16 18:46:39', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:46:39', 2, '2025-09-16 18:46:39');
+INSERT INTO `sys_operationlog` VALUES (6403, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-16 18:46:39', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:46:39', 2, '2025-09-16 18:46:39');
+INSERT INTO `sys_operationlog` VALUES (6404, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-16 18:46:39', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:46:39', 2, '2025-09-16 18:46:39');
+INSERT INTO `sys_operationlog` VALUES (6405, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-16 18:46:40', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:46:40', 2, '2025-09-16 18:46:40');
+INSERT INTO `sys_operationlog` VALUES (6406, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-16 18:46:40', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:46:40', 2, '2025-09-16 18:46:40');
+INSERT INTO `sys_operationlog` VALUES (6407, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:46:42', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:46:42', 2, '2025-09-16 18:46:42');
+INSERT INTO `sys_operationlog` VALUES (6408, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:46:42', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:46:42', 2, '2025-09-16 18:46:42');
+INSERT INTO `sys_operationlog` VALUES (6409, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:46:42', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:46:42', 2, '2025-09-16 18:46:42');
+INSERT INTO `sys_operationlog` VALUES (6410, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:46:42', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:46:42', 2, '2025-09-16 18:46:42');
+INSERT INTO `sys_operationlog` VALUES (6411, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:46:42', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:46:42', 2, '2025-09-16 18:46:42');
+INSERT INTO `sys_operationlog` VALUES (6412, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:46:42', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:46:42', 2, '2025-09-16 18:46:42');
+INSERT INTO `sys_operationlog` VALUES (6413, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-16 18:46:48', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:46:48', 2, '2025-09-16 18:46:48');
+INSERT INTO `sys_operationlog` VALUES (6414, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-16 18:46:48', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:46:48', 2, '2025-09-16 18:46:48');
+INSERT INTO `sys_operationlog` VALUES (6415, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-16 18:46:48', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:46:48', 2, '2025-09-16 18:46:48');
+INSERT INTO `sys_operationlog` VALUES (6416, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-16 18:46:48', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:46:48', 2, '2025-09-16 18:46:48');
+INSERT INTO `sys_operationlog` VALUES (6417, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-16 18:46:48', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:46:48', 2, '2025-09-16 18:46:48');
+INSERT INTO `sys_operationlog` VALUES (6418, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-16 18:46:48', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:46:48', 2, '2025-09-16 18:46:48');
+INSERT INTO `sys_operationlog` VALUES (6419, 2, 3, '系统设置>数据备份', '添加备份', '2025-09-16 18:46:55', '{}', 1, 2, '2025-09-16 18:46:55', 2, '2025-09-16 18:46:55');
+INSERT INTO `sys_operationlog` VALUES (6420, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-16 18:46:55', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:46:55', 2, '2025-09-16 18:46:55');
+INSERT INTO `sys_operationlog` VALUES (6421, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:49:26', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:49:26', 2, '2025-09-16 18:49:26');
+INSERT INTO `sys_operationlog` VALUES (6422, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:49:26', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:49:26', 2, '2025-09-16 18:49:26');
+INSERT INTO `sys_operationlog` VALUES (6423, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:49:26', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:49:26', 2, '2025-09-16 18:49:26');
+INSERT INTO `sys_operationlog` VALUES (6424, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:49:26', '{\"storeId\":null}', 1, 2, '2025-09-16 18:49:26', 2, '2025-09-16 18:49:26');
+INSERT INTO `sys_operationlog` VALUES (6425, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:49:26', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:49:26', 2, '2025-09-16 18:49:26');
+INSERT INTO `sys_operationlog` VALUES (6426, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:49:26', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:49:26', 2, '2025-09-16 18:49:26');
+INSERT INTO `sys_operationlog` VALUES (6427, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:49:26', '{\"storeId\":null}', 1, 2, '2025-09-16 18:49:26', 2, '2025-09-16 18:49:26');
+INSERT INTO `sys_operationlog` VALUES (6428, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:49:26', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:49:26', 2, '2025-09-16 18:49:26');
+INSERT INTO `sys_operationlog` VALUES (6429, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:49:26', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:49:26', 2, '2025-09-16 18:49:26');
+INSERT INTO `sys_operationlog` VALUES (6430, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:49:26', '{\"storeId\":null}', 1, 2, '2025-09-16 18:49:26', 2, '2025-09-16 18:49:26');
+INSERT INTO `sys_operationlog` VALUES (6431, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:49:26', '{\"storeId\":null}', 1, 2, '2025-09-16 18:49:26', 2, '2025-09-16 18:49:26');
+INSERT INTO `sys_operationlog` VALUES (6432, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:49:26', '{\"storeId\":null}', 1, 2, '2025-09-16 18:49:26', 2, '2025-09-16 18:49:26');
+INSERT INTO `sys_operationlog` VALUES (6433, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:49:26', '{\"storeId\":null}', 1, 2, '2025-09-16 18:49:26', 2, '2025-09-16 18:49:26');
+INSERT INTO `sys_operationlog` VALUES (6434, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:49:26', '{\"storeId\":null}', 1, 2, '2025-09-16 18:49:26', 2, '2025-09-16 18:49:26');
+INSERT INTO `sys_operationlog` VALUES (6435, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:49:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:49:56', 2, '2025-09-16 18:49:56');
+INSERT INTO `sys_operationlog` VALUES (6436, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:49:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:49:56', 2, '2025-09-16 18:49:56');
+INSERT INTO `sys_operationlog` VALUES (6437, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:49:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:49:56', 2, '2025-09-16 18:49:56');
+INSERT INTO `sys_operationlog` VALUES (6438, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:49:56', '{\"storeId\":null}', 1, 2, '2025-09-16 18:49:56', 2, '2025-09-16 18:49:56');
+INSERT INTO `sys_operationlog` VALUES (6439, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:49:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:49:56', 2, '2025-09-16 18:49:56');
+INSERT INTO `sys_operationlog` VALUES (6440, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:49:56', '{\"storeId\":null}', 1, 2, '2025-09-16 18:49:56', 2, '2025-09-16 18:49:56');
+INSERT INTO `sys_operationlog` VALUES (6441, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:49:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:49:56', 2, '2025-09-16 18:49:56');
+INSERT INTO `sys_operationlog` VALUES (6442, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:49:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:49:56', 2, '2025-09-16 18:49:56');
+INSERT INTO `sys_operationlog` VALUES (6443, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:49:56', '{\"storeId\":null}', 1, 2, '2025-09-16 18:49:56', 2, '2025-09-16 18:49:56');
+INSERT INTO `sys_operationlog` VALUES (6444, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:49:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:49:56', 2, '2025-09-16 18:49:56');
+INSERT INTO `sys_operationlog` VALUES (6445, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:49:56', '{\"storeId\":null}', 1, 2, '2025-09-16 18:49:56', 2, '2025-09-16 18:49:56');
+INSERT INTO `sys_operationlog` VALUES (6446, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:49:56', '{\"storeId\":null}', 1, 2, '2025-09-16 18:49:56', 2, '2025-09-16 18:49:56');
+INSERT INTO `sys_operationlog` VALUES (6447, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:49:56', '{\"storeId\":null}', 1, 2, '2025-09-16 18:49:56', 2, '2025-09-16 18:49:56');
+INSERT INTO `sys_operationlog` VALUES (6448, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:49:56', '{\"storeId\":null}', 1, 2, '2025-09-16 18:49:56', 2, '2025-09-16 18:49:56');
+INSERT INTO `sys_operationlog` VALUES (6449, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:50:26', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:50:26', 2, '2025-09-16 18:50:26');
+INSERT INTO `sys_operationlog` VALUES (6450, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:50:26', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:50:26', 2, '2025-09-16 18:50:26');
+INSERT INTO `sys_operationlog` VALUES (6451, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:50:26', '{\"storeId\":null}', 1, 2, '2025-09-16 18:50:26', 2, '2025-09-16 18:50:26');
+INSERT INTO `sys_operationlog` VALUES (6452, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:50:26', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:50:26', 2, '2025-09-16 18:50:26');
+INSERT INTO `sys_operationlog` VALUES (6453, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:50:26', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:50:26', 2, '2025-09-16 18:50:26');
+INSERT INTO `sys_operationlog` VALUES (6454, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:50:26', '{\"storeId\":null}', 1, 2, '2025-09-16 18:50:26', 2, '2025-09-16 18:50:26');
+INSERT INTO `sys_operationlog` VALUES (6455, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:50:26', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:50:26', 2, '2025-09-16 18:50:26');
+INSERT INTO `sys_operationlog` VALUES (6456, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:50:26', '{\"storeId\":null}', 1, 2, '2025-09-16 18:50:26', 2, '2025-09-16 18:50:26');
+INSERT INTO `sys_operationlog` VALUES (6457, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:50:26', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:50:26', 2, '2025-09-16 18:50:26');
+INSERT INTO `sys_operationlog` VALUES (6458, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:50:26', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:50:26', 2, '2025-09-16 18:50:26');
+INSERT INTO `sys_operationlog` VALUES (6459, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:50:26', '{\"storeId\":null}', 1, 2, '2025-09-16 18:50:26', 2, '2025-09-16 18:50:26');
+INSERT INTO `sys_operationlog` VALUES (6460, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:50:26', '{\"storeId\":null}', 1, 2, '2025-09-16 18:50:26', 2, '2025-09-16 18:50:26');
+INSERT INTO `sys_operationlog` VALUES (6461, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:50:26', '{\"storeId\":null}', 1, 2, '2025-09-16 18:50:26', 2, '2025-09-16 18:50:26');
+INSERT INTO `sys_operationlog` VALUES (6462, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:50:26', '{\"storeId\":null}', 1, 2, '2025-09-16 18:50:26', 2, '2025-09-16 18:50:26');
+INSERT INTO `sys_operationlog` VALUES (6463, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:50:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:50:56', 2, '2025-09-16 18:50:56');
+INSERT INTO `sys_operationlog` VALUES (6464, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:50:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:50:56', 2, '2025-09-16 18:50:56');
+INSERT INTO `sys_operationlog` VALUES (6465, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:50:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:50:56', 2, '2025-09-16 18:50:56');
+INSERT INTO `sys_operationlog` VALUES (6466, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:50:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:50:56', 2, '2025-09-16 18:50:56');
+INSERT INTO `sys_operationlog` VALUES (6467, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:50:56', '{\"storeId\":null}', 1, 2, '2025-09-16 18:50:56', 2, '2025-09-16 18:50:56');
+INSERT INTO `sys_operationlog` VALUES (6468, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:50:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:50:56', 2, '2025-09-16 18:50:56');
+INSERT INTO `sys_operationlog` VALUES (6469, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:50:56', '{\"storeId\":null}', 1, 2, '2025-09-16 18:50:56', 2, '2025-09-16 18:50:56');
+INSERT INTO `sys_operationlog` VALUES (6470, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:50:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:50:56', 2, '2025-09-16 18:50:56');
+INSERT INTO `sys_operationlog` VALUES (6471, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 18:50:56', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:50:56', 2, '2025-09-16 18:50:56');
+INSERT INTO `sys_operationlog` VALUES (6472, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:50:56', '{\"storeId\":null}', 1, 2, '2025-09-16 18:50:56', 2, '2025-09-16 18:50:56');
+INSERT INTO `sys_operationlog` VALUES (6473, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:50:56', '{\"storeId\":null}', 1, 2, '2025-09-16 18:50:56', 2, '2025-09-16 18:50:56');
+INSERT INTO `sys_operationlog` VALUES (6474, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:50:56', '{\"storeId\":null}', 1, 2, '2025-09-16 18:50:56', 2, '2025-09-16 18:50:56');
+INSERT INTO `sys_operationlog` VALUES (6475, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:50:56', '{\"storeId\":null}', 1, 2, '2025-09-16 18:50:56', 2, '2025-09-16 18:50:56');
+INSERT INTO `sys_operationlog` VALUES (6476, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 18:50:56', '{\"storeId\":null}', 1, 2, '2025-09-16 18:50:56', 2, '2025-09-16 18:50:56');
+INSERT INTO `sys_operationlog` VALUES (6477, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:51:35', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:51:35', 2, '2025-09-16 18:51:35');
+INSERT INTO `sys_operationlog` VALUES (6478, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:51:35', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:51:35', 2, '2025-09-16 18:51:35');
+INSERT INTO `sys_operationlog` VALUES (6479, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:51:35', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:51:35', 2, '2025-09-16 18:51:35');
+INSERT INTO `sys_operationlog` VALUES (6480, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:51:35', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:51:35', 2, '2025-09-16 18:51:35');
+INSERT INTO `sys_operationlog` VALUES (6481, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:51:35', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:51:35', 2, '2025-09-16 18:51:35');
+INSERT INTO `sys_operationlog` VALUES (6482, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:51:35', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:51:35', 2, '2025-09-16 18:51:35');
+INSERT INTO `sys_operationlog` VALUES (6483, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 18:51:35', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:51:35', 2, '2025-09-16 18:51:35');
+INSERT INTO `sys_operationlog` VALUES (6484, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-16 18:51:41', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:51:41', 2, '2025-09-16 18:51:41');
+INSERT INTO `sys_operationlog` VALUES (6485, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-16 18:51:41', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:51:41', 2, '2025-09-16 18:51:41');
+INSERT INTO `sys_operationlog` VALUES (6486, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-16 18:51:41', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:51:41', 2, '2025-09-16 18:51:41');
+INSERT INTO `sys_operationlog` VALUES (6487, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-16 18:51:41', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:51:41', 2, '2025-09-16 18:51:41');
+INSERT INTO `sys_operationlog` VALUES (6488, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-16 18:51:41', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:51:41', 2, '2025-09-16 18:51:41');
+INSERT INTO `sys_operationlog` VALUES (6489, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-16 18:51:41', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:51:41', 2, '2025-09-16 18:51:41');
+INSERT INTO `sys_operationlog` VALUES (6490, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-16 18:51:41', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:51:41', 2, '2025-09-16 18:51:41');
+INSERT INTO `sys_operationlog` VALUES (6491, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-16 18:51:41', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 18:51:41', 2, '2025-09-16 18:51:41');
+INSERT INTO `sys_operationlog` VALUES (6492, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-16 18:51:55', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:51:55', 2, '2025-09-16 18:51:55');
+INSERT INTO `sys_operationlog` VALUES (6493, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-16 18:51:55', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:51:55', 2, '2025-09-16 18:51:55');
+INSERT INTO `sys_operationlog` VALUES (6494, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-16 18:51:55', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:51:55', 2, '2025-09-16 18:51:55');
+INSERT INTO `sys_operationlog` VALUES (6495, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-16 18:51:55', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:51:55', 2, '2025-09-16 18:51:55');
+INSERT INTO `sys_operationlog` VALUES (6496, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-16 18:51:55', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:51:55', 2, '2025-09-16 18:51:55');
+INSERT INTO `sys_operationlog` VALUES (6497, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-16 18:51:55', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:51:55', 2, '2025-09-16 18:51:55');
+INSERT INTO `sys_operationlog` VALUES (6498, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-16 18:51:55', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:51:55', 2, '2025-09-16 18:51:55');
+INSERT INTO `sys_operationlog` VALUES (6499, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-16 18:51:55', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:51:55', 2, '2025-09-16 18:51:55');
+INSERT INTO `sys_operationlog` VALUES (6500, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-16 18:51:55', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:51:55', 2, '2025-09-16 18:51:55');
+INSERT INTO `sys_operationlog` VALUES (6501, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-16 18:52:15', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:52:15', 2, '2025-09-16 18:52:15');
+INSERT INTO `sys_operationlog` VALUES (6502, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-16 18:52:15', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:52:15', 2, '2025-09-16 18:52:15');
+INSERT INTO `sys_operationlog` VALUES (6503, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-16 18:52:15', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:52:15', 2, '2025-09-16 18:52:15');
+INSERT INTO `sys_operationlog` VALUES (6504, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-16 18:52:15', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:52:15', 2, '2025-09-16 18:52:15');
+INSERT INTO `sys_operationlog` VALUES (6505, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-16 18:52:15', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:52:15', 2, '2025-09-16 18:52:15');
+INSERT INTO `sys_operationlog` VALUES (6506, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-16 18:52:15', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:52:15', 2, '2025-09-16 18:52:15');
+INSERT INTO `sys_operationlog` VALUES (6507, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-16 18:52:15', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:52:15', 2, '2025-09-16 18:52:15');
+INSERT INTO `sys_operationlog` VALUES (6508, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-16 18:52:15', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:52:15', 2, '2025-09-16 18:52:15');
+INSERT INTO `sys_operationlog` VALUES (6509, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-16 18:52:15', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:52:15', 2, '2025-09-16 18:52:15');
+INSERT INTO `sys_operationlog` VALUES (6510, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-16 18:52:15', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 18:52:15', 2, '2025-09-16 18:52:15');
+INSERT INTO `sys_operationlog` VALUES (6511, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:02:33', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:02:33', 2, '2025-09-16 20:02:33');
+INSERT INTO `sys_operationlog` VALUES (6512, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:02:33', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:02:33', 2, '2025-09-16 20:02:33');
+INSERT INTO `sys_operationlog` VALUES (6513, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:02:33', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:02:33', 2, '2025-09-16 20:02:33');
+INSERT INTO `sys_operationlog` VALUES (6514, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:02:33', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:02:33', 2, '2025-09-16 20:02:33');
+INSERT INTO `sys_operationlog` VALUES (6515, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:02:33', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:02:33', 2, '2025-09-16 20:02:33');
+INSERT INTO `sys_operationlog` VALUES (6516, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:02:33', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:02:33', 2, '2025-09-16 20:02:33');
+INSERT INTO `sys_operationlog` VALUES (6517, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:02:33', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:02:33', 2, '2025-09-16 20:02:33');
+INSERT INTO `sys_operationlog` VALUES (6518, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:02:33', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:02:33', 2, '2025-09-16 20:02:33');
+INSERT INTO `sys_operationlog` VALUES (6519, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:02:33', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:02:33', 2, '2025-09-16 20:02:33');
+INSERT INTO `sys_operationlog` VALUES (6520, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:02:33', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:02:33', 2, '2025-09-16 20:02:33');
+INSERT INTO `sys_operationlog` VALUES (6521, 2, 14, '系统设置>定时器管理', '启动定时服务', '2025-09-16 20:02:52', '{\"jobId\":\"2\"}', 1, 2, '2025-09-16 20:02:52', 2, '2025-09-16 20:02:52');
+INSERT INTO `sys_operationlog` VALUES (6522, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:02:52', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:02:52', 2, '2025-09-16 20:02:52');
+INSERT INTO `sys_operationlog` VALUES (6523, 2, 3, '系统设置>定时器管理', '启动定时服务', '2025-09-16 20:02:54', '{\"jobId\":\"2\",\"jobName\":\"AutomatedTask\",\"cronExpression\":\"0 0/1 * * * ? \"}', 1, 2, '2025-09-16 20:02:54', 2, '2025-09-16 20:02:54');
+INSERT INTO `sys_operationlog` VALUES (6524, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:02:55', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:02:55', 2, '2025-09-16 20:02:55');
+INSERT INTO `sys_operationlog` VALUES (6525, 2, 15, '系统设置>定时器管理', '启动定时服务', '2025-09-16 20:02:56', '{\"jobId\":\"2\"}', 1, 2, '2025-09-16 20:02:56', 2, '2025-09-16 20:02:56');
+INSERT INTO `sys_operationlog` VALUES (6526, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:02:56', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:02:56', 2, '2025-09-16 20:02:56');
+INSERT INTO `sys_operationlog` VALUES (6527, 2, 12, '系统设置>定时器管理', '启动定时服务', '2025-09-16 20:02:57', '{\"jobId\":\"2\"}', 1, 2, '2025-09-16 20:02:57', 2, '2025-09-16 20:02:57');
+INSERT INTO `sys_operationlog` VALUES (6528, 2, 12, '系统设置>定时器管理', '启动定时服务', '2025-09-16 20:03:00', '{\"jobId\":\"2\"}', 1, 2, '2025-09-16 20:03:00', 2, '2025-09-16 20:03:00');
+INSERT INTO `sys_operationlog` VALUES (6529, 2, 15, '系统设置>定时器管理', '启动定时服务', '2025-09-16 20:03:02', '{\"jobId\":\"3\"}', 1, 2, '2025-09-16 20:03:02', 2, '2025-09-16 20:03:02');
+INSERT INTO `sys_operationlog` VALUES (6530, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:03:02', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:03:02', 2, '2025-09-16 20:03:02');
+INSERT INTO `sys_operationlog` VALUES (6531, 2, 12, '系统设置>定时器管理', '启动定时服务', '2025-09-16 20:03:03', '{\"jobId\":\"3\"}', 1, 2, '2025-09-16 20:03:03', 2, '2025-09-16 20:03:03');
+INSERT INTO `sys_operationlog` VALUES (6532, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:03:03', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:03:03', 2, '2025-09-16 20:03:03');
+INSERT INTO `sys_operationlog` VALUES (6533, 2, 15, '系统设置>定时器管理', '启动定时服务', '2025-09-16 20:03:05', '{\"jobId\":\"3\"}', 1, 2, '2025-09-16 20:03:05', 2, '2025-09-16 20:03:05');
+INSERT INTO `sys_operationlog` VALUES (6534, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:03:05', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:03:05', 2, '2025-09-16 20:03:05');
+INSERT INTO `sys_operationlog` VALUES (6535, 2, 12, '系统设置>定时器管理', '启动定时服务', '2025-09-16 20:03:05', '{\"jobId\":\"3\"}', 1, 2, '2025-09-16 20:03:05', 2, '2025-09-16 20:03:05');
+INSERT INTO `sys_operationlog` VALUES (6536, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:03:05', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:03:05', 2, '2025-09-16 20:03:05');
+INSERT INTO `sys_operationlog` VALUES (6537, 2, 12, '系统设置>定时器管理', '启动定时服务', '2025-09-16 20:03:07', '{\"jobId\":\"2\"}', 1, 2, '2025-09-16 20:03:07', 2, '2025-09-16 20:03:07');
+INSERT INTO `sys_operationlog` VALUES (6538, 2, 12, '系统设置>定时器管理', '启动定时服务', '2025-09-16 20:03:09', '{}', 1, 2, '2025-09-16 20:03:09', 2, '2025-09-16 20:03:09');
+INSERT INTO `sys_operationlog` VALUES (6539, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:03:09', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:03:09', 2, '2025-09-16 20:03:09');
+INSERT INTO `sys_operationlog` VALUES (6540, 2, 15, '系统设置>定时器管理', '启动定时服务', '2025-09-16 20:03:11', '{\"jobId\":\"2\"}', 1, 2, '2025-09-16 20:03:11', 2, '2025-09-16 20:03:11');
+INSERT INTO `sys_operationlog` VALUES (6541, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:03:11', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:03:11', 2, '2025-09-16 20:03:11');
+INSERT INTO `sys_operationlog` VALUES (6542, 2, 12, '系统设置>定时器管理', '启动定时服务', '2025-09-16 20:03:12', '{\"jobId\":\"2\"}', 1, 2, '2025-09-16 20:03:12', 2, '2025-09-16 20:03:12');
+INSERT INTO `sys_operationlog` VALUES (6543, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:03:12', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:03:12', 2, '2025-09-16 20:03:12');
+INSERT INTO `sys_operationlog` VALUES (6544, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:03:32', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:03:32', 2, '2025-09-16 20:03:32');
+INSERT INTO `sys_operationlog` VALUES (6545, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-16 20:05:13', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:05:13', 2, '2025-09-16 20:05:13');
+INSERT INTO `sys_operationlog` VALUES (6546, 2, 4, '会员管理>会员列表', '会员列表查询', '2025-09-16 20:05:13', '{\"phone\":null,\"name\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:05:13', 2, '2025-09-16 20:05:13');
+INSERT INTO `sys_operationlog` VALUES (6547, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 20:07:41', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:07:41', 2, '2025-09-16 20:07:41');
+INSERT INTO `sys_operationlog` VALUES (6548, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 20:07:41', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:07:41', 2, '2025-09-16 20:07:41');
+INSERT INTO `sys_operationlog` VALUES (6549, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-16 20:07:41', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:07:41', 2, '2025-09-16 20:07:41');
+INSERT INTO `sys_operationlog` VALUES (6550, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 20:07:41', '{\"storeId\":null}', 1, 2, '2025-09-16 20:07:41', 2, '2025-09-16 20:07:41');
+INSERT INTO `sys_operationlog` VALUES (6551, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 20:07:41', '{\"storeId\":null}', 1, 2, '2025-09-16 20:07:41', 2, '2025-09-16 20:07:41');
+INSERT INTO `sys_operationlog` VALUES (6552, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-16 20:07:41', '{\"storeId\":null}', 1, 2, '2025-09-16 20:07:41', 2, '2025-09-16 20:07:41');
+INSERT INTO `sys_operationlog` VALUES (6553, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:07:45', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:07:45', 2, '2025-09-16 20:07:45');
+INSERT INTO `sys_operationlog` VALUES (6554, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:07:45', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:07:45', 2, '2025-09-16 20:07:45');
+INSERT INTO `sys_operationlog` VALUES (6555, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:07:45', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:07:45', 2, '2025-09-16 20:07:45');
+INSERT INTO `sys_operationlog` VALUES (6556, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:07:45', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:07:45', 2, '2025-09-16 20:07:45');
+INSERT INTO `sys_operationlog` VALUES (6557, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:07:57', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:07:57', 2, '2025-09-16 20:07:57');
+INSERT INTO `sys_operationlog` VALUES (6558, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:07:57', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:07:57', 2, '2025-09-16 20:07:57');
+INSERT INTO `sys_operationlog` VALUES (6559, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:07:57', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:07:57', 2, '2025-09-16 20:07:57');
+INSERT INTO `sys_operationlog` VALUES (6560, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:07:57', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:07:57', 2, '2025-09-16 20:07:57');
+INSERT INTO `sys_operationlog` VALUES (6561, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-16 20:07:58', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:07:58', 2, '2025-09-16 20:07:58');
+INSERT INTO `sys_operationlog` VALUES (6562, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-16 20:07:58', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:07:58', 2, '2025-09-16 20:07:58');
+INSERT INTO `sys_operationlog` VALUES (6563, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-16 20:07:58', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:07:58', 2, '2025-09-16 20:07:58');
+INSERT INTO `sys_operationlog` VALUES (6564, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-16 20:07:58', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:07:58', 2, '2025-09-16 20:07:58');
+INSERT INTO `sys_operationlog` VALUES (6565, 2, 4, '系统设置>数据备份', '查询备份信息', '2025-09-16 20:07:58', '{\"name\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:07:58', 2, '2025-09-16 20:07:58');
+INSERT INTO `sys_operationlog` VALUES (6566, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:08:03', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:08:03', 2, '2025-09-16 20:08:03');
+INSERT INTO `sys_operationlog` VALUES (6567, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:08:03', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:08:03', 2, '2025-09-16 20:08:03');
+INSERT INTO `sys_operationlog` VALUES (6568, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:08:03', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:08:03', 2, '2025-09-16 20:08:03');
+INSERT INTO `sys_operationlog` VALUES (6569, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:08:03', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:08:03', 2, '2025-09-16 20:08:03');
+INSERT INTO `sys_operationlog` VALUES (6570, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 20:08:03', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:08:03', 2, '2025-09-16 20:08:03');
+INSERT INTO `sys_operationlog` VALUES (6571, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-16 20:08:06', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:08:06', 2, '2025-09-16 20:08:06');
+INSERT INTO `sys_operationlog` VALUES (6572, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-16 20:08:06', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:08:06', 2, '2025-09-16 20:08:06');
+INSERT INTO `sys_operationlog` VALUES (6573, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-16 20:08:06', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:08:06', 2, '2025-09-16 20:08:06');
+INSERT INTO `sys_operationlog` VALUES (6574, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-16 20:08:06', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:08:06', 2, '2025-09-16 20:08:06');
+INSERT INTO `sys_operationlog` VALUES (6575, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-16 20:08:06', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:08:06', 2, '2025-09-16 20:08:06');
+INSERT INTO `sys_operationlog` VALUES (6576, 2, 4, '系统设置>供应商管理', '供应商列表查询', '2025-09-16 20:08:06', '{\"name\":null,\"status\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 20:08:06', 2, '2025-09-16 20:08:06');
+INSERT INTO `sys_operationlog` VALUES (6577, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-16 20:08:07', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:07', 2, '2025-09-16 20:08:07');
+INSERT INTO `sys_operationlog` VALUES (6578, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-16 20:08:08', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:08', 2, '2025-09-16 20:08:08');
+INSERT INTO `sys_operationlog` VALUES (6579, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-16 20:08:08', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:08', 2, '2025-09-16 20:08:08');
+INSERT INTO `sys_operationlog` VALUES (6580, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-16 20:08:08', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:08', 2, '2025-09-16 20:08:08');
+INSERT INTO `sys_operationlog` VALUES (6581, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-16 20:08:08', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:08', 2, '2025-09-16 20:08:08');
+INSERT INTO `sys_operationlog` VALUES (6582, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-16 20:08:08', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:08', 2, '2025-09-16 20:08:08');
+INSERT INTO `sys_operationlog` VALUES (6583, 2, 4, '系统设置>角色管理', '角色管理查询', '2025-09-16 20:08:08', '{\"RoleName\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:08', 2, '2025-09-16 20:08:08');
+INSERT INTO `sys_operationlog` VALUES (6584, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-16 20:08:09', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:09', 2, '2025-09-16 20:08:09');
+INSERT INTO `sys_operationlog` VALUES (6585, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-16 20:08:09', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:09', 2, '2025-09-16 20:08:09');
+INSERT INTO `sys_operationlog` VALUES (6586, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-16 20:08:09', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:09', 2, '2025-09-16 20:08:09');
+INSERT INTO `sys_operationlog` VALUES (6587, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-16 20:08:09', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:09', 2, '2025-09-16 20:08:09');
+INSERT INTO `sys_operationlog` VALUES (6588, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-16 20:08:09', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:09', 2, '2025-09-16 20:08:09');
+INSERT INTO `sys_operationlog` VALUES (6589, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-16 20:08:09', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:09', 2, '2025-09-16 20:08:09');
+INSERT INTO `sys_operationlog` VALUES (6590, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-16 20:08:09', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:09', 2, '2025-09-16 20:08:09');
+INSERT INTO `sys_operationlog` VALUES (6591, 2, 4, '系统设置>员工管理', '用户分页查询', '2025-09-16 20:08:09', '{\"name\":null,\"username\":null,\"phone\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:09', 2, '2025-09-16 20:08:09');
+INSERT INTO `sys_operationlog` VALUES (6592, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:08:22', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:22', 2, '2025-09-16 20:08:22');
+INSERT INTO `sys_operationlog` VALUES (6593, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:08:22', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:22', 2, '2025-09-16 20:08:22');
+INSERT INTO `sys_operationlog` VALUES (6594, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:08:22', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:22', 2, '2025-09-16 20:08:22');
+INSERT INTO `sys_operationlog` VALUES (6595, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:08:22', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:22', 2, '2025-09-16 20:08:22');
+INSERT INTO `sys_operationlog` VALUES (6596, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:08:22', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:22', 2, '2025-09-16 20:08:22');
+INSERT INTO `sys_operationlog` VALUES (6597, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:08:22', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:22', 2, '2025-09-16 20:08:22');
+INSERT INTO `sys_operationlog` VALUES (6598, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:08:22', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:22', 2, '2025-09-16 20:08:22');
+INSERT INTO `sys_operationlog` VALUES (6599, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:08:22', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:22', 2, '2025-09-16 20:08:22');
+INSERT INTO `sys_operationlog` VALUES (6600, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:08:43', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:43', 2, '2025-09-16 20:08:43');
+INSERT INTO `sys_operationlog` VALUES (6601, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:08:43', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:43', 2, '2025-09-16 20:08:43');
+INSERT INTO `sys_operationlog` VALUES (6602, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:08:43', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:43', 2, '2025-09-16 20:08:43');
+INSERT INTO `sys_operationlog` VALUES (6603, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:08:43', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:43', 2, '2025-09-16 20:08:43');
+INSERT INTO `sys_operationlog` VALUES (6604, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:08:43', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:43', 2, '2025-09-16 20:08:43');
+INSERT INTO `sys_operationlog` VALUES (6605, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:08:43', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:43', 2, '2025-09-16 20:08:43');
+INSERT INTO `sys_operationlog` VALUES (6606, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:08:43', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:43', 2, '2025-09-16 20:08:43');
+INSERT INTO `sys_operationlog` VALUES (6607, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:08:43', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:43', 2, '2025-09-16 20:08:43');
+INSERT INTO `sys_operationlog` VALUES (6608, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:08:43', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:43', 2, '2025-09-16 20:08:43');
+INSERT INTO `sys_operationlog` VALUES (6609, 2, 4, '系统设置>角色管理', '菜品管理查询', '2025-09-16 20:08:51', '{\"status\":null,\"tableCode\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 20:08:51', 2, '2025-09-16 20:08:51');
+INSERT INTO `sys_operationlog` VALUES (6610, 2, 11, '账号登出', '人员退出系统', '2025-09-16 20:09:08', '{}', 1, 2, '2025-09-16 20:09:08', 2, '2025-09-16 20:09:08');
+INSERT INTO `sys_operationlog` VALUES (6611, 6, 10, '系统登陆', '人员登陆', '2025-09-16 20:09:16', '账号：lq,员工姓名：lq', 2, 6, '2025-09-16 20:09:16', 6, '2025-09-16 20:09:16');
+INSERT INTO `sys_operationlog` VALUES (6612, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 20:09:16', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 20:09:16', 6, '2025-09-16 20:09:16');
+INSERT INTO `sys_operationlog` VALUES (6613, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 20:09:22', '{\"orderId\":16}', 2, 6, '2025-09-16 20:09:22', 6, '2025-09-16 20:09:22');
+INSERT INTO `sys_operationlog` VALUES (6614, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 20:09:24', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 20:09:24', 6, '2025-09-16 20:09:24');
+INSERT INTO `sys_operationlog` VALUES (6615, 6, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-16 20:11:08', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 2, 6, '2025-09-16 20:11:08', 6, '2025-09-16 20:11:08');
+INSERT INTO `sys_operationlog` VALUES (6616, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 20:11:08', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 20:11:08', 6, '2025-09-16 20:11:08');
+INSERT INTO `sys_operationlog` VALUES (6617, 6, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-16 20:11:08', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 2, 6, '2025-09-16 20:11:08', 6, '2025-09-16 20:11:08');
+INSERT INTO `sys_operationlog` VALUES (6618, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 20:11:08', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 20:11:08', 6, '2025-09-16 20:11:08');
+INSERT INTO `sys_operationlog` VALUES (6619, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 20:11:08', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 20:11:08', 6, '2025-09-16 20:11:08');
+INSERT INTO `sys_operationlog` VALUES (6620, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 20:11:08', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 20:11:08', 6, '2025-09-16 20:11:08');
+INSERT INTO `sys_operationlog` VALUES (6621, 6, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-16 20:11:09', '{\"kitchenOrderId\":47,\"status\":2}', 2, 6, '2025-09-16 20:11:09', 6, '2025-09-16 20:11:09');
+INSERT INTO `sys_operationlog` VALUES (6622, 6, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-16 20:11:13', '{\"kitchenOrderId\":47,\"status\":2}', 2, 6, '2025-09-16 20:11:13', 6, '2025-09-16 20:11:13');
+INSERT INTO `sys_operationlog` VALUES (6623, 6, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-16 20:11:17', '{\"kitchenOrderId\":47,\"status\":2}', 2, 6, '2025-09-16 20:11:17', 6, '2025-09-16 20:11:17');
+INSERT INTO `sys_operationlog` VALUES (6624, 6, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-16 20:11:20', '{\"kitchenOrderId\":46,\"status\":2}', 2, 6, '2025-09-16 20:11:20', 6, '2025-09-16 20:11:20');
+INSERT INTO `sys_operationlog` VALUES (6625, 6, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-16 20:11:21', '{\"kitchenOrderId\":46,\"status\":2}', 2, 6, '2025-09-16 20:11:21', 6, '2025-09-16 20:11:21');
+INSERT INTO `sys_operationlog` VALUES (6626, 6, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-16 20:11:22', '{\"kitchenOrderId\":45,\"status\":2}', 2, 6, '2025-09-16 20:11:22', 6, '2025-09-16 20:11:22');
+INSERT INTO `sys_operationlog` VALUES (6627, 6, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-16 20:11:23', '{\"kitchenOrderId\":44,\"status\":2}', 2, 6, '2025-09-16 20:11:23', 6, '2025-09-16 20:11:23');
+INSERT INTO `sys_operationlog` VALUES (6628, 6, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-16 20:11:30', '{\"kitchenOrderId\":47,\"status\":2}', 2, 6, '2025-09-16 20:11:30', 6, '2025-09-16 20:11:30');
+INSERT INTO `sys_operationlog` VALUES (6629, 6, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-16 20:11:33', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 20:11:33', 6, '2025-09-16 20:11:33');
+INSERT INTO `sys_operationlog` VALUES (6630, 6, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-16 20:11:33', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 20:11:33', 6, '2025-09-16 20:11:33');
+INSERT INTO `sys_operationlog` VALUES (6631, 6, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-16 20:11:33', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 20:11:33', 6, '2025-09-16 20:11:33');
+INSERT INTO `sys_operationlog` VALUES (6632, 6, 4, '订单管理>订单列表', '查询订单列表', '2025-09-16 20:11:48', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 20:11:48', 6, '2025-09-16 20:11:48');
+INSERT INTO `sys_operationlog` VALUES (6633, 6, 4, '订单管理>订单列表', '查询订单列表', '2025-09-16 20:11:48', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 20:11:48', 6, '2025-09-16 20:11:48');
+INSERT INTO `sys_operationlog` VALUES (6634, 6, 4, '订单管理>订单列表', '查询订单列表', '2025-09-16 20:11:48', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 20:11:48', 6, '2025-09-16 20:11:48');
+INSERT INTO `sys_operationlog` VALUES (6635, 6, 4, '订单管理>订单列表', '查询订单列表', '2025-09-16 20:11:48', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 20:11:48', 6, '2025-09-16 20:11:48');
+INSERT INTO `sys_operationlog` VALUES (6636, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 20:14:51', '{\"orderId\":18}', 2, 6, '2025-09-16 20:14:51', 6, '2025-09-16 20:14:51');
+INSERT INTO `sys_operationlog` VALUES (6637, 6, 4, '订单管理>订单列表', '查询订单列表', '2025-09-16 20:14:56', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 20:14:56', 6, '2025-09-16 20:14:56');
+INSERT INTO `sys_operationlog` VALUES (6638, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 20:15:00', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 20:15:00', 6, '2025-09-16 20:15:00');
+INSERT INTO `sys_operationlog` VALUES (6639, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 20:15:01', '{\"orderId\":15}', 2, 6, '2025-09-16 20:15:01', 6, '2025-09-16 20:15:01');
+INSERT INTO `sys_operationlog` VALUES (6640, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 20:17:02', '{\"orderId\":15}', 2, 6, '2025-09-16 20:17:02', 6, '2025-09-16 20:17:02');
+INSERT INTO `sys_operationlog` VALUES (6641, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 20:17:22', '{\"orderId\":15}', 2, 6, '2025-09-16 20:17:22', 6, '2025-09-16 20:17:22');
+INSERT INTO `sys_operationlog` VALUES (6642, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 20:18:01', '{\"orderId\":15}', 2, 6, '2025-09-16 20:18:01', 6, '2025-09-16 20:18:01');
+INSERT INTO `sys_operationlog` VALUES (6643, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 20:18:23', '{\"orderId\":15}', 2, 6, '2025-09-16 20:18:23', 6, '2025-09-16 20:18:23');
+INSERT INTO `sys_operationlog` VALUES (6644, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 20:19:36', '{\"orderId\":15}', 2, 6, '2025-09-16 20:19:36', 6, '2025-09-16 20:19:36');
+INSERT INTO `sys_operationlog` VALUES (6645, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 20:20:06', '{\"orderId\":15}', 2, 6, '2025-09-16 20:20:06', 6, '2025-09-16 20:20:06');
+INSERT INTO `sys_operationlog` VALUES (6646, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 20:20:11', '{\"orderId\":15}', 2, 6, '2025-09-16 20:20:11', 6, '2025-09-16 20:20:11');
+INSERT INTO `sys_operationlog` VALUES (6647, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 20:20:19', '{\"orderId\":15}', 2, 6, '2025-09-16 20:20:19', 6, '2025-09-16 20:20:19');
+INSERT INTO `sys_operationlog` VALUES (6648, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 20:20:30', '{\"orderId\":15}', 2, 6, '2025-09-16 20:20:30', 6, '2025-09-16 20:20:30');
+INSERT INTO `sys_operationlog` VALUES (6649, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 20:20:45', '{\"orderId\":15}', 2, 6, '2025-09-16 20:20:45', 6, '2025-09-16 20:20:45');
+INSERT INTO `sys_operationlog` VALUES (6650, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 21:14:23', '{}', 2, 6, '2025-09-16 21:14:23', 6, '2025-09-16 21:14:23');
+INSERT INTO `sys_operationlog` VALUES (6651, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 21:14:23', '{\"orderId\":15}', 2, 6, '2025-09-16 21:14:23', 6, '2025-09-16 21:14:23');
+INSERT INTO `sys_operationlog` VALUES (6652, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 21:14:30', '{\"orderId\":15}', 2, 6, '2025-09-16 21:14:30', 6, '2025-09-16 21:14:30');
+INSERT INTO `sys_operationlog` VALUES (6653, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 21:14:56', '{}', 2, 6, '2025-09-16 21:14:56', 6, '2025-09-16 21:14:56');
+INSERT INTO `sys_operationlog` VALUES (6654, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 21:14:56', '{\"orderId\":15}', 2, 6, '2025-09-16 21:14:56', 6, '2025-09-16 21:14:56');
+INSERT INTO `sys_operationlog` VALUES (6655, 6, 10, '系统登陆', '人员登陆', '2025-09-16 21:26:11', '账号：lq,员工姓名：lq', 2, 6, '2025-09-16 21:26:11', 6, '2025-09-16 21:26:11');
+INSERT INTO `sys_operationlog` VALUES (6656, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 21:26:14', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 21:26:14', 6, '2025-09-16 21:26:14');
+INSERT INTO `sys_operationlog` VALUES (6657, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 21:26:15', '{\"orderId\":15}', 2, 6, '2025-09-16 21:26:15', 6, '2025-09-16 21:26:15');
+INSERT INTO `sys_operationlog` VALUES (6658, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 21:26:28', '{}', 2, 6, '2025-09-16 21:26:28', 6, '2025-09-16 21:26:28');
+INSERT INTO `sys_operationlog` VALUES (6659, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 21:26:28', '{\"orderId\":15}', 2, 6, '2025-09-16 21:26:28', 6, '2025-09-16 21:26:28');
+INSERT INTO `sys_operationlog` VALUES (6660, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 21:33:18', '{}', 2, 6, '2025-09-16 21:33:18', 6, '2025-09-16 21:33:18');
+INSERT INTO `sys_operationlog` VALUES (6661, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 21:33:18', '{\"orderId\":15}', 2, 6, '2025-09-16 21:33:18', 6, '2025-09-16 21:33:18');
+INSERT INTO `sys_operationlog` VALUES (6662, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 21:33:22', '{\"orderId\":15}', 2, 6, '2025-09-16 21:33:22', 6, '2025-09-16 21:33:22');
+INSERT INTO `sys_operationlog` VALUES (6663, 6, 10, '系统登陆', '人员登陆', '2025-09-16 21:34:59', '账号：lq,员工姓名：lq', 2, 6, '2025-09-16 21:34:59', 6, '2025-09-16 21:34:59');
+INSERT INTO `sys_operationlog` VALUES (6664, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 21:35:02', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 21:35:02', 6, '2025-09-16 21:35:02');
+INSERT INTO `sys_operationlog` VALUES (6665, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 21:35:04', '{\"orderId\":15}', 2, 6, '2025-09-16 21:35:04', 6, '2025-09-16 21:35:04');
+INSERT INTO `sys_operationlog` VALUES (6666, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 21:35:06', '{}', 2, 6, '2025-09-16 21:35:06', 6, '2025-09-16 21:35:06');
+INSERT INTO `sys_operationlog` VALUES (6667, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 21:35:06', '{\"orderId\":15}', 2, 6, '2025-09-16 21:35:06', 6, '2025-09-16 21:35:06');
+INSERT INTO `sys_operationlog` VALUES (6668, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 21:36:41', '{\"orderId\":15}', 2, 6, '2025-09-16 21:36:41', 6, '2025-09-16 21:36:41');
+INSERT INTO `sys_operationlog` VALUES (6669, 2, 10, '系统登陆', '人员登陆', '2025-09-16 21:49:37', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-16 21:49:37', 2, '2025-09-16 21:49:37');
+INSERT INTO `sys_operationlog` VALUES (6670, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:03', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:03', 2, '2025-09-16 21:50:03');
+INSERT INTO `sys_operationlog` VALUES (6671, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:03', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:03', 2, '2025-09-16 21:50:03');
+INSERT INTO `sys_operationlog` VALUES (6672, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:18', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:18', 2, '2025-09-16 21:50:18');
+INSERT INTO `sys_operationlog` VALUES (6673, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:19', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:19', 2, '2025-09-16 21:50:19');
+INSERT INTO `sys_operationlog` VALUES (6674, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:21', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:21', 2, '2025-09-16 21:50:21');
+INSERT INTO `sys_operationlog` VALUES (6675, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:38', 2, '2025-09-16 21:50:38');
+INSERT INTO `sys_operationlog` VALUES (6676, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:38', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:38', 2, '2025-09-16 21:50:38');
+INSERT INTO `sys_operationlog` VALUES (6677, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:39', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:39', 2, '2025-09-16 21:50:39');
+INSERT INTO `sys_operationlog` VALUES (6678, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:40', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:40', 2, '2025-09-16 21:50:40');
+INSERT INTO `sys_operationlog` VALUES (6679, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:41', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:41', 2, '2025-09-16 21:50:41');
+INSERT INTO `sys_operationlog` VALUES (6680, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:41', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:41', 2, '2025-09-16 21:50:41');
+INSERT INTO `sys_operationlog` VALUES (6681, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:41', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:41', 2, '2025-09-16 21:50:41');
+INSERT INTO `sys_operationlog` VALUES (6682, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:42', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:42', 2, '2025-09-16 21:50:42');
+INSERT INTO `sys_operationlog` VALUES (6683, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:42', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:42', 2, '2025-09-16 21:50:42');
+INSERT INTO `sys_operationlog` VALUES (6684, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:43', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:43', 2, '2025-09-16 21:50:43');
+INSERT INTO `sys_operationlog` VALUES (6685, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:44', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:44', 2, '2025-09-16 21:50:44');
+INSERT INTO `sys_operationlog` VALUES (6686, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:45', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:45', 2, '2025-09-16 21:50:45');
+INSERT INTO `sys_operationlog` VALUES (6687, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:52', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:52', 2, '2025-09-16 21:50:52');
+INSERT INTO `sys_operationlog` VALUES (6688, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:53', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:53', 2, '2025-09-16 21:50:53');
+INSERT INTO `sys_operationlog` VALUES (6689, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:53', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:53', 2, '2025-09-16 21:50:53');
+INSERT INTO `sys_operationlog` VALUES (6690, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:53', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:53', 2, '2025-09-16 21:50:53');
+INSERT INTO `sys_operationlog` VALUES (6691, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:54', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:54', 2, '2025-09-16 21:50:54');
+INSERT INTO `sys_operationlog` VALUES (6692, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:54', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:54', 2, '2025-09-16 21:50:54');
+INSERT INTO `sys_operationlog` VALUES (6693, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:50:56', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:50:56', 2, '2025-09-16 21:50:56');
+INSERT INTO `sys_operationlog` VALUES (6694, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:51:08', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:51:08', 2, '2025-09-16 21:51:08');
+INSERT INTO `sys_operationlog` VALUES (6695, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:52:04', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:52:04', 2, '2025-09-16 21:52:04');
+INSERT INTO `sys_operationlog` VALUES (6696, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:52:05', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:52:05', 2, '2025-09-16 21:52:05');
+INSERT INTO `sys_operationlog` VALUES (6697, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:52:06', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:52:06', 2, '2025-09-16 21:52:06');
+INSERT INTO `sys_operationlog` VALUES (6698, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:52:06', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:52:06', 2, '2025-09-16 21:52:06');
+INSERT INTO `sys_operationlog` VALUES (6699, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:52:07', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:52:07', 2, '2025-09-16 21:52:07');
+INSERT INTO `sys_operationlog` VALUES (6700, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:52:09', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:52:09', 2, '2025-09-16 21:52:09');
+INSERT INTO `sys_operationlog` VALUES (6701, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:52:10', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:52:10', 2, '2025-09-16 21:52:10');
+INSERT INTO `sys_operationlog` VALUES (6702, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:52:14', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:52:14', 2, '2025-09-16 21:52:14');
+INSERT INTO `sys_operationlog` VALUES (6703, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:52:15', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:52:15', 2, '2025-09-16 21:52:15');
+INSERT INTO `sys_operationlog` VALUES (6704, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:52:17', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:52:17', 2, '2025-09-16 21:52:17');
+INSERT INTO `sys_operationlog` VALUES (6705, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:52:28', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:52:28', 2, '2025-09-16 21:52:28');
+INSERT INTO `sys_operationlog` VALUES (6706, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:52:29', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:52:29', 2, '2025-09-16 21:52:29');
+INSERT INTO `sys_operationlog` VALUES (6707, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:53:24', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:53:24', 2, '2025-09-16 21:53:24');
+INSERT INTO `sys_operationlog` VALUES (6708, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-16 21:58:14', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-16 21:58:14', 2, '2025-09-16 21:58:14');
+INSERT INTO `sys_operationlog` VALUES (6709, 2, 4, '系统管理>定时任务', '定时任务详情', '2025-09-16 21:58:26', '{\"taskId\":7}', 1, 2, '2025-09-16 21:58:26', 2, '2025-09-16 21:58:26');
+INSERT INTO `sys_operationlog` VALUES (6710, 2, 11, '账号登出', '人员退出系统', '2025-09-16 22:03:31', '{}', 1, 2, '2025-09-16 22:03:31', 2, '2025-09-16 22:03:31');
+INSERT INTO `sys_operationlog` VALUES (6711, 6, 10, '系统登陆', '人员登陆', '2025-09-16 22:03:40', '账号：lq,员工姓名：lq', 2, 6, '2025-09-16 22:03:40', 6, '2025-09-16 22:03:40');
+INSERT INTO `sys_operationlog` VALUES (6712, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 22:03:41', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 22:03:41', 6, '2025-09-16 22:03:41');
+INSERT INTO `sys_operationlog` VALUES (6713, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:03:53', '{\"orderId\":15}', 2, 6, '2025-09-16 22:03:53', 6, '2025-09-16 22:03:53');
+INSERT INTO `sys_operationlog` VALUES (6714, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 22:04:07', '{}', 2, 6, '2025-09-16 22:04:07', 6, '2025-09-16 22:04:07');
+INSERT INTO `sys_operationlog` VALUES (6715, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:04:07', '{\"orderId\":15}', 2, 6, '2025-09-16 22:04:07', 6, '2025-09-16 22:04:07');
+INSERT INTO `sys_operationlog` VALUES (6716, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 22:04:33', '{}', 2, 6, '2025-09-16 22:04:33', 6, '2025-09-16 22:04:33');
+INSERT INTO `sys_operationlog` VALUES (6717, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:04:33', '{\"orderId\":15}', 2, 6, '2025-09-16 22:04:33', 6, '2025-09-16 22:04:33');
+INSERT INTO `sys_operationlog` VALUES (6718, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 22:10:02', '{}', 2, 6, '2025-09-16 22:10:02', 6, '2025-09-16 22:10:02');
+INSERT INTO `sys_operationlog` VALUES (6719, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 22:10:09', '{}', 2, 6, '2025-09-16 22:10:09', 6, '2025-09-16 22:10:09');
+INSERT INTO `sys_operationlog` VALUES (6720, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 22:10:30', '{}', 2, 6, '2025-09-16 22:10:30', 6, '2025-09-16 22:10:30');
+INSERT INTO `sys_operationlog` VALUES (6721, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:10:30', '{\"orderId\":15}', 2, 6, '2025-09-16 22:10:30', 6, '2025-09-16 22:10:30');
+INSERT INTO `sys_operationlog` VALUES (6722, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:13:01', '{\"orderId\":15}', 2, 6, '2025-09-16 22:13:01', 6, '2025-09-16 22:13:01');
+INSERT INTO `sys_operationlog` VALUES (6723, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:13:39', '{\"orderId\":15}', 2, 6, '2025-09-16 22:13:39', 6, '2025-09-16 22:13:39');
+INSERT INTO `sys_operationlog` VALUES (6724, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:13:55', '{\"orderId\":15}', 2, 6, '2025-09-16 22:13:55', 6, '2025-09-16 22:13:55');
+INSERT INTO `sys_operationlog` VALUES (6725, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:14:12', '{\"orderId\":15}', 2, 6, '2025-09-16 22:14:12', 6, '2025-09-16 22:14:12');
+INSERT INTO `sys_operationlog` VALUES (6726, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:14:32', '{\"orderId\":15}', 2, 6, '2025-09-16 22:14:32', 6, '2025-09-16 22:14:32');
+INSERT INTO `sys_operationlog` VALUES (6727, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:14:33', '{\"orderId\":15}', 2, 6, '2025-09-16 22:14:33', 6, '2025-09-16 22:14:33');
+INSERT INTO `sys_operationlog` VALUES (6728, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:14:37', '{\"orderId\":15}', 2, 6, '2025-09-16 22:14:37', 6, '2025-09-16 22:14:37');
+INSERT INTO `sys_operationlog` VALUES (6729, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 22:14:40', '{}', 2, 6, '2025-09-16 22:14:40', 6, '2025-09-16 22:14:40');
+INSERT INTO `sys_operationlog` VALUES (6730, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:14:40', '{\"orderId\":15}', 2, 6, '2025-09-16 22:14:40', 6, '2025-09-16 22:14:40');
+INSERT INTO `sys_operationlog` VALUES (6731, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:14:43', '{\"orderId\":15}', 2, 6, '2025-09-16 22:14:43', 6, '2025-09-16 22:14:43');
+INSERT INTO `sys_operationlog` VALUES (6732, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 22:14:53', '{}', 2, 6, '2025-09-16 22:14:53', 6, '2025-09-16 22:14:53');
+INSERT INTO `sys_operationlog` VALUES (6733, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:14:53', '{\"orderId\":15}', 2, 6, '2025-09-16 22:14:53', 6, '2025-09-16 22:14:53');
+INSERT INTO `sys_operationlog` VALUES (6734, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 22:18:01', '{}', 2, 6, '2025-09-16 22:18:01', 6, '2025-09-16 22:18:01');
+INSERT INTO `sys_operationlog` VALUES (6735, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:18:01', '{\"orderId\":15}', 2, 6, '2025-09-16 22:18:01', 6, '2025-09-16 22:18:01');
+INSERT INTO `sys_operationlog` VALUES (6736, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:18:01', '{\"orderId\":15}', 2, 6, '2025-09-16 22:18:01', 6, '2025-09-16 22:18:01');
+INSERT INTO `sys_operationlog` VALUES (6737, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:18:06', '{\"orderId\":15}', 2, 6, '2025-09-16 22:18:06', 6, '2025-09-16 22:18:06');
+INSERT INTO `sys_operationlog` VALUES (6738, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 22:18:09', '{\"orderItemId\":21}', 2, 6, '2025-09-16 22:18:09', 6, '2025-09-16 22:18:09');
+INSERT INTO `sys_operationlog` VALUES (6739, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:18:09', '{\"orderId\":15}', 2, 6, '2025-09-16 22:18:09', 6, '2025-09-16 22:18:09');
+INSERT INTO `sys_operationlog` VALUES (6740, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:18:38', '{\"orderId\":15}', 2, 6, '2025-09-16 22:18:38', 6, '2025-09-16 22:18:38');
+INSERT INTO `sys_operationlog` VALUES (6741, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:18:39', '{\"orderId\":15}', 2, 6, '2025-09-16 22:18:39', 6, '2025-09-16 22:18:39');
+INSERT INTO `sys_operationlog` VALUES (6742, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:18:41', '{\"orderId\":15}', 2, 6, '2025-09-16 22:18:41', 6, '2025-09-16 22:18:41');
+INSERT INTO `sys_operationlog` VALUES (6743, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:18:42', '{\"orderId\":15}', 2, 6, '2025-09-16 22:18:42', 6, '2025-09-16 22:18:42');
+INSERT INTO `sys_operationlog` VALUES (6744, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:18:42', '{\"orderId\":15}', 2, 6, '2025-09-16 22:18:42', 6, '2025-09-16 22:18:42');
+INSERT INTO `sys_operationlog` VALUES (6745, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:18:43', '{\"orderId\":15}', 2, 6, '2025-09-16 22:18:43', 6, '2025-09-16 22:18:43');
+INSERT INTO `sys_operationlog` VALUES (6746, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:18:44', '{\"orderId\":15}', 2, 6, '2025-09-16 22:18:44', 6, '2025-09-16 22:18:44');
+INSERT INTO `sys_operationlog` VALUES (6747, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:18:44', '{\"orderId\":15}', 2, 6, '2025-09-16 22:18:44', 6, '2025-09-16 22:18:44');
+INSERT INTO `sys_operationlog` VALUES (6748, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:18:45', '{\"orderId\":15}', 2, 6, '2025-09-16 22:18:45', 6, '2025-09-16 22:18:45');
+INSERT INTO `sys_operationlog` VALUES (6749, 6, 1, '订单管理>订单列表', '订单退款', '2025-09-16 22:18:57', '{\"orderId\":15}', 2, 6, '2025-09-16 22:18:57', 6, '2025-09-16 22:18:57');
+INSERT INTO `sys_operationlog` VALUES (6750, 6, 1, '订单管理>订单列表', '订单重做', '2025-09-16 22:19:06', '{\"orderId\":15}', 2, 6, '2025-09-16 22:19:06', 6, '2025-09-16 22:19:06');
+INSERT INTO `sys_operationlog` VALUES (6751, 6, 1, '订单管理>订单列表', '订单退款', '2025-09-16 22:19:12', '{\"orderId\":15}', 2, 6, '2025-09-16 22:19:12', 6, '2025-09-16 22:19:12');
+INSERT INTO `sys_operationlog` VALUES (6752, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 22:19:27', '{\"orderItemId\":25}', 2, 6, '2025-09-16 22:19:27', 6, '2025-09-16 22:19:27');
+INSERT INTO `sys_operationlog` VALUES (6753, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:19:27', '{\"orderId\":15}', 2, 6, '2025-09-16 22:19:27', 6, '2025-09-16 22:19:27');
+INSERT INTO `sys_operationlog` VALUES (6754, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 22:19:28', '{\"orderItemId\":26}', 2, 6, '2025-09-16 22:19:28', 6, '2025-09-16 22:19:28');
+INSERT INTO `sys_operationlog` VALUES (6755, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:19:28', '{\"orderId\":15}', 2, 6, '2025-09-16 22:19:28', 6, '2025-09-16 22:19:28');
+INSERT INTO `sys_operationlog` VALUES (6756, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 22:19:29', '{\"orderItemId\":27}', 2, 6, '2025-09-16 22:19:29', 6, '2025-09-16 22:19:29');
+INSERT INTO `sys_operationlog` VALUES (6757, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:19:29', '{\"orderId\":15}', 2, 6, '2025-09-16 22:19:29', 6, '2025-09-16 22:19:29');
+INSERT INTO `sys_operationlog` VALUES (6758, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 22:19:30', '{\"orderItemId\":28}', 2, 6, '2025-09-16 22:19:30', 6, '2025-09-16 22:19:30');
+INSERT INTO `sys_operationlog` VALUES (6759, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:19:30', '{\"orderId\":15}', 2, 6, '2025-09-16 22:19:30', 6, '2025-09-16 22:19:30');
+INSERT INTO `sys_operationlog` VALUES (6760, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 22:19:31', '{\"orderItemId\":29}', 2, 6, '2025-09-16 22:19:31', 6, '2025-09-16 22:19:31');
+INSERT INTO `sys_operationlog` VALUES (6761, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:19:31', '{\"orderId\":15}', 2, 6, '2025-09-16 22:19:31', 6, '2025-09-16 22:19:31');
+INSERT INTO `sys_operationlog` VALUES (6762, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 22:19:31', '{\"orderItemId\":33}', 2, 6, '2025-09-16 22:19:31', 6, '2025-09-16 22:19:31');
+INSERT INTO `sys_operationlog` VALUES (6763, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:19:31', '{\"orderId\":15}', 2, 6, '2025-09-16 22:19:31', 6, '2025-09-16 22:19:31');
+INSERT INTO `sys_operationlog` VALUES (6764, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 22:19:32', '{\"orderItemId\":34}', 2, 6, '2025-09-16 22:19:32', 6, '2025-09-16 22:19:32');
+INSERT INTO `sys_operationlog` VALUES (6765, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:19:32', '{\"orderId\":15}', 2, 6, '2025-09-16 22:19:32', 6, '2025-09-16 22:19:32');
+INSERT INTO `sys_operationlog` VALUES (6766, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 22:19:33', '{\"orderItemId\":35}', 2, 6, '2025-09-16 22:19:33', 6, '2025-09-16 22:19:33');
+INSERT INTO `sys_operationlog` VALUES (6767, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:19:33', '{\"orderId\":15}', 2, 6, '2025-09-16 22:19:33', 6, '2025-09-16 22:19:33');
+INSERT INTO `sys_operationlog` VALUES (6768, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 22:19:33', '{\"orderItemId\":36}', 2, 6, '2025-09-16 22:19:33', 6, '2025-09-16 22:19:33');
+INSERT INTO `sys_operationlog` VALUES (6769, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:19:33', '{\"orderId\":15}', 2, 6, '2025-09-16 22:19:33', 6, '2025-09-16 22:19:33');
+INSERT INTO `sys_operationlog` VALUES (6770, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 22:19:34', '{\"orderItemId\":37}', 2, 6, '2025-09-16 22:19:34', 6, '2025-09-16 22:19:34');
+INSERT INTO `sys_operationlog` VALUES (6771, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:19:34', '{\"orderId\":15}', 2, 6, '2025-09-16 22:19:34', 6, '2025-09-16 22:19:34');
+INSERT INTO `sys_operationlog` VALUES (6772, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-16 22:19:35', '{\"orderItemId\":38}', 2, 6, '2025-09-16 22:19:35', 6, '2025-09-16 22:19:35');
+INSERT INTO `sys_operationlog` VALUES (6773, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:19:35', '{\"orderId\":15}', 2, 6, '2025-09-16 22:19:35', 6, '2025-09-16 22:19:35');
+INSERT INTO `sys_operationlog` VALUES (6774, 6, 1, '订单管理>订单列表', '订单重做', '2025-09-16 22:22:13', '{\"orderId\":15}', 2, 6, '2025-09-16 22:22:13', 6, '2025-09-16 22:22:13');
+INSERT INTO `sys_operationlog` VALUES (6775, 6, 1, '订单管理>订单列表', '订单重做', '2025-09-16 22:22:23', '{\"orderId\":15}', 2, 6, '2025-09-16 22:22:23', 6, '2025-09-16 22:22:23');
+INSERT INTO `sys_operationlog` VALUES (6776, 6, 1, '订单管理>订单列表', '订单重做', '2025-09-16 22:24:00', '{\"orderId\":15}', 2, 6, '2025-09-16 22:24:00', 6, '2025-09-16 22:24:00');
+INSERT INTO `sys_operationlog` VALUES (6777, 6, 1, '订单管理>订单列表', '订单退款', '2025-09-16 22:36:25', '{\"orderId\":15}', 2, 6, '2025-09-16 22:36:25', 6, '2025-09-16 22:36:25');
+INSERT INTO `sys_operationlog` VALUES (6778, 6, 1, '订单管理>订单列表', '订单退款', '2025-09-16 22:36:26', '{\"orderId\":15}', 2, 6, '2025-09-16 22:36:26', 6, '2025-09-16 22:36:26');
+INSERT INTO `sys_operationlog` VALUES (6779, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:36:29', '{\"orderId\":15}', 2, 6, '2025-09-16 22:36:29', 6, '2025-09-16 22:36:29');
+INSERT INTO `sys_operationlog` VALUES (6780, 6, 10, '系统登陆', '人员登陆', '2025-09-16 22:37:06', '账号：lq,员工姓名：lq', 2, 6, '2025-09-16 22:37:06', 6, '2025-09-16 22:37:06');
+INSERT INTO `sys_operationlog` VALUES (6781, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 22:37:09', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 22:37:09', 6, '2025-09-16 22:37:09');
+INSERT INTO `sys_operationlog` VALUES (6782, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:37:13', '{\"orderId\":15}', 2, 6, '2025-09-16 22:37:13', 6, '2025-09-16 22:37:13');
+INSERT INTO `sys_operationlog` VALUES (6783, 6, 10, '系统登陆', '人员登陆', '2025-09-16 22:48:41', '账号：lq,员工姓名：lq', 2, 6, '2025-09-16 22:48:41', 6, '2025-09-16 22:48:41');
+INSERT INTO `sys_operationlog` VALUES (6784, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 22:48:44', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 22:48:44', 6, '2025-09-16 22:48:44');
+INSERT INTO `sys_operationlog` VALUES (6785, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:48:45', '{\"orderId\":15}', 2, 6, '2025-09-16 22:48:45', 6, '2025-09-16 22:48:45');
+INSERT INTO `sys_operationlog` VALUES (6786, 6, 1, '订单管理>订单列表', '订单重做', '2025-09-16 22:48:49', '{\"orderId\":15}', 2, 6, '2025-09-16 22:48:49', 6, '2025-09-16 22:48:49');
+INSERT INTO `sys_operationlog` VALUES (6787, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 22:48:49', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 22:48:49', 6, '2025-09-16 22:48:49');
+INSERT INTO `sys_operationlog` VALUES (6788, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:48:52', '{\"orderId\":15}', 2, 6, '2025-09-16 22:48:52', 6, '2025-09-16 22:48:52');
+INSERT INTO `sys_operationlog` VALUES (6789, 6, 1, '订单管理>订单列表', '订单退款', '2025-09-16 22:49:08', '{\"orderId\":15}', 2, 6, '2025-09-16 22:49:08', 6, '2025-09-16 22:49:08');
+INSERT INTO `sys_operationlog` VALUES (6790, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 22:49:08', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 22:49:08', 6, '2025-09-16 22:49:08');
+INSERT INTO `sys_operationlog` VALUES (6791, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:49:10', '{\"orderId\":16}', 2, 6, '2025-09-16 22:49:10', 6, '2025-09-16 22:49:10');
+INSERT INTO `sys_operationlog` VALUES (6792, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 22:49:20', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 22:49:20', 6, '2025-09-16 22:49:20');
+INSERT INTO `sys_operationlog` VALUES (6793, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:49:25', '{\"orderId\":16}', 2, 6, '2025-09-16 22:49:25', 6, '2025-09-16 22:49:25');
+INSERT INTO `sys_operationlog` VALUES (6794, 6, 1, '订单管理>订单列表', '订单退款', '2025-09-16 22:49:30', '{\"orderId\":16}', 2, 6, '2025-09-16 22:49:30', 6, '2025-09-16 22:49:30');
+INSERT INTO `sys_operationlog` VALUES (6795, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 22:49:30', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 22:49:30', 6, '2025-09-16 22:49:30');
+INSERT INTO `sys_operationlog` VALUES (6796, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 22:49:35', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 22:49:35', 6, '2025-09-16 22:49:35');
+INSERT INTO `sys_operationlog` VALUES (6797, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:49:37', '{\"orderId\":26}', 2, 6, '2025-09-16 22:49:37', 6, '2025-09-16 22:49:37');
+INSERT INTO `sys_operationlog` VALUES (6798, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 22:49:39', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 22:49:39', 6, '2025-09-16 22:49:39');
+INSERT INTO `sys_operationlog` VALUES (6799, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:49:40', '{\"orderId\":17}', 2, 6, '2025-09-16 22:49:40', 6, '2025-09-16 22:49:40');
+INSERT INTO `sys_operationlog` VALUES (6800, 6, 1, '订单管理>订单列表', '订单退款', '2025-09-16 22:49:43', '{\"orderId\":17}', 2, 6, '2025-09-16 22:49:43', 6, '2025-09-16 22:49:43');
+INSERT INTO `sys_operationlog` VALUES (6801, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 22:49:43', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 22:49:43', 6, '2025-09-16 22:49:43');
+INSERT INTO `sys_operationlog` VALUES (6802, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:49:48', '{\"orderId\":18}', 2, 6, '2025-09-16 22:49:48', 6, '2025-09-16 22:49:48');
+INSERT INTO `sys_operationlog` VALUES (6803, 6, 1, '订单管理>订单列表', '订单退款', '2025-09-16 22:49:50', '{\"orderId\":18}', 2, 6, '2025-09-16 22:49:50', 6, '2025-09-16 22:49:50');
+INSERT INTO `sys_operationlog` VALUES (6804, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-16 22:49:50', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 22:49:50', 6, '2025-09-16 22:49:50');
+INSERT INTO `sys_operationlog` VALUES (6805, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-16 22:49:54', '{\"orderId\":19}', 2, 6, '2025-09-16 22:49:54', 6, '2025-09-16 22:49:54');
+INSERT INTO `sys_operationlog` VALUES (6806, 6, 4, '订单管理>订单列表', '查询订单列表', '2025-09-16 22:55:18', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 22:55:18', 6, '2025-09-16 22:55:18');
+INSERT INTO `sys_operationlog` VALUES (6807, 6, 4, '订单管理>订单列表', '查询订单列表', '2025-09-16 22:55:18', '{\"store_Id\":null,\"OrdderNo\":null,\"tableId\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-16 22:55:18', 6, '2025-09-16 22:55:18');
+INSERT INTO `sys_operationlog` VALUES (6808, 6, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-16 22:55:24', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 2, 6, '2025-09-16 22:55:24', 6, '2025-09-16 22:55:24');
+INSERT INTO `sys_operationlog` VALUES (6809, 6, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-16 22:55:24', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 2, 6, '2025-09-16 22:55:24', 6, '2025-09-16 22:55:24');
+INSERT INTO `sys_operationlog` VALUES (6810, 6, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-16 22:55:24', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 2, 6, '2025-09-16 22:55:24', 6, '2025-09-16 22:55:24');
+INSERT INTO `sys_operationlog` VALUES (6811, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 22:55:24', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 22:55:24', 6, '2025-09-16 22:55:24');
+INSERT INTO `sys_operationlog` VALUES (6812, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 22:55:24', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 22:55:24', 6, '2025-09-16 22:55:24');
+INSERT INTO `sys_operationlog` VALUES (6813, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 22:55:24', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 22:55:24', 6, '2025-09-16 22:55:24');
+INSERT INTO `sys_operationlog` VALUES (6814, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 22:55:24', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 22:55:24', 6, '2025-09-16 22:55:24');
+INSERT INTO `sys_operationlog` VALUES (6815, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 22:55:24', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 22:55:24', 6, '2025-09-16 22:55:24');
+INSERT INTO `sys_operationlog` VALUES (6816, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 22:55:24', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 22:55:24', 6, '2025-09-16 22:55:24');
+INSERT INTO `sys_operationlog` VALUES (6817, 6, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-16 22:55:25', '{\"kitchenOrderId\":47,\"status\":2}', 2, 6, '2025-09-16 22:55:25', 6, '2025-09-16 22:55:25');
+INSERT INTO `sys_operationlog` VALUES (6818, 6, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-16 22:56:25', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 2, 6, '2025-09-16 22:56:25', 6, '2025-09-16 22:56:25');
+INSERT INTO `sys_operationlog` VALUES (6819, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 22:56:25', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 22:56:25', 6, '2025-09-16 22:56:25');
+INSERT INTO `sys_operationlog` VALUES (6820, 6, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-16 22:56:25', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 2, 6, '2025-09-16 22:56:25', 6, '2025-09-16 22:56:25');
+INSERT INTO `sys_operationlog` VALUES (6821, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 22:56:25', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 22:56:25', 6, '2025-09-16 22:56:25');
+INSERT INTO `sys_operationlog` VALUES (6822, 6, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-16 22:56:25', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 2, 6, '2025-09-16 22:56:25', 6, '2025-09-16 22:56:25');
+INSERT INTO `sys_operationlog` VALUES (6823, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 22:56:25', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 22:56:25', 6, '2025-09-16 22:56:25');
+INSERT INTO `sys_operationlog` VALUES (6824, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 22:56:25', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 22:56:25', 6, '2025-09-16 22:56:25');
+INSERT INTO `sys_operationlog` VALUES (6825, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 22:56:25', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 22:56:25', 6, '2025-09-16 22:56:25');
+INSERT INTO `sys_operationlog` VALUES (6826, 6, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 22:56:25', '{\"storeId\":null,\"kitchenType\":null}', 2, 6, '2025-09-16 22:56:25', 6, '2025-09-16 22:56:25');
+INSERT INTO `sys_operationlog` VALUES (6827, 2, 10, '系统登陆', '人员登陆', '2025-09-16 23:03:56', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-16 23:03:56', 2, '2025-09-16 23:03:56');
+INSERT INTO `sys_operationlog` VALUES (6828, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-16 23:04:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-16 23:04:02', 2, '2025-09-16 23:04:02');
+INSERT INTO `sys_operationlog` VALUES (6829, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 23:04:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-16 23:04:02', 2, '2025-09-16 23:04:02');
+INSERT INTO `sys_operationlog` VALUES (6830, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-16 23:04:02', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-16 23:04:02', 2, '2025-09-16 23:04:02');
+INSERT INTO `sys_operationlog` VALUES (6831, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 23:04:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-16 23:04:02', 2, '2025-09-16 23:04:02');
+INSERT INTO `sys_operationlog` VALUES (6832, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 23:04:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-16 23:04:02', 2, '2025-09-16 23:04:02');
+INSERT INTO `sys_operationlog` VALUES (6833, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-16 23:04:02', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-16 23:04:02', 2, '2025-09-16 23:04:02');
+INSERT INTO `sys_operationlog` VALUES (6834, 2, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-16 23:04:06', '{\"kitchenOrderId\":47,\"status\":2}', 1, 2, '2025-09-16 23:04:06', 2, '2025-09-16 23:04:06');
+INSERT INTO `sys_operationlog` VALUES (6835, 2, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-16 23:04:15', '{\"kitchenOrderId\":47,\"status\":2}', 1, 2, '2025-09-16 23:04:15', 2, '2025-09-16 23:04:15');
+INSERT INTO `sys_operationlog` VALUES (6836, 2, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-16 23:04:20', '{\"kitchenOrderId\":46,\"status\":2}', 1, 2, '2025-09-16 23:04:20', 2, '2025-09-16 23:04:20');
+INSERT INTO `sys_operationlog` VALUES (6837, 2, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-16 23:04:21', '{\"kitchenOrderId\":46,\"status\":2}', 1, 2, '2025-09-16 23:04:21', 2, '2025-09-16 23:04:21');
+INSERT INTO `sys_operationlog` VALUES (6838, 2, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-16 23:04:22', '{\"kitchenOrderId\":45,\"status\":2}', 1, 2, '2025-09-16 23:04:22', 2, '2025-09-16 23:04:22');
+INSERT INTO `sys_operationlog` VALUES (6839, 2, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-16 23:04:23', '{\"kitchenOrderId\":44,\"status\":2}', 1, 2, '2025-09-16 23:04:23', 2, '2025-09-16 23:04:23');
+INSERT INTO `sys_operationlog` VALUES (6840, 2, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-16 23:04:24', '{\"kitchenOrderId\":43,\"status\":2}', 1, 2, '2025-09-16 23:04:24', 2, '2025-09-16 23:04:24');
+INSERT INTO `sys_operationlog` VALUES (6841, 2, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-16 23:04:25', '{\"kitchenOrderId\":42,\"status\":2}', 1, 2, '2025-09-16 23:04:25', 2, '2025-09-16 23:04:25');
+INSERT INTO `sys_operationlog` VALUES (6842, 2, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-16 23:04:28', '{\"kitchenOrderId\":40,\"status\":2}', 1, 2, '2025-09-16 23:04:28', 2, '2025-09-16 23:04:28');
+INSERT INTO `sys_operationlog` VALUES (6843, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-16 23:04:41', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 23:04:41', 2, '2025-09-16 23:04:41');
+INSERT INTO `sys_operationlog` VALUES (6844, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-16 23:04:41', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 23:04:41', 2, '2025-09-16 23:04:41');
+INSERT INTO `sys_operationlog` VALUES (6845, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-16 23:04:41', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-16 23:04:41', 2, '2025-09-16 23:04:41');
+INSERT INTO `sys_operationlog` VALUES (6846, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-16 23:04:48', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":2,\"size\":10}', 1, 2, '2025-09-16 23:04:48', 2, '2025-09-16 23:04:48');
+INSERT INTO `sys_operationlog` VALUES (6847, 2, 4, '厨房管理>出餐记录表>', '出餐记录表查询', '2025-09-16 23:04:49', '{\"storeId\":null,\"kitchenType\":null,\"status\":null,\"page\":3,\"size\":10}', 1, 2, '2025-09-16 23:04:49', 2, '2025-09-16 23:04:49');
+INSERT INTO `sys_operationlog` VALUES (6848, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-16 23:04:54', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-16 23:04:54', 2, '2025-09-16 23:04:54');
+INSERT INTO `sys_operationlog` VALUES (6849, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-16 23:04:54', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-16 23:04:54', 2, '2025-09-16 23:04:54');
+INSERT INTO `sys_operationlog` VALUES (6850, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-16 23:04:54', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-16 23:04:54', 2, '2025-09-16 23:04:54');
+INSERT INTO `sys_operationlog` VALUES (6851, 2, 4, '厨房管理>厨房管理', '厨房列表查询', '2025-09-16 23:04:54', '{\"page\":1,\"size\":10}', 1, 2, '2025-09-16 23:04:54', 2, '2025-09-16 23:04:54');
+INSERT INTO `sys_operationlog` VALUES (6852, 2, 10, '系统登陆', '人员登陆', '2025-09-17 00:13:02', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-17 00:13:02', 2, '2025-09-17 00:13:02');
+INSERT INTO `sys_operationlog` VALUES (6853, 2, 11, '账号登出', '人员退出系统', '2025-09-17 00:13:08', '{}', 1, 2, '2025-09-17 00:13:08', 2, '2025-09-17 00:13:08');
+INSERT INTO `sys_operationlog` VALUES (6854, 6, 10, '系统登陆', '人员登陆', '2025-09-17 00:13:14', '账号：lq,员工姓名：lq', 2, 6, '2025-09-17 00:13:14', 6, '2025-09-17 00:13:14');
+INSERT INTO `sys_operationlog` VALUES (6855, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-17 00:13:15', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-17 00:13:15', 6, '2025-09-17 00:13:15');
+INSERT INTO `sys_operationlog` VALUES (6856, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 00:13:16', '{\"orderId\":33}', 2, 6, '2025-09-17 00:13:16', 6, '2025-09-17 00:13:16');
+INSERT INTO `sys_operationlog` VALUES (6857, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-17 00:13:24', '{\"orderItemId\":\"58,59,60\"}', 2, 6, '2025-09-17 00:13:24', 6, '2025-09-17 00:13:24');
+INSERT INTO `sys_operationlog` VALUES (6858, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 00:13:24', '{\"orderId\":33}', 2, 6, '2025-09-17 00:13:24', 6, '2025-09-17 00:13:24');
+INSERT INTO `sys_operationlog` VALUES (6859, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 00:13:43', '{\"orderId\":33}', 2, 6, '2025-09-17 00:13:43', 6, '2025-09-17 00:13:43');
+INSERT INTO `sys_operationlog` VALUES (6860, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 00:13:46', '{\"orderId\":33}', 2, 6, '2025-09-17 00:13:46', 6, '2025-09-17 00:13:46');
+INSERT INTO `sys_operationlog` VALUES (6861, 6, 1, '订单管理>订单列表', '订单重做', '2025-09-17 00:14:08', '{\"orderId\":33}', 2, 6, '2025-09-17 00:14:08', 6, '2025-09-17 00:14:08');
+INSERT INTO `sys_operationlog` VALUES (6862, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-17 00:14:09', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-17 00:14:09', 6, '2025-09-17 00:14:09');
+INSERT INTO `sys_operationlog` VALUES (6863, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 00:14:11', '{\"orderId\":33}', 2, 6, '2025-09-17 00:14:11', 6, '2025-09-17 00:14:11');
+INSERT INTO `sys_operationlog` VALUES (6864, 6, 10, '系统登陆', '人员登陆', '2025-09-17 00:17:16', '账号：lq,员工姓名：lq', 2, 6, '2025-09-17 00:17:16', 6, '2025-09-17 00:17:16');
+INSERT INTO `sys_operationlog` VALUES (6865, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-17 00:17:19', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-17 00:17:19', 6, '2025-09-17 00:17:19');
+INSERT INTO `sys_operationlog` VALUES (6866, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 00:17:20', '{\"orderId\":33}', 2, 6, '2025-09-17 00:17:20', 6, '2025-09-17 00:17:20');
+INSERT INTO `sys_operationlog` VALUES (6867, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-17 00:17:24', '{\"orderItemId\":\"58,59,60\"}', 2, 6, '2025-09-17 00:17:24', 6, '2025-09-17 00:17:24');
+INSERT INTO `sys_operationlog` VALUES (6868, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 00:17:24', '{\"orderId\":33}', 2, 6, '2025-09-17 00:17:24', 6, '2025-09-17 00:17:24');
+INSERT INTO `sys_operationlog` VALUES (6869, 6, 10, '系统登陆', '人员登陆', '2025-09-17 00:19:03', '账号：lq,员工姓名：lq', 2, 6, '2025-09-17 00:19:03', 6, '2025-09-17 00:19:03');
+INSERT INTO `sys_operationlog` VALUES (6870, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-17 00:19:05', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-17 00:19:05', 6, '2025-09-17 00:19:05');
+INSERT INTO `sys_operationlog` VALUES (6871, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 00:19:07', '{\"orderId\":33}', 2, 6, '2025-09-17 00:19:07', 6, '2025-09-17 00:19:07');
+INSERT INTO `sys_operationlog` VALUES (6872, 6, 1, '订单管理>订单列表', '订单重做', '2025-09-17 00:19:09', '{\"orderId\":33}', 2, 6, '2025-09-17 00:19:09', 6, '2025-09-17 00:19:09');
+INSERT INTO `sys_operationlog` VALUES (6873, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-17 00:19:09', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-17 00:19:09', 6, '2025-09-17 00:19:09');
+INSERT INTO `sys_operationlog` VALUES (6874, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 00:19:11', '{\"orderId\":33}', 2, 6, '2025-09-17 00:19:11', 6, '2025-09-17 00:19:11');
+INSERT INTO `sys_operationlog` VALUES (6875, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-17 00:19:13', '{\"orderItemId\":\"58,59,60\"}', 2, 6, '2025-09-17 00:19:13', 6, '2025-09-17 00:19:13');
+INSERT INTO `sys_operationlog` VALUES (6876, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 00:19:13', '{\"orderId\":33}', 2, 6, '2025-09-17 00:19:13', 6, '2025-09-17 00:19:13');
+INSERT INTO `sys_operationlog` VALUES (6877, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-17 00:19:15', '{\"orderItemId\":\"61\"}', 2, 6, '2025-09-17 00:19:15', 6, '2025-09-17 00:19:15');
+INSERT INTO `sys_operationlog` VALUES (6878, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 00:19:15', '{\"orderId\":33}', 2, 6, '2025-09-17 00:19:15', 6, '2025-09-17 00:19:15');
+INSERT INTO `sys_operationlog` VALUES (6879, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 00:19:30', '{\"orderId\":33}', 2, 6, '2025-09-17 00:19:30', 6, '2025-09-17 00:19:30');
+INSERT INTO `sys_operationlog` VALUES (6880, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 00:19:39', '{\"orderId\":33}', 2, 6, '2025-09-17 00:19:39', 6, '2025-09-17 00:19:39');
+INSERT INTO `sys_operationlog` VALUES (6881, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 00:19:50', '{\"orderId\":33}', 2, 6, '2025-09-17 00:19:50', 6, '2025-09-17 00:19:50');
+INSERT INTO `sys_operationlog` VALUES (6882, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-17 00:19:52', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-17 00:19:52', 6, '2025-09-17 00:19:52');
+INSERT INTO `sys_operationlog` VALUES (6883, 2, 10, '系统登陆', '人员登陆', '2025-09-17 00:29:21', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-17 00:29:21', 2, '2025-09-17 00:29:21');
+INSERT INTO `sys_operationlog` VALUES (6884, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-17 00:29:26', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-17 00:29:26', 2, '2025-09-17 00:29:26');
+INSERT INTO `sys_operationlog` VALUES (6885, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-17 00:29:26', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-17 00:29:26', 2, '2025-09-17 00:29:26');
+INSERT INTO `sys_operationlog` VALUES (6886, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-17 00:30:02', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-17 00:30:02', 2, '2025-09-17 00:30:02');
+INSERT INTO `sys_operationlog` VALUES (6887, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-17 00:30:02', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-17 00:30:02', 2, '2025-09-17 00:30:02');
+INSERT INTO `sys_operationlog` VALUES (6888, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-17 00:32:28', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-17 00:32:28', 2, '2025-09-17 00:32:28');
+INSERT INTO `sys_operationlog` VALUES (6889, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-17 00:32:28', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-17 00:32:28', 2, '2025-09-17 00:32:28');
+INSERT INTO `sys_operationlog` VALUES (6890, 2, 4, '系统设置>日志管理', '系统日志分页查询', '2025-09-17 00:32:28', '{\"User\":null,\"actionType\":null,\"ActionModel\":null,\"StartTime\":null,\"EndTime\":null,\"Page\":1,\"Size\":10}', 1, 2, '2025-09-17 00:32:28', 2, '2025-09-17 00:32:28');
+INSERT INTO `sys_operationlog` VALUES (6891, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-17 00:32:33', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-17 00:32:33', 2, '2025-09-17 00:32:33');
+INSERT INTO `sys_operationlog` VALUES (6892, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-17 00:32:33', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-17 00:32:33', 2, '2025-09-17 00:32:33');
+INSERT INTO `sys_operationlog` VALUES (6893, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-17 00:32:33', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-17 00:32:33', 2, '2025-09-17 00:32:33');
+INSERT INTO `sys_operationlog` VALUES (6894, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-17 00:32:33', '{\"storeId\":null,\"status\":null,\"partySize\":null,\"keyword\":null,\"page\":1,\"size\":10}', 1, 2, '2025-09-17 00:32:33', 2, '2025-09-17 00:32:33');
+INSERT INTO `sys_operationlog` VALUES (6895, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-17 00:32:33', '{\"storeId\":null}', 1, 2, '2025-09-17 00:32:33', 2, '2025-09-17 00:32:33');
+INSERT INTO `sys_operationlog` VALUES (6896, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-17 00:32:33', '{\"storeId\":null}', 1, 2, '2025-09-17 00:32:33', 2, '2025-09-17 00:32:33');
+INSERT INTO `sys_operationlog` VALUES (6897, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-17 00:32:33', '{\"storeId\":null}', 1, 2, '2025-09-17 00:32:33', 2, '2025-09-17 00:32:33');
+INSERT INTO `sys_operationlog` VALUES (6898, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-17 00:32:33', '{\"storeId\":null}', 1, 2, '2025-09-17 00:32:33', 2, '2025-09-17 00:32:33');
+INSERT INTO `sys_operationlog` VALUES (6899, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-17 00:32:45', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-17 00:32:45', 2, '2025-09-17 00:32:45');
+INSERT INTO `sys_operationlog` VALUES (6900, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-17 00:32:45', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-17 00:32:45', 2, '2025-09-17 00:32:45');
+INSERT INTO `sys_operationlog` VALUES (6901, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-17 00:32:45', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-17 00:32:45', 2, '2025-09-17 00:32:45');
+INSERT INTO `sys_operationlog` VALUES (6902, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-17 00:32:45', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-17 00:32:45', 2, '2025-09-17 00:32:45');
+INSERT INTO `sys_operationlog` VALUES (6903, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-17 00:33:31', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-17 00:33:31', 2, '2025-09-17 00:33:31');
 
 -- ----------------------------
 -- Table structure for sys_order
@@ -3676,24 +7414,24 @@ CREATE TABLE `sys_order`  (
   `paymeth` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '支付方式',
   `is_backup` int NULL DEFAULT 0 COMMENT '是否备份',
   PRIMARY KEY (`order_id`) USING BTREE,
-  UNIQUE INDEX `uk_order_no`(`order_no` ASC) USING BTREE,
-  INDEX `idx_order_store`(`store_id` ASC) USING BTREE,
-  INDEX `idx_order_table`(`table_id` ASC) USING BTREE,
-  INDEX `idx_order_member`(`member_id` ASC) USING BTREE,
-  INDEX `idx_order_type`(`order_type` ASC) USING BTREE,
-  INDEX `idx_order_source`(`source_type` ASC) USING BTREE,
-  INDEX `idx_order_status`(`status` ASC) USING BTREE,
-  INDEX `idx_order_start_time`(`start_time` ASC) USING BTREE,
-  INDEX `idx_order_pay_time`(`pay_time` ASC) USING BTREE,
-  INDEX `idx_store_status_time`(`store_id` ASC, `status` ASC, `start_time` ASC) USING BTREE,
+  UNIQUE INDEX `uk_order_no`(`order_no`) USING BTREE,
+  INDEX `idx_order_store`(`store_id`) USING BTREE,
+  INDEX `idx_order_table`(`table_id`) USING BTREE,
+  INDEX `idx_order_member`(`member_id`) USING BTREE,
+  INDEX `idx_order_type`(`order_type`) USING BTREE,
+  INDEX `idx_order_source`(`source_type`) USING BTREE,
+  INDEX `idx_order_status`(`status`) USING BTREE,
+  INDEX `idx_order_start_time`(`start_time`) USING BTREE,
+  INDEX `idx_order_pay_time`(`pay_time`) USING BTREE,
+  INDEX `idx_store_status_time`(`store_id`, `status`, `start_time`) USING BTREE,
   CONSTRAINT `fk_order_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_order_table` FOREIGN KEY (`table_id`) REFERENCES `sys_restaurant_table` (`table_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单主表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 27 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单主表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_order
 -- ----------------------------
-INSERT INTO `sys_order` VALUES (5, 2, 1, '202508191429032501685', NULL, 1, 1, 3, 55.00, 0.00, 0.00, 55.00, 0.00, '2025-08-19 14:29:03', '2025-09-04 16:41:33', '2025-09-04 16:41:33', NULL, 0, 2, '1900-01-01 00:00:00', '2025-09-04 16:41:32', 2, NULL, '微信支付', 1);
+INSERT INTO `sys_order` VALUES (33, 2, 1, '20250916232044876873691', NULL, 1, 1, 8, 156.00, 0.00, 0.00, 0.00, 100.00, '2025-09-16 23:20:45', NULL, NULL, NULL, 0, 6, '1900-01-01 00:00:00', '2025-09-17 00:19:15', 1, NULL, NULL, 0);
 
 -- ----------------------------
 -- Table structure for sys_order_backup
@@ -3726,16 +7464,16 @@ CREATE TABLE `sys_order_backup`  (
   `paymeth` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '支付方式',
   `is_backup` int NOT NULL DEFAULT 1,
   PRIMARY KEY (`order_id`) USING BTREE,
-  UNIQUE INDEX `uk_order_no`(`order_no` ASC) USING BTREE,
-  INDEX `idx_order_store`(`store_id` ASC) USING BTREE,
-  INDEX `idx_order_table`(`table_id` ASC) USING BTREE,
-  INDEX `idx_order_member`(`member_id` ASC) USING BTREE,
-  INDEX `idx_order_type`(`order_type` ASC) USING BTREE,
-  INDEX `idx_order_source`(`source_type` ASC) USING BTREE,
-  INDEX `idx_order_status`(`status` ASC) USING BTREE,
-  INDEX `idx_order_start_time`(`start_time` ASC) USING BTREE,
-  INDEX `idx_order_pay_time`(`pay_time` ASC) USING BTREE,
-  INDEX `idx_store_status_time`(`store_id` ASC, `status` ASC, `start_time` ASC) USING BTREE,
+  UNIQUE INDEX `uk_order_no`(`order_no`) USING BTREE,
+  INDEX `idx_order_store`(`store_id`) USING BTREE,
+  INDEX `idx_order_table`(`table_id`) USING BTREE,
+  INDEX `idx_order_member`(`member_id`) USING BTREE,
+  INDEX `idx_order_type`(`order_type`) USING BTREE,
+  INDEX `idx_order_source`(`source_type`) USING BTREE,
+  INDEX `idx_order_status`(`status`) USING BTREE,
+  INDEX `idx_order_start_time`(`start_time`) USING BTREE,
+  INDEX `idx_order_pay_time`(`pay_time`) USING BTREE,
+  INDEX `idx_store_status_time`(`store_id`, `status`, `start_time`) USING BTREE,
   CONSTRAINT `sys_order_backup_ibfk_1` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `sys_order_backup_ibfk_2` FOREIGN KEY (`table_id`) REFERENCES `sys_restaurant_table` (`table_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单主表' ROW_FORMAT = DYNAMIC;
@@ -3765,21 +7503,23 @@ CREATE TABLE `sys_order_item`  (
   `return_audit_id` bigint NULL DEFAULT NULL COMMENT '退菜审核员工ID',
   `specification` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '客户选择规格',
   PRIMARY KEY (`item_id`) USING BTREE,
-  INDEX `idx_item_order`(`order_id` ASC) USING BTREE,
-  INDEX `idx_item_dish`(`dish_id` ASC) USING BTREE,
-  INDEX `idx_item_meal`(`meal_id` ASC) USING BTREE,
-  INDEX `idx_item_status`(`status` ASC) USING BTREE,
-  INDEX `idx_item_rush`(`is_rush` ASC) USING BTREE,
+  INDEX `idx_item_order`(`order_id`) USING BTREE,
+  INDEX `idx_item_dish`(`dish_id`) USING BTREE,
+  INDEX `idx_item_meal`(`meal_id`) USING BTREE,
+  INDEX `idx_item_status`(`status`) USING BTREE,
+  INDEX `idx_item_rush`(`is_rush`) USING BTREE,
   CONSTRAINT `fk_item_dish` FOREIGN KEY (`dish_id`) REFERENCES `sys_dish` (`dish_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_item_meal` FOREIGN KEY (`meal_id`) REFERENCES `sys_set_meal` (`meal_id`) ON DELETE SET NULL ON UPDATE RESTRICT,
   CONSTRAINT `fk_item_order` FOREIGN KEY (`order_id`) REFERENCES `sys_order` (`order_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单明细表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 51 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单明细表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_order_item
 -- ----------------------------
-INSERT INTO `sys_order_item` VALUES (4, 5, 2, NULL, NULL, 1, 45.00, 45.00, NULL, 1, 1, NULL, NULL, NULL);
-INSERT INTO `sys_order_item` VALUES (6, 5, 3, NULL, NULL, 1, 10.00, 10.00, NULL, 1, 0, NULL, NULL, NULL);
+INSERT INTO `sys_order_item` VALUES (58, 33, 3, NULL, NULL, 1, 15.00, 15.00, NULL, 4, 1, NULL, 6, '');
+INSERT INTO `sys_order_item` VALUES (59, 33, 3, NULL, NULL, 1, 15.00, 15.00, NULL, 4, 1, NULL, 6, '');
+INSERT INTO `sys_order_item` VALUES (60, 33, 3, NULL, NULL, 1, 15.00, 15.00, NULL, 4, 1, NULL, 6, '');
+INSERT INTO `sys_order_item` VALUES (61, 33, 5, NULL, NULL, 1, 111.00, 111.00, NULL, 4, 1, NULL, 6, '');
 
 -- ----------------------------
 -- Table structure for sys_order_item_backup
@@ -3801,11 +7541,11 @@ CREATE TABLE `sys_order_item_backup`  (
   `return_audit_id` bigint NULL DEFAULT NULL COMMENT '退菜审核员工ID',
   `specification` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '客户选择规格',
   PRIMARY KEY (`item_id`) USING BTREE,
-  INDEX `idx_item_order`(`order_id` ASC) USING BTREE,
-  INDEX `idx_item_dish`(`dish_id` ASC) USING BTREE,
-  INDEX `idx_item_meal`(`meal_id` ASC) USING BTREE,
-  INDEX `idx_item_status`(`status` ASC) USING BTREE,
-  INDEX `idx_item_rush`(`is_rush` ASC) USING BTREE,
+  INDEX `idx_item_order`(`order_id`) USING BTREE,
+  INDEX `idx_item_dish`(`dish_id`) USING BTREE,
+  INDEX `idx_item_meal`(`meal_id`) USING BTREE,
+  INDEX `idx_item_status`(`status`) USING BTREE,
+  INDEX `idx_item_rush`(`is_rush`) USING BTREE,
   CONSTRAINT `sys_order_item_backup_ibfk_1` FOREIGN KEY (`dish_id`) REFERENCES `sys_dish` (`dish_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `sys_order_item_backup_ibfk_2` FOREIGN KEY (`meal_id`) REFERENCES `sys_set_meal` (`meal_id`) ON DELETE SET NULL ON UPDATE RESTRICT,
   CONSTRAINT `sys_order_item_backup_ibfk_3` FOREIGN KEY (`order_id`) REFERENCES `sys_order` (`order_id`) ON DELETE CASCADE ON UPDATE RESTRICT
@@ -3814,8 +7554,6 @@ CREATE TABLE `sys_order_item_backup`  (
 -- ----------------------------
 -- Records of sys_order_item_backup
 -- ----------------------------
-INSERT INTO `sys_order_item_backup` VALUES (9, 5, 2, NULL, NULL, 1, 45.00, 45.00, NULL, 1, 1, NULL, NULL, NULL);
-INSERT INTO `sys_order_item_backup` VALUES (10, 5, 3, NULL, NULL, 1, 10.00, 10.00, NULL, 1, 0, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_payment
@@ -3823,7 +7561,7 @@ INSERT INTO `sys_order_item_backup` VALUES (10, 5, 3, NULL, NULL, 1, 10.00, 10.0
 DROP TABLE IF EXISTS `sys_payment`;
 CREATE TABLE `sys_payment`  (
   `payment_id` bigint NOT NULL AUTO_INCREMENT COMMENT '支付ID（主键）',
-  `order_id` bigint NOT NULL COMMENT '关联订单ID',
+  `order_id` bigint NULL DEFAULT NULL COMMENT '关联订单ID',
   `payment_no` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '支付流水号（唯一）',
   `member_id` bigint NULL DEFAULT NULL COMMENT '会员ID（可空）',
   `pay_amount` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '支付金额',
@@ -3836,22 +7574,28 @@ CREATE TABLE `sys_payment`  (
   `store_account_id` bigint NOT NULL COMMENT '收款账户ID（公司账户）',
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`payment_id`) USING BTREE,
-  UNIQUE INDEX `uk_payment_no`(`payment_no` ASC) USING BTREE,
-  INDEX `idx_payment_order`(`order_id` ASC) USING BTREE,
-  INDEX `idx_payment_member`(`member_id` ASC) USING BTREE,
-  INDEX `idx_payment_type`(`pay_type` ASC) USING BTREE,
-  INDEX `idx_payment_platform`(`third_platform` ASC) USING BTREE,
-  INDEX `idx_payment_status`(`status` ASC) USING BTREE,
-  INDEX `idx_payment_time`(`pay_time` ASC) USING BTREE,
-  INDEX `idx_payment_account`(`store_account_id` ASC) USING BTREE,
-  CONSTRAINT `fk_payment_order` FOREIGN KEY (`order_id`) REFERENCES `sys_order` (`order_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付记录表' ROW_FORMAT = DYNAMIC;
+  UNIQUE INDEX `uk_payment_no`(`payment_no`) USING BTREE,
+  INDEX `idx_payment_order`(`order_id`) USING BTREE,
+  INDEX `idx_payment_member`(`member_id`) USING BTREE,
+  INDEX `idx_payment_type`(`pay_type`) USING BTREE,
+  INDEX `idx_payment_platform`(`third_platform`) USING BTREE,
+  INDEX `idx_payment_status`(`status`) USING BTREE,
+  INDEX `idx_payment_time`(`pay_time`) USING BTREE,
+  INDEX `idx_payment_account`(`store_account_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 63 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_payment
 -- ----------------------------
-INSERT INTO `sys_payment` VALUES (1, 5, '202509041639159042207', NULL, 55.00, 1, NULL, NULL, 2, '2025-09-04 16:39:16', 0, 0, NULL);
-INSERT INTO `sys_payment` VALUES (2, 5, '202509041641326179510', NULL, 55.00, 1, NULL, NULL, 2, '2025-09-04 16:41:33', 0, 0, NULL);
+INSERT INTO `sys_payment` VALUES (3, 13, '202509050928363419859', NULL, 120.00, 1, NULL, NULL, 2, '2025-09-05 09:28:36', 0, 0, NULL);
+INSERT INTO `sys_payment` VALUES (4, 14, '202509050932297756862', NULL, 45.00, 1, NULL, NULL, 2, '2025-09-05 09:32:30', 5, 0, NULL);
+INSERT INTO `sys_payment` VALUES (56, 0, '20250915215515103489205', NULL, 100.00, 1, NULL, NULL, 2, '2025-09-15 21:55:15', NULL, 0, NULL);
+INSERT INTO `sys_payment` VALUES (57, 0, '20250915220008993222077', NULL, 100.00, 1, NULL, NULL, 2, '2025-09-15 22:00:09', NULL, 0, NULL);
+INSERT INTO `sys_payment` VALUES (58, 0, '20250915222130144664046', NULL, 100.00, 1, NULL, NULL, 2, '2025-09-15 22:21:30', NULL, 0, NULL);
+INSERT INTO `sys_payment` VALUES (59, 0, '20250915232809772599088', NULL, 11.00, 1, NULL, NULL, 2, '2025-09-15 23:28:10', NULL, 0, NULL);
+INSERT INTO `sys_payment` VALUES (60, 0, '20250915232810405152931', NULL, 11.00, 1, NULL, NULL, 2, '2025-09-15 23:28:10', NULL, 0, NULL);
+INSERT INTO `sys_payment` VALUES (61, 0, '20250915232925224206215', NULL, 33.00, 0, NULL, NULL, 2, '2025-09-15 23:29:25', NULL, 0, NULL);
+INSERT INTO `sys_payment` VALUES (62, 0, '20250916182535177133958', NULL, 100.00, 1, NULL, NULL, 2, '2025-09-16 18:25:35', NULL, 0, NULL);
 
 -- ----------------------------
 -- Table structure for sys_permission
@@ -3865,8 +7609,8 @@ CREATE TABLE `sys_permission`  (
   `parent_id` bigint NOT NULL DEFAULT 0 COMMENT '父权限ID（用于层级）',
   `permission_icon` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '图标',
   PRIMARY KEY (`permission_id`) USING BTREE,
-  UNIQUE INDEX `uk_permission_key`(`permission_key` ASC) USING BTREE,
-  INDEX `idx_permission_parent`(`parent_id` ASC) USING BTREE
+  UNIQUE INDEX `uk_permission_key`(`permission_key`) USING BTREE,
+  INDEX `idx_permission_parent`(`parent_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 58 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -3925,19 +7669,21 @@ CREATE TABLE `sys_promotion`  (
   `rule` json NOT NULL COMMENT '活动规则（如{\"满减\":[{\"满200\":\"减30\"},...]}）',
   `applicable_scope` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '适用范围（菜品/套餐ID，逗号分隔）',
   `status` tinyint NOT NULL COMMENT '状态（1-未开始；2-进行中；3-已结束）',
+  `min_consumption` decimal(10, 2) NULL DEFAULT NULL,
+  `value` decimal(10, 2) NULL DEFAULT NULL,
   PRIMARY KEY (`promotion_id`) USING BTREE,
-  INDEX `idx_promotion_store`(`store_id` ASC) USING BTREE,
-  INDEX `idx_promotion_type`(`type` ASC) USING BTREE,
-  INDEX `idx_promotion_time`(`start_time` ASC, `end_time` ASC) USING BTREE,
-  INDEX `idx_promotion_status`(`status` ASC) USING BTREE
+  INDEX `idx_promotion_store`(`store_id`) USING BTREE,
+  INDEX `idx_promotion_type`(`type`) USING BTREE,
+  INDEX `idx_promotion_time`(`start_time`, `end_time`) USING BTREE,
+  INDEX `idx_promotion_status`(`status`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_promotion
 -- ----------------------------
-INSERT INTO `sys_promotion` VALUES (1, 2, '满200减20', 0, '2025-08-12 00:00:00', '2025-08-28 00:00:00', '\"\"', '111', 1);
-INSERT INTO `sys_promotion` VALUES (3, 2, '11', 0, '2025-08-04 00:00:00', '2025-08-06 00:00:00', '\"\"', '111', 0);
-INSERT INTO `sys_promotion` VALUES (7, 0, '111', 0, '2025-08-03 00:00:00', '2025-08-04 00:00:00', '\"\"', '111', 2);
+INSERT INTO `sys_promotion` VALUES (1, 2, '满200减20', 1, '2025-08-12 00:00:00', '2025-08-28 00:00:00', '\"\"', '111', 2, 1000.00, 200.00);
+INSERT INTO `sys_promotion` VALUES (3, 2, '11', 2, '2025-08-04 00:00:00', '2025-08-06 00:00:00', '\"\"', '111', 2, 0.00, 95.00);
+INSERT INTO `sys_promotion` VALUES (7, 0, '111', 3, '2025-08-03 00:00:00', '2025-08-04 00:00:00', '\"\"', '111', 2, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_purchase_order
@@ -3958,19 +7704,20 @@ CREATE TABLE `sys_purchase_order`  (
   `materialname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '原材料',
   `quantity` int NULL DEFAULT NULL COMMENT '采购数量',
   PRIMARY KEY (`po_id`) USING BTREE,
-  UNIQUE INDEX `uk_po_no`(`po_no` ASC) USING BTREE,
-  INDEX `idx_po_store`(`store_id` ASC) USING BTREE,
-  INDEX `idx_po_supplier`(`supplier_id` ASC) USING BTREE,
-  INDEX `idx_po_order_time`(`order_time` ASC) USING BTREE,
-  INDEX `idx_po_arrival`(`expect_arrival_time` ASC) USING BTREE,
-  INDEX `idx_po_status`(`status` ASC) USING BTREE,
+  UNIQUE INDEX `uk_po_no`(`po_no`) USING BTREE,
+  INDEX `idx_po_store`(`store_id`) USING BTREE,
+  INDEX `idx_po_supplier`(`supplier_id`) USING BTREE,
+  INDEX `idx_po_order_time`(`order_time`) USING BTREE,
+  INDEX `idx_po_arrival`(`expect_arrival_time`) USING BTREE,
+  INDEX `idx_po_status`(`status`) USING BTREE,
   CONSTRAINT `fk_po_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '采购单表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '采购单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_purchase_order
 -- ----------------------------
 INSERT INTO `sys_purchase_order` VALUES (3, 1, '20250903154012953', 201, '2025-09-03 15:40:13', '2025-09-04 15:40:13', NULL, 25300.00, 3, 2, '补充', '猪肉', 100);
+INSERT INTO `sys_purchase_order` VALUES (4, 1, 'PO2025091618264445975aefd', 2, '2025-09-16 18:26:44', '2025-09-17 18:26:44', NULL, 2530.00, 3, 2, '测试', '猪肉', 10);
 
 -- ----------------------------
 -- Table structure for sys_queue
@@ -3991,12 +7738,12 @@ CREATE TABLE `sys_queue`  (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`queue_id`) USING BTREE,
-  INDEX `idx_queue_store`(`store_id` ASC) USING BTREE,
-  INDEX `idx_queue_status`(`status` ASC) USING BTREE,
-  INDEX `idx_queue_phone`(`customer_phone` ASC) USING BTREE,
-  INDEX `idx_queue_time`(`queue_time` ASC) USING BTREE,
-  INDEX `fk_queue_table`(`table_id` ASC) USING BTREE,
-  INDEX `uk_queue_no`(`queue_no` ASC) USING BTREE,
+  INDEX `idx_queue_store`(`store_id`) USING BTREE,
+  INDEX `idx_queue_status`(`status`) USING BTREE,
+  INDEX `idx_queue_phone`(`customer_phone`) USING BTREE,
+  INDEX `idx_queue_time`(`queue_time`) USING BTREE,
+  INDEX `fk_queue_table`(`table_id`) USING BTREE,
+  INDEX `uk_queue_no`(`queue_no`) USING BTREE,
   CONSTRAINT `fk_queue_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_queue_table` FOREIGN KEY (`table_id`) REFERENCES `sys_restaurant_table` (`table_id`) ON DELETE SET NULL ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '排队叫号表' ROW_FORMAT = DYNAMIC;
@@ -4004,10 +7751,10 @@ CREATE TABLE `sys_queue`  (
 -- ----------------------------
 -- Records of sys_queue
 -- ----------------------------
-INSERT INTO `sys_queue` VALUES (1, 2, 'zhang', '15235060638', 3, 'A001', '2025-09-03 09:06:11', 4, 0, NULL, '2025-09-03 09:06:11', '2025-09-03 09:47:24', '111');
-INSERT INTO `sys_queue` VALUES (3, 2, NULL, NULL, 3, 'A001', '2025-09-03 09:51:28', 5, 0, NULL, '2025-09-03 09:51:28', '2025-09-03 09:52:11', '');
-INSERT INTO `sys_queue` VALUES (4, 2, NULL, NULL, 3, 'A001', '2025-09-03 09:52:05', 5, 0, NULL, '2025-09-03 09:52:05', '2025-09-03 09:52:12', '');
-INSERT INTO `sys_queue` VALUES (5, 2, NULL, NULL, 3, 'A004', '2025-09-03 09:54:07', 5, 0, NULL, '2025-09-03 09:54:07', '2025-09-03 10:16:38', '');
+INSERT INTO `sys_queue` VALUES (1, 2, 'zhang', '15235060638', 3, 'A001', '2025-09-03 09:06:11', 2, 0, NULL, '2025-09-03 09:06:11', '2025-09-15 14:55:00', '111');
+INSERT INTO `sys_queue` VALUES (3, 2, NULL, NULL, 3, 'A001', '2025-09-03 09:51:28', 2, 0, NULL, '2025-09-03 09:51:28', '2025-09-12 21:52:04', '');
+INSERT INTO `sys_queue` VALUES (4, 2, NULL, NULL, 3, 'A001', '2025-09-03 09:52:05', 3, 0, NULL, '2025-09-03 09:52:05', '2025-09-12 21:39:42', '');
+INSERT INTO `sys_queue` VALUES (5, 2, NULL, NULL, 3, 'A004', '2025-09-03 09:54:07', 3, 0, NULL, '2025-09-03 09:54:07', '2025-09-15 14:54:55', '');
 
 -- ----------------------------
 -- Table structure for sys_raw_material
@@ -4023,15 +7770,16 @@ CREATE TABLE `sys_raw_material`  (
   `warning_threshold` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '低库存预警阈值',
   `status` tinyint NOT NULL DEFAULT 1 COMMENT '状态（1-启用；0-禁用）',
   PRIMARY KEY (`material_id`) USING BTREE,
-  INDEX `idx_material_store`(`store_id` ASC) USING BTREE,
-  INDEX `idx_material_name`(`material_name` ASC) USING BTREE,
-  INDEX `idx_material_category`(`category` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '原材料表' ROW_FORMAT = DYNAMIC;
+  INDEX `idx_material_store`(`store_id`) USING BTREE,
+  INDEX `idx_material_name`(`material_name`) USING BTREE,
+  INDEX `idx_material_category`(`category`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '原材料表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_raw_material
 -- ----------------------------
 INSERT INTO `sys_raw_material` VALUES (2, 0, '猪肉', '生鲜', 'kg', 253.00, 50.00, 0);
+INSERT INTO `sys_raw_material` VALUES (3, 17, '0', '生鲜', '1', 1.00, 0.00, 0);
 
 -- ----------------------------
 -- Table structure for sys_reservation
@@ -4051,11 +7799,11 @@ CREATE TABLE `sys_reservation`  (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`reservation_id`) USING BTREE,
-  UNIQUE INDEX `uk_reservation_no`(`reservation_no` ASC) USING BTREE,
-  INDEX `idx_reservation_store`(`store_id` ASC) USING BTREE,
-  INDEX `idx_reservation_table`(`table_id` ASC) USING BTREE,
-  INDEX `idx_reservation_time`(`reservation_time` ASC) USING BTREE,
-  INDEX `idx_reservation_status`(`status` ASC) USING BTREE,
+  UNIQUE INDEX `uk_reservation_no`(`reservation_no`) USING BTREE,
+  INDEX `idx_reservation_store`(`store_id`) USING BTREE,
+  INDEX `idx_reservation_table`(`table_id`) USING BTREE,
+  INDEX `idx_reservation_time`(`reservation_time`) USING BTREE,
+  INDEX `idx_reservation_status`(`status`) USING BTREE,
   CONSTRAINT `fk_reservation_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_reservation_table` FOREIGN KEY (`table_id`) REFERENCES `sys_restaurant_table` (`table_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '预订信息表' ROW_FORMAT = DYNAMIC;
@@ -4080,19 +7828,20 @@ CREATE TABLE `sys_restaurant_table`  (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `order_id` int NULL DEFAULT NULL COMMENT '订单id',
   `desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '桌台描述',
+  `lastUseTime` datetime NULL DEFAULT NULL COMMENT '桌台最后使用时间',
   PRIMARY KEY (`table_id`) USING BTREE,
-  INDEX `idx_table_store`(`store_id` ASC) USING BTREE,
-  INDEX `idx_table_status`(`status` ASC) USING BTREE,
-  INDEX `idx_table_no`(`table_no` ASC) USING BTREE,
+  INDEX `idx_table_store`(`store_id`) USING BTREE,
+  INDEX `idx_table_status`(`status`) USING BTREE,
+  INDEX `idx_table_no`(`table_no`) USING BTREE,
   CONSTRAINT `fk_table_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '桌台信息表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '桌台信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_restaurant_table
 -- ----------------------------
-INSERT INTO `sys_restaurant_table` VALUES (1, 2, 'A01', 4, NULL, 4, 100.00, '1900-01-01 00:00:00', '2025-09-04 16:41:32', NULL, '四人桌（一楼大厅）');
-INSERT INTO `sys_restaurant_table` VALUES (2, 2, 'A02', 2, NULL, 1, 500.00, '1900-01-01 00:00:00', '1900-01-01 00:00:00', NULL, '包间');
-INSERT INTO `sys_restaurant_table` VALUES (3, 2, 'B01', 6, NULL, 1, 0.00, '1900-01-01 00:00:00', '2025-09-03 09:01:36', NULL, '四人桌（一楼大厅）');
+INSERT INTO `sys_restaurant_table` VALUES (1, 2, 'A01', 4, NULL, 2, 100.00, '1900-01-01 00:00:00', '2025-09-16 23:20:28', 33, '四人桌（一楼大厅）', NULL);
+INSERT INTO `sys_restaurant_table` VALUES (2, 2, 'A02', 2, NULL, 1, 500.00, '1900-01-01 00:00:00', '2025-09-16 22:49:07', NULL, '包间', NULL);
+INSERT INTO `sys_restaurant_table` VALUES (3, 2, 'B01', 6, NULL, 1, 0.00, '1900-01-01 00:00:00', '2025-09-16 23:05:49', NULL, '四人桌（一楼大厅）', NULL);
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -4103,7 +7852,7 @@ CREATE TABLE `sys_role`  (
   `role_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '角色名称（店长/收银员/厨师）',
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '角色描述',
   PRIMARY KEY (`role_id`) USING BTREE,
-  UNIQUE INDEX `uk_role_name`(`role_name` ASC) USING BTREE
+  UNIQUE INDEX `uk_role_name`(`role_name`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -4121,8 +7870,8 @@ CREATE TABLE `sys_role_permission`  (
   `role_id` bigint NOT NULL COMMENT '角色ID',
   `permission_id` bigint NOT NULL COMMENT '权限ID',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_role_permission_role`(`role_id` ASC) USING BTREE,
-  INDEX `idx_role_permission_permission`(`permission_id` ASC) USING BTREE,
+  INDEX `idx_role_permission_role`(`role_id`) USING BTREE,
+  INDEX `idx_role_permission_permission`(`permission_id`) USING BTREE,
   CONSTRAINT `fk_role_permission_permission` FOREIGN KEY (`permission_id`) REFERENCES `sys_permission` (`permission_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_role_permission_role` FOREIGN KEY (`role_id`) REFERENCES `sys_role` (`role_id`) ON DELETE CASCADE ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 1567 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色权限关联表' ROW_FORMAT = DYNAMIC;
@@ -4216,19 +7965,22 @@ CREATE TABLE `sys_set_meal`  (
   `status` tinyint NOT NULL DEFAULT 1 COMMENT '状态（1-在售；0-下架）',
   `start_time` datetime NOT NULL COMMENT '生效时间（用于节日套餐）',
   `end_time` datetime NOT NULL COMMENT '失效时间',
+  `image_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '图片地址',
   PRIMARY KEY (`meal_id`) USING BTREE,
-  INDEX `idx_meal_store`(`store_id` ASC) USING BTREE,
-  INDEX `idx_meal_name`(`meal_name` ASC) USING BTREE,
-  INDEX `idx_meal_status`(`status` ASC) USING BTREE,
-  INDEX `idx_meal_time`(`start_time` ASC, `end_time` ASC) USING BTREE,
-  INDEX `idx_meal_fixed`(`is_fixed` ASC) USING BTREE,
+  INDEX `idx_meal_store`(`store_id`) USING BTREE,
+  INDEX `idx_meal_name`(`meal_name`) USING BTREE,
+  INDEX `idx_meal_status`(`status`) USING BTREE,
+  INDEX `idx_meal_time`(`start_time`, `end_time`) USING BTREE,
+  INDEX `idx_meal_fixed`(`is_fixed`) USING BTREE,
   CONSTRAINT `fk_meal_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '套餐信息表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '套餐信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_set_meal
 -- ----------------------------
-INSERT INTO `sys_set_meal` VALUES (1, 2, '1111', 111.00, 11.00, '', 1, 1, '2025-07-31 16:00:00', '2025-08-30 16:00:00');
+INSERT INTO `sys_set_meal` VALUES (11, 2, '111', 11.00, 111.00, '111', 0, 1, '2025-09-13 23:17:00', '2025-09-27 00:00:00', NULL);
+INSERT INTO `sys_set_meal` VALUES (12, 2, '111', 111.00, 111.00, '111', 1, 1, '2025-09-13 23:23:33', '2025-09-27 00:00:00', 'http://169.254.188.119:7092/20250914/f4a3573c-c5d3-4a09-8028-57762b59a4be.gif');
+INSERT INTO `sys_set_meal` VALUES (13, 2, '1', 1.00, 1.00, '1', 1, 1, '2025-09-15 00:00:00', '2025-09-23 00:00:00', NULL);
 
 -- ----------------------------
 -- Table structure for sys_set_meal_item
@@ -4244,19 +7996,21 @@ CREATE TABLE `sys_set_meal_item`  (
   `replaceable_dishes` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '可替换菜品ID（逗号分隔）',
   `meal_group` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '套餐组合名称',
   PRIMARY KEY (`item_id`) USING BTREE,
-  INDEX `idx_meal_item_meal`(`meal_id` ASC) USING BTREE,
-  INDEX `fk_meal_item_dish`(`dish_id` ASC) USING BTREE,
-  INDEX `fk_meal_item_spec`(`spec_id` ASC) USING BTREE,
+  INDEX `idx_meal_item_meal`(`meal_id`) USING BTREE,
+  INDEX `fk_meal_item_dish`(`dish_id`) USING BTREE,
+  INDEX `fk_meal_item_spec`(`spec_id`) USING BTREE,
   CONSTRAINT `fk_meal_item_dish` FOREIGN KEY (`dish_id`) REFERENCES `sys_dish` (`dish_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_meal_item_meal` FOREIGN KEY (`meal_id`) REFERENCES `sys_set_meal` (`meal_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `fk_meal_item_spec` FOREIGN KEY (`spec_id`) REFERENCES `sys_dish_spec` (`spec_id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '套餐包含菜品表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '套餐包含菜品表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_set_meal_item
 -- ----------------------------
-INSERT INTO `sys_set_meal_item` VALUES (1, 1, 2, 1, 1, 0, NULL, '');
-INSERT INTO `sys_set_meal_item` VALUES (2, 1, 3, NULL, 1, 0, NULL, '');
+INSERT INTO `sys_set_meal_item` VALUES (21, 11, 2, 2, 1, 0, NULL, '11');
+INSERT INTO `sys_set_meal_item` VALUES (22, 11, 2, 1, 1, 0, NULL, '22');
+INSERT INTO `sys_set_meal_item` VALUES (23, 12, 2, 2, 1, 0, NULL, NULL);
+INSERT INTO `sys_set_meal_item` VALUES (24, 13, 2, 2, 1, 0, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_staff
@@ -4275,18 +8029,18 @@ CREATE TABLE `sys_staff`  (
   `Salt` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `IsDelete` tinyint NOT NULL DEFAULT 1,
   PRIMARY KEY (`staff_id`) USING BTREE,
-  UNIQUE INDEX `uk_staff_username`(`username` ASC) USING BTREE,
-  INDEX `idx_staff_store`(`store_id` ASC) USING BTREE,
-  INDEX `idx_staff_position`(`position` ASC) USING BTREE,
-  INDEX `idx_staff_status`(`status` ASC) USING BTREE,
+  UNIQUE INDEX `uk_staff_username`(`username`) USING BTREE,
+  INDEX `idx_staff_store`(`store_id`) USING BTREE,
+  INDEX `idx_staff_position`(`position`) USING BTREE,
+  INDEX `idx_staff_status`(`status`) USING BTREE,
   CONSTRAINT `fk_staff_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '员工表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_staff
 -- ----------------------------
-INSERT INTO `sys_staff` VALUES (2, 1, 'admin', '8pgVn7BnedAGOKthCSdIUifitpQsAWfKSDDFoz5R8oM=', '管理员', '18433646699', '店长', 1, '2025-09-04 14:41:18', 'SOMMsmOVbHI38x1hUkWfiQ==', 1);
-INSERT INTO `sys_staff` VALUES (6, 2, 'lq', 'jv77mITf0Nl7Vpz1iyPSAszCDwLxq4lU11UnEOn4q6U=', 'lq', '11111111111', '服务员', 1, '2025-09-03 14:47:13', 'PzBgx3X4Rqt+GDPMcm2ekw==', 1);
+INSERT INTO `sys_staff` VALUES (2, 1, 'admin', '8pgVn7BnedAGOKthCSdIUifitpQsAWfKSDDFoz5R8oM=', '管理员', '18433646699', '店长', 1, '2025-09-17 00:13:08', 'SOMMsmOVbHI38x1hUkWfiQ==', 1);
+INSERT INTO `sys_staff` VALUES (6, 2, 'lq', 'jv77mITf0Nl7Vpz1iyPSAszCDwLxq4lU11UnEOn4q6U=', 'lq', '11111111111', '服务员', 1, '2025-09-16 18:44:18', 'PzBgx3X4Rqt+GDPMcm2ekw==', 1);
 
 -- ----------------------------
 -- Table structure for sys_staff_role
@@ -4297,8 +8051,8 @@ CREATE TABLE `sys_staff_role`  (
   `staff_id` bigint NOT NULL COMMENT '员工ID',
   `role_id` bigint NOT NULL COMMENT '角色ID',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_staff_role_staff`(`staff_id` ASC) USING BTREE,
-  INDEX `idx_staff_role_role`(`role_id` ASC) USING BTREE,
+  INDEX `idx_staff_role_staff`(`staff_id`) USING BTREE,
+  INDEX `idx_staff_role_role`(`role_id`) USING BTREE,
   CONSTRAINT `fk_staff_role_role` FOREIGN KEY (`role_id`) REFERENCES `sys_role` (`role_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_staff_role_staff` FOREIGN KEY (`staff_id`) REFERENCES `sys_staff` (`staff_id`) ON DELETE CASCADE ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '员工角色关联表' ROW_FORMAT = DYNAMIC;
@@ -4325,15 +8079,16 @@ CREATE TABLE `sys_store`  (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `store_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '门店编码',
   PRIMARY KEY (`store_id`) USING BTREE,
-  INDEX `idx_store_status`(`status` ASC) USING BTREE,
-  INDEX `idx_store_name`(`store_name` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '门店信息表' ROW_FORMAT = DYNAMIC;
+  INDEX `idx_store_status`(`status`) USING BTREE,
+  INDEX `idx_store_name`(`store_name`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '门店信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_store
 -- ----------------------------
 INSERT INTO `sys_store` VALUES (1, '管理员', '管理员', '111', '111', 0, 1, '2025-08-11 11:40:29', '2025-09-02 11:19:38', '1111');
 INSERT INTO `sys_store` VALUES (2, '旗舰店', '2244', '111', '111', 20, 1, '2025-08-11 15:21:45', '2025-09-02 11:19:40', '2222');
+INSERT INTO `sys_store` VALUES (17, '1', '1', '1', '1', 1, 1, '2025-09-12 15:01:37', '2025-09-12 15:01:37', 'STORE-20250912150137318');
 
 -- ----------------------------
 -- Table structure for sys_supplier
@@ -4347,9 +8102,9 @@ CREATE TABLE `sys_supplier`  (
   `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '地址',
   `status` tinyint NOT NULL DEFAULT 1 COMMENT '状态（1-合作中；0-已停用）',
   PRIMARY KEY (`supplier_id`) USING BTREE,
-  INDEX `idx_supplier_name`(`supplier_name` ASC) USING BTREE,
-  INDEX `idx_supplier_status`(`status` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '供应商表' ROW_FORMAT = DYNAMIC;
+  INDEX `idx_supplier_name`(`supplier_name`) USING BTREE,
+  INDEX `idx_supplier_status`(`status`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '供应商表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_supplier
@@ -4370,10 +8125,10 @@ CREATE TABLE `sys_table_transfer`  (
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '转桌原因',
   `type` int NOT NULL COMMENT '1:转桌；2并桌',
   PRIMARY KEY (`transfer_id`) USING BTREE,
-  INDEX `idx_transfer_order`(`order_id` ASC) USING BTREE,
-  INDEX `idx_transfer_time`(`transfer_time` ASC) USING BTREE,
-  INDEX `fk_transfer_old_table`(`old_table_id` ASC) USING BTREE,
-  INDEX `fk_transfer_new_table`(`new_table_id` ASC) USING BTREE,
+  INDEX `idx_transfer_order`(`order_id`) USING BTREE,
+  INDEX `idx_transfer_time`(`transfer_time`) USING BTREE,
+  INDEX `fk_transfer_old_table`(`old_table_id`) USING BTREE,
+  INDEX `fk_transfer_new_table`(`new_table_id`) USING BTREE,
   CONSTRAINT `fk_transfer_new_table` FOREIGN KEY (`new_table_id`) REFERENCES `sys_restaurant_table` (`table_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_transfer_old_table` FOREIGN KEY (`old_table_id`) REFERENCES `sys_restaurant_table` (`table_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '桌台转桌并桌记录表' ROW_FORMAT = DYNAMIC;
@@ -4400,13 +8155,19 @@ CREATE TABLE `sys_timertask`  (
   `IsStart` int NULL DEFAULT NULL COMMENT '运行状态：0，未启动，1，启动运行，2，暂停',
   `isDelete` int NULL DEFAULT NULL COMMENT '是否删除：0，删除，1，运行',
   `Corn` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '设置运行时段',
-  `StartNumber` bigint NULL DEFAULT NULL COMMENT '运行次数',
+  `StartNumber` bigint(20) UNSIGNED ZEROFILL NOT NULL COMMENT '运行次数',
+  `lastRunTime` datetime NULL DEFAULT NULL COMMENT '最后运行时间',
   PRIMARY KEY (`Id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '定时器管理' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '定时器管理' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_timertask
 -- ----------------------------
-INSERT INTO `sys_timertask` VALUES (1, '活动/优惠卷自动开始和关闭', 'AutomatedTask', '2025-09-04 02:47:20', '2025-09-04 02:47:20', '2025-09-04 02:47:20', 0, 0, 0, 0, 'string', 0);
+INSERT INTO `sys_timertask` VALUES (2, '活动/优惠卷自动开始和关闭', 'AutomatedTask', '2025-09-16 11:45:16', '2025-09-16 11:45:16', '2125-09-16 11:45:16', NULL, NULL, 1, 1, '0 0/1 * * * ? ', 00000000000000000000, '2025-09-17 00:33:00');
+INSERT INTO `sys_timertask` VALUES (3, '每天o点自动备份前一天的已结算的订单', 'BackUpTask', '2025-09-16 11:45:46', '2025-09-16 11:45:46', '2125-09-16 11:45:46', NULL, NULL, 1, 1, '0 0 1 * * ? ', 00000000000000000000, NULL);
+INSERT INTO `sys_timertask` VALUES (4, '定时清理操作日志保留半个月', 'ClearLogsTask', '2025-09-16 14:07:09', '2025-09-16 14:07:09', '2125-09-16 14:07:09', NULL, NULL, 1, 1, '0 0 1 * * ?', 00000000000000000000, NULL);
+INSERT INTO `sys_timertask` VALUES (5, '厨房菜品制作超时预警', 'kitchenOverTimeTask', '2025-09-16 14:12:34', '2025-09-16 14:12:34', '2125-09-16 14:12:34', NULL, NULL, 1, 1, '0 0/1 * * * ?', 00000000000000000000, '2025-09-17 00:33:00');
+INSERT INTO `sys_timertask` VALUES (6, '清洁中桌台十分钟自动变为空闲', 'ClearTableTask', '2025-09-16 16:26:30', '2025-09-16 16:26:30', '2125-09-16 16:26:30', NULL, NULL, 1, 1, '0 0/1 0/1 * * ? ', 00000000000000000147, '2025-09-17 00:33:00');
+INSERT INTO `sys_timertask` VALUES (7, '自动管理套餐的上下架', 'DishMealTask', '2025-09-16 16:45:22', '2025-09-16 16:45:22', '2125-09-16 16:45:22', NULL, NULL, 1, 1, '0 0/1 0/1 * * ? ', 00000000000000000147, '2025-09-17 00:33:00');
 
 SET FOREIGN_KEY_CHECKS = 1;

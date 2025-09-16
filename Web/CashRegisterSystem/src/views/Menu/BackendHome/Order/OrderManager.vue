@@ -27,7 +27,7 @@
       <el-table
         :data="orders"
         border
-        style="width: 100%"
+        style="width: 100%; height: 68vh;"
         :header-cell-style="{ background: '#f8f9fa', color: '#606266' }"
       >
         <el-table-column type="index" label="序号" align="center" width="60" />

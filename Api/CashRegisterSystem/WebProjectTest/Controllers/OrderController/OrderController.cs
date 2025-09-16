@@ -129,7 +129,7 @@ namespace WebProjectTest.Controllers.OrderController
         /// </summary>
         [HttpGet]
         [OperationLogFilter("订单管理>订单列表", "订单子项退款", ActionType.Edit)]
-        public async Task<ApiResponse<bool>> OrderItemRefundAsync(int orderItemId)
+        public async Task<ApiResponse<bool>> OrderItemRefundAsync(string orderItemId)
         {
             return await _OrderServices.OrderItemRefund(orderItemId, UserId);
         }

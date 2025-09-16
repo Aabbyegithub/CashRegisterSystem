@@ -101,15 +101,19 @@ namespace WebServiceClass.Services.OrderServices
             result.orderNumber = order.order_no;
             result.createTime = order.start_time;
             result.table_capacity = order.table_capacity;
-            result.items = res.Select(a => new detail
-            {
-                orderItemId = (int)a.item_id,
-                name =!string.IsNullOrEmpty(a.specification)? $"{a.dish?.dish_name} ({a.specification})*{a.quantity}" : $"{a.dish?.dish_name} *{a.quantity}",
-                price = a.unit_price,
-                quantity = a.quantity,
-                amount = a.total_price,
-                action = a.status == 1 ?"退款":""
-            }).ToList();
+            result.items = res.GroupBy(x => new { x.dish_id, x.specification })
+                        .Select(g => new detail
+                        {
+                            orderItemId = string.Join(",", g.Select(x => x.item_id)), // 拼接多个 item_id
+                            name = !string.IsNullOrEmpty(g.Key.specification)
+                                ? $"{g.First().dish?.dish_name} ({g.Key.specification})*{g.Sum(x => x.quantity)}"
+                                : $"{g.First().dish?.dish_name} *{g.Sum(x => x.quantity)}",
+                            price = g.First().unit_price,
+                            quantity = g.Sum(x => x.quantity),
+                            amount = g.Sum(x => x.total_price),
+                            action = g.All(x => x.status == 4) ? "已退款" : "退款"
+                        })
+                        .ToList();
             //判断是否有转桌并桌记录
             var tableChangeTable = await _dal.Db.Queryable<sys_table_transfer>().Where(a => a.order_id == orderId && a.type == 1)
                 .OrderBy(a => a.transfer_id).ToListAsync();
@@ -235,11 +239,32 @@ namespace WebServiceClass.Services.OrderServices
         /// <param name="orderItemId"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<ApiResponse<bool>> OrderItemRefund(int orderItemId,int userId)
+        public async Task<ApiResponse<bool>> OrderItemRefund(string orderItemId,int userId)
         {
-            await _dal.Db.Updateable<sys_order_item>().With(SqlWith.UpdLock).SetColumns(a=>new sys_order_item { status = 4,return_audit_id =userId }).Where(a=>a.item_id == orderItemId).ExecuteCommandAsync();
-            await _dal.Db.Updateable<sys_kitchen_order>().With(SqlWith.UpdLock).SetColumns(a => new sys_kitchen_order { status = 5 }).Where(a => a.item_id == orderItemId).ExecuteCommandAsync();
-           return Success(true,"退款成功");
+            try
+            {
+                await _dal.Db.Ado.BeginTranAsync();
+                var orderItemIds = orderItemId.Split(',');
+                await _dal.Db.Updateable<sys_order_item>().With(SqlWith.UpdLock).SetColumns(a => new sys_order_item { status = 4, return_audit_id = userId }).Where(a => orderItemIds.Contains(a.item_id.ToString())).ExecuteCommandAsync();
+                await _dal.Db.Updateable<sys_kitchen_order>().With(SqlWith.UpdLock).SetColumns(a => new sys_kitchen_order { status = 5 }).Where(a => orderItemIds.Contains(a.item_id.ToString())).ExecuteCommandAsync();
+                var order = await _dal.Db.Queryable<sys_order_item>().Where(a => orderItemIds.Contains(a.item_id.ToString())).ToListAsync();
+                await _dal.Db.Updateable<sys_order>().SetColumns(a=>new sys_order { payable_amount =a.payable_amount- order.Sum(a=>a.total_price)})
+                    .Where(a => a.order_id == order.FirstOrDefault().order_id).ExecuteCommandAsync();
+                if (await _dal.Db.Queryable<sys_order_item>().Where(a => a.order_id == order.FirstOrDefault().order_id && a.status != 4).CountAsync() == 0)
+                {
+                    await _dal.Db.Updateable<sys_order>().SetColumns(a => new sys_order { status = 8 }).Where(a => a.order_id == order.FirstOrDefault().order_id).ExecuteCommandAsync();
+                    var orderid = await _dal.Db.Queryable<sys_order>().FirstAsync(a => a.order_id == order.FirstOrDefault().order_id);
+                    await _dal.Db.Updateable<sys_restaurant_table>().With(SqlWith.UpdLock)
+                    .SetColumns(a => new sys_restaurant_table { status = 4, order_id = null, lastUseTime = DateTime.Now }).Where(a => a.table_id == orderid.table_id).ExecuteCommandAsync();
+                }
+                await _dal.Db.Ado.CommitTranAsync();
+                return Success(true, "退款成功");
+            }
+            catch (Exception)
+            {
+                await _dal.Db.Ado.RollbackTranAsync();
+                return Fail<bool>( "退款失败");
+            }
         }
 
         /// <summary>
@@ -290,8 +315,7 @@ namespace WebServiceClass.Services.OrderServices
                      .ToListAsync();
                     await _dal.Db.Updateable<sys_kitchen_order>().With(SqlWith.UpdLock)
                         .SetColumns(a => new sys_kitchen_order { status = 5 })
-                        .In<long>(a => a.item_id,
-                        (ISugarQueryable<long>)itemIds)
+                        .Where(a=> itemIds.Contains(a.item_id))
                         .ExecuteCommandAsync();
                 }
                 if (order.status == 6)//预订变为取消
@@ -350,8 +374,7 @@ namespace WebServiceClass.Services.OrderServices
                      .ToListAsync();
                     await _dal.Db.Updateable<sys_kitchen_order>().With(SqlWith.UpdLock)
                         .SetColumns(a => new sys_kitchen_order { status = 5 })
-                        .In<long>(a => a.item_id,
-                        (ISugarQueryable<long>)itemIds)
+                        .Where(a => itemIds.Contains(a.item_id))
                         .ExecuteCommandAsync(); 
                 await _dal.Db.Updateable<sys_restaurant_table>().With(SqlWith.UpdLock)
                     .SetColumns(a => new sys_restaurant_table { status = 2, order_id = orderId })

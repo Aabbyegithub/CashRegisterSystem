@@ -78,7 +78,7 @@ namespace WebIServices.IServices.OrderIServices
         /// </summary>
         /// <param name="orderItemId"></param>
         /// <returns></returns>
-         Task<ApiResponse<bool>>OrderItemRefund(int orderItemId,int userId);
+         Task<ApiResponse<bool>>OrderItemRefund(string orderItemId,int userId);
 
         /// <summary>
         /// 订单退款

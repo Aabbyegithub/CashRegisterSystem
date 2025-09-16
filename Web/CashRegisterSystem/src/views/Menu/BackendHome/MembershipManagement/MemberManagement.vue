@@ -28,11 +28,11 @@
     <!-- 会员列表 -->
     <el-table :data="filteredMembers" border style="width:100%;height: 68vh;" :header-cell-style="{ background: '#f8f9fa', color: '#606266' }" class="custom-table">
       <el-table-column type="index" label="序号" width="60" align="center" />
-      <el-table-column prop="member_no" label="会员编号" align="center" width="200px"/>
-      <el-table-column prop="phone" label="手机号" align="center" />
+      <el-table-column prop="member_no" label="会员编号" align="center" width="210px"/>
+      <el-table-column prop="phone" label="手机号" align="center" width="120"/>
       <el-table-column prop="name" label="姓名" align="center" />
-      <el-table-column prop="birthday" label="生日" align="center" />
-      <el-table-column prop="register_time" label="注册时间" align="center" />
+      <el-table-column prop="birthday" label="生日" align="center" width="200"/>
+      <el-table-column prop="register_time" label="注册时间" align="center" width="200" />
       <el-table-column prop="status" label="状态" align="center">
         <template #default="scope">
           <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'" effect="plain">{{ scope.row.status === 1 ? '正常' : '冻结' }}</el-tag>
@@ -45,7 +45,7 @@
           {{ getReferrerName(scope.row.referrer_id) }}
         </template>
       </el-table-column> -->
-      <el-table-column label="操作" align="center" width="220">
+      <el-table-column label="操作" align="center" width="180">
         <template #default="scope">
           <el-button type="text" class="table-btn-balance" @click="openBalanceDialog(scope.row)">储值</el-button>
           <el-button type="text" class="table-btn-edit" @click="openEditDialog(scope.row)">编辑</el-button>

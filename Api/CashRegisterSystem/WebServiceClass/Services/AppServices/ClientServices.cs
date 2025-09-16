@@ -115,7 +115,7 @@ namespace WebServiceClass.Services.AppServices
                     Fail<bool>("该桌台有未完成的订单！下单失败");
                 }
                  var member = await _dal.Db.Queryable<sys_member>().FirstAsync(a => a.phone == memberPhone && a.status ==1);
-                if (order_Id.HasValue)
+                if (order_Id.HasValue && order_Id !=0)
                 {
                     var orderData = await _dal.Db.Queryable<sys_order>().With(SqlWith.UpdLock).FirstAsync(a=>a.order_id == order_Id);
                     orderData.total_amount = orderData.total_amount + 
@@ -270,13 +270,16 @@ namespace WebServiceClass.Services.AppServices
             result.orderId = orderId;
             result.tableId = (int)order.table_id;
             result.storeId = (int)order.store_id;
-            result.orderDetails = res.Select(a => new OrderDetail
-            {
-                Id = a.item_id,
-                Name = a.dish.dish_name,
-                Spec = $"{a.specification}*{a.quantity}",
-                Price = a.total_price,
-            }).ToList();
+            result.orderDetails = res
+                 .GroupBy(x => new { x.dish_id, x.specification })
+                .Select(g => new OrderDetail
+                {
+                    Id = g.First().item_id,
+                    Name = g.First().dish.dish_name,
+                    Spec = $"{g.Key.specification}*{g.Sum(x => x.quantity)}",
+                    Price = g.Sum(x => x.total_price)
+                })
+                .ToList();
             //判断是否有转桌并桌记录
             var tableChangeTable = await _dal.Db.Queryable<sys_table_transfer>().Where(a => a.order_id == orderId && a.type == 1)
                 .OrderBy(a=>a.transfer_id).ToListAsync();

@@ -47,11 +47,11 @@
             {{ order.status }}
           </div>
         </div>
-        <div class="detail-item">订单单号 {{ order.order_no }}</div>
-        <div class="detail-item">就餐人数 {{ order.peopleCount }} 人</div>
-        <div class="detail-item">下单时间 {{ order.orderTime }}</div>
-        <div class="detail-item">消费金额 {{ order.amount }} 元</div>
-        <div class="detail-item">用餐时间 {{ order.diningTime }}</div>
+        <div class="detail-item">订单单号： {{ order.order_no }}</div>
+        <div class="detail-item">就餐人数： {{ order.peopleCount }} 人</div>
+        <div class="detail-item">下单时间： {{ order.orderTime }}</div>
+        <div class="detail-item">消费金额： {{ order.amount }} 元</div>
+        <div class="detail-item">用餐时间： {{ order.diningTime }}</div>
         <div class="operation-btns">
           <el-button
             v-if="order.status === '待支付'"
@@ -207,7 +207,7 @@ const handleDelete = (order: Order) => { console.log('删除订单', order); };
   overflow-y: auto;
 }
 .order-card {
-  width: 300px;
+  width: 320px;
   border: 1px solid #ebeef5;
   border-radius: 4px;
   padding-top: 15px; 

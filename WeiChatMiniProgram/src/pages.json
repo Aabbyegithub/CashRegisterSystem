@@ -55,6 +55,12 @@
 			"style": {
 				"navigationBarTitleText": "优惠卷"
 			}
+		},
+		{
+			"path": "pages/order/ordermenu-detial",
+			"style": {
+				"navigationBarTitleText": "点菜详情"
+			}
 		}
 
 	],

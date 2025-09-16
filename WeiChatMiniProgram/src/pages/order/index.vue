@@ -9,7 +9,7 @@
     />
     <!-- 订单列表 -->
     <view class="order-list">
-      <view v-for="order in orders" :key="order.id" class="order-item">
+      <view v-for="order in orders" :key="order.id" class="order-item" @click="MenuDetails(order.id,order.status)">
         <view class="order-header">
           <text class="table-number">桌号{{ order.tableNumber }}</text>
           <view class="status">
@@ -48,34 +48,41 @@
         </view>
 
         <view class="order-actions">
+          <view @click.stop>
+          <u-button
+            v-if="order.status === '待支付'"
+            size="mini"
+            native-type="button"
+            @click.stop.prevent="urgeOrder(order.id)"
+            custom-style="margin:5rpx;border:none;box-shadow:none;background-color:transparent;width:30px;font-size: 28rpx;"
+          >催单</u-button></view>
+          <view @click.stop>
           <u-button
             v-if="order.status === '待支付'"
             type="default"
             size="mini"
-            @click="urgeOrder(order.id)"
+            native-type="button"
+            @click.stop.prevent="addDish(order.id)"
             custom-style="margin:5rpx;border:none;box-shadow:none;background-color:transparent;width:30px;font-size: 28rpx;"
-          >催单</u-button>
+          >加菜</u-button></view>
+          <view @click.stop>
           <u-button
             v-if="order.status === '待支付'"
             type="default"
             size="mini"
-            @click="addDish(order.id)"
+            native-type="button"
+            @click.stop.prevent="checkout(order.id,order.status)"
             custom-style="margin:5rpx;border:none;box-shadow:none;background-color:transparent;width:30px;font-size: 28rpx;"
-          >加菜</u-button>
-          <u-button
-            v-if="order.status === '待支付'"
-            type="default"
-            size="mini"
-            @click="checkout(order.id,order.status)"
-            custom-style="margin:5rpx;border:none;box-shadow:none;background-color:transparent;width:30px;font-size: 28rpx;"
-          >结账</u-button>
+          >结账</u-button></view>
+          <view @click.stop>
           <u-button
             v-if="order.status === '已结清'"
             type="default"
             size="mini"
-            @click="viewDetails(order.id,order.status)"
+            native-type="button"
+            @click.stop.prevent="viewDetails(order.id,order.status)"
             custom-style="margin:5rpx;border:none;box-shadow:none;background-color:transparent;width:30px;font-size: 28rpx;"
-          >详情</u-button>
+          >详情</u-button></view>
           <!-- <u-button
             v-if="order.status === '已结清'"
             type="default"
@@ -137,6 +144,12 @@ const checkout = (id: number,orderstatus:string) => {
 }
 
 const viewDetails = (id: number,orderstatus:string) => {
+  console.log('查看详情:', id)
+  // 这里可以跳转到详情页面
+   uni.navigateTo({ url: `/pages/order/orderdetil?orderId=${id}&orderstatus=${orderstatus}` })
+}
+
+const MenuDetails = (id: number,orderstatus:string) => {
   console.log('查看详情:', id)
   // 这里可以跳转到详情页面
    uni.navigateTo({ url: `/pages/order/orderdetil?orderId=${id}&orderstatus=${orderstatus}` })
