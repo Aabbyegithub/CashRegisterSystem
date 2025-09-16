@@ -51,8 +51,9 @@ namespace WebServiceClass.Services.MemberServices
         
         public async Task<ApiResponse<bool>> UpdateMemberAsync(sys_member member)
         {
-            var result = await _dal.Db.Updateable(member).IgnoreColumns(x => new { x.register_time, x.status }).ExecuteCommandAsync() > 0;
-            return Success(result, result ? "修改成功" : "修改失败");
+            var result = await _dal.Db.Updateable<sys_member>()
+                .SetColumns(x => new sys_member{phone = member.phone,name = member.name,birthday = member.birthday }).Where(a=>a.member_id == member.member_id).ExecuteCommandAsync() ;
+            return Success(true,"修改成功");
         }
 
         public async Task<ApiResponse<bool>> ToggleStatusAsync(long memberId, int status)

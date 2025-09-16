@@ -115,8 +115,9 @@ namespace WebServiceClass.Services.AppServices
                     Fail<bool>("该桌台有未完成的订单！下单失败");
                 }
                  var member = await _dal.Db.Queryable<sys_member>().FirstAsync(a => a.phone == memberPhone && a.status ==1);
-                if (order_Id.HasValue && order_Id !=0)
+                if ((order_Id.HasValue && order_Id !=0) || table.order_id !=null)
                 {
+                    order_Id = table.order_id;
                     var orderData = await _dal.Db.Queryable<sys_order>().With(SqlWith.UpdLock).FirstAsync(a=>a.order_id == order_Id);
                     orderData.total_amount = orderData.total_amount + 
                         (orderData.member_id.HasValue ?  order.Sum(o => decimal.Parse(o.memberprice) * o.qty) :  order.Sum(o => decimal.Parse(o.price) * o.qty));

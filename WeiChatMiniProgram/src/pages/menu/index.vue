@@ -388,7 +388,7 @@ const isMember = ref(false)
 const memberPhone = ref('')
 
 function handleOrderClick() {
-  if(orderId){
+  if(orderId.value != 0){
     submitOrder()
     return
   }
@@ -739,10 +739,13 @@ function confirmMeal() {
 
 .member-dialog {
   background: #fff;
-  border-radius: 30rpx 30rpx 0 0;
+  border-radius: 30rpx;
   padding: 30rpx 20rpx 20rpx 20rpx;
-  width: 100vw;
+  width: 80vw;
   max-width: 600px;
+}
+.member-item{
+  display: flex; margin-top: 10px;margin-bottom: 10px;
 }
 .cart-header {
   display: flex;
