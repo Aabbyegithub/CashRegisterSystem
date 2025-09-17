@@ -561,9 +561,26 @@ const handlePayDialogClose = () => {
 const handlePayConfirm = async () => {
   console.log('选中支付方式：', selectedPayType.value);
   console.log('支付金额：', toPayAmount.value);
+  if(toPayAmount.value <= 0) {
+    ElMessage.error('支付金额必须大于0');
+    return;
+  }
+    // 调用扫码机接口，获取付款码
+  let payCode = '';
+  try {
+    // 这里 scanCode() 是扫码机 SDK 的方法，返回付款码
+    payCode = await scanCode(); // 需替换为实际扫码机方法
+    if (!payCode) {
+      ElMessage.error('未获取到付款码，请重新扫码');
+      return;
+    }
+  } catch (err) {
+    ElMessage.error('扫码失败，请重试');
+    return;
+  }
   // 这里可对接实际支付接口
   payDialogVisible.value = false;
-  await OrderCheckout(orderid.value as string,selectedPayType.value).then(async (res:any)=>{
+  await OrderCheckout(orderid.value as string,selectedPayType.value,payCode).then(async (res:any)=>{
     if(res.success){
       orderInfo.value.status='已支付'
       console.log('支付接口返回:', res);
@@ -580,6 +597,28 @@ const handlePayConfirm = async () => {
     return;
   })
 };
+
+function scanCode(): Promise<string> {
+  return new Promise((resolve) => {
+    // 创建一个隐藏的输入框
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.style.position = 'fixed';
+    input.style.top = '-1000px';
+    document.body.appendChild(input);
+    input.focus();
+
+    // 监听回车事件（扫码枪通常以回车结束）
+    input.addEventListener('keydown', function handler(e) {
+      if (e.key === 'Enter') {
+        resolve(input.value);
+        input.removeEventListener('keydown', handler);
+        document.body.removeChild(input);
+      }
+    });
+  });
+}
+
 
 
 // 切换桌台选中状态

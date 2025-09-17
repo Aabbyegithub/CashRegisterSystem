@@ -43,6 +43,6 @@ export function redoOrder(orderId: string) {
   }});
 }
 
-export function OrderCheckout(orderId: string,type:string,CouponsId:number=0) {
-  return axios.get('/api/Order/OrderCheckout',{params:{orderId,type,CouponsId}} );
+export function OrderCheckout(orderId: string,type:string,payCode:string,CouponsId:number=0) {
+  return axios.get('/api/Order/OrderCheckout',{params:{orderId,type,payCode,CouponsId}} );
 }

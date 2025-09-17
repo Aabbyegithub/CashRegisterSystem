@@ -159,7 +159,7 @@ namespace WebProjectTest.Controllers.OrderController
         /// summary>
         [HttpGet]
         [OperationLogFilter("订单管理>订单列表", "订单结账", ActionType.Edit)]
-        public async Task<ApiResponse<bool>> OrderCheckoutAsync(int orderId, int? CouponsId, string type)
+        public async Task<ApiResponse<bool>> OrderCheckoutAsync(int orderId, int? CouponsId, string type,string payCode)
         {
             var url = "";
             switch (type)
@@ -174,7 +174,7 @@ namespace WebProjectTest.Controllers.OrderController
                     return Error<bool>("支付失败");
 
             }
-            return await _clientServices.OrderCheckout(orderId, CouponsId, type, "", url, UserId);
+            return await _clientServices.OrderCheckout(orderId, CouponsId, type, payCode, url, UserId);
         }
 
         [HttpPost]
