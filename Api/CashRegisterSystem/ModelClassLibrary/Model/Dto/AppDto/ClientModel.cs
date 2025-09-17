@@ -60,7 +60,22 @@ namespace ModelClassLibrary.Model.Dto.AppDto
         public string spicy { get; set; }
         public int qty { get; set; }
 
-        //public int Type { get; set; }
+        public int Type { get; set; }
+        public int dishCategoryType { get; set; }
+        public List<ListItem> mealoptions { get; set; }
+    }
+
+    public class ListItem
+    {
+        public string type{ get; set; }
+        public List<dishitem> options{ get; set; }
+    }
+    public class dishitem
+    {
+         public long id{ get; set; }
+         public long dish_id{ get; set; }
+         public string dish_name{ get; set; }
+         public long? spec{ get; set; }
     }
 
     public class OrderDetail

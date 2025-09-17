@@ -452,7 +452,7 @@
             订单重做
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:WebProjectTest.Controllers.OrderController.OrderController.OrderCheckoutAsync(System.Int32,System.Nullable{System.Int32},System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:WebProjectTest.Controllers.OrderController.OrderController.OrderCheckoutAsync(System.Int32,System.Nullable{System.Int32},System.String,System.String)" -->
         <member name="M:WebProjectTest.Controllers.QueueController.QueueController.GetQueuePageList(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.Int32,System.Int32)">
             <summary>
             排队分页列表

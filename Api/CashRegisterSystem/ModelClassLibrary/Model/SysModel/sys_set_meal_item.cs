@@ -73,5 +73,14 @@ namespace MyNamespace
         /// </summary>           
         public string? meal_group { get; set; }
 
+
+        [Navigate(NavigateType.OneToOne, nameof(dish_id), nameof(sys_dish.dish_id))]//一对一 
+
+        public sys_dish? meal_item_dish { get; set; }
+
+        [Navigate(NavigateType.OneToOne, nameof(spec_id), nameof(sys_dish_spec.spec_id))]//一对一 
+
+        public sys_dish_spec? meal_item_dish_spec { get; set; }
+
     }
 }

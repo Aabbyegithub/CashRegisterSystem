@@ -65,7 +65,7 @@ namespace WebServiceClass.Services.AppServices
                       Type = 0
                   }).ToListAsync();
             //增加套餐
-            var meal = await _dal.Db.Queryable<sys_set_meal>().Includes(a=>a.item).Where(a => a.store_id == store_id && a.status ==1)
+            var meal = await _dal.Db.Queryable<sys_set_meal>().Includes(a=>a.item,b=>b.meal_item_dish).Where(a => a.store_id == store_id && a.status ==1)
                 .Select(a => new DishList
                 {
                     Id = a.meal_id,
@@ -125,7 +125,7 @@ namespace WebServiceClass.Services.AppServices
                         (orderData.member_id.HasValue ?  order.Sum(o => decimal.Parse(o.memberprice) * o.qty) :  order.Sum(o => decimal.Parse(o.price) * o.qty));
                     await _dal.Db.Updateable(orderData).ExecuteCommandAsync();
 
-                    var orderItems = order.Select(o => new sys_order_item
+                    var orderItems = order.Where(o=>o.Type == 0).Select(o => new sys_order_item
                     {
                         order_id =(int) order_Id,
                         dish_id = o.Id,
@@ -136,6 +136,46 @@ namespace WebServiceClass.Services.AppServices
                         status = 1, // 状态 1-待制作
                         is_rush = 0,
                     }).ToList();
+
+                    //固定套餐
+                    var orderMealItems = order.Where(o => o.Type == 1 && o.dishCategoryType == 99).Select(a => a.Id).ToList();
+                    var Mealdish = await _dal.Db.Queryable<sys_set_meal_item>()
+                        .Includes(a => a.meal_item_dish).Includes(a => a.meal_item_dish_spec).Where(a => orderMealItems.Contains((long)a.meal_id)).ToListAsync();
+                    var orderItemsFix1 = Mealdish.Select(o => new sys_order_item
+                    {
+                        order_id = (int) order_Id,
+                        dish_id = o.dish_id,
+                        quantity = o.quantity,
+                        unit_price = member == null ? o.meal_item_dish.price : o.meal_item_dish.member_price,
+                        total_price = member == null ? o.meal_item_dish.price * o.quantity : o.meal_item_dish.member_price * o.quantity,
+                        specification = o.meal_item_dish_spec?.spec_name,
+                        meal_id = o.meal_id,
+                        status = 1, // 状态 1-待制作
+                        is_rush = 0,
+                    }).ToList();
+                    orderItems.AddRange(orderItemsFix1);
+                    //组合套餐
+                    var orderMealItems2 = order.Where(o => o.Type == 1 && o.dishCategoryType == 100)
+                        .Select(o => o.mealoptions)
+                        .SelectMany(mealOptions => mealOptions)
+                        .SelectMany(item => item.options).Select(a => a.id).ToList();
+
+                    var Mealdish2 = await _dal.Db.Queryable<sys_set_meal_item>()
+                    .Includes(a => a.meal_item_dish).Includes(a => a.meal_item_dish_spec).Where(a => orderMealItems2.Contains((long)a.item_id)).ToListAsync();
+
+                    var orderItemsFix2 = Mealdish2.Select(o => new sys_order_item
+                    {
+                        order_id = (int) order_Id,
+                        dish_id = o.dish_id,
+                        quantity = o.quantity,
+                        unit_price = member == null ? o.meal_item_dish.price : o.meal_item_dish.member_price,
+                        total_price = member == null ? o.meal_item_dish.price * o.quantity : o.meal_item_dish.member_price * o.quantity,
+                        specification = o.meal_item_dish_spec?.spec_name,
+                        meal_id = o.meal_id,
+                        status = 1, // 状态 1-待制作
+                        is_rush = 0,
+                    }).ToList();
+                    orderItems.AddRange(orderItemsFix2);
                     foreach (var item in orderItems)
                     {
                         var itemId = await _dal.Db.Insertable(item).ExecuteReturnBigIdentityAsync();
@@ -188,8 +228,9 @@ namespace WebServiceClass.Services.AppServices
                     {
                         return Fail<bool>("下单失败");
                     }
+                    #region  处理正常菜品
                     //保存订单明细
-                    var orderItems = order.Select(o => new sys_order_item
+                    var orderItems = order.Where(o=>o.Type==0).Select(o => new sys_order_item
                     {
                         order_id = orderId,
                         dish_id = o.Id,
@@ -200,6 +241,49 @@ namespace WebServiceClass.Services.AppServices
                         status = 1, // 状态 1-待制作
                         is_rush = 0,
                     }).ToList();
+
+                    #endregion
+                    #region  处理套餐
+                    //固定套餐
+                    var orderMealItems = order.Where(o => o.Type == 1 && o.dishCategoryType == 99).Select(a=>a.Id).ToList();
+                    var Mealdish = await _dal.Db.Queryable<sys_set_meal_item>()
+                        .Includes(a => a.meal_item_dish).Includes(a=>a.meal_item_dish_spec).Where(a => orderMealItems.Contains((long)a.meal_id)).ToListAsync();
+                    var orderItemsFix1 = Mealdish.Select(o => new sys_order_item
+                    {
+                        order_id = orderId,
+                        dish_id = o.dish_id,
+                        quantity = o.quantity,
+                        unit_price = member == null ? o.meal_item_dish.price : o.meal_item_dish.member_price,
+                        total_price = member == null ? o.meal_item_dish.price * o.quantity : o.meal_item_dish.member_price * o.quantity,
+                        specification = o.meal_item_dish_spec?.spec_name,
+                        meal_id = o.meal_id,
+                        status = 1, // 状态 1-待制作
+                        is_rush = 0,
+                    }).ToList();
+                    orderItems.AddRange(orderItemsFix1);
+                    //组合套餐
+                    var orderMealItems2 = order.Where(o => o.Type == 1 && o.dishCategoryType == 100)
+                        .Select(o => o.mealoptions)
+                        .SelectMany(mealOptions => mealOptions)
+                        .SelectMany(item => item.options).Select(a=>a.id).ToList();
+
+                    var Mealdish2 = await _dal.Db.Queryable<sys_set_meal_item>()
+                    .Includes(a => a.meal_item_dish).Includes(a => a.meal_item_dish_spec).Where(a =>orderMealItems2.Contains((long)a.item_id)).ToListAsync();
+
+                    var orderItemsFix2 = Mealdish2.Select(o => new sys_order_item
+                    {
+                        order_id = orderId,
+                        dish_id = o.dish_id,
+                        quantity = o.quantity,
+                        unit_price = member == null ? o.meal_item_dish.price : o.meal_item_dish.member_price,
+                        total_price = member == null ? o.meal_item_dish.price * o.quantity : o.meal_item_dish.member_price * o.quantity,
+                        specification = o.meal_item_dish_spec?.spec_name,
+                        meal_id = o.meal_id,
+                        status = 1, // 状态 1-待制作
+                        is_rush = 0,
+                    }).ToList();
+                     orderItems.AddRange(orderItemsFix2);
+
                     foreach (var item in orderItems)
                     {
                         var itemId = await _dal.Db.Insertable(item).ExecuteReturnBigIdentityAsync();
@@ -208,7 +292,7 @@ namespace WebServiceClass.Services.AppServices
                             await _dal.Db.Ado.RollbackTranAsync();
                             return Fail<bool>("下单失败，订单明细保存失败！");
                         }
-                        var dish = await _dal.Db.Queryable<sys_order_item>().Includes(a=>a.dish,b=>b.dish_kitchen).FirstAsync(a=>a.item_id == itemId);
+                        var dish = await _dal.Db.Queryable<sys_order_item>().Includes(a => a.dish, b => b.dish_kitchen).FirstAsync(a => a.item_id == itemId);
                         //保存厨房订单
                         var kitchenOrders = new sys_kitchen_order
                         {
@@ -225,6 +309,10 @@ namespace WebServiceClass.Services.AppServices
                         };
                         await _dal.Db.Insertable(kitchenOrders).ExecuteCommandAsync();
                     }
+
+
+                    
+                    #endregion
                     table.order_id = (int)orderId;
                     table.status = 2;
                     await _dal.Db.Updateable(table).ExecuteCommandAsync();

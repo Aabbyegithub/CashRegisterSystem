@@ -147,7 +147,9 @@
             <image :src="item.img" class="cart-item-img" />
             <view class="cart-item-info">
               <view class="cart-item-name">{{ item.name }}</view>
-              <view class="cart-item-spec">{{ item.spec }} / {{ item.spicy }}</view>
+              <view class="cart-item-spec" v-if="item.spec || item.spicy">
+                {{ item.spec }}<span v-if="item.spec && item.spicy"> / </span>{{ item.spicy }}
+              </view>
               <view class="cart-item-price">￥{{ item.price }}</view>
             </view>
             <view class="cart-item-qty">
@@ -204,8 +206,9 @@
             <view style="font-size:32rpx;font-weight:bold;">{{ selectedDish?.name }}</view>
             <view style="color:#888;font-size:24rpx;margin:8rpx 0;">
               已选:
-              <span v-for="(opts, type) in selectedMeals" :key="type">
-                {{ opts.join('/') }} /
+              <span v-for="(group, gIdx) in selectedMeals" :key="group.type">
+                <span v-for="opt in group.options" :key="opt.dish_id">{{ opt.dish_name }}</span>
+                <span v-if="gIdx !== selectedMeals.length - 1"> / </span>
               </span>
             </view>
             <view style="font-size:28rpx;color:#222;font-weight:bold;">￥{{ selectedDish?.price }}</view>
@@ -214,14 +217,14 @@
         <!-- 循环类型和选项 -->
         <view class="meal-content">
           <view v-for="(typeObj, idx) in selectedDish?.mealTypes || []" :key="typeObj.type" class="spec-section">
-            <view class="spec-label">{{ typeObj.type }}[{{ typeObj.limit }}]选择</view>
+            <view class="spec-label">{{ typeObj.type }}</view>
             <view class="spec-options">
               <view
                 v-for="opt in typeObj.options"
                 :key="opt"
-                :class="['spec-option', selectedMeals[typeObj.type]?.includes(opt) ? 'active' : '']"
+                :class="['spec-option', selectedMeals.find(group => group.type === typeObj.type)?.options.some((o: { dish_id: any }) => o.dish_id === opt.dish_id) ? 'active' : '']"
                 @click="toggleMeal(typeObj.type, opt, typeObj.limit)"
-              >{{ opt }}</view>
+              >{{ opt.dish_name }}</view>
             </view>
           </view>
         </view>
@@ -340,7 +343,9 @@ function changeCartQtySimple(dish: any, val: number) {
       name: dish.name,
       img: dish.img,
       price: dish.price,
-      qty: 1
+      qty: 1,
+      dishCategoryType:dish.dishCategoryType,
+      type:dish.type
     })
   }
   calcCartTotal()
@@ -366,7 +371,9 @@ function addToCart() {
       memberprice: selcetprice.value,
       spec: selectedSpec.value,
       spicy: selectedSpicy.value,
-      qty: qty.value
+      qty: qty.value,
+      dishCategoryType:dish.dishCategoryType,
+      type:dish.type
     })
   }
   calcCartTotal()
@@ -428,7 +435,9 @@ async function submitOrder() {
     spec: String(item.spec || ''),
     spicy: String(item.spicy || ''),
     qty: Number(item.qty),
-    type:Number(item.type)
+    type:Number(item.type),
+    dishCategoryType:Number(item.dishCategoryType),
+    mealoptions: item.mealOptions || []
   }))
   }).then((res: any) => {
     if (res.start == 200) {
@@ -497,37 +506,95 @@ function selectSpec(spec: string, idx: number) {
 }
 const showMealDialog = ref(false)
 // 选中的每个类型的选项
-const selectedMeals = ref<Record<string, string>>({})
+const selectedMeals = ref<any[]>([])
 
 function openMealDialog(dish: any) {
   selectedDish.value = dish
   showMealDialog.value = true
   // 初始化每个类型的选项为空
-  selectedMeals.value = {}
-  dish.mealTypes?.forEach((typeObj:any) => {
-    selectedMeals.value[typeObj.type] = ''
-  })
+  selectedMeals.value = []
+  // meal_item 转换为 mealTypes（分组展示）
+  if (dish.meal_item && Array.isArray(dish.meal_item)) {
+    // 按 meal_group 分组
+    const groupMap: Record<string, any> = {}
+    dish.meal_item.forEach((item: any) => {
+      const groupKey = item.meal_group || '默认组'
+      if (!groupMap[groupKey]) {
+        groupMap[groupKey] = {
+          type: groupKey,
+          limit: 1, // 默认每组只能选一个
+          options: []
+        }
+      }
+      groupMap[groupKey].options.push( 
+        {
+          dish_id: item.meal_item_dish?.dish_id,
+          dish_name: item.meal_item_dish?.dish_name,
+          spec: item?.spec_id,
+          id:item.item_id
+        })
+    })
+    selectedDish.value.mealTypes = Object.values(groupMap)
+  } else {
+    selectedDish.value.mealTypes = []
+  }
+  // 初始化选项
+  // dish.mealTypes?.forEach((typeObj:any) => {
+  //   selectedMeals.value[typeObj.type] = []
+  // })
 }
 
-function toggleMeal(type: string, opt: string, limit: number) {
-  const selected = selectedMeals.value[type] || []
-  if (selected.includes(opt)) {
-    // 如果已选中，移除
-    selectedMeals.value[type] = selected.filter((item: string) => item !== opt)
-  } else {
-    // 如果未选中，判断是否超过限制
-    if (selected.length < limit) {
-      selectedMeals.value[type].push(opt)
-    } else {
-      uni.showToast({ title: `最多选择${limit}个`, icon: 'none' })
+function toggleMeal(type: string, opt: any, limit: number) {
+    if(selectedMeals.value.find((item: any) => item.type === type)){
+      const idx = selectedMeals.value.findIndex((item: any) => item.type === type)
+      const opts = selectedMeals.value[idx].options
+      const optIdx = opts.findIndex((o: any) => o.dish_id === opt.dish_id)
+      if (optIdx > -1) {
+        // 已选中，取消选择
+        opts.splice(optIdx, 1)
+        if (opts.length === 0) {
+          selectedMeals.value.splice(idx, 1)
+        }
+      } else {
+        // 未选中，添加选择
+        if (opts.length < limit) {
+          opts.push(opt)
+        } else {
+          uni.showToast({ title: `每组最多选择${limit}项`, icon: 'none' })
+        }
+      }
+    }else{
+      selectedMeals.value.push({ type, options: [opt] })
     }
-  }
+    console.log('当前选中套餐选项：', selectedMeals.value)
 }
 
 function confirmMeal() {
   // 处理 selectedMeals.value，提交到购物车或其它逻辑
+  const dish = selectedDish.value
+  if (!dish) return
+  // 查找是否已存在相同套餐
+  const idx = cartList.value.findIndex(item => item.id === dish.id)
+  if (idx > -1) {
+    cartList.value[idx].qty += 1
+  } else {
+    cartList.value.push({
+      id: dish.id,
+      name: dish.name,
+      img: dish.img,
+      price:dish.price,
+      memberprice: selcetprice.value,
+      spec: selectedMeals.value.map((group: any) => group.options.map((opt: any) => opt.dish_name).join(',')).join(' / '),
+      spicy:'',
+      qty: 1,
+      dishCategoryType:dish.dishCategoryType,
+      type:dish.type,
+      mealOptions: selectedMeals.value
+    })
+  }
+  calcCartTotal()
   showMealDialog.value = false
-  uni.showToast({ title: '已选择套餐', icon: 'success' })
+  uni.showToast({ title: '已加入购物车', icon: 'success' })
 }
 </script>
 
@@ -643,7 +710,7 @@ function confirmMeal() {
 .spec-option.active {
   background: #fff2ee;
   color: #0E8A9E;
-  border: 2px solid #0E8A9E;
+  border: 2px solid #e92907;
 }
 .spec-qty {
   display: flex;
@@ -930,6 +997,7 @@ function confirmMeal() {
 }
 .meal-content {
   margin-bottom: 20rpx;
+  max-height: 200px;
 }
 .meal-option {
   margin-bottom: 10rpx;

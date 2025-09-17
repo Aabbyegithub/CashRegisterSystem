@@ -565,6 +565,7 @@ const handlePayConfirm = async () => {
     ElMessage.error('支付金额必须大于0');
     return;
   }
+  ElMessage.warning('请使用扫码枪扫描付款码完成支付');
     // 调用扫码机接口，获取付款码
   let payCode = '';
   try {

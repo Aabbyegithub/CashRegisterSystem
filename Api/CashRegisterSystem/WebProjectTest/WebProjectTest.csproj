@@ -5,14 +5,17 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>..\WebProject</DockerfileContext>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile> <!-- 添加这一行 -->
+    <DockerfileContext>..</DockerfileContext>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <UserSecretsId>edbb0dc2-9b22-46cb-bbbd-e6979f183b44</UserSecretsId> <!-- 添加这一行 -->
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DevExpress.Xpo" Version="24.2.8" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.5" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.6" />
     <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
     <PackageReference Include="Quartz" Version="3.9.0" />
     <PackageReference Include="Scrutor" Version="4.2.2" />
     <PackageReference Include="SqlSugarCore" Version="5.1.4.202" />
