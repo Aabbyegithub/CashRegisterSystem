@@ -1410,7 +1410,10 @@
           "SqlSugarCore": "5.1.4.202"
         },
         "runtime": {
-          "ModelClassLibrary.dll": {}
+          "ModelClassLibrary.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "WebIServices/1.0.0": {
@@ -1418,7 +1421,10 @@
           "ModelClassLibrary": "1.0.0"
         },
         "runtime": {
-          "WebIServices.dll": {}
+          "WebIServices.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "WebServiceClass/1.0.0": {
@@ -1432,7 +1438,10 @@
           "WebTaskClass": "1.0.0"
         },
         "runtime": {
-          "WebServiceClass.dll": {}
+          "WebServiceClass.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "WebTaskClass/1.0.0": {
@@ -1442,7 +1451,10 @@
           "WebIServices": "1.0.0"
         },
         "runtime": {
-          "WebTaskClass.dll": {}
+          "WebTaskClass.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

@@ -116,6 +116,9 @@ namespace MyNamespace
         [Navigate(NavigateType.OneToOne, nameof(dish_id), nameof(sys_dish.dish_id))]//一对一 
         public sys_dish? dish { get; set; }
 
+        [Navigate(NavigateType.OneToOne, nameof(meal_id), nameof(sys_set_meal.meal_id))]//一对一 
+        public sys_set_meal? meal { get; set; }
+
         [Navigate(NavigateType.OneToOne, nameof(order_id), nameof(sys_order.order_id))]//一对一 
         public sys_order? order { get; set; }
 

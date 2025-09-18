@@ -9,15 +9,17 @@
 		{
 			"path": "pages/order/index",
 			"style": {
-				"navigationBarTitleText": "订单",
-				"navigationStyle": "custom"
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom",
+				"transparentTitle": "always"
 			}
 		},
 		{
 			"path": "pages/menu/index",
 			"style": {
-				"navigationBarTitleText": "点餐",
-				"navigationStyle": "custom"
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom",
+				"transparentTitle": "always"
 			}
 		},
 		{

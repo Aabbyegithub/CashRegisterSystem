@@ -35,7 +35,7 @@ function onInput(e: any) {
 <style scoped>
 .header {
   background:#1E8090 ;
-  /* padding: 40rpx 0 20rpx 0; */
+  padding: 40rpx 0 20rpx 0;
   position: relative;
   height: 44px;
   display: flex;
@@ -49,7 +49,7 @@ function onInput(e: any) {
   transform: translateY(-50%);
   display: flex;
   align-items: center;
-  /* background: rgba(255,255,255,0.15); */
+  background: rgba(255,255,255,0.15);
   border: 1px solid #e5e5e5;
   border-radius: 30rpx;
   padding: 0 20rpx;

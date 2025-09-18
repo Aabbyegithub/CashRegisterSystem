@@ -85,10 +85,6 @@
 			"selectedIconPath": "static/Frame(4).png",
 			"text": "桌台"
 		}, {
-			// "pagePath": "pages/menu/index",
-			// "iconPath": "static/Frame(1).png",
-			// "selectedIconPath": "static/Frame(5).png",
-			// "text": "点餐"
 			"pagePath": "pages/queue/index",
 			"iconPath": "static/Frame(1).png",
 			"selectedIconPath": "static/Frame(5).png",

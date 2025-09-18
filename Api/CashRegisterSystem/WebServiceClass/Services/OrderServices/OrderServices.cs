@@ -297,8 +297,7 @@ namespace WebServiceClass.Services.OrderServices
                      .ToListAsync();
                     await _dal.Db.Updateable<sys_kitchen_order>()
                         .SetColumns(a => new sys_kitchen_order { status = 5 })
-                        .In<long>(a => a.item_id,
-                        (ISugarQueryable<long>)itemIds)
+                        .Where(a => itemIds.Contains(a.item_id))
                         .ExecuteCommandAsync();
                 }
                 if (order.status == 2) //已下单状态变为取消
@@ -369,7 +368,7 @@ namespace WebServiceClass.Services.OrderServices
                     .Where(a => a.order_id == orderId).ExecuteCommandAsync();
                 //将厨房订单状态改为未完成
                     var itemIds = await _dal.Db.Queryable<sys_order_item>().With(SqlWith.UpdLock)
-                     .Where(a => a.order_id == orderId)
+                     .Where(a => a.order_id == orderId && a.status ==3)
                      .Select(a => a.item_id) // 只选择item_id字段
                      .ToListAsync();
                     await _dal.Db.Updateable<sys_kitchen_order>().With(SqlWith.UpdLock)

@@ -350,6 +350,7 @@ namespace WebServiceClass.Services.AppServices
         {
             var res = await _dal.Db.Queryable<sys_order_item>()
                 .Includes(a => a.dish)
+                .Includes(a=>a.meal)
                 .Where(a => a.order_id == orderId).ToListAsync();
 
             var order = await _dal.Db.Queryable<sys_order>().Includes(a => a.table).FirstAsync(a => a.order_id == orderId);
@@ -365,7 +366,7 @@ namespace WebServiceClass.Services.AppServices
                 {
                     Id = g.First().item_id,
                     Name = g.First().dish.dish_name,
-                    Spec = $"{g.Key.specification}*{g.Sum(x => x.quantity)}",
+                    Spec = $"{g.Key.specification}*{g.Sum(x => x.quantity)}({g.First().meal?.meal_name}*{g.First().meal?.price})",
                     Price = g.Sum(x => x.total_price)
                 })
                 .ToList();

@@ -44,7 +44,7 @@ function onInput(e: any) {
 }
 .search-box {
   position: absolute;
-  left: 30rpx;
+  left: 60rpx;
   top: 50%;
   transform: translateY(-50%);
   display: flex;

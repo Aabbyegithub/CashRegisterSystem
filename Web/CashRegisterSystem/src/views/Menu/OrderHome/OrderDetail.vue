@@ -580,17 +580,18 @@ const handlePayConfirm = async () => {
     return;
   }
   // 这里可对接实际支付接口
-  payDialogVisible.value = false;
   await OrderCheckout(orderid.value as string,selectedPayType.value,payCode).then(async (res:any)=>{
     if(res.success){
       orderInfo.value.status='已支付'
+      
       console.log('支付接口返回:', res);
       ElMessage.success('支付成功');
+      payDialogVisible.value = false;
+      await handlePrint();
     } else {
       ElMessage.error(res.message || '支付失败，请稍后重试');
       return;
     }
-    await handlePrint();
 
   }).catch((error)=>{
     ElMessage.error('支付失败，请稍后重试');
@@ -601,15 +602,12 @@ const handlePayConfirm = async () => {
 
 function scanCode(): Promise<string> {
   return new Promise((resolve) => {
-    // 创建一个隐藏的输入框
     const input = document.createElement('input');
     input.type = 'text';
     input.style.position = 'fixed';
     input.style.top = '-1000px';
     document.body.appendChild(input);
     input.focus();
-
-    // 监听回车事件（扫码枪通常以回车结束）
     input.addEventListener('keydown', function handler(e) {
       if (e.key === 'Enter') {
         resolve(input.value);
@@ -690,7 +688,7 @@ onMounted(async () => {
   console.log('订单ID:', orderid.value);
   await OrderDetail();
   await gettableList();
-  inputAmount.value = '￥' + tableInfo.value.totalAmount.toFixed(2);
+  inputAmount.value = '￥' + tableInfo.value.receivedAmount.toFixed(2);
 });
 
 async function OrderDetail() {

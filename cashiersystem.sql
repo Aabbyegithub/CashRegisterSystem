@@ -11,7 +11,7 @@
  Target Server Version : 80042
  File Encoding         : 65001
 
- Date: 17/09/2025 00:34:45
+ Date: 18/09/2025 21:17:18
 */
 
 SET NAMES utf8mb4;
@@ -29,7 +29,7 @@ CREATE TABLE `sys_backup`  (
   `backup_remark` varchar(5000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
   `backup_sum` int NULL DEFAULT NULL COMMENT '备份订单数',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '备份记录表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '备份记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_backup
@@ -252,7 +252,7 @@ CREATE TABLE `sys_inventory`  (
   INDEX `idx_material_expiry`(`material_id`, `expiry_date`) USING BTREE,
   CONSTRAINT `fk_inventory_material` FOREIGN KEY (`material_id`) REFERENCES `sys_raw_material` (`material_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_inventory_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_inventory
@@ -343,15 +343,14 @@ CREATE TABLE `sys_kitchen_order`  (
   INDEX `idx_store_kitchen_status_time`(`store_id`, `kitchen_type`, `status`, `create_time`) USING BTREE,
   CONSTRAINT `fk_kitchen_item` FOREIGN KEY (`item_id`) REFERENCES `sys_order_item` (`item_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `fk_kitchen_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 48 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '厨房订单表（KDS系统同步）' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 62 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '厨房订单表（KDS系统同步）' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_kitchen_order
 -- ----------------------------
-INSERT INTO `sys_kitchen_order` VALUES (55, 58, 2, 'A01', '油麦菜', NULL, 1, '', '凉菜厨房', 5, '2025-09-16 23:20:45', NULL, NULL, 1, NULL, NULL);
-INSERT INTO `sys_kitchen_order` VALUES (56, 59, 2, 'A01', '油麦菜', NULL, 1, NULL, '热菜', 5, '2025-09-16 23:20:53', NULL, NULL, 1, NULL, NULL);
-INSERT INTO `sys_kitchen_order` VALUES (57, 60, 2, 'A01', '油麦菜', NULL, 1, NULL, '热菜', 5, '2025-09-16 23:21:00', NULL, NULL, 1, NULL, NULL);
-INSERT INTO `sys_kitchen_order` VALUES (58, 61, 2, 'A01', '111', NULL, 1, NULL, '热菜', 5, '2025-09-16 23:21:41', NULL, NULL, 1, NULL, NULL);
+INSERT INTO `sys_kitchen_order` VALUES (59, 62, 2, 'A01', '油麦菜', NULL, 1, '', '凉菜厨房', 5, '2025-09-17 22:19:58', NULL, NULL, 1, NULL, NULL);
+INSERT INTO `sys_kitchen_order` VALUES (60, 63, 2, 'A01', '油麦菜', NULL, 1, '', '凉菜厨房', 1, '2025-09-18 19:20:48', NULL, NULL, 1, NULL, NULL);
+INSERT INTO `sys_kitchen_order` VALUES (61, 64, 2, 'A01', '烧鸭', NULL, 1, '中份', '热菜厨房', 1, '2025-09-18 19:20:48', NULL, NULL, 0, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_kitchen_order_backup
@@ -442,7 +441,7 @@ CREATE TABLE `sys_member_balance`  (
   INDEX `fk_balance_payment`(`payment_id`) USING BTREE,
   CONSTRAINT `fk_balance_member` FOREIGN KEY (`member_id`) REFERENCES `sys_member` (`member_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `fk_balance_payment` FOREIGN KEY (`payment_id`) REFERENCES `sys_payment` (`payment_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '会员储值记录表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '会员储值记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_member_balance
@@ -474,7 +473,7 @@ CREATE TABLE `sys_operationlog`  (
   `UpTime` datetime NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`Id`) USING BTREE,
   INDEX `index`(`UserId`, `ActionType`, `ModuleName`, `OrgId`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6852 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统操作日志' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 7059 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统操作日志' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_operationlog
@@ -7382,6 +7381,161 @@ INSERT INTO `sys_operationlog` VALUES (6900, 2, 4, '系统管理>定时任务', 
 INSERT INTO `sys_operationlog` VALUES (6901, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-17 00:32:45', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-17 00:32:45', 2, '2025-09-17 00:32:45');
 INSERT INTO `sys_operationlog` VALUES (6902, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-17 00:32:45', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-17 00:32:45', 2, '2025-09-17 00:32:45');
 INSERT INTO `sys_operationlog` VALUES (6903, 2, 4, '系统管理>定时任务', '定时任务列表查询', '2025-09-17 00:33:31', '{\"jobName\":null,\"pageIndex\":1,\"pageSize\":10}', 1, 2, '2025-09-17 00:33:31', 2, '2025-09-17 00:33:31');
+INSERT INTO `sys_operationlog` VALUES (6904, 2, 10, '系统登陆', '人员登陆', '2025-09-17 20:18:12', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-17 20:18:12', 2, '2025-09-17 20:18:12');
+INSERT INTO `sys_operationlog` VALUES (6905, 2, 11, '账号登出', '人员退出系统', '2025-09-17 20:18:19', '{}', 1, 2, '2025-09-17 20:18:19', 2, '2025-09-17 20:18:19');
+INSERT INTO `sys_operationlog` VALUES (6906, 6, 10, '系统登陆', '人员登陆', '2025-09-17 20:18:25', '账号：lq,员工姓名：lq', 2, 6, '2025-09-17 20:18:25', 6, '2025-09-17 20:18:25');
+INSERT INTO `sys_operationlog` VALUES (6907, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-17 20:18:26', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-17 20:18:26', 6, '2025-09-17 20:18:26');
+INSERT INTO `sys_operationlog` VALUES (6908, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-17 22:20:11', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-17 22:20:11', 6, '2025-09-17 22:20:11');
+INSERT INTO `sys_operationlog` VALUES (6909, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 22:21:11', '{\"orderId\":34}', 2, 6, '2025-09-17 22:21:11', 6, '2025-09-17 22:21:11');
+INSERT INTO `sys_operationlog` VALUES (6910, 6, 1, '订单管理>订单列表', '订单结账', '2025-09-17 22:21:18', '{\"orderId\":34,\"CouponsId\":0,\"type\":\"wechat\"}', 2, 6, '2025-09-17 22:21:18', 6, '2025-09-17 22:21:18');
+INSERT INTO `sys_operationlog` VALUES (6911, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 22:21:23', '{\"orderId\":34}', 2, 6, '2025-09-17 22:21:23', 6, '2025-09-17 22:21:23');
+INSERT INTO `sys_operationlog` VALUES (6912, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-17 22:21:27', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-17 22:21:27', 6, '2025-09-17 22:21:27');
+INSERT INTO `sys_operationlog` VALUES (6913, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-17 22:21:43', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-17 22:21:43', 6, '2025-09-17 22:21:43');
+INSERT INTO `sys_operationlog` VALUES (6914, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 22:21:44', '{\"orderId\":34}', 2, 6, '2025-09-17 22:21:44', 6, '2025-09-17 22:21:44');
+INSERT INTO `sys_operationlog` VALUES (6915, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 22:33:41', '{\"orderId\":34}', 2, 6, '2025-09-17 22:33:41', 6, '2025-09-17 22:33:41');
+INSERT INTO `sys_operationlog` VALUES (6916, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 22:34:37', '{\"orderId\":34}', 2, 6, '2025-09-17 22:34:37', 6, '2025-09-17 22:34:37');
+INSERT INTO `sys_operationlog` VALUES (6917, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 22:34:45', '{\"orderId\":34}', 2, 6, '2025-09-17 22:34:45', 6, '2025-09-17 22:34:45');
+INSERT INTO `sys_operationlog` VALUES (6918, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 22:35:29', '{\"orderId\":34}', 2, 6, '2025-09-17 22:35:29', 6, '2025-09-17 22:35:29');
+INSERT INTO `sys_operationlog` VALUES (6919, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 22:35:33', '{\"orderId\":34}', 2, 6, '2025-09-17 22:35:33', 6, '2025-09-17 22:35:33');
+INSERT INTO `sys_operationlog` VALUES (6920, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-17 22:35:46', '{\"orderId\":34}', 2, 6, '2025-09-17 22:35:46', 6, '2025-09-17 22:35:46');
+INSERT INTO `sys_operationlog` VALUES (6921, 2, 10, '系统登陆', '人员登陆', '2025-09-18 10:04:01', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-18 10:04:01', 2, '2025-09-18 10:04:01');
+INSERT INTO `sys_operationlog` VALUES (6922, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-18 10:04:41', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-18 10:04:41', 2, '2025-09-18 10:04:41');
+INSERT INTO `sys_operationlog` VALUES (6923, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-18 10:04:41', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-18 10:04:41', 2, '2025-09-18 10:04:41');
+INSERT INTO `sys_operationlog` VALUES (6924, 2, 4, '厨房管理>厨房看板', '厨房订单查询', '2025-09-18 10:04:41', '{\"storeId\":null,\"kitchenType\":null,\"status\":null}', 1, 2, '2025-09-18 10:04:41', 2, '2025-09-18 10:04:41');
+INSERT INTO `sys_operationlog` VALUES (6925, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-18 10:04:41', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-18 10:04:41', 2, '2025-09-18 10:04:41');
+INSERT INTO `sys_operationlog` VALUES (6926, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-18 10:04:41', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-18 10:04:41', 2, '2025-09-18 10:04:41');
+INSERT INTO `sys_operationlog` VALUES (6927, 2, 4, '厨房管理>厨房看板', '订单状态统计', '2025-09-18 10:04:41', '{\"storeId\":null,\"kitchenType\":null}', 1, 2, '2025-09-18 10:04:41', 2, '2025-09-18 10:04:41');
+INSERT INTO `sys_operationlog` VALUES (6928, 2, 1, '厨房管理>厨房看板', '订单状态操作', '2025-09-18 10:04:47', '{\"kitchenOrderId\":59,\"status\":2}', 1, 2, '2025-09-18 10:04:47', 2, '2025-09-18 10:04:47');
+INSERT INTO `sys_operationlog` VALUES (6929, 2, 11, '账号登出', '人员退出系统', '2025-09-18 10:05:11', '{}', 1, 2, '2025-09-18 10:05:11', 2, '2025-09-18 10:05:11');
+INSERT INTO `sys_operationlog` VALUES (6930, 6, 10, '系统登陆', '人员登陆', '2025-09-18 10:05:28', '账号：lq,员工姓名：lq', 2, 6, '2025-09-18 10:05:28', 6, '2025-09-18 10:05:28');
+INSERT INTO `sys_operationlog` VALUES (6931, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 10:05:28', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 10:05:28', 6, '2025-09-18 10:05:28');
+INSERT INTO `sys_operationlog` VALUES (6932, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 10:05:34', '{\"orderId\":34}', 2, 6, '2025-09-18 10:05:34', 6, '2025-09-18 10:05:34');
+INSERT INTO `sys_operationlog` VALUES (6933, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 12:26:47', '{\"orderId\":34}', 2, 6, '2025-09-18 12:26:47', 6, '2025-09-18 12:26:47');
+INSERT INTO `sys_operationlog` VALUES (6934, 6, 10, '系统登陆', '人员登陆', '2025-09-18 12:27:02', '账号：lq,员工姓名：lq', 2, 6, '2025-09-18 12:27:02', 6, '2025-09-18 12:27:02');
+INSERT INTO `sys_operationlog` VALUES (6935, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 12:27:03', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 12:27:03', 6, '2025-09-18 12:27:03');
+INSERT INTO `sys_operationlog` VALUES (6936, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 12:27:12', '{\"orderId\":34}', 2, 6, '2025-09-18 12:27:12', 6, '2025-09-18 12:27:12');
+INSERT INTO `sys_operationlog` VALUES (6937, 6, 1, '订单管理>订单列表', '订单结账', '2025-09-18 12:28:34', '{\"orderId\":34,\"CouponsId\":0,\"type\":\"wechat\",\"payCode\":\"131863933221409504\"}', 2, 6, '2025-09-18 12:28:34', 6, '2025-09-18 12:28:34');
+INSERT INTO `sys_operationlog` VALUES (6938, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 12:28:39', '{\"orderId\":34}', 2, 6, '2025-09-18 12:28:39', 6, '2025-09-18 12:28:39');
+INSERT INTO `sys_operationlog` VALUES (6939, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 12:28:44', '{\"orderId\":34}', 2, 6, '2025-09-18 12:28:44', 6, '2025-09-18 12:28:44');
+INSERT INTO `sys_operationlog` VALUES (6940, 6, 1, '订单管理>订单列表', '订单结账', '2025-09-18 12:32:40', '{\"orderId\":34,\"CouponsId\":0,\"type\":\"wechat\",\"payCode\":\"130803061342906928\"}', 2, 6, '2025-09-18 12:32:40', 6, '2025-09-18 12:32:40');
+INSERT INTO `sys_operationlog` VALUES (6941, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 12:32:45', '{\"orderId\":34}', 2, 6, '2025-09-18 12:32:45', 6, '2025-09-18 12:32:45');
+INSERT INTO `sys_operationlog` VALUES (6942, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 12:32:50', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 12:32:50', 6, '2025-09-18 12:32:50');
+INSERT INTO `sys_operationlog` VALUES (6943, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 12:33:05', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 12:33:05', 6, '2025-09-18 12:33:05');
+INSERT INTO `sys_operationlog` VALUES (6944, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 12:33:32', '{\"orderId\":34}', 2, 6, '2025-09-18 12:33:32', 6, '2025-09-18 12:33:32');
+INSERT INTO `sys_operationlog` VALUES (6945, 6, 1, '订单管理>订单列表', '订单结账', '2025-09-18 12:35:37', '{\"orderId\":34,\"CouponsId\":0,\"type\":\"wechat\",\"payCode\":\"133903894991543753\"}', 2, 6, '2025-09-18 12:35:37', 6, '2025-09-18 12:35:37');
+INSERT INTO `sys_operationlog` VALUES (6946, 6, 1, '订单管理>订单列表', '订单结账', '2025-09-18 12:37:15', '{\"orderId\":34,\"CouponsId\":0,\"type\":\"wechat\",\"payCode\":\"281826188850287010\"}', 2, 6, '2025-09-18 12:37:15', 6, '2025-09-18 12:37:15');
+INSERT INTO `sys_operationlog` VALUES (6947, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 12:37:17', '{\"orderId\":34}', 2, 6, '2025-09-18 12:37:17', 6, '2025-09-18 12:37:17');
+INSERT INTO `sys_operationlog` VALUES (6948, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 18:32:22', '{\"orderId\":34}', 2, 6, '2025-09-18 18:32:22', 6, '2025-09-18 18:32:22');
+INSERT INTO `sys_operationlog` VALUES (6949, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 18:32:50', '{\"orderId\":34}', 2, 6, '2025-09-18 18:32:50', 6, '2025-09-18 18:32:50');
+INSERT INTO `sys_operationlog` VALUES (6950, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 18:32:52', '{\"orderId\":34}', 2, 6, '2025-09-18 18:32:52', 6, '2025-09-18 18:32:52');
+INSERT INTO `sys_operationlog` VALUES (6951, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 18:32:54', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 18:32:54', 6, '2025-09-18 18:32:54');
+INSERT INTO `sys_operationlog` VALUES (6952, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 18:33:08', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 18:33:08', 6, '2025-09-18 18:33:08');
+INSERT INTO `sys_operationlog` VALUES (6953, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 18:33:09', '{\"orderId\":34}', 2, 6, '2025-09-18 18:33:09', 6, '2025-09-18 18:33:09');
+INSERT INTO `sys_operationlog` VALUES (6954, 6, 10, '系统登陆', '人员登陆', '2025-09-18 18:49:08', '账号：lq,员工姓名：lq', 2, 6, '2025-09-18 18:49:08', 6, '2025-09-18 18:49:08');
+INSERT INTO `sys_operationlog` VALUES (6955, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 18:49:11', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 18:49:11', 6, '2025-09-18 18:49:11');
+INSERT INTO `sys_operationlog` VALUES (6956, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 18:49:12', '{\"orderId\":34}', 2, 6, '2025-09-18 18:49:12', 6, '2025-09-18 18:49:12');
+INSERT INTO `sys_operationlog` VALUES (6957, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 18:49:30', '{\"orderId\":34}', 2, 6, '2025-09-18 18:49:30', 6, '2025-09-18 18:49:30');
+INSERT INTO `sys_operationlog` VALUES (6958, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 18:49:41', '{\"orderId\":34}', 2, 6, '2025-09-18 18:49:41', 6, '2025-09-18 18:49:41');
+INSERT INTO `sys_operationlog` VALUES (6959, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 18:52:09', '{\"orderId\":34}', 2, 6, '2025-09-18 18:52:09', 6, '2025-09-18 18:52:09');
+INSERT INTO `sys_operationlog` VALUES (6960, 6, 1, '订单管理>订单列表', '订单结账', '2025-09-18 18:52:36', '{\"orderId\":34,\"CouponsId\":0,\"type\":\"wechat\",\"payCode\":\"130438416775078580\"}', 2, 6, '2025-09-18 18:52:36', 6, '2025-09-18 18:52:36');
+INSERT INTO `sys_operationlog` VALUES (6961, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 18:54:16', '{\"orderId\":34}', 2, 6, '2025-09-18 18:54:16', 6, '2025-09-18 18:54:16');
+INSERT INTO `sys_operationlog` VALUES (6962, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 18:54:19', '{\"orderId\":34}', 2, 6, '2025-09-18 18:54:19', 6, '2025-09-18 18:54:19');
+INSERT INTO `sys_operationlog` VALUES (6963, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 18:54:31', '{\"orderId\":34}', 2, 6, '2025-09-18 18:54:31', 6, '2025-09-18 18:54:31');
+INSERT INTO `sys_operationlog` VALUES (6964, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 18:54:34', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 18:54:34', 6, '2025-09-18 18:54:34');
+INSERT INTO `sys_operationlog` VALUES (6965, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 18:54:35', '{\"orderId\":34}', 2, 6, '2025-09-18 18:54:35', 6, '2025-09-18 18:54:35');
+INSERT INTO `sys_operationlog` VALUES (6966, 6, 1, '订单管理>订单列表', '订单结账', '2025-09-18 18:58:26', '{\"orderId\":34,\"CouponsId\":0,\"type\":\"wechat\",\"payCode\":\"121621584985900032\"}', 2, 6, '2025-09-18 18:58:26', 6, '2025-09-18 18:58:26');
+INSERT INTO `sys_operationlog` VALUES (6967, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 18:58:55', '{\"orderId\":34}', 2, 6, '2025-09-18 18:58:55', 6, '2025-09-18 18:58:55');
+INSERT INTO `sys_operationlog` VALUES (6968, 6, 10, '系统登陆', '人员登陆', '2025-09-18 18:59:17', '账号：lq,员工姓名：lq', 2, 6, '2025-09-18 18:59:17', 6, '2025-09-18 18:59:17');
+INSERT INTO `sys_operationlog` VALUES (6969, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 18:59:17', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 18:59:17', 6, '2025-09-18 18:59:17');
+INSERT INTO `sys_operationlog` VALUES (6970, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 18:59:19', '{\"orderId\":34}', 2, 6, '2025-09-18 18:59:19', 6, '2025-09-18 18:59:19');
+INSERT INTO `sys_operationlog` VALUES (6971, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:00:01', '{\"orderId\":34}', 2, 6, '2025-09-18 19:00:01', 6, '2025-09-18 19:00:01');
+INSERT INTO `sys_operationlog` VALUES (6972, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:00:19', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:00:19', 6, '2025-09-18 19:00:19');
+INSERT INTO `sys_operationlog` VALUES (6973, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:00:28', '{\"orderId\":34}', 2, 6, '2025-09-18 19:00:28', 6, '2025-09-18 19:00:28');
+INSERT INTO `sys_operationlog` VALUES (6974, 6, 1, '订单管理>订单列表', '订单结账', '2025-09-18 19:00:42', '{\"orderId\":34,\"CouponsId\":0,\"type\":\"wechat\",\"payCode\":\"126857013530098805\"}', 2, 6, '2025-09-18 19:00:42', 6, '2025-09-18 19:00:42');
+INSERT INTO `sys_operationlog` VALUES (6975, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:01:20', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:01:20', 6, '2025-09-18 19:01:20');
+INSERT INTO `sys_operationlog` VALUES (6976, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:01:22', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:01:22', 6, '2025-09-18 19:01:22');
+INSERT INTO `sys_operationlog` VALUES (6977, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:01:41', '{\"orderId\":34}', 2, 6, '2025-09-18 19:01:41', 6, '2025-09-18 19:01:41');
+INSERT INTO `sys_operationlog` VALUES (6978, 6, 1, '订单管理>订单列表', '订单结账', '2025-09-18 19:01:52', '{\"orderId\":34,\"CouponsId\":0,\"type\":\"wechat\",\"payCode\":\"281499554227694756\"}', 2, 6, '2025-09-18 19:01:52', 6, '2025-09-18 19:01:52');
+INSERT INTO `sys_operationlog` VALUES (6979, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:02:38', '{\"orderId\":34}', 2, 6, '2025-09-18 19:02:38', 6, '2025-09-18 19:02:38');
+INSERT INTO `sys_operationlog` VALUES (6980, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:02:40', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:02:40', 6, '2025-09-18 19:02:40');
+INSERT INTO `sys_operationlog` VALUES (6981, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:02:41', '{\"orderId\":34}', 2, 6, '2025-09-18 19:02:41', 6, '2025-09-18 19:02:41');
+INSERT INTO `sys_operationlog` VALUES (6982, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:02:47', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:02:47', 6, '2025-09-18 19:02:47');
+INSERT INTO `sys_operationlog` VALUES (6983, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:02:48', '{\"orderId\":34}', 2, 6, '2025-09-18 19:02:48', 6, '2025-09-18 19:02:48');
+INSERT INTO `sys_operationlog` VALUES (6984, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-18 19:02:54', '{\"orderItemId\":\"62\"}', 2, 6, '2025-09-18 19:02:54', 6, '2025-09-18 19:02:54');
+INSERT INTO `sys_operationlog` VALUES (6985, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:02:54', '{\"orderId\":34}', 2, 6, '2025-09-18 19:02:54', 6, '2025-09-18 19:02:54');
+INSERT INTO `sys_operationlog` VALUES (6986, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:02:58', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:02:58', 6, '2025-09-18 19:02:58');
+INSERT INTO `sys_operationlog` VALUES (6987, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:03:18', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:03:18', 6, '2025-09-18 19:03:18');
+INSERT INTO `sys_operationlog` VALUES (6988, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:03:19', '{\"orderId\":34}', 2, 6, '2025-09-18 19:03:19', 6, '2025-09-18 19:03:19');
+INSERT INTO `sys_operationlog` VALUES (6989, 6, 1, '订单管理>订单列表', '订单退款', '2025-09-18 19:03:23', '{\"orderId\":34}', 2, 6, '2025-09-18 19:03:23', 6, '2025-09-18 19:03:23');
+INSERT INTO `sys_operationlog` VALUES (6990, 6, 1, '订单管理>订单列表', '订单退款', '2025-09-18 19:03:49', '{\"orderId\":34}', 2, 6, '2025-09-18 19:03:49', 6, '2025-09-18 19:03:49');
+INSERT INTO `sys_operationlog` VALUES (6991, 6, 10, '系统登陆', '人员登陆', '2025-09-18 19:06:15', '账号：lq,员工姓名：lq', 2, 6, '2025-09-18 19:06:15', 6, '2025-09-18 19:06:15');
+INSERT INTO `sys_operationlog` VALUES (6992, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:06:18', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:06:18', 6, '2025-09-18 19:06:18');
+INSERT INTO `sys_operationlog` VALUES (6993, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:06:20', '{\"orderId\":34}', 2, 6, '2025-09-18 19:06:20', 6, '2025-09-18 19:06:20');
+INSERT INTO `sys_operationlog` VALUES (6994, 6, 1, '订单管理>订单列表', '订单退款', '2025-09-18 19:06:24', '{\"orderId\":34}', 2, 6, '2025-09-18 19:06:24', 6, '2025-09-18 19:06:24');
+INSERT INTO `sys_operationlog` VALUES (6995, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:06:24', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:06:24', 6, '2025-09-18 19:06:24');
+INSERT INTO `sys_operationlog` VALUES (6996, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:06:46', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:06:46', 6, '2025-09-18 19:06:46');
+INSERT INTO `sys_operationlog` VALUES (6997, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:07:03', '{\"orderId\":34}', 2, 6, '2025-09-18 19:07:03', 6, '2025-09-18 19:07:03');
+INSERT INTO `sys_operationlog` VALUES (6998, 6, 1, '订单管理>订单列表', '订单重做', '2025-09-18 19:07:33', '{\"orderId\":34}', 2, 6, '2025-09-18 19:07:33', 6, '2025-09-18 19:07:33');
+INSERT INTO `sys_operationlog` VALUES (6999, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:07:33', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:07:33', 6, '2025-09-18 19:07:33');
+INSERT INTO `sys_operationlog` VALUES (7000, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:07:35', '{\"orderId\":34}', 2, 6, '2025-09-18 19:07:35', 6, '2025-09-18 19:07:35');
+INSERT INTO `sys_operationlog` VALUES (7001, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:07:43', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:07:43', 6, '2025-09-18 19:07:43');
+INSERT INTO `sys_operationlog` VALUES (7002, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:07:44', '{\"orderId\":34}', 2, 6, '2025-09-18 19:07:44', 6, '2025-09-18 19:07:44');
+INSERT INTO `sys_operationlog` VALUES (7003, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-18 19:07:51', '{\"orderItemId\":\"62\"}', 2, 6, '2025-09-18 19:07:51', 6, '2025-09-18 19:07:51');
+INSERT INTO `sys_operationlog` VALUES (7004, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:07:51', '{\"orderId\":34}', 2, 6, '2025-09-18 19:07:51', 6, '2025-09-18 19:07:51');
+INSERT INTO `sys_operationlog` VALUES (7005, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:07:53', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:07:53', 6, '2025-09-18 19:07:53');
+INSERT INTO `sys_operationlog` VALUES (7006, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:08:09', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:08:09', 6, '2025-09-18 19:08:09');
+INSERT INTO `sys_operationlog` VALUES (7007, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:08:10', '{\"orderId\":34}', 2, 6, '2025-09-18 19:08:10', 6, '2025-09-18 19:08:10');
+INSERT INTO `sys_operationlog` VALUES (7008, 6, 1, '订单管理>订单列表', '订单退款', '2025-09-18 19:08:15', '{\"orderId\":34}', 2, 6, '2025-09-18 19:08:15', 6, '2025-09-18 19:08:15');
+INSERT INTO `sys_operationlog` VALUES (7009, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:08:15', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:08:15', 6, '2025-09-18 19:08:15');
+INSERT INTO `sys_operationlog` VALUES (7010, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:09:19', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:09:19', 6, '2025-09-18 19:09:19');
+INSERT INTO `sys_operationlog` VALUES (7011, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:09:26', '{\"orderId\":34}', 2, 6, '2025-09-18 19:09:26', 6, '2025-09-18 19:09:26');
+INSERT INTO `sys_operationlog` VALUES (7012, 6, 1, '订单管理>订单列表', '订单重做', '2025-09-18 19:09:35', '{\"orderId\":34}', 2, 6, '2025-09-18 19:09:35', 6, '2025-09-18 19:09:35');
+INSERT INTO `sys_operationlog` VALUES (7013, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:09:35', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:09:35', 6, '2025-09-18 19:09:35');
+INSERT INTO `sys_operationlog` VALUES (7014, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:09:36', '{\"orderId\":34}', 2, 6, '2025-09-18 19:09:36', 6, '2025-09-18 19:09:36');
+INSERT INTO `sys_operationlog` VALUES (7015, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:09:40', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:09:40', 6, '2025-09-18 19:09:40');
+INSERT INTO `sys_operationlog` VALUES (7016, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:09:46', '{\"orderId\":34}', 2, 6, '2025-09-18 19:09:46', 6, '2025-09-18 19:09:46');
+INSERT INTO `sys_operationlog` VALUES (7017, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:10:13', '{\"orderId\":34}', 2, 6, '2025-09-18 19:10:13', 6, '2025-09-18 19:10:13');
+INSERT INTO `sys_operationlog` VALUES (7018, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:12:19', '{\"orderId\":34}', 2, 6, '2025-09-18 19:12:19', 6, '2025-09-18 19:12:19');
+INSERT INTO `sys_operationlog` VALUES (7019, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:12:20', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:12:20', 6, '2025-09-18 19:12:20');
+INSERT INTO `sys_operationlog` VALUES (7020, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:12:21', '{\"orderId\":34}', 2, 6, '2025-09-18 19:12:21', 6, '2025-09-18 19:12:21');
+INSERT INTO `sys_operationlog` VALUES (7021, 6, 1, '订单管理>订单列表', '订单子项退款', '2025-09-18 19:12:23', '{\"orderItemId\":\"62\"}', 2, 6, '2025-09-18 19:12:23', 6, '2025-09-18 19:12:23');
+INSERT INTO `sys_operationlog` VALUES (7022, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:12:23', '{\"orderId\":34}', 2, 6, '2025-09-18 19:12:23', 6, '2025-09-18 19:12:23');
+INSERT INTO `sys_operationlog` VALUES (7023, 6, 1, '订单管理>订单列表', '订单重做', '2025-09-18 19:12:26', '{\"orderId\":34}', 2, 6, '2025-09-18 19:12:26', 6, '2025-09-18 19:12:26');
+INSERT INTO `sys_operationlog` VALUES (7024, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:12:26', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:12:26', 6, '2025-09-18 19:12:26');
+INSERT INTO `sys_operationlog` VALUES (7025, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:12:28', '{\"orderId\":34}', 2, 6, '2025-09-18 19:12:28', 6, '2025-09-18 19:12:28');
+INSERT INTO `sys_operationlog` VALUES (7026, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:12:31', '{\"orderId\":34}', 2, 6, '2025-09-18 19:12:31', 6, '2025-09-18 19:12:31');
+INSERT INTO `sys_operationlog` VALUES (7027, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:12:58', '{\"orderId\":34}', 2, 6, '2025-09-18 19:12:58', 6, '2025-09-18 19:12:58');
+INSERT INTO `sys_operationlog` VALUES (7028, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:12:59', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:12:59', 6, '2025-09-18 19:12:59');
+INSERT INTO `sys_operationlog` VALUES (7029, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:13:06', '{\"orderId\":34}', 2, 6, '2025-09-18 19:13:06', 6, '2025-09-18 19:13:06');
+INSERT INTO `sys_operationlog` VALUES (7030, 6, 1, '订单管理>订单列表', '订单结账', '2025-09-18 19:13:35', '{\"orderId\":34,\"CouponsId\":0,\"type\":\"alipay\",\"payCode\":\"286965799793141370\"}', 2, 6, '2025-09-18 19:13:35', 6, '2025-09-18 19:13:35');
+INSERT INTO `sys_operationlog` VALUES (7031, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:21:42', '{\"orderId\":34}', 2, 6, '2025-09-18 19:21:42', 6, '2025-09-18 19:21:42');
+INSERT INTO `sys_operationlog` VALUES (7032, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:21:43', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:21:43', 6, '2025-09-18 19:21:43');
+INSERT INTO `sys_operationlog` VALUES (7033, 6, 4, '订单管理>订单列表', '查询未结算订单列表', '2025-09-18 19:21:45', '{\"tableId\":null,\"orderno\":null,\"page\":1,\"size\":10}', 2, 6, '2025-09-18 19:21:45', 6, '2025-09-18 19:21:45');
+INSERT INTO `sys_operationlog` VALUES (7034, 6, 4, '订单管理>订单列表', '获取订单明细', '2025-09-18 19:21:46', '{\"orderId\":35}', 2, 6, '2025-09-18 19:21:46', 6, '2025-09-18 19:21:46');
+INSERT INTO `sys_operationlog` VALUES (7035, 2, 10, '系统登陆', '人员登陆', '2025-09-18 19:32:34', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-18 19:32:34', 2, '2025-09-18 19:32:34');
+INSERT INTO `sys_operationlog` VALUES (7036, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-18 19:32:41', '{}', 1, 2, '2025-09-18 19:32:41', 2, '2025-09-18 19:32:41');
+INSERT INTO `sys_operationlog` VALUES (7037, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-18 19:32:41', '{}', 1, 2, '2025-09-18 19:32:41', 2, '2025-09-18 19:32:41');
+INSERT INTO `sys_operationlog` VALUES (7038, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-18 19:32:46', '{}', 1, 2, '2025-09-18 19:32:46', 2, '2025-09-18 19:32:46');
+INSERT INTO `sys_operationlog` VALUES (7039, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-18 19:32:46', '{}', 1, 2, '2025-09-18 19:32:46', 2, '2025-09-18 19:32:46');
+INSERT INTO `sys_operationlog` VALUES (7040, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-18 19:33:16', '{}', 1, 2, '2025-09-18 19:33:16', 2, '2025-09-18 19:33:16');
+INSERT INTO `sys_operationlog` VALUES (7041, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-18 19:33:16', '{}', 1, 2, '2025-09-18 19:33:16', 2, '2025-09-18 19:33:16');
+INSERT INTO `sys_operationlog` VALUES (7042, 2, 10, '系统登陆', '人员登陆', '2025-09-18 19:33:19', '账号：admin,员工姓名：管理员', 1, 2, '2025-09-18 19:33:19', 2, '2025-09-18 19:33:19');
+INSERT INTO `sys_operationlog` VALUES (7043, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-18 19:33:20', '{}', 1, 2, '2025-09-18 19:33:20', 2, '2025-09-18 19:33:20');
+INSERT INTO `sys_operationlog` VALUES (7044, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-18 19:33:20', '{}', 1, 2, '2025-09-18 19:33:20', 2, '2025-09-18 19:33:20');
+INSERT INTO `sys_operationlog` VALUES (7045, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-18 19:33:47', '{}', 1, 2, '2025-09-18 19:33:47', 2, '2025-09-18 19:33:47');
+INSERT INTO `sys_operationlog` VALUES (7046, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-18 19:33:47', '{}', 1, 2, '2025-09-18 19:33:47', 2, '2025-09-18 19:33:47');
+INSERT INTO `sys_operationlog` VALUES (7047, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-18 19:33:50', '{}', 1, 2, '2025-09-18 19:33:50', 2, '2025-09-18 19:33:50');
+INSERT INTO `sys_operationlog` VALUES (7048, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-18 19:33:50', '{}', 1, 2, '2025-09-18 19:33:50', 2, '2025-09-18 19:33:50');
+INSERT INTO `sys_operationlog` VALUES (7049, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-18 19:34:20', '{}', 1, 2, '2025-09-18 19:34:20', 2, '2025-09-18 19:34:20');
+INSERT INTO `sys_operationlog` VALUES (7050, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-18 19:34:20', '{}', 1, 2, '2025-09-18 19:34:20', 2, '2025-09-18 19:34:20');
+INSERT INTO `sys_operationlog` VALUES (7051, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-18 19:34:50', '{}', 1, 2, '2025-09-18 19:34:50', 2, '2025-09-18 19:34:50');
+INSERT INTO `sys_operationlog` VALUES (7052, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-18 19:34:50', '{}', 1, 2, '2025-09-18 19:34:50', 2, '2025-09-18 19:34:50');
+INSERT INTO `sys_operationlog` VALUES (7053, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-18 19:35:20', '{}', 1, 2, '2025-09-18 19:35:20', 2, '2025-09-18 19:35:20');
+INSERT INTO `sys_operationlog` VALUES (7054, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-18 19:35:20', '{}', 1, 2, '2025-09-18 19:35:20', 2, '2025-09-18 19:35:20');
+INSERT INTO `sys_operationlog` VALUES (7055, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-18 19:35:50', '{}', 1, 2, '2025-09-18 19:35:50', 2, '2025-09-18 19:35:50');
+INSERT INTO `sys_operationlog` VALUES (7056, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-18 19:35:50', '{}', 1, 2, '2025-09-18 19:35:50', 2, '2025-09-18 19:35:50');
+INSERT INTO `sys_operationlog` VALUES (7057, 2, 4, '排队叫号>排队列表', '排队列表查询', '2025-09-18 19:36:21', '{}', 1, 2, '2025-09-18 19:36:21', 2, '2025-09-18 19:36:21');
+INSERT INTO `sys_operationlog` VALUES (7058, 2, 4, '排队叫号>排队列表', '排队统计', '2025-09-18 19:36:21', '{}', 1, 2, '2025-09-18 19:36:21', 2, '2025-09-18 19:36:21');
 
 -- ----------------------------
 -- Table structure for sys_order
@@ -7426,12 +7580,13 @@ CREATE TABLE `sys_order`  (
   INDEX `idx_store_status_time`(`store_id`, `status`, `start_time`) USING BTREE,
   CONSTRAINT `fk_order_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_order_table` FOREIGN KEY (`table_id`) REFERENCES `sys_restaurant_table` (`table_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 27 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单主表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 35 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单主表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_order
 -- ----------------------------
-INSERT INTO `sys_order` VALUES (33, 2, 1, '20250916232044876873691', NULL, 1, 1, 8, 156.00, 0.00, 0.00, 0.00, 100.00, '2025-09-16 23:20:45', NULL, NULL, NULL, 0, 6, '1900-01-01 00:00:00', '2025-09-17 00:19:15', 1, NULL, NULL, 0);
+INSERT INTO `sys_order` VALUES (34, 2, 1, '20250917221958070366842', NULL, 1, 1, 3, 15.00, 0.00, 1.50, 16.50, 100.00, '2025-09-17 22:19:58', '2025-09-18 19:13:35', '2025-09-18 19:13:35', NULL, 0, 6, '1900-01-01 00:00:00', '2025-09-18 19:13:34', 1, NULL, '支付宝支付', 0);
+INSERT INTO `sys_order` VALUES (35, 2, 1, '20250918192047591987407', NULL, 1, 1, 2, 26.00, 0.00, 0.00, 26.00, 100.00, '2025-09-18 19:20:48', NULL, NULL, NULL, 0, 0, '1900-01-01 00:00:00', '1900-01-01 00:00:00', 1, NULL, NULL, 0);
 
 -- ----------------------------
 -- Table structure for sys_order_backup
@@ -7511,15 +7666,14 @@ CREATE TABLE `sys_order_item`  (
   CONSTRAINT `fk_item_dish` FOREIGN KEY (`dish_id`) REFERENCES `sys_dish` (`dish_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_item_meal` FOREIGN KEY (`meal_id`) REFERENCES `sys_set_meal` (`meal_id`) ON DELETE SET NULL ON UPDATE RESTRICT,
   CONSTRAINT `fk_item_order` FOREIGN KEY (`order_id`) REFERENCES `sys_order` (`order_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 51 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单明细表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 62 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单明细表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_order_item
 -- ----------------------------
-INSERT INTO `sys_order_item` VALUES (58, 33, 3, NULL, NULL, 1, 15.00, 15.00, NULL, 4, 1, NULL, 6, '');
-INSERT INTO `sys_order_item` VALUES (59, 33, 3, NULL, NULL, 1, 15.00, 15.00, NULL, 4, 1, NULL, 6, '');
-INSERT INTO `sys_order_item` VALUES (60, 33, 3, NULL, NULL, 1, 15.00, 15.00, NULL, 4, 1, NULL, 6, '');
-INSERT INTO `sys_order_item` VALUES (61, 33, 5, NULL, NULL, 1, 111.00, 111.00, NULL, 4, 1, NULL, 6, '');
+INSERT INTO `sys_order_item` VALUES (62, 34, 3, NULL, NULL, 1, 15.00, 15.00, NULL, 1, 0, NULL, 34, '');
+INSERT INTO `sys_order_item` VALUES (63, 35, 3, NULL, NULL, 1, 15.00, 15.00, NULL, 1, 0, NULL, NULL, '');
+INSERT INTO `sys_order_item` VALUES (64, 35, 2, NULL, 11, 1, 45.00, 45.00, NULL, 1, 0, NULL, NULL, '中份');
 
 -- ----------------------------
 -- Table structure for sys_order_item_backup
@@ -7582,7 +7736,7 @@ CREATE TABLE `sys_payment`  (
   INDEX `idx_payment_status`(`status`) USING BTREE,
   INDEX `idx_payment_time`(`pay_time`) USING BTREE,
   INDEX `idx_payment_account`(`store_account_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 63 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付记录表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 72 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_payment
@@ -7596,6 +7750,15 @@ INSERT INTO `sys_payment` VALUES (59, 0, '20250915232809772599088', NULL, 11.00,
 INSERT INTO `sys_payment` VALUES (60, 0, '20250915232810405152931', NULL, 11.00, 1, NULL, NULL, 2, '2025-09-15 23:28:10', NULL, 0, NULL);
 INSERT INTO `sys_payment` VALUES (61, 0, '20250915232925224206215', NULL, 33.00, 0, NULL, NULL, 2, '2025-09-15 23:29:25', NULL, 0, NULL);
 INSERT INTO `sys_payment` VALUES (62, 0, '20250916182535177133958', NULL, 100.00, 1, NULL, NULL, 2, '2025-09-16 18:25:35', NULL, 0, NULL);
+INSERT INTO `sys_payment` VALUES (63, 34, '20250917222117910906849', NULL, 16.50, 1, NULL, NULL, 2, '2025-09-17 22:21:18', 0, 0, '支付方式：微信支付-16.50');
+INSERT INTO `sys_payment` VALUES (64, 34, '20250918122834025968571', NULL, 18.15, 1, NULL, NULL, 2, '2025-09-18 12:28:34', 0, 0, '支付方式：微信支付-18.15');
+INSERT INTO `sys_payment` VALUES (65, 34, '20250918123239551533332', NULL, 19.97, 1, NULL, NULL, 2, '2025-09-18 12:32:40', 0, 0, '支付方式：微信支付-19.97');
+INSERT INTO `sys_payment` VALUES (66, 34, '20250918123537376609059', NULL, 21.97, 1, NULL, NULL, 2, '2025-09-18 12:35:37', 0, 0, '支付方式：微信支付-21.97');
+INSERT INTO `sys_payment` VALUES (67, 34, '20250918185235497463076', NULL, 24.17, 1, NULL, NULL, 2, '2025-09-18 18:52:35', 0, 0, '支付方式：微信支付-24.17');
+INSERT INTO `sys_payment` VALUES (68, 34, '20250918185826358527914', NULL, 26.59, 1, NULL, NULL, 2, '2025-09-18 18:58:26', 0, 0, '支付方式：微信支付-26.59');
+INSERT INTO `sys_payment` VALUES (69, 34, '20250918190042331129360', NULL, 16.50, 1, NULL, NULL, 2, '2025-09-18 19:00:42', 0, 0, '支付方式：微信支付-16.50');
+INSERT INTO `sys_payment` VALUES (70, 34, '20250918190151927592033', NULL, 16.50, 1, NULL, NULL, 2, '2025-09-18 19:01:52', 0, 0, '支付方式：微信支付-16.50');
+INSERT INTO `sys_payment` VALUES (71, 34, '20250918191334881971385', NULL, 16.50, 0, NULL, NULL, 2, '2025-09-18 19:13:35', 0, 0, '支付方式：');
 
 -- ----------------------------
 -- Table structure for sys_permission
@@ -7711,7 +7874,7 @@ CREATE TABLE `sys_purchase_order`  (
   INDEX `idx_po_arrival`(`expect_arrival_time`) USING BTREE,
   INDEX `idx_po_status`(`status`) USING BTREE,
   CONSTRAINT `fk_po_store` FOREIGN KEY (`store_id`) REFERENCES `sys_store` (`store_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '采购单表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '采购单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_purchase_order
@@ -7773,7 +7936,7 @@ CREATE TABLE `sys_raw_material`  (
   INDEX `idx_material_store`(`store_id`) USING BTREE,
   INDEX `idx_material_name`(`material_name`) USING BTREE,
   INDEX `idx_material_category`(`category`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '原材料表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '原材料表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_raw_material
@@ -7839,7 +8002,7 @@ CREATE TABLE `sys_restaurant_table`  (
 -- ----------------------------
 -- Records of sys_restaurant_table
 -- ----------------------------
-INSERT INTO `sys_restaurant_table` VALUES (1, 2, 'A01', 4, NULL, 2, 100.00, '1900-01-01 00:00:00', '2025-09-16 23:20:28', 33, '四人桌（一楼大厅）', NULL);
+INSERT INTO `sys_restaurant_table` VALUES (1, 2, 'A01', 4, NULL, 2, 100.00, '1900-01-01 00:00:00', '2025-09-18 19:13:34', 35, '四人桌（一楼大厅）', '2025-09-18 19:13:35');
 INSERT INTO `sys_restaurant_table` VALUES (2, 2, 'A02', 2, NULL, 1, 500.00, '1900-01-01 00:00:00', '2025-09-16 22:49:07', NULL, '包间', NULL);
 INSERT INTO `sys_restaurant_table` VALUES (3, 2, 'B01', 6, NULL, 1, 0.00, '1900-01-01 00:00:00', '2025-09-16 23:05:49', NULL, '四人桌（一楼大厅）', NULL);
 
@@ -7853,7 +8016,7 @@ CREATE TABLE `sys_role`  (
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '角色描述',
   PRIMARY KEY (`role_id`) USING BTREE,
   UNIQUE INDEX `uk_role_name`(`role_name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role
@@ -8039,7 +8202,7 @@ CREATE TABLE `sys_staff`  (
 -- ----------------------------
 -- Records of sys_staff
 -- ----------------------------
-INSERT INTO `sys_staff` VALUES (2, 1, 'admin', '8pgVn7BnedAGOKthCSdIUifitpQsAWfKSDDFoz5R8oM=', '管理员', '18433646699', '店长', 1, '2025-09-17 00:13:08', 'SOMMsmOVbHI38x1hUkWfiQ==', 1);
+INSERT INTO `sys_staff` VALUES (2, 1, 'admin', '8pgVn7BnedAGOKthCSdIUifitpQsAWfKSDDFoz5R8oM=', '管理员', '18433646699', '店长', 1, '2025-09-18 10:05:11', 'SOMMsmOVbHI38x1hUkWfiQ==', 1);
 INSERT INTO `sys_staff` VALUES (6, 2, 'lq', 'jv77mITf0Nl7Vpz1iyPSAszCDwLxq4lU11UnEOn4q6U=', 'lq', '11111111111', '服务员', 1, '2025-09-16 18:44:18', 'PzBgx3X4Rqt+GDPMcm2ekw==', 1);
 
 -- ----------------------------
@@ -8104,7 +8267,7 @@ CREATE TABLE `sys_supplier`  (
   PRIMARY KEY (`supplier_id`) USING BTREE,
   INDEX `idx_supplier_name`(`supplier_name`) USING BTREE,
   INDEX `idx_supplier_status`(`status`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '供应商表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '供应商表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_supplier
@@ -8163,11 +8326,11 @@ CREATE TABLE `sys_timertask`  (
 -- ----------------------------
 -- Records of sys_timertask
 -- ----------------------------
-INSERT INTO `sys_timertask` VALUES (2, '活动/优惠卷自动开始和关闭', 'AutomatedTask', '2025-09-16 11:45:16', '2025-09-16 11:45:16', '2125-09-16 11:45:16', NULL, NULL, 1, 1, '0 0/1 * * * ? ', 00000000000000000000, '2025-09-17 00:33:00');
+INSERT INTO `sys_timertask` VALUES (2, '活动/优惠卷自动开始和关闭', 'AutomatedTask', '2025-09-16 11:45:16', '2025-09-16 11:45:16', '2125-09-16 11:45:16', NULL, NULL, 1, 1, '0 0/1 * * * ? ', 00000000000000000773, '2025-09-18 20:05:00');
 INSERT INTO `sys_timertask` VALUES (3, '每天o点自动备份前一天的已结算的订单', 'BackUpTask', '2025-09-16 11:45:46', '2025-09-16 11:45:46', '2125-09-16 11:45:46', NULL, NULL, 1, 1, '0 0 1 * * ? ', 00000000000000000000, NULL);
 INSERT INTO `sys_timertask` VALUES (4, '定时清理操作日志保留半个月', 'ClearLogsTask', '2025-09-16 14:07:09', '2025-09-16 14:07:09', '2125-09-16 14:07:09', NULL, NULL, 1, 1, '0 0 1 * * ?', 00000000000000000000, NULL);
-INSERT INTO `sys_timertask` VALUES (5, '厨房菜品制作超时预警', 'kitchenOverTimeTask', '2025-09-16 14:12:34', '2025-09-16 14:12:34', '2125-09-16 14:12:34', NULL, NULL, 1, 1, '0 0/1 * * * ?', 00000000000000000000, '2025-09-17 00:33:00');
-INSERT INTO `sys_timertask` VALUES (6, '清洁中桌台十分钟自动变为空闲', 'ClearTableTask', '2025-09-16 16:26:30', '2025-09-16 16:26:30', '2125-09-16 16:26:30', NULL, NULL, 1, 1, '0 0/1 0/1 * * ? ', 00000000000000000147, '2025-09-17 00:33:00');
-INSERT INTO `sys_timertask` VALUES (7, '自动管理套餐的上下架', 'DishMealTask', '2025-09-16 16:45:22', '2025-09-16 16:45:22', '2125-09-16 16:45:22', NULL, NULL, 1, 1, '0 0/1 0/1 * * ? ', 00000000000000000147, '2025-09-17 00:33:00');
+INSERT INTO `sys_timertask` VALUES (5, '厨房菜品制作超时预警', 'kitchenOverTimeTask', '2025-09-16 14:12:34', '2025-09-16 14:12:34', '2125-09-16 14:12:34', NULL, NULL, 1, 1, '0 0/1 * * * ?', 00000000000000000773, '2025-09-18 20:05:00');
+INSERT INTO `sys_timertask` VALUES (6, '清洁中桌台十分钟自动变为空闲', 'ClearTableTask', '2025-09-16 16:26:30', '2025-09-16 16:26:30', '2125-09-16 16:26:30', NULL, NULL, 1, 1, '0 0/1 0/1 * * ? ', 00000000000000000920, '2025-09-18 20:05:00');
+INSERT INTO `sys_timertask` VALUES (7, '自动管理套餐的上下架', 'DishMealTask', '2025-09-16 16:45:22', '2025-09-16 16:45:22', '2125-09-16 16:45:22', NULL, NULL, 1, 1, '0 0/1 0/1 * * ? ', 00000000000000000920, '2025-09-18 20:05:00');
 
 SET FOREIGN_KEY_CHECKS = 1;

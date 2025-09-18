@@ -888,7 +888,10 @@
           "SqlSugarCore": "5.1.4.193"
         },
         "runtime": {
-          "ModelClassLibrary.dll": {}
+          "ModelClassLibrary.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "WebIServices/1.0.0": {
@@ -896,7 +899,10 @@
           "ModelClassLibrary": "1.0.0"
         },
         "runtime": {
-          "WebIServices.dll": {}
+          "WebIServices.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

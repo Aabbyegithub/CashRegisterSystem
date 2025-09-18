@@ -12,7 +12,7 @@
             class="group-header"
             @click="toggleGroup(group.groupKey)"
           >
-            <img :src="group.icon" :alt="group.groupTitle" class="group-icon" />
+            <img :src="getAssetPath(group.icon)" :alt="group.groupTitle" class="group-icon" />
             <h3 class="group-title" :class="{ 'hidden-text': isCollapsed }">{{ group.groupTitle }}</h3>
             <img
               src="/src/assets/下拉菜单.png"
@@ -32,7 +32,7 @@
               :class="{ active: $route.name === item.name }"
               @click="handleMenuClick(item.key)"
             >
-              <img :src="item.icon" :alt="item.title" class="menu-icon" />
+              <img :src="getAssetPath(item.icon)" :alt="item.title" class="menu-icon" />
               <span :class="{ 'hidden-text': isCollapsed }" style="color: black;">{{ item.title }}</span>
             </li>
           </ul>
@@ -63,7 +63,18 @@
 import { ref, onMounted, shallowRef, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { getMenuList } from '../../../api/login';
+import { pa } from 'element-plus/es/locales.mjs';
 
+function getAssetPath(path: string) {
+  // 开发环境用 /src/assets/，生产环境用 /assets/
+  if (import.meta.env.MODE === 'development') {
+    // Vite开发环境下，public目录下的图片也可以用 /assets/xxx.png 访问
+    return path;
+  } else {
+    // 打包后，public目录下的图片在 /assets/xxx.png
+    return path.replace('/src/', '/');
+  }
+}
 // 模拟接口获取菜单数据
 async function fetchMenuData() {
   // 这里模拟接口返回的数据结构，和你原本的菜单结构一致

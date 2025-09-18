@@ -2372,6 +2372,11 @@
         "Name": "type",
         "Type": "System.String",
         "IsRequired": false
+      },
+      {
+        "Name": "payCode",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
