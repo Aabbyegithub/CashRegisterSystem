@@ -92,10 +92,10 @@ namespace WebServiceClass.Services.DishServices
         // 删除套餐
         public async Task<ApiResponse<bool>> DeleteMealAsync(long mealId)
         {
-            var result = await _dal.Db.Deleteable<sys_set_meal>().In(mealId).ExecuteCommandAsync() > 0;
+            var result = await _dal.Db.Updateable<sys_set_meal>().SetColumns(a=>a.status ==0).Where(a=>a.meal_id == mealId).ExecuteCommandAsync() > 0;
             // 同时删除子表
-            if (result)
-                await _dal.Db.Deleteable<sys_set_meal_item>().Where(x => x.meal_id == mealId).ExecuteCommandAsync();
+            //if (result)
+            //    await _dal.Db.Deleteable<sys_set_meal_item>().Where(x => x.meal_id == mealId).ExecuteCommandAsync();
             return Success(result, result ? "删除成功" : "删除失败");
         }
 

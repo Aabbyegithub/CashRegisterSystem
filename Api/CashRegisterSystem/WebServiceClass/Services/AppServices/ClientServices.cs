@@ -50,7 +50,7 @@ namespace WebServiceClass.Services.AppServices
             var res = await _dal.Db.Queryable<sys_dish>()
                   .Includes(a=>a.dish_spec)
                   .Includes(a => a.dish_category).OrderBy(a => a.dish_category.sort_order)
-                  .Where(a => a.store_id == store_id || a.store_id == null)
+                  .Where(a => a.store_id == store_id || a.store_id == null).Where(a=>a.status ==1)
                   .Select(a => new DishList
                   {
                       Id = a.dish_id,

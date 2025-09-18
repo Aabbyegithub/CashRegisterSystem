@@ -18,7 +18,7 @@
       <el-table
         :data="dishList"
         border
-        style="width: 100%"
+        style="width: 100%;height: 100%;"
         :header-cell-style="{ background: '#f8f9fa', color: '#606266' }"
       >
         <el-table-column type="selection" width="55" />

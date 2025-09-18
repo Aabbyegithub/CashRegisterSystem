@@ -1,5 +1,6 @@
 ﻿using MyNamespace;
 using SqlSugar;
+using SqlSugar.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +38,7 @@ namespace WebServiceClass.Services.DishServices
         {
             try
             {
-                await _dal.Db.Deleteable<sys_dish>().In(dishIds).ExecuteCommandAsync();
+                await _dal.Db.Updateable<sys_dish>().SetColumns(a=>a.status == 0).Where(a=>dishIds.Contains(a.dish_id.ObjToInt())).ExecuteCommandAsync();
                 return Success(true, "删除菜品成功");
             }
             catch (Exception ex)

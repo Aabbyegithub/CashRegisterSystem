@@ -37,7 +37,7 @@
       <el-table
         :data="tableList"
         border
-        style="width: 100%"
+        style="width: 100%;height: 100%;"
         :header-cell-style="{ background: '#f8f9fa', color: '#606266' }"
       >
         <el-table-column
@@ -395,7 +395,7 @@ const openAddDialog = () => {
     capacity: 0,
     desc: '',
     lastUseTime: '',
-    min_consumption:''
+    min_consumption:'0'
   };
   addDialogVisible.value = true;
 };
