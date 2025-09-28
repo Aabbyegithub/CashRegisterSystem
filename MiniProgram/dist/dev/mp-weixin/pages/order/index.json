@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "订单",
-  "navigationStyle": "custom",
-  "usingComponents": {
-    "u-button": "../../node-modules/uview-plus/components/u-button/u-button",
-    "custom-header": "../../components/CustomHeader"
-  }
-}
