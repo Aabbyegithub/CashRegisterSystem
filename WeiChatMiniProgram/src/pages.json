@@ -1,0 +1,112 @@
+{
+	"pages": [ 
+		{
+			"path": "pages/table/index",
+			"style": {
+				"navigationBarTitleText": "桌台"
+			}
+		},
+		{
+			"path": "pages/order/index",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom",
+				"transparentTitle": "always"
+			}
+		},
+		{
+			"path": "pages/menu/index",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom",
+				"transparentTitle": "always"
+			}
+		},
+		{
+			"path": "pages/my/index",
+			"style": {
+				"navigationBarTitleText": "我的"
+			}
+		},
+		{
+			"path": "pages/my/bankcard",
+			"style": {
+				"navigationBarTitleText": "银行卡设置"
+			}
+		},
+		{
+			"path": "pages/order/orderdetil",
+			"style": {
+				"navigationBarTitleText": "订单结账"
+			}
+		},
+		{
+			"path": "pages/my/Login",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		},
+		{
+			"path": "pages/my/Register",
+			"style": {
+				"navigationBarTitleText": "注册"
+			}
+		},
+		{
+			"path": "pages/order/Coupon",
+			"style": {
+				"navigationBarTitleText": "优惠卷"
+			}
+		},
+		{
+			"path": "pages/order/ordermenu-detial",
+			"style": {
+				"navigationBarTitleText": "点菜详情"
+			}
+		}
+
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "桌台管理",
+		"navigationBarBackgroundColor": "#1E8090",
+		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#13ADC8",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"height": "80px",
+		"fontSize": "15px",
+		"iconWidth": "24px",
+		"spacing": "3px",
+		"list": [{
+			"pagePath": "pages/table/index",
+			"iconPath": "static/Frame.png",
+			"selectedIconPath": "static/Frame(4).png",
+			"text": "桌台"
+		}, {
+			"pagePath": "pages/menu/index",
+			"iconPath": "static/Frame(1).png",
+			"selectedIconPath": "static/Frame(5).png",
+			"text": "点餐"
+		}, {
+			"pagePath": "pages/order/index",
+			"iconPath": "static/Frame(2).png",
+			"selectedIconPath": "static/Frame(6).png",
+			"text": "订单"
+		}, {
+			"pagePath": "pages/my/index",
+			"iconPath": "static/Frame(3).png",
+			"selectedIconPath": "static/Frame(7).png",
+			"text": "我的"
+		}]
+	},
+	"easycom": {
+		"autoscan": true,
+		"custom": {
+			"^u-(.*)": "uview-plus/components/u-$1/u-$1.vue"
+		}
+	}
+}
