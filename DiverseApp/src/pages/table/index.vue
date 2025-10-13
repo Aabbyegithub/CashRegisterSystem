@@ -67,7 +67,8 @@ function confirmOpen() {
   uni.setStorageSync('TableInfo',{
     tableId: selectedTable.value.id,
     storeId:  selectStoreId.value,
-    people: openPeople.value
+    people: openPeople.value,
+    tableName: selectedTable.value.name
   })
   uni.switchTab({
     url: '../menu/index'
