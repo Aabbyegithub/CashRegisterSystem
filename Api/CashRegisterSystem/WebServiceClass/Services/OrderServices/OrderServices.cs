@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebIServices.IBase;
 using WebIServices.IServices.OrderIServices;
+using WebServiceClass.Helper.WeChat;
 using static WebProjectTest.Common.Message;
 
 namespace WebServiceClass.Services.OrderServices
@@ -16,10 +17,12 @@ namespace WebServiceClass.Services.OrderServices
     public class OrderServices : IBaseService, IOrderServices
     {
         private readonly ISqlHelper _dal;
+        private readonly WeChatPayHelper _weChatPayHelper;
 
-        public OrderServices(ISqlHelper dal)
+        public OrderServices(ISqlHelper dal, WeChatPayHelper weChatPayHelper)
         {
             _dal = dal ?? throw new ArgumentNullException(nameof(dal));
+            _weChatPayHelper = weChatPayHelper ?? throw new ArgumentNullException();
         }
 
         public async Task<ApiResponse<bool>> AddOrderAsync(sys_order order)
@@ -450,8 +453,127 @@ namespace WebServiceClass.Services.OrderServices
 
         public async Task<ApiResponse<bool>> HangOrderAsync(int order,int userId)
         {
+            var orderData =await _dal.Db.Queryable<sys_order>().With(SqlWith.UpdLock).FirstAsync(a=>a.order_id ==order);
+            if (orderData.member_id.HasValue)
+            {
+               var member = await _dal.Db.Queryable<sys_member>().With(SqlWith.UpdLock).FirstAsync(a => a.member_id == orderData.member_id && a.status == 1);
+                //会员确保剩余金额充足
+                if (member != null && member.member_id != 0)
+                {
+
+                    if (member.balance <= orderData.payable_amount)
+                    {
+                        return Fail<bool>("会员剩余金额不足，不可挂单");
+                    }
+                }
+            }
+            else
+            {
+                 return Fail<bool>("非会员不可挂单");
+            }
+
             await _dal.Db.Updateable<sys_order>().With(SqlWith.UpdLock).SetColumns(a =>new sys_order { status = 5,operator_id = userId}).Where(a => a.order_id == order).ExecuteCommandAsync();
             return Success(true);
+        }
+
+        public async Task<ApiResponse<bool>> RefundOrderAsync(int order, int userId)
+        {
+            var orderData =await _dal.Db.Queryable<sys_order>().With(SqlWith.UpdLock).FirstAsync(a=>a.order_id ==order);
+            var sys_payment = await _dal.Db.Queryable<sys_payment>().With(SqlWith.UpdLock).FirstAsync(a=>a.order_id ==order && a.status ==2);
+            if (orderData == null)
+            {
+                return Fail<bool>($"原订单{orderData.order_no}不存在");
+            }
+
+            if (orderData.status != 3) // 3=已支付状态（根据实际枚举调整）
+            {
+                return Fail<bool>($"订单状态异常，无法退款");
+            }
+
+            // 验证退款金额（不能超过订单实付金额）
+            if (sys_payment.pay_amount <= orderData.payable_amount)
+            {
+                return Fail<bool>($"退款金额不能超过订单实付金额（{orderData.payable_amount}元）");
+            }
+
+            // 6. 检查是否已有退款记录（避免重复退款）
+            var existingRefund = await _dal.Db.Queryable<sys_payment>()
+                .FirstAsync(r => r.order_id == order && (r.status ==4 || r.status == 5));
+
+            if (existingRefund != null)
+            {
+                return Fail<bool>("当前订单已有处理中的退款，请等待结果");
+            }
+            bool isSuccess = false;
+            //  生成唯一退款单号（格式：REF+时间戳+随机数）
+            string refundNo = $"REF{DateTime.Now:yyyyMMddHHmmssfff}{new Random().Next(1000, 9999)}";
+            try
+            {
+                await _dal.Db.Ado.BeginTranAsync();
+
+                // 创建退款记录（初始状态：处理中）
+               var paymentId = await _dal.Db.Insertable(new sys_payment
+                {
+                    order_id = order,
+                    payment_no =refundNo,
+                    pay_amount = sys_payment.pay_amount,
+                    pay_type =(byte)(orderData.paymeth =="微信支付" ? 1:2),
+                    status = 4,
+                    pay_time = DateTime.Now,
+                    remark = "订单退款"
+
+                }).ExecuteReturnBigIdentityAsync();
+
+                // 9. 调用微信退款接口
+                var refundResult = _weChatPayHelper.Refund(
+                    orderNo: orderData.order_no,
+                    refundNo: refundNo,
+                    totalAmount: orderData.payable_amount,
+                    refundAmount: sys_payment.pay_amount,
+                    refundDesc: "客户退款"
+                );
+                var payment = await _dal.Db.Queryable<sys_payment>().With(SqlWith.UpdLock).FirstAsync(a=>a.payment_id == paymentId);
+                // 10. 处理微信退款结果
+                if (refundResult.ContainsKey("result_code") && refundResult["result_code"] == "SUCCESS")
+                {
+                    // 退款成功：更新退款记录和订单状态
+                    string refundId = refundResult["refund_id"]; // 微信退款单号
+                    payment.status = 5; // 5=退款成功
+                    payment.transaction_id = refundId;
+                    payment.pay_time = DateTime.Now;
+                    payment.response_data = Newtonsoft.Json.JsonConvert.SerializeObject(refundResult);
+
+                    // 更新订单状态（标记为已退款）
+                    orderData.status = 8; // 8=已退款
+                    orderData.pay_time = DateTime.Now;
+                    orderData.operator_id = userId;
+                    await _dal.Db.Updateable(orderData).ExecuteCommandAsync();
+                    isSuccess = true;
+                }
+                else
+                {
+                    // 退款失败：记录错误信息
+                    string errCode = refundResult.ContainsKey("err_code") ? refundResult["err_code"] : "未知错误";
+                    string errMsg = refundResult.ContainsKey("err_code_des") ? refundResult["err_code_des"] : "退款失败";
+
+                    payment.status = 6; // 3=退款失败
+                    payment.fail_reason = $"{errCode}：{errMsg}";
+                    payment.response_data = Newtonsoft.Json.JsonConvert.SerializeObject(refundResult);
+                }
+
+                // 11. 更新退款记录
+                await _dal.Db.Updateable(payment).ExecuteCommandAsync();
+                await _dal.Db.Ado.CommitTranAsync();
+                return Success(true,"退款成功");
+            }
+            catch (Exception ex)
+            {
+                // 异常回滚
+                await _dal.Db.Ado.RollbackTranAsync();
+
+                return Fail<bool>($"退款处理异常：{ex.Message.Substring(0, 50)}");
+            }
+
         }
     }
 }

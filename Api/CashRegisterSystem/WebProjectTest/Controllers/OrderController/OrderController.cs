@@ -159,22 +159,9 @@ namespace WebProjectTest.Controllers.OrderController
         /// summary>
         [HttpGet]
         [OperationLogFilter("订单管理>订单列表", "订单结账", ActionType.Edit)]
-        public async Task<ApiResponse<bool>> OrderCheckoutAsync(int orderId, int? CouponsId, string type,string payCode)
+        public async Task<ApiResponse<Dictionary<string, string>>> OrderCheckoutAsync(int orderId, int? CouponsId, string type,string payCode)
         {
-            var url = "";
-            switch (type)
-            {
-                case "wechat":
-                    url = AppSettings.GetConfig("Payment:WeChat:CustomUrl");
-                    break;
-                case "alipay":
-                    url = "";
-                    break;
-                default:
-                    return Error<bool>("支付失败");
-
-            }
-            return await _clientServices.OrderCheckout(orderId, CouponsId, type, payCode, url, UserId);
+            return await _clientServices.OrderCheckout(orderId, CouponsId, type, payCode, UserId);
         }
 
         [HttpPost]
@@ -188,6 +175,13 @@ namespace WebProjectTest.Controllers.OrderController
         public async Task<ApiResponse<bool>> HangOrderAsync(int order)
         {   
             return await _OrderServices.HangOrderAsync(order,UserId);
+        }
+
+        [HttpGet]
+        [OperationLogFilter("订单管理>订单列表", "退款", ActionType.Edit)]
+        public async Task<ApiResponse<bool>> RefundOrderAsync(int order)
+        {
+            return await _OrderServices.RefundOrderAsync(order, UserId);
         }
     }
 }

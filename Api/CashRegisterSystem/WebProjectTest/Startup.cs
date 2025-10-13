@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using ModelClassLibrary.Model.Dto.PayDto;
 using Quartz;
 using SqlSugar;
 using SqlSugar.Extensions;
@@ -14,6 +15,7 @@ using WebIServices.IBase;
 using WebProjectTest.Common;
 using WebServiceClass.Base;
 using WebServiceClass.Helper;
+using WebServiceClass.Helper.WeChat;
 using WebServiceClass.QuartzTask;
 using WebTaskClass.SampleJob;
 
@@ -57,6 +59,12 @@ namespace WebProjectTest
             });
             //注册获取配置文件
             services.AddScoped<IAppSettinghelper, WebAppConfig>();
+
+            // 绑定微信支付配置
+            services.Configure<WeChatPayConfig>(Configuration.GetSection("WeChatPay"));
+
+            // 注册 WeChatPayHelper
+            services.AddScoped<WeChatPayHelper>();
             //注入Service
             services.Scan(scan =>
             scan.FromAssemblies(Assembly.Load("WebIServices"),Assembly.Load("WebServiceClass"),Assembly.Load("ModelClassLibrary"), typeof(Class1).Assembly) // 添加更多程序集

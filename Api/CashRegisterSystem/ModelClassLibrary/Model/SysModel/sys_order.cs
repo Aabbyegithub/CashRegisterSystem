@@ -115,7 +115,7 @@ namespace MyNamespace
            public DateTime start_time {get;set;}
 
            /// <summary>
-           /// Desc:支付时间
+           /// Desc:支付/退款时间
            /// Default:
            /// Nullable:True
            /// </summary>           

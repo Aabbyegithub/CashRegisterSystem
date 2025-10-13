@@ -155,16 +155,55 @@ async function checkout() {
             CouponsId: selectcouponsId.value || 0,
             Code: code.value,
           }
-        }).then((res:any) => {
+        }).then((res:any) => { 
           uni.hideLoading()
-          if (res.start === 200) {
-            uni.showToast({ title: '结账成功', icon: 'success' })
-            // 结账成功后，清除已选择的优惠券
-            uni.removeStorageSync('selectedCoupon')
-            // 返回订单列表页
-            uni.navigateBack()
+          if (res.start === 200) { 
+            const jsApiParams = res.response;
+            // 非积分结算时才调起支付
+            if (res.message !== '积分正常结算') {
+              // 检查支付参数完整性
+              const requiredParams = ['timeStamp', 'nonceStr', 'package', 'signType', 'paySign'];
+              const hasMissing = requiredParams.some(key => !jsApiParams[key]);
+              if (hasMissing) {
+                uni.showToast({ title: '支付参数错误，请重试', icon: 'none' });
+                return;
+              }
+
+              // 显示加载状态
+              uni.showLoading({ title: '准备支付...' });
+
+              // 调用微信小程序支付API
+              uni.requestPayment({
+                provider: 'wxpay',
+                orderInfo: '', // 类型兼容，微信小程序可为空字符串
+                timeStamp: jsApiParams.timeStamp,
+                nonceStr: jsApiParams.nonceStr,
+                package: jsApiParams.package,
+                signType: jsApiParams.signType,
+                paySign: jsApiParams.paySign,
+                success: (payRes:any) => {
+                  uni.hideLoading();
+                  uni.showToast({ title: '结账成功', icon: 'success' });
+                  uni.removeStorageSync('selectedCoupon');
+                  uni.navigateBack();
+                },
+                fail: (err:any) => {
+                  uni.hideLoading();
+                  const title = err.errMsg.includes('cancel')
+                    ? '支付已取消'
+                    : `支付失败：${err.errMsg || '未知错误'}`;
+                  uni.showToast({ title, icon: 'none' });
+                }
+              });
+            } else {
+              // 纯积分结算，直接提示成功
+              uni.showToast({ title: '积分结算成功', icon: 'success' });
+              uni.removeStorageSync('selectedCoupon');
+              uni.navigateBack();
+            }
           } else {
-            uni.showToast({ title: res.message || '结账失败', icon: 'none' })
+            // 接口异常提示
+            uni.showToast({ title: res.message || '结账失败，请联系客服', icon: 'none' });
           }
         }).catch(() => {
           uni.hideLoading()

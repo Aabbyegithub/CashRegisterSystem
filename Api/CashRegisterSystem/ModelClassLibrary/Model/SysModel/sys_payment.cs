@@ -73,14 +73,14 @@ namespace MyNamespace
            public string? third_order_no {get;set;}
 
            /// <summary>
-           /// Desc:状态（1-待支付；2-支付成功；3-支付失败）
+           /// Desc:状态（1-待支付；2-支付成功；3-支付失败;4-退款中；5退款成功；6；退款失败）
            /// Default:
            /// Nullable:False
            /// </summary>           
            public byte status {get;set;}
 
            /// <summary>
-           /// Desc:支付时间
+           /// Desc:支付/退款时间
            /// Default:
            /// Nullable:True
            /// </summary>           
@@ -106,6 +106,19 @@ namespace MyNamespace
            /// Nullable:True
            /// </summary>           
            public string? remark {get;set;}
+        /// <summary>
+        /// 支付/退款返回单号
+        /// </summary>
+           public string? transaction_id {get;set;}
+
+        /// <summary>
+        /// 退款返回信息
+        /// </summary>
+           public string? response_data {get;set;}
+        /// <summary>
+        /// 退款失败原因
+        /// </summary>
+           public string? fail_reason {get;set;}
 
     }
 }

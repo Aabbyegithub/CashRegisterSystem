@@ -234,6 +234,24 @@ const handleBalance = async () => {
     ElMessage.warning('请填写充值金额');
     return;
   }
+  if(balanceForm.value.recharge_amount <= 0) {
+    ElMessage.error('支付金额必须大于0');
+    return;
+  }
+    ElMessage.warning('请使用扫码枪扫描付款码完成支付');
+    // 调用扫码机接口，获取付款码
+  let payCode = '';
+  try {
+    // 这里 scanCode() 是扫码机 SDK 的方法，返回付款码
+    payCode = await scanCode(); // 需替换为实际扫码机方法
+    if (!payCode) {
+      ElMessage.error('未获取到付款码，请重新扫码');
+      return;
+    }
+  } catch (err) {
+    ElMessage.error('扫码失败，请重试');
+    return;
+  }
   const params = {
     balance_id: 0,
     member_id: currentMemberId,
@@ -246,7 +264,7 @@ const handleBalance = async () => {
     operatorName: {}, // 可根据实际登录员工信息赋值
     member: {} // 可根据当前会员信息赋值
   };
-  const res: any = await addMemberBalance(currentMemberId,balanceForm.value.recharge_amount,balanceForm.value.give_amount,paymentMap[balanceForm.value.payment_id] || '未知支付方式'); // 示例调用
+  const res: any = await addMemberBalance(currentMemberId,balanceForm.value.recharge_amount,balanceForm.value.give_amount,payCode,paymentMap[balanceForm.value.payment_id] || '未知支付方式'); // 示例调用
   if (res?.success) {
     ElMessage.success('储值成功');
     showBalanceDialog.value = false;
@@ -319,6 +337,25 @@ const handleQuery = async () => {
     total.value = 0;
   }
 };
+
+function scanCode(): Promise<string> {
+  return new Promise((resolve) => {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.style.position = 'fixed';
+    input.style.top = '-1000px';
+    document.body.appendChild(input);
+    input.focus();
+    input.addEventListener('keydown', function handler(e) {
+      if (e.key === 'Enter') {
+        resolve(input.value);
+        input.removeEventListener('keydown', handler);
+        document.body.removeChild(input);
+      }
+    });
+  });
+}
+
 
 const handleReset = () => {
   searchPhone.value = '';

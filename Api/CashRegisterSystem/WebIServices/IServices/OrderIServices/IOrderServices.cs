@@ -35,7 +35,21 @@ namespace WebIServices.IServices.OrderIServices
         /// 添加订单
         /// </summary>
         Task<ApiResponse<bool>> AddOrderAsync(sys_order order);
+        /// <summary>
+        /// 挂单
+        /// </summary>
+        /// <param name="order"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         Task<ApiResponse<bool>> HangOrderAsync(int order,int userId);
+
+        /// <summary>
+        /// 退款
+        /// </summary>
+        /// <param name="order"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<ApiResponse<bool>> RefundOrderAsync(int order, int userId);
 
         /// <summary>
         /// 删除订单

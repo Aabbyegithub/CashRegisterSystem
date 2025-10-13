@@ -56,7 +56,7 @@ namespace WebIServices.IServices.MemberIServices
         /// </summary>
         /// <param name="balance">储值记录实体</param>
         /// <returns>操作结果</returns>
-        Task<ApiResponse<bool>> AddBalanceAsync(long member_id, decimal recharge_amount, decimal give_amount,string type, string url, int userId);
+        Task<ApiResponse<bool>> AddBalanceAsync(long member_id, decimal recharge_amount, decimal give_amount,string type,string PayCode,  int userId);
 
         /// <summary>
         /// 根据会员ID获取会员信息

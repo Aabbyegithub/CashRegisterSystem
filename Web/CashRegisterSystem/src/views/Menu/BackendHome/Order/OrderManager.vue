@@ -114,6 +114,7 @@
       </el-descriptions>
       <template #footer>
         <el-button @click="showDetailsDialog = false">关闭</el-button>
+        <el-button v-if="currentOrder.status === 3" @click="handRefundOrder(currentOrder.order_id)">退款</el-button>
         <el-button type="primary" size="small" v-if="currentOrder.status === 1||currentOrder.status === 2 ||currentOrder.status === 5"@click="handlePay(currentOrder.order_id)">去结算</el-button>
       </template>
     </el-dialog>
@@ -166,7 +167,7 @@ import { ref, onMounted } from 'vue'
 import { getStoreList } from '../../../../api/login'
 import { getStoreTables } from '../../../../api/TableOperation'
 import { dayjs, ElMessage } from 'element-plus';
-import { getAllOrderList, handOrder, reserveOrder } from '../../../../api/order';
+import { getAllOrderList, handOrder, RefundOrder, reserveOrder } from '../../../../api/order';
 import { useRouter } from 'vue-router';
 
 // 假设你有 addReservation、getStoreTables 相关API
@@ -361,8 +362,23 @@ async function submitReservation() {
 
 // 在 <script setup> 区域添加挂单方法
 async function handlePending(row: any) {
-  await handOrder(row.order_id);
+  var res:any = await handOrder(row.order_id);
+  if (!res || !res.success) {
+    ElMessage.error(res?.message || '挂单失败');
+    return;
+  }
   ElMessage.success(`订单 ${row.order_no} 已挂单`);
+  // 可刷新订单列表或更新状态
+  filterOrders();
+}
+
+async function handRefundOrder(row: any) {
+  var res:any = await RefundOrder(row.order_id);
+  if (!res || !res.success) {
+    ElMessage.error(res?.message || '退款失败');
+    return;
+  }
+  ElMessage.success(`订单退款成功`);
   // 可刷新订单列表或更新状态
   filterOrders();
 }

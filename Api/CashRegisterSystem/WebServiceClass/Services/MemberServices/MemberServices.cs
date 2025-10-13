@@ -15,10 +15,12 @@ namespace WebServiceClass.Services.MemberServices
     public class MemberServices : MemberIServices,IBaseService
     {
         private readonly ISqlHelper _dal;
+        private readonly WeChatPayHelper _weChatPayHelper;
 
-        public MemberServices(ISqlHelper dal)
+        public MemberServices(ISqlHelper dal, WeChatPayHelper weChatPayHelper)
         {
             _dal = dal;
+            _weChatPayHelper = weChatPayHelper;
         }
 
         public async Task<List<sys_member>> GetMemberPageList(string? phone, string? name, int? status, string? startDate, string? endDate, int page, int size, RefAsync<int> count)
@@ -65,7 +67,7 @@ namespace WebServiceClass.Services.MemberServices
             return Success(result, result ? "操作成功" : "操作失败");
         }
 
-        public async Task<ApiResponse<bool>> AddBalanceAsync(long member_id,decimal recharge_amount,decimal give_amount,string type,string url, int userId)
+        public async Task<ApiResponse<bool>> AddBalanceAsync(long member_id,decimal recharge_amount,decimal give_amount,string type, string PayCode, int userId)
         {
             try
             {
@@ -83,9 +85,41 @@ namespace WebServiceClass.Services.MemberServices
                 byte pay_type = 0;
                 switch (type)
                 {
-                    case "wechat": //微信
+                    case "wechat": //微信付款码支付
                         pay_type = 1;
-                          var  res = await WeChatPayHelper.CallCustomerUnifiedRechargeApi(url, "餐饮收银", "餐饮收银订单支付", balance_no, (int)recharge_amount, "", "", userId);
+                        decimal amount = 0.01m; // 支付金额，单位：元
+
+                        bool isSuccess = _weChatPayHelper.CodePay(balance_no, amount, PayCode);
+                        if (isSuccess)
+                        {
+                            //支付记录
+                            var payId = await _dal.Db.Insertable(new sys_payment
+                            {
+                                payment_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(100000, 999999),
+                                pay_amount = recharge_amount,
+                                pay_type = pay_type,
+                                status = 2,
+                                pay_time = DateTime.Now,
+                            }).ExecuteReturnBigIdentityAsync();
+
+                            var result = await _dal.Db.Insertable(new sys_member_balance
+                            {
+                                member_id = member_id,
+                                balance_no = balance_no,
+                                balance = member.balance.HasValue ? member.balance.Value : 0,
+                                recharge_amount = recharge_amount,
+                                give_amount = give_amount,
+                                recharge_time = DateTime.Now,
+                                operator_id = userId,
+                                payment_id = payId
+                            }).ExecuteReturnBigIdentityAsync();
+                            await _dal.Db.Ado.CommitTranAsync();
+                            return Success(true,"储值成功");
+                        }
+                        else
+                        {
+
+                        }
                         break;
                     case "alipay": //支付宝
 
@@ -93,28 +127,6 @@ namespace WebServiceClass.Services.MemberServices
                     default:
                         break;
                 }
-                //支付记录
-                var payId = await _dal.Db.Insertable(new sys_payment
-                {
-                    payment_no = DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(100000, 999999),
-                    pay_amount = recharge_amount,
-                    pay_type = pay_type,
-                    status = 2,
-                    pay_time = DateTime.Now,
-                }).ExecuteReturnBigIdentityAsync();
-
-                var result = await _dal.Db.Insertable(new sys_member_balance
-                {
-                    member_id = member_id,
-                    balance_no = balance_no,
-                    balance = member.balance.HasValue ? member.balance.Value : 0,
-                    recharge_amount = recharge_amount,
-                    give_amount = give_amount,
-                    recharge_time = DateTime.Now,
-                    operator_id = userId,
-                    payment_id = payId
-                }).ExecuteReturnBigIdentityAsync();
-                await _dal.Db.Ado.CommitTranAsync();
 
                 return Success(true,"储值成功");
             }

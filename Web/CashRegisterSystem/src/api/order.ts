@@ -24,3 +24,7 @@ export function reserveOrder(data: any) {
 export function handOrder(order: number) {
   return axios.get('/api/Order/HangOrder', { params: { order } });
 }
+//
+export function RefundOrder(order: number) {
+  return axios.get('/api/Order/RefundOrder', { params: { order } });
+}

@@ -24,6 +24,6 @@ export function getBalanceRecordList(params: { page: number; size: number; keywo
   return axios.get('/api/MemberBalance/GetBalanceRecordList', { params });
 }
 
-export function addMemberBalance(member_id:number, recharge_amount:number, give_amount:number,type:string) {
-  return axios.post('/api/Member/AddBalance', null,{params: { member_id, recharge_amount, give_amount, type }});
+export function addMemberBalance(member_id:number, recharge_amount:number, give_amount:number,PayCode:string,type:string) {
+  return axios.post('/api/Member/AddBalance', null,{params: { member_id, recharge_amount, give_amount,PayCode, type }});
 }
