@@ -559,6 +559,9 @@ namespace WebServiceClass.Services.OrderServices
                     payment.status = 6; // 3=退款失败
                     payment.fail_reason = $"{errCode}：{errMsg}";
                     payment.response_data = Newtonsoft.Json.JsonConvert.SerializeObject(refundResult);
+                    await _dal.Db.Updateable(payment).ExecuteCommandAsync();
+                    await _dal.Db.Ado.CommitTranAsync();
+                    return Fail<bool>( "退款失败");
                 }
 
                 // 11. 更新退款记录
