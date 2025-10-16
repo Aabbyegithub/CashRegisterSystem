@@ -1,7 +1,7 @@
 <template>
   <view class="menu-container">
     <CustomHeader
-      :title="'A2桌点餐'"
+      :title="title"
       :searchValue="searchValue"
       :searchPlaceholder="'搜索'"
       @update:searchValue="val => searchValue = val"
@@ -249,6 +249,7 @@ const selectedSpicy = ref(spicyList.value[0])
 const qty = ref(1)
 const TableId = ref(0)
 const orderId = ref(0)
+const title = ref('桌点餐')
 
 function openSpecDialog(dish: any) {
   // 获取分量规格数组（查出是一个列表）
@@ -322,8 +323,37 @@ function selectCategory(id: number) {
     }
   }, 50)
 }
-function handleSearch(val:any) {
-  // TODO: 搜索逻辑
+function handleSearch(val: any) {
+  if (!val) return;
+  // 查找第一个匹配的菜品
+  const dish = dishes.value.find(d => d.name.includes(val));
+  if (!dish) {
+    uni.showToast({ title: '未找到相关菜品', icon: 'none' });
+    return;
+  }
+  // 找到分类索引
+  const cateIdx = cateList.value.findIndex(cat => cat.id === dish.dishCategoryType);
+  if (cateIdx > -1) {
+    activeCateIndex.value = cateIdx;
+    nextTick(() => {
+      // 定位到菜品
+      const dishIndex = cateList.value[cateIdx].children.findIndex(d => d.id === dish.id);
+      if (dishIndex > -1) {
+        const selector = `.dish-item:nth-child(${dishIndex + 1})`;
+        uni.createSelectorQuery()
+          .select(selector)
+          .boundingClientRect((rect: any) => {
+            if (rect && typeof rect.top === 'number') {
+              uni.pageScrollTo({
+                scrollTop: rect.top - 80,
+                duration: 300
+              });
+            }
+          })
+          .exec();
+      }
+    });
+  }
 }
 
 // 获取购物车中某菜品数量（spece==0专用）
@@ -452,14 +482,25 @@ async function submitOrder() {
     uni.showToast({ title: '网络错误，请稍后再试', icon: 'none' })
   })
 }
-onShow(() => {
+onShow(async () => {
   orderId.value = uni.getStorageSync('OrderId') || 0
-})
-onLoad(async () => {
-  const { tableId, storeId,people } = uni.getStorageSync('TableInfo') || {}
+    const { tableId, storeId,people,tableName } = uni.getStorageSync('TableInfo') || {}
   if (tableId) {
     // 获取桌台ID
     TableId.value = tableId
+    title.value = `${tableName}-桌点餐`
+  }else {
+    uni.showToast({ title: '未指定桌台', icon: 'none' })
+  }
+  await getmenuType(storeId || 2) 
+  await getmenuList(storeId || 2)
+})
+onLoad(async () => {
+  const { tableId, storeId,people,tableName } = uni.getStorageSync('TableInfo') || {}
+  if (tableId) {
+    // 获取桌台ID
+    TableId.value = tableId
+    title.value = `${tableName}-桌点餐`
   }else {
     uni.showToast({ title: '未指定桌台', icon: 'none' })
   }
